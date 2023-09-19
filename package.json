@@ -15,7 +15,9 @@
     "url": "https://github.com/JarneDel/Doran-Jarne-Tibo/issues"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "prettier": "^3.0.3",
+    "vue-router": "4"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
