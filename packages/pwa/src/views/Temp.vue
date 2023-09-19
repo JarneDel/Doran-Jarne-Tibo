@@ -3,7 +3,7 @@
 </script>
 
 <template>
-Hello World
+  <div class="bg-pink font-italic c-yellow">hello world</div>
 </template>
 
 <style scoped>

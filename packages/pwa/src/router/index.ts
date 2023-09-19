@@ -5,11 +5,11 @@ export const router = createRouter({
     routes: [
         {
             path: '/',
-            component: () => import('../views/Temp.vue'),
+            component: () => import('@/views/Temp.vue'),
         },
         {
           path: '/:pathMatch(.*)*',
-            component: () => import('../views/NotFound.vue'),
+            component: () => import('@/views/NotFound.vue'),
         }
     ],
 })
