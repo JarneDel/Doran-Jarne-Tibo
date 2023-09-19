@@ -3,7 +3,8 @@
 </script>
 
 <template>
-  <div class="bg-pink font-italic c-yellow">hello world</div>
+header
+
 </template>
 
 <style scoped>
