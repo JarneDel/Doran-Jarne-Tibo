@@ -1,0 +1,41 @@
+{
+  "name": "doran-jarne-tibo",
+  "version": "0.0.0",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JarneDel/Doran-Jarne-Tibo.git"
+  },
+  "author": "MCT",
+  "bugs": {
+    "url": "https://github.com/JarneDel/Doran-Jarne-Tibo/issues"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "prettier": {
+    "arrowParens": "avoid",
+    "endOfLine": "lf",
+    "bracketSpacing": true,
+    "printWidth": 80,
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "useTabs": false,
+    "htmlWhitespaceSensitivity": "css",
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ]
+  }
+}
