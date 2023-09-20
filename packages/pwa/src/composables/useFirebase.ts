@@ -52,7 +52,7 @@ const restoreUser = () => {
         resolve(user);
       }
       else{
-        reject()
+        resolve(null)
       }
     })
   });
