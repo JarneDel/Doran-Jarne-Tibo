@@ -33,15 +33,15 @@ export const router = createRouter({
                     path: '',
                     component: () => import('@/views/administration/Administration.vue'),
                 },
-                {
-                    path: "inventory",
-                    children: [
-                        {
-                            path: '',
-                            component: () => import('@/views/administration/inventory/Inventory.vue'),
-                        },
-                    ]
-                }
+                // {
+                //     path: "inventory",
+                //     children: [
+                //         {
+                //             path: '',
+                //             component: () => import('@/views/administration/inventory/Inventory.vue'),
+                //         },
+                //     ]
+                // }
             ]
         },
         {
