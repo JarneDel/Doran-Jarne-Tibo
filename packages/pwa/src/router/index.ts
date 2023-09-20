@@ -23,7 +23,10 @@ export const router = createRouter({
                     path: ':id',
                     component: () => import('@/views/rooms/Room.vue'),
                 }
-            ]
+            ],
+            meta: {
+                shouldBeAuthenticated: true,
+            }
         },
         {
             path: '/administration',
@@ -64,5 +67,9 @@ export const router = createRouter({
 })
 
 router.beforeEach((to, _, next) => {
+    if (to.meta.shouldBeAuthenticated) {
+        // check if logged in
+        // if not logged in, redirect to login
+    }
     next()
 })

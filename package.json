@@ -37,5 +37,8 @@
     "plugins": [
       "prettier-plugin-tailwindcss"
     ]
+  },
+  "dependencies": {
+    "lucide-vue-next": "^0.279.0"
   }
 }
