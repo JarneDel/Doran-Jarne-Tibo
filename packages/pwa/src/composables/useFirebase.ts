@@ -37,9 +37,7 @@ const passwordReset = async (email: string): Promise<void> => {
           resolve(true)
         })
         .catch(error => {
-          const errorCode = error.code
-          const errorMessage = error.message
-          reject({ code: errorCode, message: errorMessage })
+          reject(error)
         })
   })
 }
