@@ -1,4 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router'
+import useFirebase from "@/composables/useFirebase.ts";
+
+const {firebaseUser} = useFirebase()
 
 export const router = createRouter({
     history: createWebHistory(),
@@ -48,16 +51,23 @@ export const router = createRouter({
             ]
         },
         {
-            path: '/login',
-            component: () => import('@/views/auth/Login.vue'),
-        },
-        {
-            path: '/register',
-            component: () => import('@/views/auth/Register.vue'),
-        },
-        {
-            path: "/password-reset",
-            component: () => import('@/views/auth/PasswordReset.vue'),
+            path: "/auth",
+            component: () => import('@/views/auth/Wrapper.vue'),
+            children: [
+
+                {
+                    path: '/login',
+                    component: () => import('@/views/auth/Login.vue'),
+                },
+                {
+                    path: '/register',
+                    component: () => import('@/views/auth/Register.vue'),
+                },
+                {
+                    path: "/password-reset",
+                    component: () => import('@/views/auth/PasswordReset.vue'),
+                },
+            ]
         },
         {
             path: '/:pathMatch(.*)*',
@@ -67,9 +77,8 @@ export const router = createRouter({
 })
 
 router.beforeEach((to, _, next) => {
-    if (to.meta.shouldBeAuthenticated) {
-        // check if logged in
-        // if not logged in, redirect to login
+    if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
+        next('/login')
     }
     next()
 })
