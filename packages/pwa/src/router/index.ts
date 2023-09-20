@@ -67,7 +67,10 @@ export const router = createRouter({
                     path: "/password-reset",
                     component: () => import('@/views/auth/PasswordReset.vue'),
                 },
-            ]
+            ],
+            meta: {
+                avoidAuth: true,
+            }
         },
         {
             path: '/:pathMatch(.*)*',
@@ -79,6 +82,9 @@ export const router = createRouter({
 router.beforeEach((to, _, next) => {
     if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
         next('/login')
+    }
+    if (to.meta.avoidAuth && firebaseUser.value) {
+        next('/')
     }
     next()
 })
