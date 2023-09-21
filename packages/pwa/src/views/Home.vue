@@ -3,11 +3,12 @@ import { ref } from 'vue'
 import { type AuthError } from 'firebase/auth'
 
 import useFirebase from '@/composables/useFirebase'
-const { logout } = useFirebase()
 
 export default{
     setup(){
-        const error = ref<AuthError | null>(null)
+      const { logout } = useFirebase()
+
+      const error = ref<AuthError | null>(null)
         const handleLogout = () => {
             logout()
             .then(() => {
@@ -26,9 +27,19 @@ export default{
 </script>
 
 <template>
+    <div>
+        <div>
+            Locatie
+        </div>
+        <div>
+            Openings uren
+        </div>
+        <div>
+            Sluitings dagen
+        </div>
+    </div>
 <button @click="handleLogout" >logout</button>
 </template>
-
 <style scoped>
 
 </style>

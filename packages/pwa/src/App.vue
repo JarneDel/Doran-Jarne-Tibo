@@ -1,12 +1,17 @@
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script  lang="ts">
 
-export default defineComponent({})
+  import { defineComponent } from 'vue'
+
+  import Layout from '@/layout/Layout.vue';
+  export default defineComponent({ components: { Layout } })
 </script>
 
 <template>
-  <RouterView/>
+  <Layout>
+    <RouterView/>
+  </Layout>
 </template>
 
 <style scoped>
 </style>
+
