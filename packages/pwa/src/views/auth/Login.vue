@@ -1,9 +1,10 @@
 <script lang="ts">
+import { defineComponent } from 'vue'
 import { ref } from 'vue'
 import { type AuthError } from 'firebase/auth'
 
 import useFirebase from '@/composables/useFirebase'
-export default{
+export default defineComponent({
   setup() {
     const error = ref<AuthError | null>(null)
   const { login, firebaseUser } = useFirebase()
@@ -27,8 +28,7 @@ export default{
     handleLogin
   }
  }
-}
- 
+})
 </script>
 
 <template>

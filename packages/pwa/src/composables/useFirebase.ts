@@ -1,6 +1,18 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth, setPersistence, onAuthStateChanged,browserLocalPersistence, signInWithEmailAndPassword, sendPasswordResetEmail, type User } from 'firebase/auth'
+import {
+  browserLocalPersistence,
+  getAuth,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  setPersistence,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  AuthError,
+  type User,
+} from 'firebase/auth'
 import { ref } from 'vue'
+
 
 // Shared state
 const app = initializeApp({
@@ -17,6 +29,14 @@ setPersistence(auth, browserLocalPersistence)
 
 const firebaseUser = ref<User | null>(auth.currentUser)
 
+
+/**
+ * Login the user
+ * @param email Email of the user
+ * @param password Password of the user
+ * @returns {Promise<User>} The logged in user
+ * @exception {AuthError} If the email or password is incorrect
+ */
 const login = async (email: string, password: string): Promise<User> => {
   return new Promise((resolve, reject) => {
     signInWithEmailAndPassword(auth, email, password)
@@ -24,36 +44,108 @@ const login = async (email: string, password: string): Promise<User> => {
         firebaseUser.value = userCredential.user
         resolve(userCredential.user)
       })
-      .catch(error => {
-        reject(error)
+      .catch((error: AuthError) => {
+        reject(mapAuthCodeToMessage(error.code))
       })
   })
 }
 
+
+/**
+ * Register the user
+ * @param email
+ * @param password
+ * @returns {Promise<User>} The registered user
+ * @exception {AuthError} If the email is already used
+ */
+const register = async (email: string, password: string): Promise<User> => {
+  return new Promise((resolve, reject) => {
+    createUserWithEmailAndPassword(auth, email, password).then(userCredential => {
+      firebaseUser.value = userCredential.user
+      resolve(userCredential.user)
+    }).catch((err: AuthError) => {
+      reject(mapAuthCodeToMessage(err.code))
+    })
+  })
+}
+
+
+/**
+ * Send a password reset email
+ * @param email Email of the user
+ * @returns {Promise<void>} true if the email was sent
+ * @exception {AuthError} If the email is not valid
+ */
 const passwordReset = async (email: string): Promise<void> => {
   new Promise((resolve, reject) => {
     sendPasswordResetEmail(auth, email)
-        .then(() => {
-          resolve(true)
-        })
-        .catch(error => {
-          reject(error)
-        })
+      .then(() => {
+        resolve(true)
+      })
+      .catch((err: AuthError) => {
+        reject(mapAuthCodeToMessage(err.code))
+      })
   })
 }
+
+/**
+ * Logout the current user
+ * @returns {Promise<void>}
+ */
+const logout = async (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        signOut(auth)
+        .then(() => {
+            firebaseUser.value = null
+            resolve()
+        })
+        .catch((err: AuthError) => {
+            reject(mapAuthCodeToMessage(err.code))
+        })
+    })
+}
+
 
 const restoreUser = () => {
   return new Promise((resolve, reject) => {
     onAuthStateChanged(auth, user => {
-      if (user){
-        firebaseUser.value = user;
-        resolve(user);
-      }
-      else{
+      if (user) {
+        firebaseUser.value = user
+        resolve(user)
+      } else {
         resolve(null)
       }
     })
-  });
+  })
+}
+
+/**
+ * Map an auth code to a message
+ * @param code The auth code coming from AuthError.code
+ */
+const mapAuthCodeToMessage = (code: string): string => {
+  let error : string = '';
+  switch (code) {
+    case 'auth/invalid-email':
+      error =  'Email provided is invalid.'
+      break;
+    case 'auth/user-disabled':
+      error =  'User corresponding to the given email has been disabled.'
+      break;
+    case 'auth/user-not-found':
+      error = 'There is no user found with the given email.'
+      return error
+    case 'auth/invalid-password':
+      error= 'Password provided is invalid.'
+      break;
+    case 'auth/email-already-in-use':
+      error =  'Email provided is already in use.'
+      break;
+    default:
+      console.error(`Unhandled error code: ${code}`)
+      error = 'An error occurred.'
+  }
+  return error
 }
 const logout = () => {
   return new Promise((resolve, reject) => {
@@ -73,9 +165,11 @@ export default () => {
   // State for each composable
   return {
     firebaseUser,
-    logout,
-    restoreUser,
-    passwordReset,
+
     login,
+    logout,
+    passwordReset,
+    register,
+    restoreUser,
   }
 }
