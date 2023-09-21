@@ -23,12 +23,9 @@ export default defineComponent({
     const submitForm = () => {
       register(form.email, form.password).then(() => {
         push(redirectUrlAfterLogin)
-      }).catch((error: unknown) => {
-        if (error instanceof Error) {
-          form.error = error.message
-        } else {
-          form.error = 'An unexpected error occurred. Please try again or contact support if the problem persists.'
-        }
+      }).catch((error) => {
+        console.info({error})
+        form.error = error
       })
     }
 
@@ -48,7 +45,11 @@ export default defineComponent({
       <input type='email' id='email' name='email' v-model='form.email' required>
       <label for='password'>Password</label>
       <input type='password' id='password' name='password' v-model='form.password' required>
+      <div class='text-red' v-if='form.error'>{{ form.error }}</div>
       <button type='submit'>Register</button>
+      <p>Already have an account?
+        <router-link to='/login'>Login</router-link>
+      </p>
     </form>
   </div>
 </template>

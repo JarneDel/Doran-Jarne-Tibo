@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import useFirebase from '@/composables/useFirebase.ts'
 
-const { firebaseUser } = useFirebase()
+const { firebaseUser, logout } = useFirebase()
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -84,6 +84,10 @@ router.beforeEach((to, _, next) => {
     next('/login')
   } else if (to.meta.avoidAuth && firebaseUser.value) {
     next('/')
+  } else if (to.path === '/logout') {
+    logout().then(() => {
+      next('/login')
+    });
   } else {
     next()
   }
