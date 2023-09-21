@@ -1,6 +1,9 @@
 <script  lang="ts">
+
+  import { defineComponent } from 'vue'
+
   import Layout from '@/layout/Layout.vue';
-  export default { components: { Layout } }
+  export default defineComponent({ components: { Layout } })
 </script>
 
 <template>

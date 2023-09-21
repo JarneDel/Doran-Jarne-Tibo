@@ -1,11 +1,13 @@
-<script setup lang="ts">
+<script lang='ts'>
+import { defineComponent } from 'vue'
 
+export default defineComponent({})
 </script>
 
 <template>
     <div class=" flex items-center p-2 justify-between fill-slate-700 bg-slate-400 ">
         <div class=" flex justify-center items-center gap-2">
-            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 width="40px" height="40px" viewBox="0 0 31.39 31.39" xml:space="preserve"
                 >
                 <g>

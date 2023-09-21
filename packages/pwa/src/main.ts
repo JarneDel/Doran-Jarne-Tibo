@@ -4,5 +4,14 @@ import {router} from "./router";
 import '@unocss/reset/tailwind.css'
 import 'virtual:uno.css'
 
+import useFirebase from "@/composables/useFirebase.ts";
 
-createApp(App).use(router).mount('#app')
+const {restoreUser} = useFirebase()
+
+
+;(async () => {
+    await restoreUser();
+    createApp(App).use(router).mount('#app')
+
+})()
+
