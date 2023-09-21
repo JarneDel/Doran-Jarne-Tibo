@@ -147,6 +147,18 @@ const mapAuthCodeToMessage = (code: string): string => {
   }
   return error
 }
+const logout = () => {
+  return new Promise((resolve, reject) => {
+    auth.signOut()
+      .then(() => {
+        firebaseUser.value = null
+        resolve(true)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 
 
 export default () => {
