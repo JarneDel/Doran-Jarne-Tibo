@@ -55,13 +55,25 @@ const restoreUser = () => {
     })
   });
 }
+const logout = () => {
+  return new Promise((resolve, reject) => {
+    auth.signOut()
+      .then(() => {
+        firebaseUser.value = null
+        resolve(true)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 
 
 export default () => {
   // State for each composable
   return {
     firebaseUser,
-
+    logout,
     restoreUser,
     passwordReset,
     login,
