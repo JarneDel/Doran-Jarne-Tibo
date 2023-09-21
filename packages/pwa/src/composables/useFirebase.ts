@@ -1,6 +1,16 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth, setPersistence, onAuthStateChanged,browserLocalPersistence, signInWithEmailAndPassword, sendPasswordResetEmail, type User } from 'firebase/auth'
+import {
+  browserLocalPersistence,
+  getAuth,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  setPersistence,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  type User,
+} from 'firebase/auth'
 import { ref } from 'vue'
+
 
 // Shared state
 const app = initializeApp({
@@ -30,30 +40,39 @@ const login = async (email: string, password: string): Promise<User> => {
   })
 }
 
+const register = async (email: string, password: string): Promise<User> => {
+  return new Promise((resolve, reject) => {
+    createUserWithEmailAndPassword(auth, email, password).then(userCredential => {
+      firebaseUser.value = userCredential.user
+      resolve(userCredential.user)
+    })
+  })
+}
+
+
 const passwordReset = async (email: string): Promise<void> => {
   new Promise((resolve, reject) => {
     sendPasswordResetEmail(auth, email)
-        .then(() => {
-          resolve(true)
-        })
-        .catch(error => {
-          reject(error)
-        })
+      .then(() => {
+        resolve(true)
+      })
+      .catch(error => {
+        reject(error)
+      })
   })
 }
 
 const restoreUser = () => {
   return new Promise((resolve, reject) => {
     onAuthStateChanged(auth, user => {
-      if (user){
-        firebaseUser.value = user;
-        resolve(user);
-      }
-      else{
+      if (user) {
+        firebaseUser.value = user
+        resolve(user)
+      } else {
         resolve(null)
       }
     })
-  });
+  })
 }
 
 
@@ -62,8 +81,9 @@ export default () => {
   return {
     firebaseUser,
 
-    restoreUser,
-    passwordReset,
     login,
+    passwordReset,
+    register,
+    restoreUser,
   }
 }

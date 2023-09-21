@@ -4,7 +4,7 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun dev"
+    "pwa": "npm run dev --workspace=pwa"
   },
   "repository": {
     "type": "git",
@@ -13,12 +13,6 @@
   "author": "MCT",
   "bugs": {
     "url": "https://github.com/JarneDel/Doran-Jarne-Tibo/issues"
-  },
-  "devDependencies": {
-    "bun-types": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
   },
   "workspaces": [
     "packages/*"
@@ -38,7 +32,7 @@
       "prettier-plugin-tailwindcss"
     ]
   },
-  "dependencies": {
-    "lucide-vue-next": "^0.279.0"
+  "devDependencies": {
+    "prettier": "^3.0.3"
   }
 }
