@@ -124,7 +124,7 @@ const restoreUser = () => {
  * @param code The auth code coming from AuthError.code
  */
 const mapAuthCodeToMessage = (code: string): string => {
-  let error : string = '';
+  let error : string;
   switch (code) {
     case 'auth/invalid-email':
       error =  'Email provided is invalid.'
@@ -147,19 +147,6 @@ const mapAuthCodeToMessage = (code: string): string => {
   }
   return error
 }
-const logout = () => {
-  return new Promise((resolve, reject) => {
-    auth.signOut()
-      .then(() => {
-        firebaseUser.value = null
-        resolve(true)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
-}
-
 
 export default () => {
   // State for each composable
