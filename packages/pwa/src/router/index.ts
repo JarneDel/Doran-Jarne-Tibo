@@ -10,6 +10,11 @@ export const router = createRouter({
       path: '/',
       component: () => import('@/views/Home.vue'),
     },
+    // todo: remove this route
+    {
+      path: '/test',
+      component: () => import('@/views/Temp.vue'),
+    },
     {
       path: '/shop',
       component: () => import('@/views/Shop.vue'),
@@ -44,7 +49,8 @@ export const router = createRouter({
           children: [
             {
               path: '',
-              component: () => import('@/views/administration/inventory/Inventory.vue'),
+              component: () =>
+                import('@/views/administration/inventory/Inventory.vue'),
             },
           ],
         },
@@ -54,7 +60,6 @@ export const router = createRouter({
       path: '/auth',
       component: () => import('@/views/auth/Wrapper.vue'),
       children: [
-
         {
           path: '/login',
           component: () => import('@/views/auth/Login.vue'),
@@ -87,7 +92,7 @@ router.beforeEach((to, _, next) => {
   } else if (to.path === '/logout') {
     logout().then(() => {
       next('/login')
-    });
+    })
   } else {
     next()
   }

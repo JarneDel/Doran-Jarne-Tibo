@@ -1,13 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Button from '@/components/generic/Button.vue'
 
-export default defineComponent({})
+export default defineComponent({
+  components: { Button },
+})
 </script>
 
 <template>
-  <div class="bg-pink font-italic c-yellow">hello world</div>
+  <Button>TEST</Button>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
