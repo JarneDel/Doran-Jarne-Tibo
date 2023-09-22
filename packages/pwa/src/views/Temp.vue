@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import StyledInternalLink from '@/components/generic/StyledInternalLink.vue'
+import StyledInternalLink from '@/components/generic/StyledLink.vue'
 
 export default defineComponent({
   components: { StyledInternalLink, StyledButton },
