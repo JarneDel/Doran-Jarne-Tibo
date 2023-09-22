@@ -1,14 +1,18 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Button from '@/components/generic/Button.vue'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import StyledInternalLink from '@/components/generic/StyledInternalLink.vue'
 
 export default defineComponent({
-  components: { Button },
+  components: { StyledInternalLink, StyledButton },
 })
 </script>
 
 <template>
-  <Button>TEST</Button>
+  <StyledButton>TEST</StyledButton>
+  <div>
+    text rond <StyledInternalLink to="/">TEST</StyledInternalLink> test achter
+  </div>
 </template>
 
 <style scoped></style>
