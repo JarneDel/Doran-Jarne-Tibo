@@ -1,50 +1,60 @@
-<script lang='ts'>
-import { defineComponent } from 'vue'
+<script lang="ts">
+import { defineComponent } from "vue";
 
-export default defineComponent({})
+export default defineComponent({});
 </script>
 
 <template>
-    <div class=" flex items-center p-2 justify-between fill-slate-700 bg-slate-400 ">
-        <div class=" flex justify-center items-center gap-2">
-            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                width="40px" height="40px" viewBox="0 0 31.39 31.39" xml:space="preserve"
-                >
-                <g>
-                <g>
-                    <path d="M27.851,21.77c-0.327,0.375-0.803,0.591-1.304,0.591c-0.498,0-0.975-0.215-1.301-0.591
-                        c-1.033-1.184-2.543-1.933-4.244-1.933c-1.686,0-3.184,0.733-4.216,1.897c-0.328,0.37-0.797,0.581-1.292,0.581
-                        c-0.494,0-0.965-0.21-1.294-0.58c-1.034-1.164-2.528-1.898-4.215-1.898c-1.685,0-3.183,0.733-4.214,1.898
-                        c-0.33,0.37-0.799,0.58-1.295,0.58l0,0c-0.492,0-0.965-0.21-1.292-0.579C2.369,20.816,1.259,20.182,0,19.948v3.414
-                        c0.27,0.134,0.519,0.315,0.728,0.552c0.951,1.07,2.316,1.684,3.749,1.684c1.432,0,2.799-0.613,3.747-1.686
-                        c0.456-0.512,1.083-0.794,1.762-0.794c0.681,0,1.307,0.282,1.76,0.795c0.95,1.071,2.316,1.686,3.749,1.686
-                        c1.431,0,2.798-0.615,3.746-1.686c0.455-0.513,1.082-0.795,1.763-0.795c0.926,0,1.507,0.508,1.771,0.809
-                        c0.95,1.09,2.325,1.716,3.778,1.716c1.448-0.002,2.824-0.627,3.772-1.716c0.188-0.215,0.545-0.529,1.065-0.694v-3.319
-                        C29.982,20.092,28.738,20.755,27.851,21.77z"/>
-                    <circle cx="24.374" cy="14.518" r="4.047"/>
-                    <path d="M15.018,21.01c0.24,0.268,0.708,0.27,0.949-0.001c1.035-1.165,2.436-1.919,3.949-2.168
-                        c0.104-0.617,0.072-1.267-0.15-1.898c-0.117-0.331-1.404-4.654-1.404-4.654c-0.002-0.009-0.156-0.9,0.391-1.701
-                        c0.542-0.793,1.677-1.337,3.277-1.577c0.896-0.134,1.514-0.968,1.381-1.864c-0.131-0.896-0.959-1.515-1.866-1.381
-                        c-2.562,0.382-4.415,1.381-5.501,2.968c-1.352,1.975-0.936,4.049-0.875,4.31l0.348,1.41c-0.212,0.037-0.426,0.08-0.634,0.154
-                        l-6.62,2.337c-1.484,0.524-2.438,1.868-2.543,3.341c1.195-0.984,2.7-1.543,4.268-1.543C11.907,18.741,13.741,19.569,15.018,21.01z
-                        "/>
-                </g>
-            </g>
-            </svg>
-            <h1 class=" font-bold text-xl">Sportcomplex</h1>
-        </div>
-        <div class="flex gap-2">
-            <div class=" flex justify-center w-20 hover:font-bold">
-                <router-link to="/">Home</router-link>
-            </div>
-            <div class=" flex justify-center w-20 hover:font-bold">
-                <router-link to="/Shop">Shop</router-link>
-            </div>
-        </div>
+  <div
+    class="px-5 flex items-center p-2 h-20 justify-between text-primary-text bg-primary-light"
+  >
+    <div class="flex justify-center items-center gap-2">
+      <img src="../assets/Logo.svg" alt="logo" class="w-10 h-10" />
+      <router-link to="/" class="font-bold text-4xl">Sportcomplex</router-link>
     </div>
-
+    <div class="flex gap-2 font-medium">
+      <div class="relative h-full">
+        <router-link to="/" class="px-3 py-2 text-center peer"
+          >Home</router-link
+        >
+        <span
+          class="absolute -bottom-2 left-0 h-1 w-full origin-left scale-y-50 scale-x-0 duration-200 peer-hover:scale-x-100 peer-hover:bg-primary-text"
+        ></span>
+      </div>
+      <div class="relative">
+        <router-link to="/zwembad" class="px-3 py-2 text-center peer"
+          >Zwembad</router-link
+        >
+        <span
+          class="absolute -bottom-2 left-0 h-1 w-full origin-left scale-y-50 scale-x-0 duration-200 peer-hover:scale-x-100 peer-hover:bg-primary-text"
+        ></span>
+      </div>
+      <div class="relative">
+        <router-link to="/reseveringen" class="px-3 py-2 text-center peer"
+          >Reserveringen</router-link
+        >
+        <span
+          class="absolute -bottom-2 left-0 h-1 w-full origin-left scale-y-50 scale-x-0 duration-200 peer-hover:scale-x-100 peer-hover:bg-primary-text"
+        ></span>
+      </div>
+      <div class="relative">
+        <router-link to="/info" class="px-3 py-2 text-center peer"
+          >Info</router-link
+        >
+        <span
+          class="absolute -bottom-2 left-0 h-1 w-full origin-left scale-y-50 scale-x-0 duration-200 peer-hover:scale-x-100 peer-hover:bg-primary-text"
+        ></span>
+      </div>
+      <div class="relative">
+        <router-link to="/login" class="px-3 py-2 text-center peer"
+          >Login</router-link
+        >
+        <span
+          class="absolute -bottom-2 left-0 h-1 w-full origin-left scale-y-50 scale-x-0 duration-200 peer-hover:scale-x-100 peer-hover:bg-primary-text"
+        ></span>
+      </div>
+    </div>
+  </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
