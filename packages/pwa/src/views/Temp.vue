@@ -1,11 +1,15 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import StyledInternalLink from '@/components/generic/StyledLink.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 
 export default defineComponent({
   components: { StyledInputText, StyledInternalLink, StyledButton },
+  setup() {
+    const value = ref<string>('hello world')
+    return { value }
+  },
 })
 </script>
 
@@ -14,8 +18,8 @@ export default defineComponent({
   <div>
     text rond <StyledInternalLink to="/">TEST</StyledInternalLink> test achter
   </div>
-  <styled-input-text label="test" type="text" />
-  <input type="date" />
+  <styled-input-text label="test" type="text" v-model="value" />
+  <div>{{ value }}</div>
 </template>
 
 <style scoped></style>
