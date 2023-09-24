@@ -2,7 +2,7 @@
 import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
-  name: 'Button',
+  name: 'StyledButton',
   props: {
     type: {
       type: String as PropType<'button' | 'submit' | 'reset'>,

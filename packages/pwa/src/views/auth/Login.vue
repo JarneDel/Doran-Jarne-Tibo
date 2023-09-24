@@ -6,11 +6,14 @@ import useFirebase from '@/composables/useFirebase'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import StyledLink from '@/components/generic/StyledLink.vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   components: { StyledLink, StyledInputText, StyledButton },
   setup() {
     const error = ref<AuthError | null>(null)
+
+    const { push } = useRouter()
     const { login, firebaseUser } = useFirebase()
     const credentials = ref({
       email: '',
@@ -20,6 +23,7 @@ export default defineComponent({
       login(credentials.value.email, credentials.value.password)
         .then(() => {
           console.log('logged in')
+          push('/')
         })
         .catch((err: AuthError) => {
           error.value = err
@@ -36,7 +40,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <form @submit.prevent="handleLogin">
+  <form class="c-primary-text" @submit.prevent="handleLogin">
     <h1 class="font-600 text-xl">Login</h1>
     <p v-if="error">{{ error }}</p>
     <p v-if="firebaseUser">Logged in as {{ firebaseUser.email }}</p>
