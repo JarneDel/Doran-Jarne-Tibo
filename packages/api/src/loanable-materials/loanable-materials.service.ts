@@ -3,40 +3,62 @@ import { CreateLoanableMaterialInput } from "./dto/create-loanable-material.inpu
 import { UpdateLoanableMaterialInput } from "./dto/update-loanable-material.input";
 import { InjectRepository } from "@nestjs/typeorm";
 import { LoanableMaterial } from "./entities/loanable-material.entity";
-import { Repository } from "typeorm";
+import { Repository, UpdateResult } from "typeorm";
 
 @Injectable()
 export class LoanableMaterialsService {
   constructor(
     @InjectRepository(LoanableMaterial)
-    private readonly birdRepository: Repository<LoanableMaterial>
+    private readonly LoanableMaterialRepository: Repository<LoanableMaterial>
   ) {}
 
   findAll() {
-    return this.birdRepository.find();
+    // Get all loanableMaterials
+    return this.LoanableMaterialRepository.find();
   }
 
   create(
-    createBirdInput: CreateLoanableMaterialInput
+    CreateLoanableMaterialInput: CreateLoanableMaterialInput
   ): Promise<LoanableMaterial> {
     const LM = new LoanableMaterial();
-    LM.name = createBirdInput.name;
-    LM.fullname = createBirdInput.fullname;
-    LM.category = createBirdInput.category;
-    LM.url = createBirdInput.url;
-    LM.observations = createBirdInput.observations;
-    LM.description = createBirdInput.description;
+    LM.name = CreateLoanableMaterialInput.name;
+    LM.loanedOut = CreateLoanableMaterialInput.loanedOut;
+    LM.isComplete = CreateLoanableMaterialInput.isComplete;
+    LM.totalAmount = CreateLoanableMaterialInput.totalAmount;
+    LM.description = CreateLoanableMaterialInput.description;
+    // LM.materialInSet = CreateLoanableMaterialInput.materialInSet;
+
     console.log(LM + "Created");
 
-    return this.birdRepository.save(LM);
+    return this.LoanableMaterialRepository.save(LM);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} loanableMaterial`;
+  findOne(id: string) {
+    return this.LoanableMaterialRepository.find({
+      where: { id: id },
+    });
   }
 
-  update(id: number, updateLoanableMaterialInput: UpdateLoanableMaterialInput) {
-    return `This action updates a #${id} loanableMaterial`;
+  update(
+    id: string,
+    updateLoanableMaterialInput: UpdateLoanableMaterialInput
+  ): Promise<LoanableMaterial> {
+    const LM = this.LoanableMaterialRepository.findOne({
+      where: { id: id },
+    });
+    LM.then((value) => {
+      value.name = updateLoanableMaterialInput.name;
+      value.loanedOut = updateLoanableMaterialInput.loanedOut;
+      value.isComplete = updateLoanableMaterialInput.isComplete;
+      value.totalAmount = updateLoanableMaterialInput.totalAmount;
+      value.description = updateLoanableMaterialInput.description;
+      // value.materialInSet = updateLoanableMaterialInput.materialInSet;
+      return this.LoanableMaterialRepository.update(
+        id,
+        value
+      );
+    });
+    return LM;
   }
 
   remove(id: number) {

@@ -14,21 +14,21 @@ export class LoanableMaterial {
 
   @Column()
   @Field()
-  fullname: string;
+  loanedOut: boolean;
 
   @Column()
   @Field()
-  category: string;
+  totalAmount: number;
 
   @Column()
   @Field()
-  url: string;
-
-  @Column()
-  @Field({ defaultValue: 0 })
-  observations: number;
+  isComplete: boolean;
 
   @Column()
   @Field({ nullable: true })
   description?: string;
+
+  // @Column()
+  // @Field({ nullable: true })
+  // materialInSet?: Array<JSON>;
 }

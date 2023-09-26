@@ -1,22 +1,22 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Int, Field } from "@nestjs/graphql";
 
 @InputType()
 export class CreateLoanableMaterialInput {
   @Field()
-  name: string
+  name: string;
 
   @Field()
-  fullname: string
+  loanedOut: boolean;
 
   @Field()
-  category: string
+  totalAmount: number;
 
   @Field()
-  url: string
-
-  @Field({ defaultValue: 0 })
-  observations: number
+  isComplete: boolean;
 
   @Field({ nullable: true })
-  description?: string
+  description?: string;
+
+  // @Field({ nullable: true })
+  // materialInSet?: Array<JSON>;
 }
