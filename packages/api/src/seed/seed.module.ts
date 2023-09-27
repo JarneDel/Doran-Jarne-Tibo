@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common'
 import { StockModule } from '../stock/stock.module'
 import { CommandModule } from 'nestjs-command'
-import { SeedService } from './seed.service';
+import { SeedService } from './seed.service'
+import { DatabaseSeedCommand } from './seed.command'
 
 @Module({
-  providers: [SeedService]
+  providers: [DatabaseSeedCommand, SeedService],
+  imports: [StockModule, CommandModule],
 })
 export class SeedModule {
-  imports: [StockModule, CommandModule]
 }

@@ -7,7 +7,7 @@ export class DatabaseSeedCommand {
   constructor(private readonly seedService: SeedService) {}
 
   @Command({
-    command: 'seed:database:birds',
+    command: 'seed:database:stock',
     describe: 'Seed the database with birds',
   })
   async seedBirds() {

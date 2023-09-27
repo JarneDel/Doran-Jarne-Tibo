@@ -1,0 +1,82 @@
+[
+  {
+    "name": "zwembadkuiser",
+    "service": "zwembad",
+    "description": "kuist de vloer van het zwembad",
+    "needToOrderMore": 0,
+    "amountInStock": 1,
+    "idealStock": 2
+  },
+  {
+    "name": "zwembadchloor",
+    "service": "zwembad",
+    "description": "houdt het zwembadwater proper",
+    "needToOrderMore": 1,
+    "amountInStock": 0,
+    "idealStock": 10
+  },
+  {
+    "name": "tennisracket",
+    "service": "tennis",
+    "description": "gebruikt om tennis te spelen",
+    "needToOrderMore": 0,
+    "amountInStock": 5,
+    "idealStock": 10
+  },
+  {
+    "name": "tennisballen",
+    "service": "tennis",
+    "description": "gebruikt om tennis te spelen",
+    "needToOrderMore": 1,
+    "amountInStock": 2,
+    "idealStock": 10
+  },
+  {
+    "name": "voetbal",
+    "service": "voetbal",
+    "description": "gebruikt om voetbal te spelen",
+    "needToOrderMore": 0,
+    "amountInStock": 10,
+    "idealStock": 20
+  },
+  {
+    "name": "futsalbal",
+    "service": "futsal",
+    "description": "gebruikt om futsal te spelen",
+    "needToOrderMore": 0,
+    "amountInStock": 5,
+    "idealStock": 10
+  },
+  {
+    "name": "basketbal",
+    "service": "basketbal",
+    "description": "gebruikt om basketbal te spelen",
+    "needToOrderMore": 0,
+    "amountInStock": 3,
+    "idealStock": 5
+  },
+  {
+    "name": "volleybalnet",
+    "service": "volleybal",
+    "description": "gebruikt om volleybal te spelen",
+    "needToOrderMore": 0,
+    "amountInStock": 1,
+    "idealStock": 2
+  },
+  {
+    "name": "volleybal",
+    "service": "volleybal",
+    "description": "gebruikt om volleybal te spelen",
+    "needToOrderMore": 1,
+    "amountInStock": 0,
+    "idealStock": 10
+  },
+  {
+    "name": "sporthalverlichting",
+    "service": "sporthal",
+    "description": "verlicht de sporthal",
+    "needToOrderMore": 0,
+    "amountInStock": 10,
+    "idealStock": 15
+  }
+]

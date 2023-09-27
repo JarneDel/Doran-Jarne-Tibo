@@ -48,8 +48,8 @@ export class StockService {
     return `This action removes a #${id} stock`
   }
   // logic for seeding
-  saveAll(caregivers: Stock[]): Promise<Stock[]> {
-    return this.stockRepository.save(caregivers)
+  saveAll(stockItems: Stock[]): Promise<Stock[]> {
+    return this.stockRepository.save(stockItems)
   }
 
   truncate(): Promise<void> {

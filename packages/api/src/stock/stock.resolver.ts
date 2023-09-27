@@ -13,12 +13,12 @@ export class StockResolver {
     return this.stockService.create(createStockInput);
   }
 
-  @Query(() => [Stock], { name: 'stocks' })
+  @Query(() => [Stock], { name: 'stock' })
   findAll() {
     return this.stockService.findAll();
   }
 
-  @Query(() => Stock, { name: 'stock' })
+  @Query(() => Stock, { name: 'stockItem', nullable: true })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.stockService.findOne(id);
   }
