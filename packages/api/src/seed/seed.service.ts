@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common'
 import { Stock } from '../stock/entities/stock.entity'
 import { StockService } from '../stock/stock.service'
 import * as stock from './data/stock.json'
+import * as groups from './data/groups.json' // set  "resolveJsonModule": true in tsconfig.json
+import { Group } from 'src/groups/entities/group.entity'
+import { GroupsService } from 'src/groups/groups.service'
+
 
 @Injectable()
 export class SeedService {
-  constructor(private stockService: StockService) {
+  constructor(private stockService: StockService, private groupsService: GroupsService) {
   }
 
   async addStockFromJson(): Promise<Stock[]> {
@@ -27,5 +31,21 @@ export class SeedService {
 
   async deleteAllStock(): Promise<void> {
     return this.stockService.truncate()
+  }
+
+  async addGroupsFromJson(): Promise<Group[]> {
+    let theGroups: Group[] = []
+    for (let group of groups) {
+      const g = new Group()
+      g.name = group.name
+
+      theGroups.push(g)
+    }
+
+    return this.groupsService.save(theGroups)
+  }
+
+  async deleteAllGroups(): Promise<void> {
+    return this.groupsService.truncate()
   }
 }

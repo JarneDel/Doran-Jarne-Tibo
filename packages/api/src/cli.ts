@@ -18,4 +18,4 @@ async function bootstrap() {
 }
 
 
-bootstrap().then(r => console.log('✅ Operation complete'));
+bootstrap().then(r => console.log('✅ Operation complete'))

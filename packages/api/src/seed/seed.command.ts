@@ -25,4 +25,28 @@ export class DatabaseSeedCommand {
     await this.seedService.deleteAllStock()
     console.info('🪶 Removed birds')
   }
+
+
+  @Command({
+    command: 'seed:database:groups',
+    describe: 'Seed the database with groups',
+  })
+  async seedGroups() {
+    console.info('🪺 Start seeding of groups')
+    const groups = await this.seedService.addGroupsFromJson()
+    console.info(`🐣 ${groups.length} groups are added`)
+  }
+
+  @Command({
+    command: 'seed:reset:groups',
+    describe: 'Delete all data from the groups table',
+  })
+  async deleteGroups() {
+    console.info('🔪 Start deleting groups')
+    await this.seedService.deleteAllGroups()
+    console.info('🪶 Removed groups')
+  }
+
+
+
 }

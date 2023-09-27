@@ -6,6 +6,9 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { SeedModule } from './seed/seed.module'
+import { GroupsModule } from './groups/groups.module';
+
+
 
 @Module({
   imports: [
@@ -22,6 +25,7 @@ import { SeedModule } from './seed/seed.module'
       useUnifiedTopology: true, // Disable deprecated warnings
     }),
     StockModule,
+    GroupsModule,
     SeedModule,
   ],
   controllers: [AppController],
