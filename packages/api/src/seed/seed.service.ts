@@ -8,7 +8,7 @@ import * as loanableMaterials from "./data/loanableMaterials.json"; // set  "res
 export class SeedService {
   constructor(private LoanableMaterialsService: LoanableMaterialsService) {}
 
-  async addLoanableServicesFromJson(): Promise<LoanableMaterial[]> {
+  async addLoanableMaterialsFromJson(): Promise<LoanableMaterial[]> {
     let LoanableMaterials: LoanableMaterial[] = [];
     for (let loanableMaterial of loanableMaterials) {
       const lm = new LoanableMaterial();
