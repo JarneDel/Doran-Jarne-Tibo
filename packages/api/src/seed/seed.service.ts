@@ -22,7 +22,7 @@ export class SeedService {
       outStocks.push(s)
     }
 
-    return this.stockService.saveAll(outStocks)
+    return await this.stockService.saveAll(outStocks)
   }
 
   async deleteAllStock(): Promise<void> {
