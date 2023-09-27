@@ -18,26 +18,20 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.create(createLoanableMaterialInput);
   }
 
-  @Query(() => [LoanableMaterial], { name: "GetAllloanableMaterials" })
+  @Query(() => [LoanableMaterial], {
+    name: "GetAllloanableMaterials",
+    nullable: true,
+  })
   findAll() {
     return this.loanableMaterialsService.findAll();
   }
 
-  @Query(() => LoanableMaterial, { name: "GetloanableMaterialById" })
-  findOne(@Args("id", { type: () => String }) id: string) {
-    return this.loanableMaterialsService.findOne(id);
-  }
-
-  @Mutation(() => LoanableMaterial, { name: "UpdateLoanableMaterial" })
-  updateLoanableMaterial(
-    id: string,
-    @Args("updateLoanableMaterialInput")
-    updateLoanableMaterialInput: UpdateLoanableMaterialInput
-  ) {
-    return this.loanableMaterialsService.update(
-      id,
-      updateLoanableMaterialInput
-    );
+  @Query(() => LoanableMaterial, {
+    name: "GetloanableMaterialById",
+    nullable: true,
+  })
+  findOneById(@Args("id", { type: () => String }) id: string) {
+    return this.loanableMaterialsService.findOneById(id);
   }
 
   @Mutation(() => LoanableMaterial)

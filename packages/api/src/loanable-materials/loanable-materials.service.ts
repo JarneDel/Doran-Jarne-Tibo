@@ -4,6 +4,7 @@ import { UpdateLoanableMaterialInput } from "./dto/update-loanable-material.inpu
 import { InjectRepository } from "@nestjs/typeorm";
 import { LoanableMaterial } from "./entities/loanable-material.entity";
 import { Repository, UpdateResult } from "typeorm";
+import { ObjectId } from "mongodb";
 
 @Injectable()
 export class LoanableMaterialsService {
@@ -33,32 +34,11 @@ export class LoanableMaterialsService {
     return this.LoanableMaterialRepository.save(LM);
   }
 
-  findOne(id: string) {
-    return this.LoanableMaterialRepository.find({
-      where: { id: id },
-    });
-  }
-
-  update(
-    id: string,
-    updateLoanableMaterialInput: UpdateLoanableMaterialInput
-  ): Promise<LoanableMaterial> {
-    const LM = this.LoanableMaterialRepository.findOne({
-      where: { id: id },
-    });
-    LM.then((value) => {
-      value.name = updateLoanableMaterialInput.name;
-      value.loanedOut = updateLoanableMaterialInput.loanedOut;
-      value.isComplete = updateLoanableMaterialInput.isComplete;
-      value.totalAmount = updateLoanableMaterialInput.totalAmount;
-      value.description = updateLoanableMaterialInput.description;
-      // value.materialInSet = updateLoanableMaterialInput.materialInSet;
-      return this.LoanableMaterialRepository.update(
-        id,
-        value
-      );
-    });
-    return LM;
+  findOneById(id: string): Promise<LoanableMaterial> {
+    const obj = new ObjectId(id);
+    console.log(obj);
+    // @ts-ignore
+    return this.LoanableMaterialRepository.findOne({ _id: new ObjectId(id) });
   }
 
   remove(id: number) {

@@ -1,11 +1,11 @@
-import { ObjectType, Field, Int } from "@nestjs/graphql";
+import { ObjectType, Field, Int, ID } from "@nestjs/graphql";
 import { Column, Entity, ObjectIdColumn } from "typeorm";
 
 @Entity()
 @ObjectType()
 export class LoanableMaterial {
   @ObjectIdColumn()
-  @Field()
+  @Field(() => ID)
   id: string;
 
   @Column()
