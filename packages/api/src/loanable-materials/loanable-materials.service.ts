@@ -3,7 +3,7 @@ import { CreateLoanableMaterialInput } from "./dto/create-loanable-material.inpu
 import { UpdateLoanableMaterialInput } from "./dto/update-loanable-material.input";
 import { InjectRepository } from "@nestjs/typeorm";
 import { LoanableMaterial } from "./entities/loanable-material.entity";
-import { Repository, UpdateResult } from "typeorm";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
 import { ObjectId } from "mongodb";
 
 @Injectable()
@@ -29,7 +29,7 @@ export class LoanableMaterialsService {
     LM.description = CreateLoanableMaterialInput.description;
     // LM.materialInSet = CreateLoanableMaterialInput.materialInSet;
 
-    console.log(LM + "Created");
+    console.log("Created: " + LM.name);
 
     return this.LoanableMaterialRepository.save(LM);
   }
@@ -41,7 +41,15 @@ export class LoanableMaterialsService {
     return this.LoanableMaterialRepository.findOne({ _id: new ObjectId(id) });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} loanableMaterial`;
+  save(loanableMaterials: LoanableMaterial[]): Promise<LoanableMaterial[]> {
+    return this.LoanableMaterialRepository.save(loanableMaterials);
+  }
+
+  remove(id: number): Promise<DeleteResult> {
+    return this.LoanableMaterialRepository.delete(id);
+  }
+
+  truncate(): Promise<void> {
+    return this.LoanableMaterialRepository.clear();
   }
 }

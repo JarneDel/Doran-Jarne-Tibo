@@ -35,7 +35,8 @@ export class LoanableMaterialsResolver {
   }
 
   @Mutation(() => LoanableMaterial)
-  removeLoanableMaterial(@Args("id", { type: () => String }) id: number) {
-    return this.loanableMaterialsService.remove(id);
+  removeLoanableMaterialById(@Args("id", { type: () => String }) id: number) {
+    this.loanableMaterialsService.remove(id);
+    return "Deleted loanableMaterial with id: " + id;
   }
 }

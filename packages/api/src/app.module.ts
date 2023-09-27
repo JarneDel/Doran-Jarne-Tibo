@@ -5,6 +5,7 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { LoanableMaterialsModule } from "./loanable-materials/loanable-materials.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
       useUnifiedTopology: true, // Disable deprecated warnings
     }),
     LoanableMaterialsModule,
+    SeedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
