@@ -16,22 +16,32 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    autocomplete: {
+      type: String,
+      default: 'off',
+    },
+    required: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['update:modelValue'],
 })
 </script>
 
 <template>
-  <label>
+  <label class="my-3 block">
     <span class="c-primary-text font-medium">{{ label }}</span>
     <br />
     <input
+      :autocomplete="autocomplete"
+      :required="required"
+      :type="type"
+      :value="modelValue"
+      class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
       @input="
         e => $emit('update:modelValue', (e.target as HTMLInputElement).value)
       "
-      :value="modelValue"
-      :type="type"
-      class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark rounded bg-white px-4 py-1.5 outline-none transition-colors"
     />
   </label>
 </template>
