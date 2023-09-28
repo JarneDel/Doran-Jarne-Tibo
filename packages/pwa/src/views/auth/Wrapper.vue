@@ -5,13 +5,13 @@ export default defineComponent({})
 </script>
 
 <template>
-    <div class="min-h-screen justify-center items-center flex">
-    <div class="bg-gray-300 w-1/2 mx-auto p-6">
-        <RouterView/>
+  <div class="flex min-h-screen items-center justify-center">
+    <div
+      class="bg-primary-surface rounded-2 border-3 min-w-md border-primary-light p-8"
+    >
+      <RouterView />
     </div>
-    </div>
+  </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
