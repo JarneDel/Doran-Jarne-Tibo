@@ -1,7 +1,16 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field, ID } from '@nestjs/graphql'
 
 @InputType()
 export class CreateRoomInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @Field() // Graphql
+  name: boolean
+
+  @Field() // Graphql
+  sport: string
+
+  @Field({ defaultValue: 0 }) // Graphql
+  price: number
+
+  @Field({ defaultValue: 'Sport zaal.' }) // Graphql
+  type: string
 }

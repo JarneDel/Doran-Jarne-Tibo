@@ -3,6 +3,10 @@ import { RoomService } from './room.service';
 import { Room } from './entities/room.entity';
 import { CreateRoomInput } from './dto/create-room.input';
 import { UpdateRoomInput } from './dto/update-room.input';
+import { UseGuards } from '@nestjs/common'
+import { FirebaseGuard } from '../authentication/guards/firebase.guard'
+import { UserRecord } from 'firebase-admin/auth'
+import { FirebaseUser } from '../authentication/decorators/user.decorator'
 
 @Resolver(() => Room)
 export class RoomResolver {
@@ -19,7 +23,7 @@ export class RoomResolver {
   }
 
   @Query(() => Room, { name: 'room' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => String }) id: string) {
     return this.roomService.findOne(id);
   }
 
