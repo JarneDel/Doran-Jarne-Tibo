@@ -1,0 +1,16 @@
+[
+    {
+        "name": "name",
+        "loanedOut" : true,
+        "isComplete" : true,
+        "totalAmount" : 1,
+        "description" : "description"
+    },
+    {
+        "name": "name2",
+        "loanedOut" : false,
+        "isComplete" : true,
+        "totalAmount" : 4,
+        "description" : "description2"
+    }
+]

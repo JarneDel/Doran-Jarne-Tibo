@@ -13,7 +13,7 @@ async function bootstrap() {
     console.error(e)
     await app.close()
     process.exit(1)
-
+    
   }
 }
 
