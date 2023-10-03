@@ -11,6 +11,7 @@ import { LoanableMaterialsModule } from './loanable-materials/loanable-materials
 import { AuthenticationModule } from './authentication/authentication.module'
 import { ConfigModule } from '@nestjs/config'
 import { StaffModule } from './staff/staff.module';
+import { ServiceModule } from './service/service.module';
 
 
 @Module({
@@ -37,6 +38,7 @@ import { StaffModule } from './staff/staff.module';
     SeedModule,
     AuthenticationModule,
     StaffModule,
+    ServiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

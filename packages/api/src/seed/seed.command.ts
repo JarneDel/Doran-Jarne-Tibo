@@ -24,6 +24,9 @@ export class DatabaseSeedCommand {
     const loanableMaterials =
       await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
+    console.log('Started seeding staff')
+    const staff = await this.seedService.addStaffFromJson()
+    console.log(staff.length, ' staff were added')
   }
 
   @Command({
@@ -43,6 +46,8 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting loanableMaterials')
     await this.seedService.deleteAllBirds()
     console.info('Removed loanableMaterials')
+    await this.seedService.deleteAllStaff()
+    console.log('removed all staff')
   }
 
   @Command({

@@ -1,30 +1,30 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
 import { Column, Entity, ObjectIdColumn } from 'typeorm'
 
-@Entity() // Database link - Typeorm
+@Entity()
 @ObjectType()
 export class Stock {
-  @ObjectIdColumn() // Database link - Typeorm
+  @ObjectIdColumn()
   @Field(() => ID) // Graphql
   id: string
 
-  @Column() // Database link - Typeorm
+  @Column()
   @Field() // Graphql
   name: string
 
-  @Column() // Database link - Typeorm
+  @Column()
   @Field() // Graphql
   description: string
 
-  @Column() // Database link - Typeorm
+  @Column()
   @Field() // Graphql
   needToOrderMore: boolean
 
-  @Column() // Database link - Typeorm
+  @Column()
   @Field() // Graphql
   amountInStock: number
 
-  @Column() // Database link - Typeorm
+  @Column()
   @Field() // Graphql
   service: string
 
