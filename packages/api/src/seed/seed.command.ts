@@ -1,6 +1,6 @@
-import { Command } from "nestjs-command";
-import { Injectable } from "@nestjs/common";
-import { SeedService } from "./seed.service";
+import { Command } from 'nestjs-command'
+import { Injectable } from '@nestjs/common'
+import { SeedService } from './seed.service'
 
 @Injectable()
 export class DatabaseSeedCommand {
@@ -8,33 +8,32 @@ export class DatabaseSeedCommand {
 
   @Command({
     command: 'seed:database:stock',
-    describe: 'Seed the database with birds',
+    describe: 'Seed the database with stocks',
   })
-  async seedBirds() {
-    console.info('🗃️ Start seeding of stock')
-    const birds = await this.seedService.addStockFromJson()
-    console.info(` ${birds.length} pieces of stock were added`)
+  async seedStocks() {
+    console.info('🗃️ Start seeding of stocks')
+    const stocks = await this.seedService.addStockFromJson()
+    console.info(` ${stocks.length} pieces of stock were added`)
   }
 
   @Command({
     command: 'seed:reset:stock',
     describe: 'Delete all data from the stock table',
   })
-  async delete() {
-    console.info('🔪 Start deleting birds')
+  async deleteStocks() {
+    console.info('🔪 Start deleting stocks')
     await this.seedService.deleteAllStock()
-    console.info('🪶 Removed birds')
+    console.info('🪶 Removed stocks')
   }
-
 
   @Command({
     command: 'seed:database:groups',
     describe: 'Seed the database with groups',
   })
   async seedGroups() {
-    console.info('🪺 Start seeding of groups')
+    console.info('Start seeding of groups')
     const groups = await this.seedService.addGroupsFromJson()
-    console.info(`🐣 ${groups.length} groups are added`)
+    console.info(`${groups.length} groups are added`)
   }
 
   @Command({
@@ -47,15 +46,23 @@ export class DatabaseSeedCommand {
     console.info('🪶 Removed groups')
   }
 
-
   @Command({
-    command: "seed:reset:loanableMaterials",
-    describe: "Delete all data from the loanableMaterials table",
+    command: 'seed:database:loanableMaterials',
+    describe: 'Seed the database with loanableMaterials',
   })
-  async deleteLoanableMaterials() {
-    console.info("🔪 Start deleting loanableMaterials");
-    await this.seedService.deleteAllBirds();
-    console.info("Removed loanableMaterials");
+  async seedLoanableMaterials() {
+    console.info('Start seeding of loanableMaterials')
+    const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
+    console.info(`${loanableMaterials.length} loanableMaterials are added`)
   }
 
+  @Command({
+    command: 'seed:reset:loanableMaterials',
+    describe: 'Delete all data from the loanableMaterials table',
+  })
+  async deleteLoanableMaterials() {
+    console.info('🔪 Start deleting loanableMaterials')
+    await this.seedService.deleteAllBirds()
+    console.info('Removed loanableMaterials')
+  }
 }
