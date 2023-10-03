@@ -6,6 +6,8 @@
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+**/credentials.json
+
 # Local History for Visual Studio Code
 .history/
 
@@ -196,7 +198,6 @@ dist
 
 # vuepress v2.x temp and cache directory
 .temp
-.cache
 
 # Docusaurus cache and generated files
 .docusaurus
