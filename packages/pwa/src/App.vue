@@ -1,17 +1,24 @@
-<script  lang="ts">
+<script lang="ts">
 
-  import { defineComponent } from 'vue'
+  import {  provide } from 'vue'
+
+  import { DefaultApolloClient } from '@vue/apollo-composable'
 
   import Layout from '@/layout/Layout.vue';
-  export default defineComponent({ components: { Layout } })
+  import useGraphql from './composables/useGraphql';
+  export default{
+     components: { Layout },
+  setup() {
+    const { apolloClient } = useGraphql();
+    provide(DefaultApolloClient, apolloClient);
+    return {};
+  },}
 </script>
 
 <template>
   <Layout>
-    <RouterView/>
+    <RouterView />
   </Layout>
 </template>
 
-<style scoped>
-</style>
-
+<style scoped></style>

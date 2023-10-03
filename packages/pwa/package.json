@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vue/apollo-composable": "^4.0.0-beta.11",
     "firebase": "^10.4.0",
     "lucide-vue-next": "^0.279.0",
     "vue": "^3.3.4"
