@@ -206,7 +206,7 @@ dist
 .serverless/
 
 # FuseBox cache
-.fusebox/
+.fusebox/new GraphQlError("OhNo")
 
 # DynamoDB Local files
 .dynamodb/
@@ -224,3 +224,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+graphql.config.yml
+schema.graphql
+graphql/
