@@ -78,6 +78,13 @@ export const router = createRouter({
       },
     },
     {
+      path: '/account',
+      component: () => import('@/views/Account.vue'),
+      meta: {
+        shouldBeAuthenticated: true,
+      },
+    },
+    {
       path: '/:pathMatch(.*)*',
       component: () => import('@/views/NotFound.vue'),
     },

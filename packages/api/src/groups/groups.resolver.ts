@@ -1,9 +1,7 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { GroupsService } from './groups.service';
-import { Group } from './entities/group.entity';
-import { CreateGroupInput } from './dto/create-group.input';
-import { UpdateGroupInput } from './dto/update-group.input';
-import { string } from 'yargs';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { GroupsService } from './groups.service'
+import { Group } from './entities/group.entity'
+import { CreateGroupInput } from './dto/create-group.input'
 
 @Resolver(() => Group)
 export class GroupsResolver {
