@@ -1,6 +1,6 @@
-import { Command } from 'nestjs-command'
-import { Injectable } from '@nestjs/common'
-import { SeedService } from './seed.service'
+import { Command } from "nestjs-command";
+import { Injectable } from "@nestjs/common";
+import { SeedService } from "./seed.service";
 
 @Injectable()
 export class DatabaseSeedCommand {
@@ -48,5 +48,14 @@ export class DatabaseSeedCommand {
   }
 
 
+  @Command({
+    command: "seed:reset:loanableMaterials",
+    describe: "Delete all data from the loanableMaterials table",
+  })
+  async deleteLoanableMaterials() {
+    console.info("🔪 Start deleting loanableMaterials");
+    await this.seedService.deleteAllBirds();
+    console.info("Removed loanableMaterials");
+  }
 
 }

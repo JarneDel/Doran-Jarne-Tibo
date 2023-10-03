@@ -7,6 +7,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { SeedModule } from './seed/seed.module'
 import { GroupsModule } from './groups/groups.module';
+import { LoanableMaterialsModule } from "./loanable-materials/loanable-materials.module";
 
 
 
@@ -26,6 +27,7 @@ import { GroupsModule } from './groups/groups.module';
     }),
     StockModule,
     GroupsModule,
+    LoanableMaterialsModule,
     SeedModule,
   ],
   controllers: [AppController],
