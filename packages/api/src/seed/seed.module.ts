@@ -5,11 +5,16 @@ import { SeedService } from './seed.service'
 import { GroupsModule } from 'src/groups/groups.module'
 import { DatabaseSeedCommand } from './seed.command'
 import { LoanableMaterialsModule } from 'src/loanable-materials/loanable-materials.module'
-
+import { StaffModule } from '../staff/staff.module'
 
 @Module({
+  imports: [
+    CommandModule,
+    GroupsModule,
+    LoanableMaterialsModule,
+    StockModule,
+    StaffModule,
+  ],
   providers: [DatabaseSeedCommand, SeedService],
-  imports: [StockModule, GroupsModule, LoanableMaterialsModule, CommandModule],
 })
-export class SeedModule {
-}
+export class SeedModule {}

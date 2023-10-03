@@ -11,6 +11,7 @@ export class StaffService {
     @InjectRepository(Staff)
     private readonly staffRepository: Repository<Staff>,
   ) {}
+
   create(createStaffInput: CreateStaffInput) {
     const s = new Staff()
     s.firstName = createStaffInput.firstName
@@ -23,18 +24,29 @@ export class StaffService {
   }
 
   findAll() {
-    return `This action returns all staff`
+    return this.staffRepository.find()
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} staff`
+    return this.staffRepository.findOneByOrFail({
+      //@ts-ignore
+      _id: id,
+    })
   }
 
-  update(id: number, updateStaffInput: UpdateStaffInput) {
-    return `This action updates a #${id} staff`
+  update(id: string, updateStaffInput: UpdateStaffInput) {
+    return this.staffRepository.update(id, updateStaffInput)
   }
 
   remove(id: number) {
     return `This action removes a #${id} staff`
+  }
+
+  saveAll(staffItems: Staff[]): Promise<Staff[]> {
+    return this.staffRepository.save(staffItems)
+  }
+
+  truncate(): Promise<void> {
+    return this.staffRepository.clear()
   }
 }

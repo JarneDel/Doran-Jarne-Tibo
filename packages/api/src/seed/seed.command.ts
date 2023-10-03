@@ -21,7 +21,8 @@ export class DatabaseSeedCommand {
     console.info(`${groups.length} groups are added`)
     //LoanableMaterials
     console.info('Start seeding of loanableMaterials')
-    const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
+    const loanableMaterials =
+      await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
   }
 
@@ -90,7 +91,8 @@ export class DatabaseSeedCommand {
   })
   async seedLoanableMaterials() {
     console.info('Start seeding of loanableMaterials')
-    const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
+    const loanableMaterials =
+      await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
   }
 
@@ -102,5 +104,25 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting loanableMaterials')
     await this.seedService.deleteAllBirds()
     console.info('Removed loanableMaterials')
+  }
+
+  @Command({
+    command: 'seed:database:staff',
+    describe: 'Seed the database with staff',
+  })
+  async seedStaff() {
+    console.info('Start seeding of staff')
+    const staff = await this.seedService.addStaffFromJson()
+    console.info(`${staff.length} staff are added`)
+  }
+
+  @Command({
+    command: 'seed:reset:staff',
+    describe: 'Delete all data from the staff table',
+  })
+  async deleteStaff() {
+    console.info('🔪 Start deleting staff')
+    await this.seedService.deleteAllStaff()
+    console.info('Removed staff')
   }
 }

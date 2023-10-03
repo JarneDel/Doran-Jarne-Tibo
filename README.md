@@ -36,6 +36,13 @@ Seed database with loanableMaterials data
  npx nestjs-command seed:database:loanablematerials   
 ```
 
+seed database with staff data
+```bash
+cd ./packages/api
+npx nestjs-command seed:database:staff
+```
+
+
 clear All containers
 ```shell
  cd ./packages/api
@@ -58,4 +65,11 @@ clear loanableMaterials container
 ```shell
  cd ./packages/api
  npx nestjs-command seed:reset:loanableMaterials    
+```
+
+clear staff container
+
+```bash
+cd ./packages/api
+npx nestjs-command seed:reset:staff
 ```
