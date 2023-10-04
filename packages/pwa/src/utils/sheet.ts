@@ -1,7 +1,7 @@
 //@ts-nocheck
 
 import { promises as fs } from 'fs'
-import path from 'path'
+import path, * as Path from 'path'
 import process from 'process'
 import { authenticate } from '@google-cloud/local-auth'
 import { google } from 'googleapis'
@@ -88,8 +88,7 @@ async function generateTranslations(auth) {
     }
 
     await fs.writeFile(
-      process.cwd(),
-      `/src/locales/${locale}.json`,
+      Path.join(process.cwd(), `/src/locales/${locale}.json`),
       JSON.stringify(translations),
     )
   }
