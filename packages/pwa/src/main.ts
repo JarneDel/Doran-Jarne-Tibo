@@ -1,17 +1,14 @@
-import {createApp} from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
-import {router} from "./router";
+import { router } from './bootstrap'
 import '@unocss/reset/tailwind.css'
 import 'virtual:uno.css'
+import useFirebase from '@/composables/useFirebase.ts'
+import { i18n } from '@/bootstrap/i18n.ts'
 
-import useFirebase from "@/composables/useFirebase.ts";
-
-const {restoreUser} = useFirebase()
-
+const { restoreUser } = useFirebase()
 
 ;(async () => {
-    await restoreUser();
-    createApp(App).use(router).mount('#app')
-
+  await restoreUser()
+  createApp(App).use(router).use(i18n).mount('#app')
 })()
-
