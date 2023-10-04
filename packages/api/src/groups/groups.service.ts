@@ -25,10 +25,6 @@ export class GroupsService {
   }
 
   async findOne(id: string) {
-    console.log(id)
-    const o = new ObjectId(id)
-    //@ts-ignore
-    console.log(await this.groupRepository.findOne({where:{ _id:o }}))
     //@ts-ignore
     return await this.groupRepository.findOne({ _id:new ObjectId(id)})
   }
@@ -45,10 +41,9 @@ export class GroupsService {
   }
   async updateScore(id: string, amount:number) {
    const exGroup=await this.findOne(id)
-    const g = new Group()
-    g.score = exGroup.score + amount
-    this.groupRepository.update(id, g)
-    return g.score
+    exGroup.score = exGroup.score + amount
+    this.groupRepository.update(id, exGroup)
+    return exGroup
   }
 
   remove(id: number) {

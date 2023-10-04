@@ -36,11 +36,11 @@ export class GroupsResolver {
     return this.groupsService.create(createGroupInput)
   }
 
-  @Mutation(() => Number, { description: 'adds a score to a group' })
+  @Mutation(() => Group, { description: 'adds a score to a group' })
   updateScore(
     @Args('id', { type: () => String }) id: string,
     @Args('amount', { type: () => Int }) amount: number,
-  ): Promise<number> {
+  ): Promise<Group> {
     return this.groupsService.updateScore(id, amount)
   }
 
