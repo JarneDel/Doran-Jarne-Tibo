@@ -10,15 +10,15 @@ export class Room {
 
   @Column() // Database link - Typeorm
   @Field() // Graphql
-  name: boolean
+  name: string
+
+  @Column() // Database link - Typeorm
+  @Field(() => [String], {nullable:true}) // Graphql
+  sports: string[]
 
   @Column() // Database link - Typeorm
   @Field() // Graphql
-  sport: string
-
-  @Column() // Database link - Typeorm
-  @Field() // Graphql
-  price: number
+  pricePerHour: number
 
   @Column() // Database link - Typeorm
   @Field() // Graphql

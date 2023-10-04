@@ -14,10 +14,10 @@ export class RoomService {
   ) {}
   create(createRoomInput: CreateRoomInput) {
     const r = new Room()
-    const { name, sport, price, type } = createRoomInput
+    const { name, sports, pricePerHour, type } = createRoomInput
     r.name = name
-    r.sport = sport
-    r.price = price
+    r.sports = sports
+    r.pricePerHour = pricePerHour
     r.type = type
     return this.roomRepository.save(r)
   }
@@ -26,13 +26,11 @@ export class RoomService {
     return this.roomRepository.find()
   }
 
-  findOne(id: string) {
-    console.log('id', id)
-    const objectId = new ObjectId(id)
-    return this.roomRepository.findOneByOrFail({
-      //@ts-ignore
-      _id: objectId,
-    })
+  findOneById(id: string): Promise<Room> {
+    const obj = new ObjectId(id);
+    console.log(obj);
+    // @ts-ignore
+    return this.roomRepository.findOne({ _id: new ObjectId(id) });
   }
 
   update(id: string, updateRoomInput: UpdateRoomInput) {
@@ -40,11 +38,11 @@ export class RoomService {
   }
 
   remove(id: string) {
-    return `This action removes a #${id} room`
+    return this.roomRepository.delete(id)
   }
 
   // logic for seeding
-  saveAll(roomItems: Room[]): Promise<Room[]> {
+  save(roomItems: Room[]): Promise<Room[]> {
     return this.roomRepository.save(roomItems)
   }
   truncate(): Promise<void> {
