@@ -27,10 +27,10 @@ export class StaffService {
     return this.staffRepository.find()
   }
 
-  findOne(id: number) {
+  findOne(id: Object) {
     return this.staffRepository.findOneByOrFail({
       //@ts-ignore
-      _id: id,
+      _id: new Object(id),
     })
   }
 

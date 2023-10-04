@@ -8,17 +8,15 @@ export class CreateStockInput {
   @Field({ nullable: true }) //graphql
   description: string
 
-  @Field({defaultValue: 0} ) //graphql
+  @Field({ defaultValue: 0 }) //graphql
   needToOrderMore: boolean
 
-  @Field( { defaultValue: 0}) //graphql
+  @Field({ defaultValue: 0 }) //graphql
   amountInStock: number
 
   @Field() //graphql
-  service: string
+  serviceId: string
 
-  @Field({nullable: true}) //graphql
+  @Field({ nullable: true }) //graphql
   idealStock: number
-
-
 }

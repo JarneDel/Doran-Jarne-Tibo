@@ -5,20 +5,25 @@ import * as stock from './data/stock.json'
 import * as groups from './data/groups.json' // set  "resolveJsonModule": true in tsconfig.json
 import * as loanableMaterials from './data/loanableMaterials.json'
 import * as staff from './data/staff.json'
+import * as services from './data/services.json'
 import { Group } from 'src/groups/entities/group.entity'
 import { GroupsService } from 'src/groups/groups.service'
 import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
 import { LoanableMaterialsService } from 'src/loanable-materials/loanable-materials.service'
 import { Staff } from 'src/staff/entities/staff.entity'
 import { StaffService } from 'src/staff/staff.service'
+import { ObjectId } from 'mongodb'
+import { Service } from '../service/entities/service.entity'
+import { ServiceService } from '../service/service.service'
 
 @Injectable()
 export class SeedService {
   constructor(
     private stockService: StockService,
     private groupsService: GroupsService,
-    private LoanableMaterialsService: LoanableMaterialsService,
-    private StaffService: StaffService,
+    private loanableMaterialsService: LoanableMaterialsService,
+    private staffService: StaffService,
+    private serviceService: ServiceService,
   ) {}
 
   async addStockFromJson(): Promise<Stock[]> {
@@ -34,7 +39,7 @@ export class SeedService {
         needToOrderMore,
       } = stockItem
       s.name = name
-      s.service = service
+      s.serviceId = new ObjectId(service)
       s.description = description
       s.idealStock = idealStock
       s.amountInStock = amountInStock
@@ -66,7 +71,7 @@ export class SeedService {
   }
 
   async deleteAllBirds(): Promise<void> {
-    return this.LoanableMaterialsService.truncate()
+    return this.loanableMaterialsService.truncate()
   }
 
   async addLoanableMaterialsFromJson(): Promise<LoanableMaterial[]> {
@@ -82,7 +87,7 @@ export class SeedService {
       LoanableMaterials.push(lm)
     }
 
-    return this.LoanableMaterialsService.save(LoanableMaterials)
+    return this.loanableMaterialsService.save(LoanableMaterials)
   }
 
   async addStaffFromJson(): Promise<Staff[]> {
@@ -99,10 +104,25 @@ export class SeedService {
       outStaff.push(s)
     }
 
-    return this.StaffService.saveAll(outStaff)
+    return this.staffService.saveAll(outStaff)
   }
 
   async deleteAllStaff(): Promise<void> {
-    return this.StaffService.truncate()
+    return this.staffService.truncate()
+  }
+
+  async addServicesFromJson(): Promise<Service[]> {
+    let outServices: Service[] = []
+    for (let service of services) {
+      const s = new Service()
+      s.name = service.name
+      s.description = service.description
+      outServices.push(s)
+    }
+    return this.serviceService.saveAll(outServices)
+  }
+
+  async deleteAllServices(): Promise<void> {
+    return this.serviceService.truncate()
   }
 }

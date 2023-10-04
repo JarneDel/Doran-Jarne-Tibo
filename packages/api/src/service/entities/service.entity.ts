@@ -1,5 +1,6 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql'
-import { Column, Entity, ObjectIdColumn, OneToOne } from 'typeorm'
+import { Field, ID, ObjectType } from '@nestjs/graphql'
+import { Column, Entity, ObjectIdColumn } from 'typeorm'
+import { Staff } from '../../staff/entities/staff.entity'
 
 @Entity()
 @ObjectType()
@@ -16,5 +17,11 @@ export class Service {
   @Column()
   description: string
 
-  // linked to rooms
+  // todo: linked to rooms
+
+  @Field()
+  staff: Staff
+
+  @Column()
+  staffId: string
 }

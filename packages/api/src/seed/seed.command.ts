@@ -27,6 +27,8 @@ export class DatabaseSeedCommand {
     console.log('Started seeding staff')
     const staff = await this.seedService.addStaffFromJson()
     console.log(staff.length, ' staff were added')
+    const services = await this.seedService.addServicesFromJson()
+    console.info(services.length, 'services were added')
   }
 
   @Command({
@@ -48,6 +50,8 @@ export class DatabaseSeedCommand {
     console.info('Removed loanableMaterials')
     await this.seedService.deleteAllStaff()
     console.log('removed all staff')
+    await this.seedService.deleteAllServices()
+    console.info('Removed all services')
   }
 
   @Command({
@@ -129,5 +133,25 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting staff')
     await this.seedService.deleteAllStaff()
     console.info('Removed staff')
+  }
+
+  @Command({
+    command: 'seed:reset:service',
+    describe: 'Delete all data from the service table',
+  })
+  async deleteServices() {
+    console.info('Deleting all services')
+    await this.seedService.deleteAllServices()
+    console.log('removed services')
+  }
+
+  @Command({
+    command: 'seed:database:service',
+    describe: 'Seed services from json file',
+  })
+  async seedServices() {
+    console.log('About to seed services to database')
+    const services = await this.seedService.addServicesFromJson()
+    console.info(`added ${services.length} services to the database`)
   }
 }

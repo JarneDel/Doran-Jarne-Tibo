@@ -1,5 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
 import { Column, Entity, ObjectIdColumn } from 'typeorm'
+import { Service } from '../../service/entities/service.entity'
+import { ObjectId } from 'mongodb'
 
 @Entity()
 @ObjectType()
@@ -24,9 +26,11 @@ export class Stock {
   @Field() // Graphql
   amountInStock: number
 
+  @Field(() => Service)
+  service: Service
+
   @Column()
-  @Field() // Graphql
-  service: string
+  serviceId: ObjectId
 
   @Column()
   @Field()

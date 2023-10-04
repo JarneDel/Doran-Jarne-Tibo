@@ -1,26 +1,48 @@
-import { Injectable } from '@nestjs/common';
-import { CreateServiceInput } from './dto/create-service.input';
-import { UpdateServiceInput } from './dto/update-service.input';
+import { Injectable } from '@nestjs/common'
+import { CreateServiceInput } from './dto/create-service.input'
+import { UpdateServiceInput } from './dto/update-service.input'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Service } from './entities/service.entity'
+import { Repository } from 'typeorm'
+import { ObjectId } from 'mongodb'
 
 @Injectable()
 export class ServiceService {
+  constructor(
+    @InjectRepository(Service)
+    private readonly serviceRepository: Repository<Service>,
+  ) {}
+
   create(createServiceInput: CreateServiceInput) {
-    return 'This action adds a new service';
+    const s = new Service()
+    s.description = createServiceInput.description
+    s.name = createServiceInput.name
+    return this.serviceRepository.save(s)
   }
 
   findAll() {
-    return `This action returns all service`;
+    return this.serviceRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} service`;
+  findOne(id: string) {
+    //@ts-ignore
+    return this.serviceRepository.findOneByOrFail({ _id: new ObjectId(id) })
   }
 
-  update(id: number, updateServiceInput: UpdateServiceInput) {
-    return `This action updates a #${id} service`;
+  update(id: string, updateServiceInput: UpdateServiceInput) {
+    //@ts-ignore
+    return this.serviceRepository.findOneByOrFail({ _id: new ObjectId(id) })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} service`;
+  remove(id: string) {
+    return this.serviceRepository.delete(id)
+  }
+
+  saveAll(services: Service[]): Promise<Service[]> {
+    return this.serviceRepository.save(services)
+  }
+
+  truncate(): Promise<void> {
+    return this.serviceRepository.clear()
   }
 }
