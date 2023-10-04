@@ -1,14 +1,52 @@
 [
-    {
-        "name": "Bulbasaur"
-    },
-    {
-        "name": "Ivysaur"
-    },
-    {
-        "name": "Venusaur"
-    },
-    {
-        "name": "Charmander"
-    }
+  {
+    "name": "Acme Inc.",
+    "btw_number": "BE123456789",
+    "score": 85
+  },
+  {
+    "name": "Tech Solutions Ltd.",
+    "btw_number": "GB987654321",
+    "score": 92
+  },
+  {
+    "name": "Global Services Corp.",
+    "btw_number": "US555555555",
+    "score": 78
+  },
+  {
+    "name": "Innovative Ventures",
+    "btw_number": "DE987654321",
+    "score": 88
+  },
+  {
+    "name": "ABC Enterprises",
+    "btw_number": "FR123456789",
+    "score": 75
+  },
+  {
+    "name": "EcoTech Solutions",
+    "btw_number": "CA987654321",
+    "score": 90
+  },
+  {
+    "name": "Data Innovations LLC",
+    "btw_number": "AU123456789",
+    "score": 82
+  },
+  {
+    "name": "Digital Creations",
+    "btw_number": "NL987654321",
+    "score": 91
+  },
+  {
+    "name": "Sunset Enterprises",
+    "btw_number": "IT123456789",
+    "score": 79
+  },
+  {
+    "name": "Smart Solutions Co.",
+    "btw_number": "JP987654321",
+    "score": 87
+  }
 ]

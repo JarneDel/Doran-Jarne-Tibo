@@ -7,6 +7,9 @@ import UseFirebase from '@/composables/useFirebase'
 interface Group {
   groups:[{ _id: string; name: string }]
 }
+interface Stock {
+  stock:[{ _id: string; name: string; }]
+}
 
 export default defineComponent({
   setup() {
@@ -18,7 +21,7 @@ export default defineComponent({
     }
     getIdToken()
     const { loading, result, error } = useQuery<Group>(ALL_GROUPS)
-    const {loading:loadingStock, result:resultStock, error:errorStock} = useQuery<Group>(ALL_STOCK)
+    const {loading:loadingStock, result:resultStock, error:errorStock} = useQuery<Stock>(ALL_STOCK)
     return {
       idToken,
       result,
