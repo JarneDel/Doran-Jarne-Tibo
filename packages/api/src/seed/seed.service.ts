@@ -58,6 +58,8 @@ export class SeedService {
     for (let group of groups) {
       const g = new Group()
       g.name = group.name
+      g.btw_number = group.btw_number
+      g.score = group.score
 
       theGroups.push(g)
     }
