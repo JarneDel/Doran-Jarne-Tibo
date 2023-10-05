@@ -1,9 +1,14 @@
+// Common
 import { Injectable } from '@nestjs/common'
+// Input
 import { CreateRoomInput } from './dto/create-room.input'
 import { UpdateRoomInput } from './dto/update-room.input'
-import { InjectRepository } from '@nestjs/typeorm'
+// MongoDB
 import { ObjectId } from 'mongodb'
+// TypeOrm
 import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+// Entities
 import { Room } from './entities/room.entity'
 
 @Injectable()
@@ -27,10 +32,10 @@ export class RoomService {
   }
 
   findOneById(id: string): Promise<Room> {
-    const obj = new ObjectId(id);
-    console.log(obj);
+    const obj = new ObjectId(id)
+    console.log(obj)
     // @ts-ignore
-    return this.roomRepository.findOne({ _id: new ObjectId(id) });
+    return this.roomRepository.findOne({ _id: new ObjectId(id) })
   }
 
   update(id: string, updateRoomInput: UpdateRoomInput) {

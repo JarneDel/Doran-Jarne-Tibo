@@ -1,9 +1,15 @@
+// GraphQL
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
+// Services
 import { RoomService } from './room.service'
-import { Room } from './entities/room.entity'
+// Inputs
 import { CreateRoomInput } from './dto/create-room.input'
 import { UpdateRoomInput } from './dto/update-room.input'
+// Entities
+import { Room } from './entities/room.entity'
+// Common
 import { UseGuards } from '@nestjs/common'
+// Firebase
 import { FirebaseGuard } from '../authentication/guards/firebase.guard'
 import { UserRecord } from 'firebase-admin/auth'
 import { FirebaseUser } from '../authentication/decorators/user.decorator'
