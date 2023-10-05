@@ -10,8 +10,8 @@ export default {
 </script>
 
 <template>
-  <div class="flex w-full">
-    <div class="h-screen w-1/4 rounded-r-2xl bg-slate-200">
+  <div class="flex w-full bg-primary-surface">
+    <div class="h-screen w-1/4 rounded-r-xl bg-white">
       <div class="m-8">
         <div class="flex gap-4">
           <Logo />
@@ -25,7 +25,7 @@ export default {
         </div>
       </div>
     </div>
-    <div class="w-3/4">
+    <div class="w-3/4 ">
       <RouterView />
     </div>
   </div>

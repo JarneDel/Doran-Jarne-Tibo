@@ -10,3 +10,13 @@ export const ALL_GROUPS = gql`
     }
   }
 `
+export const UPDATE_SCORE = gql`
+  mutation updateScore($id: String!, $amount: Int!) {
+    updateScore(id: $id, amount: $amount) {
+      _id
+      name
+      btw_number
+      score
+    }
+  }
+`
