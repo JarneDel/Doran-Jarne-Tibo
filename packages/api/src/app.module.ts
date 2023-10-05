@@ -10,6 +10,8 @@ import { GroupsModule } from './groups/groups.module'
 import { LoanableMaterialsModule } from './loanable-materials/loanable-materials.module'
 import { AuthenticationModule } from './authentication/authentication.module'
 import { ConfigModule } from '@nestjs/config'
+import { RoomModule } from './room/room.module';
+import { SportModule } from './sport/sport.module';
 
 
 @Module({
@@ -35,6 +37,8 @@ import { ConfigModule } from '@nestjs/config'
     LoanableMaterialsModule,
     SeedModule,
     AuthenticationModule,
+    RoomModule,
+    SportModule,
   ],
   controllers: [AppController],
   providers: [AppService],

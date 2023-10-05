@@ -12,17 +12,21 @@ export class DatabaseSeedCommand {
   })
   async seedAll() {
     //Stocks
-    console.info('🗃️ Start seeding of stocks')
+    console.info('🌱 Start seeding of stocks')
     const stocks = await this.seedService.addStockFromJson()
     console.info(` ${stocks.length} pieces of stock were added`)
     //Groups
-    console.info('Start seeding of groups')
+    console.info('🌱 Start seeding of groups')
     const groups = await this.seedService.addGroupsFromJson()
     console.info(`${groups.length} groups are added`)
     //LoanableMaterials
-    console.info('Start seeding of loanableMaterials')
+    console.info('🌱 Start seeding of loanableMaterials')
     const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
+    //Rooms
+    console.info('🌱 Start seeding of rooms')
+    const rooms = await this.seedService.addRoomsFromJson()
+    console.info(`${rooms.length} rooms are added`)
   }
 
   @Command({
@@ -42,6 +46,10 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting loanableMaterials')
     await this.seedService.deleteAllBirds()
     console.info('Removed loanableMaterials')
+    //Rooms
+    console.info('🔪 Start deleting rooms')
+    await this.seedService.deleteAllRooms()
+    console.info('Removed rooms')
   }
 
   @Command({
@@ -49,7 +57,7 @@ export class DatabaseSeedCommand {
     describe: 'Seed the database with stocks',
   })
   async seedStocks() {
-    console.info('🗃️ Start seeding of stocks')
+    console.info('🌱 Start seeding of stocks')
     const stocks = await this.seedService.addStockFromJson()
     console.info(` ${stocks.length} pieces of stock were added`)
   }
@@ -69,7 +77,7 @@ export class DatabaseSeedCommand {
     describe: 'Seed the database with groups',
   })
   async seedGroups() {
-    console.info('Start seeding of groups')
+    console.info('🌱 Start seeding of groups')
     const groups = await this.seedService.addGroupsFromJson()
     console.info(`${groups.length} groups are added`)
   }
@@ -89,7 +97,7 @@ export class DatabaseSeedCommand {
     describe: 'Seed the database with loanableMaterials',
   })
   async seedLoanableMaterials() {
-    console.info('Start seeding of loanableMaterials')
+    console.info('🌱 Start seeding of loanableMaterials')
     const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
   }
@@ -102,5 +110,25 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting loanableMaterials')
     await this.seedService.deleteAllBirds()
     console.info('Removed loanableMaterials')
+  }
+
+  @Command({
+    command: 'seed:database:rooms',
+    describe: 'Seed the database with rooms',
+  })
+  async seedRooms() {
+    console.info('🌱 Start seeding of rooms')
+    const rooms = await this.seedService.addRoomsFromJson()
+    console.info(`${rooms.length} rooms are added`)
+  }
+
+  @Command({
+    command: 'seed:reset:rooms',
+    describe: 'Seed the database with rooms',
+  })
+  async deleteRooms() {
+    console.info('🔪 Start deleting rooms')
+    await this.seedService.deleteAllRooms()
+    console.info('Removed rooms')
   }
 }
