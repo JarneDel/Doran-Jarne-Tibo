@@ -28,18 +28,20 @@ export class SeedService {
 
   async addStockFromJson(): Promise<Stock[]> {
     let outStocks: Stock[] = []
+
+    const services = await this.serviceService.findAll()
+    if (services.length === 0) {
+      console.log('No services found, proceeding without them')
+    }
     for (let stockItem of stock) {
       const s = new Stock()
-      const {
-        name,
-        service,
-        description,
-        idealStock,
-        amountInStock,
-        needToOrderMore,
-      } = stockItem
+      const { name, description, idealStock, amountInStock, needToOrderMore } =
+        stockItem
+
+      const service = services[Math.floor(Math.random() * services.length)]
+      s.serviceId = new ObjectId(service.id)
+
       s.name = name
-      s.serviceId = new ObjectId(service)
       s.description = description
       s.idealStock = idealStock
       s.amountInStock = amountInStock
@@ -112,11 +114,17 @@ export class SeedService {
   }
 
   async addServicesFromJson(): Promise<Service[]> {
+    const staff = await this.staffService.findAll()
+    if (staff.length === 0) {
+      throw new Error('No staff found, please seed staff first')
+    }
+
     let outServices: Service[] = []
     for (let service of services) {
       const s = new Service()
       s.name = service.name
       s.description = service.description
+      s.staffId = staff[Math.floor(Math.random() * staff.length)].id
       outServices.push(s)
     }
     return this.serviceService.saveAll(outServices)

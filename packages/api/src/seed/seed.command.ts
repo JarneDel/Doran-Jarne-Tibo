@@ -12,9 +12,7 @@ export class DatabaseSeedCommand {
   })
   async seedAll() {
     //Stocks
-    console.info('🗃️ Start seeding of stocks')
-    const stocks = await this.seedService.addStockFromJson()
-    console.info(` ${stocks.length} pieces of stock were added`)
+
     //Groups
     console.info('Start seeding of groups')
     const groups = await this.seedService.addGroupsFromJson()
@@ -29,6 +27,11 @@ export class DatabaseSeedCommand {
     console.log(staff.length, ' staff were added')
     const services = await this.seedService.addServicesFromJson()
     console.info(services.length, 'services were added')
+
+    // stocks have to be after services because of the foreign key
+    console.info('🗃️ Start seeding of stocks')
+    const stocks = await this.seedService.addStockFromJson()
+    console.info(` ${stocks.length} pieces of stock were added`)
   }
 
   @Command({

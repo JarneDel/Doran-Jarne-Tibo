@@ -24,14 +24,16 @@ export class ServiceService {
     return this.serviceRepository.find()
   }
 
-  findOne(id: string) {
+  findOne(id: string | ObjectId) {
+    if (typeof id === 'string') id = new ObjectId(id)
     //@ts-ignore
-    return this.serviceRepository.findOneByOrFail({ _id: new ObjectId(id) })
+    return this.serviceRepository.findOneByOrFail({ _id: id })
   }
 
   update(id: string, updateServiceInput: UpdateServiceInput) {
     //@ts-ignore
     return this.serviceRepository.findOneByOrFail({ _id: new ObjectId(id) })
+    // todo
   }
 
   remove(id: string) {

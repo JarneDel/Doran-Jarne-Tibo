@@ -51,6 +51,6 @@ export class ServiceResolver {
 
   @ResolveField()
   staff(@Parent() service: Service): Promise<Staff> {
-    return this.staffService.findOne(service.staffId.toString())
+    return this.staffService.findOne(service.staffId)
   }
 }

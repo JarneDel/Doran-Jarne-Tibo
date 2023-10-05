@@ -53,6 +53,6 @@ export class StockResolver {
 
   @ResolveField()
   service(@Parent() stock: Stock): Promise<Service> {
-    return this.serviceService.findOne(stock.serviceId.toString())
+    return this.serviceService.findOne(stock.serviceId)
   }
 }
