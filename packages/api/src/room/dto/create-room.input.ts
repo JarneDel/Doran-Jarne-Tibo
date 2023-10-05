@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql'
-import { IsString, IsNotEmpty, MinLength, Max, IsIn } from 'class-validator'
+import { IsString, IsNotEmpty, MinLength, Max, IsIn, IsPositive, Min } from 'class-validator'
 
 const typeList = [
   'Sportzaal',
@@ -13,7 +13,7 @@ const typeList = [
 export class CreateRoomInput {
   @IsString()
   @IsNotEmpty()
-  @MinLength(3)
+  @MinLength(4)
   @Field() // Graphql
   name: string
 
@@ -21,11 +21,13 @@ export class CreateRoomInput {
   sports: string[]
 
   @Max(1000)
+  @Min(0)
+  @IsPositive()
   @Field({ defaultValue: 0 }) // Graphql
   pricePerHour: number
 
   @IsNotEmpty()
   @IsIn(typeList)
-  @Field({ defaultValue: 'Sport zaal.' }) // Graphql
+  @Field({ defaultValue: 'Sportzaal' }) // Graphql
   type: string
 }
