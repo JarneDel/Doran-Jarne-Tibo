@@ -3,9 +3,11 @@ import { ServiceService } from './service.service'
 import { ServiceResolver } from './service.resolver'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Service } from './entities/service.entity'
+import { StaffService } from '../staff/staff.service'
+import { StaffModule } from '../staff/staff.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Service])],
+  imports: [TypeOrmModule.forFeature([Service]), StaffModule],
   providers: [ServiceResolver, ServiceService],
   exports: [ServiceService],
 })
