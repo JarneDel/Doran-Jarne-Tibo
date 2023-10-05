@@ -118,13 +118,16 @@ export class SeedService {
     if (staff.length === 0) {
       throw new Error('No staff found, please seed staff first')
     }
-
     let outServices: Service[] = []
     for (let service of services) {
       const s = new Service()
       s.name = service.name
       s.description = service.description
-      s.staffId = staff[Math.floor(Math.random() * staff.length)].id
+      s.staffId = [
+        new ObjectId(
+          staff[Math.floor(Math.random() * staff.length)].id,
+        ).toString(),
+      ]
       outServices.push(s)
     }
     return this.serviceService.saveAll(outServices)

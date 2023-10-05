@@ -12,6 +12,7 @@ import { CreateServiceInput } from './dto/create-service.input'
 import { UpdateServiceInput } from './dto/update-service.input'
 import { Staff } from '../staff/entities/staff.entity'
 import { StaffService } from '../staff/staff.service'
+import { GraphQLError } from 'graphql/error'
 
 @Resolver(() => Service)
 export class ServiceResolver {
@@ -50,7 +51,10 @@ export class ServiceResolver {
   }
 
   @ResolveField()
-  staff(@Parent() service: Service): Promise<Staff> {
-    return this.staffService.findOne(service.staffId)
+  staff(@Parent() service: Service): Promise<Staff[]> {
+    const { staffId: staffIds } = service
+    if (!staffIds) throw new GraphQLError(`No staffId found ${service}`)
+
+    return this.staffService.find(staffIds)
   }
 }

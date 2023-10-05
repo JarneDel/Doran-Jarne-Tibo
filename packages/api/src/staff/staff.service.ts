@@ -4,6 +4,7 @@ import { UpdateStaffInput } from './dto/update-staff.input'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Staff } from './entities/staff.entity'
 import { Repository } from 'typeorm'
+import { ObjectId } from 'mongodb'
 
 @Injectable()
 export class StaffService {
@@ -31,6 +32,13 @@ export class StaffService {
     return this.staffRepository.findOneByOrFail({
       //@ts-ignore
       _id: new Object(id),
+    })
+  }
+
+  find(ids: string[]): Promise<Staff[]> {
+    return this.staffRepository.find({
+      //@ts-ignore
+      _id: { $in: ids.map(id => new ObjectId(id)) },
     })
   }
 

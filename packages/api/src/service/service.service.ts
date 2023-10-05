@@ -30,6 +30,13 @@ export class ServiceService {
     return this.serviceRepository.findOneByOrFail({ _id: id })
   }
 
+  find(ids: string[]): Promise<Service[]> {
+    return this.serviceRepository.find({
+      //@ts-ignore
+      _id: { $in: ids.map(id => new ObjectId(id)) },
+    })
+  }
+
   update(id: string, updateServiceInput: UpdateServiceInput) {
     //@ts-ignore
     return this.serviceRepository.findOneByOrFail({ _id: new ObjectId(id) })

@@ -19,9 +19,9 @@ export class Service {
 
   // todo: linked to rooms
 
-  @Field()
-  staff: Staff
+  @Field(() => [Staff])
+  staff: Staff[]
 
-  @Column()
-  staffId: string
+  @Column({ type: 'array', default: [] })
+  staffId: string[]
 }
