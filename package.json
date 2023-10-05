@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "pwa": "npm run dev --workspace=pwa",
-    "api" : "npm run dev --workspace=api"
+    "api": "npm run dev --workspace=api"
   },
   "repository": {
     "type": "git",
@@ -35,5 +35,8 @@
   },
   "devDependencies": {
     "prettier": "^3.0.3"
+  },
+  "dependencies": {
+    "lucide-vue-next": "^0.284.0"
   }
 }
