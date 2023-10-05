@@ -5,16 +5,19 @@ import { Stock } from '../stock/entities/stock.entity'
 import { Room } from 'src/room/entities/room.entity'
 import { Group } from 'src/groups/entities/group.entity'
 import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
+import { Sport } from 'src/sport/entities/sport.entity'
 // Services
 import { StockService } from '../stock/stock.service'
 import { RoomService } from 'src/room/room.service'
 import { GroupsService } from 'src/groups/groups.service'
 import { LoanableMaterialsService } from 'src/loanable-materials/loanable-materials.service'
+import { SportService } from 'src/sport/sport.service'
 // Example data
 import * as stock from './data/stock.json' // set  "resolveJsonModule": true in tsconfig.json
 import * as groups from './data/groups.json'
 import * as loanableMaterials from './data/loanableMaterials.json'
 import * as rooms from './data/rooms.json'
+import * as sports from './data/sports.json'
 
 @Injectable()
 export class SeedService {
@@ -22,7 +25,8 @@ export class SeedService {
     private stockService: StockService,
     private groupsService: GroupsService,
     private loanableMaterialsService: LoanableMaterialsService,
-    private roomService: RoomService
+    private roomService: RoomService,
+    private sportService: SportService
   ) {}
 
   async addStockFromJson(): Promise<Stock[]> {
@@ -107,5 +111,20 @@ export class SeedService {
 
   async deleteAllRooms(): Promise<void> {
     return this.roomService.truncate()
+  }
+
+  async addSportsFromJson(): Promise<Sport[]> {
+    let Sports: Sport[] = []
+    for (let sport of sports) {
+      const s = new Room()
+      s.name = sport.name
+      Sports.push(s)
+    }
+
+    return this.sportService.save(Sports)
+  }
+
+  async deleteAllSports(): Promise<void> {
+    return this.sportService.truncate()
   }
 }

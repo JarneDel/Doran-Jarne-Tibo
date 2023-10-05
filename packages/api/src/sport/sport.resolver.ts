@@ -42,7 +42,8 @@ export class SportResolver {
   }
 
   @Mutation(() => Sport)
-  removeSportById(@Args('id', { type: () => String }) id: string) {
-    return this.sportService.remove(id)
+  async removeSportById(@Args('id', { type: () => String }) id: string) {
+    this.sportService.remove(id)
+    return 'Deleted sport with id: ' + id
   }
 }
