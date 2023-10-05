@@ -1,10 +1,12 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 
 export const ALL_GROUPS = gql`
   query {
     groups {
       _id
       name
+      btw_number
+      score
     }
   }
-  `
+`
