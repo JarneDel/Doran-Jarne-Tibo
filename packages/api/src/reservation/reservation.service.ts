@@ -12,22 +12,32 @@ export class ReservationService {
     private readonly reservationRepository: Repository<Reservation>,
   ) {}
   create(createReservationInput: CreateReservationInput) {
-    return 'This action adds a new reservation';
+    const r = new Reservation();
+    r.date = createReservationInput.date;
+    r.start_time = createReservationInput.start_time;
+    r.end_time = createReservationInput.end_time;
+    r.group_id = createReservationInput.group_id;
+    r.price = createReservationInput.price;
+    r.rooms = createReservationInput.rooms;
+    r.reserved_materials = createReservationInput.reserved_materials;
+
+
+    return this.reservationRepository.save(r);
   }
 
   findAll() {
     return this.reservationRepository.find();
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} reservation`;
   }
 
-  update(id: number, updateReservationInput: UpdateReservationInput) {
+  update(id: string, updateReservationInput: UpdateReservationInput) {
     return `This action updates a #${id} reservation`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} reservation`;
   }
 }

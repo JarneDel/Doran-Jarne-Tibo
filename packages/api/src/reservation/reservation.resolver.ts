@@ -19,7 +19,7 @@ export class ReservationResolver {
   }
 
   @Query(() => Reservation, { name: 'reservation' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => String }) id: string) {
     return this.reservationService.findOne(id);
   }
 
@@ -29,7 +29,7 @@ export class ReservationResolver {
   }
 
   @Mutation(() => Reservation)
-  removeReservation(@Args('id', { type: () => Int }) id: number) {
+  removeReservation(@Args('id', { type: () => String }) id: string) {
     return this.reservationService.remove(id);
   }
 }
