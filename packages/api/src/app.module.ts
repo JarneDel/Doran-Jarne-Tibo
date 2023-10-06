@@ -12,6 +12,7 @@ import { AuthenticationModule } from './authentication/authentication.module'
 import { ConfigModule } from '@nestjs/config'
 import { RoomModule } from './room/room.module';
 import { SportModule } from './sport/sport.module';
+import { ReservationModule } from './reservation/reservation.module';
 
 
 @Module({
@@ -39,6 +40,7 @@ import { SportModule } from './sport/sport.module';
     AuthenticationModule,
     RoomModule,
     SportModule,
+    ReservationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
