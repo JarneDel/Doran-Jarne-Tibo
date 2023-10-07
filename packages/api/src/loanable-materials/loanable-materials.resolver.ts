@@ -1,8 +1,18 @@
+// Common
+import { UseGuards } from '@nestjs/common'
+// Graphql
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
+// Services
 import { LoanableMaterialsService } from './loanable-materials.service'
+// Entities
 import { LoanableMaterial } from './entities/loanable-material.entity'
+// Inputs
 import { CreateLoanableMaterialInput } from './dto/create-loanable-material.input'
 import { UpdateLoanableMaterialInput } from './dto/update-loanable-material.input'
+// Auth
+import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
+import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
+import { UserRecord } from 'firebase-admin/auth'
 
 @Resolver(() => LoanableMaterial)
 export class LoanableMaterialsResolver {
@@ -18,6 +28,7 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.create(createLoanableMaterialInput)
   }
 
+  @UseGuards(FirebaseGuard)
   @Query(() => [LoanableMaterial], {
     name: 'GetAllloanableMaterials',
     nullable: true,
@@ -26,6 +37,7 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.findAll()
   }
 
+  @UseGuards(FirebaseGuard)
   @Query(() => LoanableMaterial, {
     name: 'GetloanableMaterialById',
     nullable: true,
@@ -34,6 +46,7 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.findOneById(id)
   }
 
+  @UseGuards(FirebaseGuard)
   @Mutation(() => LoanableMaterial)
   removeLoanableMaterialById(@Args('id', { type: () => String }) id: number) {
     this.loanableMaterialsService.remove(id)
