@@ -1,13 +1,15 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import AppHeader from '@/components/AppHeader.vue';
+import { defineComponent } from 'vue';
 
-export default defineComponent({})
+export default defineComponent({ components: { AppHeader } });
 </script>
 
 <template>
-
+  <div>
+    <AppHeader />
+    <RouterView />
+  </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
