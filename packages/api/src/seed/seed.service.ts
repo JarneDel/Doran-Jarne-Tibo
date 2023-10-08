@@ -1,20 +1,35 @@
+// external
 import { Injectable } from '@nestjs/common'
+import { ObjectId } from 'mongodb'
+
+// entities
 import { Stock } from '../stock/entities/stock.entity'
-import { StockService } from '../stock/stock.service'
+import { Group } from 'src/groups/entities/group.entity'
+import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
+import { Room } from 'src/room/entities/room.entity'
+import { Sport } from 'src/sport/entities/sport.entity'
+import { Staff } from '../staff/entities/staff.entity'
+import { Service } from '../service/entities/service.entity'
+
+// json: set  "resolveJsonModule": true in tsconfig.json
 import * as stock from './data/stock.json'
-import * as groups from './data/groups.json' // set  "resolveJsonModule": true in tsconfig.json
+import * as groups from './data/groups.json'
 import * as loanableMaterials from './data/loanableMaterials.json'
+import * as rooms from './data/rooms.json'
+import * as sports from './data/sports.json'
 import * as staff from './data/staff.json'
 import * as services from './data/services.json'
-import { Group } from 'src/groups/entities/group.entity'
+
+// services
+import { StockService } from '../stock/stock.service'
 import { GroupsService } from 'src/groups/groups.service'
-import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
 import { LoanableMaterialsService } from 'src/loanable-materials/loanable-materials.service'
-import { Staff } from 'src/staff/entities/staff.entity'
+import { RoomService } from 'src/room/room.service'
+import { SportService } from 'src/sport/sport.service'
 import { StaffService } from 'src/staff/staff.service'
-import { ObjectId } from 'mongodb'
-import { Service } from '../service/entities/service.entity'
 import { ServiceService } from '../service/service.service'
+
+
 
 @Injectable()
 export class SeedService {
@@ -22,9 +37,12 @@ export class SeedService {
     private stockService: StockService,
     private groupsService: GroupsService,
     private loanableMaterialsService: LoanableMaterialsService,
+    private roomService: RoomService,
+    private sportService: SportService,
     private staffService: StaffService,
     private serviceService: ServiceService,
-  ) {}
+  ) {
+  }
 
   async addStockFromJson(): Promise<Stock[]> {
     let outStocks: Stock[] = []
@@ -61,6 +79,8 @@ export class SeedService {
     for (let group of groups) {
       const g = new Group()
       g.name = group.name
+      g.btw_number = group.btw_number
+      g.score = group.score
 
       theGroups.push(g)
     }
@@ -88,8 +108,40 @@ export class SeedService {
 
       LoanableMaterials.push(lm)
     }
-
     return this.loanableMaterialsService.save(LoanableMaterials)
+  }
+
+  async addRoomsFromJson(): Promise<Room[]> {
+    let Rooms: Room[] = []
+    for (let room of rooms) {
+      const r = new Room()
+      r.name = room.name
+      r.pricePerHour = room.pricePerHour
+      r.sports = room.sports
+      r.type = room.type
+      Rooms.push(r)
+    }
+
+    return this.roomService.save(Rooms)
+  }
+
+  async deleteAllRooms(): Promise<void> {
+    return this.roomService.truncate()
+  }
+
+  async addSportsFromJson(): Promise<Sport[]> {
+    let Sports: Sport[] = []
+    for (let sport of sports) {
+      const s = new Room()
+      s.name = sport.name
+      Sports.push(s)
+    }
+
+    return this.sportService.save(Sports)
+  }
+
+  async deleteAllSports(): Promise<void> {
+    return this.sportService.truncate()
   }
 
   async addStaffFromJson(): Promise<Staff[]> {

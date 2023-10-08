@@ -37,6 +37,16 @@ export const router = createRouter({
       },
     },
     {
+      path:'/admin',
+      component: () => import('@/components/wrapper/adminWrapper.vue'),
+      children: [
+        {
+          path: 'groups',
+          component: () => import('@/views/admin/Groups.vue'),
+        }
+      ]
+    },
+    {
       path: '/administration',
       component: () => import('@/views/administration/Wrapper.vue'),
       children: [
