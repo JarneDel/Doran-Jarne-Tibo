@@ -13,12 +13,15 @@ import { UpdateServiceInput } from './dto/update-service.input'
 import { Staff } from '../staff/entities/staff.entity'
 import { StaffService } from '../staff/staff.service'
 import { GraphQLError } from 'graphql/error'
+import { RoomService } from '../room/room.service'
+import { Room } from '../room/entities/room.entity'
 
 @Resolver(() => Service)
 export class ServiceResolver {
   constructor(
     private readonly serviceService: ServiceService,
     private readonly staffService: StaffService,
+    private readonly roomService: RoomService,
   ) {}
 
   @Mutation(() => Service)
@@ -56,5 +59,13 @@ export class ServiceResolver {
     if (!staffIds) throw new GraphQLError(`No staffId found ${service}`)
 
     return this.staffService.find(staffIds)
+  }
+
+  @ResolveField()
+  async rooms(@Parent() service: Service): Promise<Room[]> {
+    const { roomId: roomIds } = service
+    if (!roomIds) throw new GraphQLError(`No roomId found ${service}`)
+
+    return this.roomService.findByIds(roomIds)
   }
 }

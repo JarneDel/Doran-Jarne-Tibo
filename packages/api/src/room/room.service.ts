@@ -15,8 +15,9 @@ import { Room } from './entities/room.entity'
 export class RoomService {
   constructor(
     @InjectRepository(Room)
-    private readonly roomRepository: Repository<Room>
+    private readonly roomRepository: Repository<Room>,
   ) {}
+
   create(createRoomInput: CreateRoomInput) {
     const r = new Room()
     const { name, sports, pricePerHour, type } = createRoomInput
@@ -29,6 +30,13 @@ export class RoomService {
 
   findAll() {
     return this.roomRepository.find()
+  }
+
+  findByIds(ids: string[]): Promise<Room[]> {
+    return this.roomRepository.find({
+      // @ts-ignore
+      _id: { $in: ids.map(id => new ObjectId(id)) },
+    })
   }
 
   findOneById(id: string): Promise<Room> {
@@ -50,6 +58,7 @@ export class RoomService {
   save(roomItems: Room[]): Promise<Room[]> {
     return this.roomRepository.save(roomItems)
   }
+
   truncate(): Promise<void> {
     return this.roomRepository.clear()
   }
