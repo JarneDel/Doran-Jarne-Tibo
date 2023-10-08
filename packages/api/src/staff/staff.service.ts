@@ -14,6 +14,7 @@ export class StaffService {
   ) {}
 
   create(createStaffInput: CreateStaffInput) {
+    // todo: validate input && check if staff already exists
     const s = new Staff()
     s.firstName = createStaffInput.firstName
     s.lastName = createStaffInput.lastName
