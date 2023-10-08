@@ -1,23 +1,35 @@
-// Nestjs
+// external
 import { Injectable } from '@nestjs/common'
-// Entity's
+import { ObjectId } from 'mongodb'
+
+// entities
 import { Stock } from '../stock/entities/stock.entity'
-import { Room } from 'src/room/entities/room.entity'
 import { Group } from 'src/groups/entities/group.entity'
 import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
+import { Room } from 'src/room/entities/room.entity'
 import { Sport } from 'src/sport/entities/sport.entity'
-// Services
-import { StockService } from '../stock/stock.service'
-import { RoomService } from 'src/room/room.service'
-import { GroupsService } from 'src/groups/groups.service'
-import { LoanableMaterialsService } from 'src/loanable-materials/loanable-materials.service'
-import { SportService } from 'src/sport/sport.service'
-// Example data
-import * as stock from './data/stock.json' // set  "resolveJsonModule": true in tsconfig.json
+import { Staff } from '../staff/entities/staff.entity'
+import { Service } from '../service/entities/service.entity'
+
+// json: set  "resolveJsonModule": true in tsconfig.json
+import * as stock from './data/stock.json'
 import * as groups from './data/groups.json'
 import * as loanableMaterials from './data/loanableMaterials.json'
 import * as rooms from './data/rooms.json'
 import * as sports from './data/sports.json'
+import * as staff from './data/staff.json'
+import * as services from './data/services.json'
+
+// services
+import { StockService } from '../stock/stock.service'
+import { GroupsService } from 'src/groups/groups.service'
+import { LoanableMaterialsService } from 'src/loanable-materials/loanable-materials.service'
+import { RoomService } from 'src/room/room.service'
+import { SportService } from 'src/sport/sport.service'
+import { StaffService } from 'src/staff/staff.service'
+import { ServiceService } from '../service/service.service'
+
+
 
 @Injectable()
 export class SeedService {
@@ -26,27 +38,32 @@ export class SeedService {
     private groupsService: GroupsService,
     private loanableMaterialsService: LoanableMaterialsService,
     private roomService: RoomService,
-    private sportService: SportService
-  ) {}
+    private sportService: SportService,
+    private staffService: StaffService,
+    private serviceService: ServiceService,
+  ) {
+  }
 
   async addStockFromJson(): Promise<Stock[]> {
     let outStocks: Stock[] = []
+
+    const services = await this.serviceService.findAll()
+    if (services.length === 0) {
+      console.log('No services found, proceeding without them')
+    }
     for (let stockItem of stock) {
       const s = new Stock()
-      const {
-        name,
-        service,
-        description,
-        idealStock,
-        amountInStock,
-        needToOrderMore,
-      } = stockItem
+      const { name, description, idealStock, amountInStock, needToOrderMore } =
+        stockItem
+
+      const service = services[Math.floor(Math.random() * services.length)]
+      s.serviceId = new ObjectId(service.id)
+
       s.name = name
-      s.service = service
       s.description = description
       s.idealStock = idealStock
       s.amountInStock = amountInStock
-      s.needToOrderMore = (needToOrderMore as unknown) as boolean
+      s.needToOrderMore = needToOrderMore as unknown as boolean
       outStocks.push(s)
     }
 
@@ -91,7 +108,6 @@ export class SeedService {
 
       LoanableMaterials.push(lm)
     }
-
     return this.loanableMaterialsService.save(LoanableMaterials)
   }
 
@@ -126,5 +142,50 @@ export class SeedService {
 
   async deleteAllSports(): Promise<void> {
     return this.sportService.truncate()
+  }
+
+  async addStaffFromJson(): Promise<Staff[]> {
+    let outStaff: Staff[] = []
+    for (let staffMember of staff) {
+      const s = new Staff()
+      s.email = staffMember.email
+      s.firstName = staffMember.firstName
+      s.lastName = staffMember.lastName
+      s.phone = staffMember.phone
+      s.holidaysLeft = staffMember.holidaysLeft
+      s.holidayDates = staffMember.holidayDates.map(date => new Date(date))
+
+      outStaff.push(s)
+    }
+
+    return this.staffService.saveAll(outStaff)
+  }
+
+  async deleteAllStaff(): Promise<void> {
+    return this.staffService.truncate()
+  }
+
+  async addServicesFromJson(): Promise<Service[]> {
+    const staff = await this.staffService.findAll()
+    if (staff.length === 0) {
+      throw new Error('No staff found, please seed staff first')
+    }
+    let outServices: Service[] = []
+    for (let service of services) {
+      const s = new Service()
+      s.name = service.name
+      s.description = service.description
+      s.staffId = [
+        new ObjectId(
+          staff[Math.floor(Math.random() * staff.length)].id,
+        ).toString(),
+      ]
+      outServices.push(s)
+    }
+    return this.serviceService.saveAll(outServices)
+  }
+
+  async deleteAllServices(): Promise<void> {
+    return this.serviceService.truncate()
   }
 }

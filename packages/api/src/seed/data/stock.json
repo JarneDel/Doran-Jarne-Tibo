@@ -1,7 +1,7 @@
 [
   {
     "name": "zwembadkuiser",
-    "service": "zwembad",
+    "service": "651d6884d8931778b3de5408",
     "description": "kuist de vloer van het zwembad",
     "needToOrderMore": 0,
     "amountInStock": 1,
@@ -9,7 +9,7 @@
   },
   {
     "name": "zwembadchloor",
-    "service": "zwembad",
+    "service": "651d6884d8931778b3de5408",
     "description": "houdt het zwembadwater proper",
     "needToOrderMore": 1,
     "amountInStock": 0,
@@ -17,7 +17,7 @@
   },
   {
     "name": "tennisracket",
-    "service": "tennis",
+    "service": "651d6884d8931778b3de5409",
     "description": "gebruikt om tennis te spelen",
     "needToOrderMore": 0,
     "amountInStock": 5,
@@ -25,7 +25,7 @@
   },
   {
     "name": "tennisballen",
-    "service": "tennis",
+    "service": "651d6884d8931778b3de5409",
     "description": "gebruikt om tennis te spelen",
     "needToOrderMore": 1,
     "amountInStock": 2,
@@ -33,7 +33,7 @@
   },
   {
     "name": "voetbal",
-    "service": "voetbal",
+    "service": "651d6884d8931778b3de5409",
     "description": "gebruikt om voetbal te spelen",
     "needToOrderMore": 0,
     "amountInStock": 10,
@@ -41,7 +41,7 @@
   },
   {
     "name": "futsalbal",
-    "service": "futsal",
+    "service": "651d6884d8931778b3de5409",
     "description": "gebruikt om futsal te spelen",
     "needToOrderMore": 0,
     "amountInStock": 5,
@@ -49,7 +49,7 @@
   },
   {
     "name": "basketbal",
-    "service": "basketbal",
+    "service": "651d6884d8931778b3de5409",
     "description": "gebruikt om basketbal te spelen",
     "needToOrderMore": 0,
     "amountInStock": 3,
@@ -57,7 +57,7 @@
   },
   {
     "name": "volleybalnet",
-    "service": "volleybal",
+    "service": "651d6884d8931778b3de5409",
     "description": "gebruikt om volleybal te spelen",
     "needToOrderMore": 0,
     "amountInStock": 1,
@@ -65,7 +65,7 @@
   },
   {
     "name": "volleybal",
-    "service": "volleybal",
+    "service": "651d6884d8931778b3de5409",
     "description": "gebruikt om volleybal te spelen",
     "needToOrderMore": 1,
     "amountInStock": 0,
@@ -73,7 +73,7 @@
   },
   {
     "name": "sporthalverlichting",
-    "service": "sporthal",
+    "service": "651d6884d8931778b3de5409",
     "description": "verlicht de sporthal",
     "needToOrderMore": 0,
     "amountInStock": 10,

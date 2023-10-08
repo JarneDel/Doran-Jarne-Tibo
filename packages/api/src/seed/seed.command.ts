@@ -12,23 +12,32 @@ export class DatabaseSeedCommand {
   })
   async seedAll() {
     //Stocks
-    console.info('🌱 Start seeding of stocks')
-    const stocks = await this.seedService.addStockFromJson()
-    console.info(` ${stocks.length} pieces of stock were added`)
+
     //Groups
     console.info('🌱 Start seeding of groups')
     const groups = await this.seedService.addGroupsFromJson()
     console.info(`${groups.length} groups are added`)
     //LoanableMaterials
     console.info('🌱 Start seeding of loanableMaterials')
-    const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
+    const loanableMaterials =
+      await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
+    console.log('🧑🏻‍🤝‍🧑🏼 Started seeding staff')
+    const staff = await this.seedService.addStaffFromJson()
+    console.log(staff.length, ' staff were added')
+    const services = await this.seedService.addServicesFromJson()
+    console.info(services.length, 'services were added')
+
+    // stocks have to be after services because of the foreign key
+    console.info('🗃️ Start seeding of stocks')
+    const stocks = await this.seedService.addStockFromJson()
+    console.info(` ${stocks.length} pieces of stock were added`)
     //Rooms
     console.info('🌱 Start seeding of rooms')
     const rooms = await this.seedService.addRoomsFromJson()
     console.info(`${rooms.length} rooms are added`)
     //Sports
-    console.info('🌱 Start seeding of sports')
+    console.info('⛹️‍♂️ Start seeding of sports')
     const sports = await this.seedService.addSportsFromJson()
     console.info(`${sports.length} sports are added`)
   }
@@ -58,6 +67,10 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting sports')
     await this.seedService.deleteAllSports()
     console.info('Removed sports')
+    await this.seedService.deleteAllStaff()
+    console.log('removed all staff')
+    await this.seedService.deleteAllServices()
+    console.info('Removed all services')
   }
 
   //Stocks
@@ -112,7 +125,8 @@ export class DatabaseSeedCommand {
   })
   async seedLoanableMaterials() {
     console.info('🌱 Start seeding of loanableMaterials')
-    const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
+    const loanableMaterials =
+      await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
   }
   //Delete
@@ -168,5 +182,45 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting sports')
     await this.seedService.deleteAllSports()
     console.info('Removed sports')
+  }
+
+  @Command({
+    command: 'seed:database:staff',
+    describe: 'Seed the database with staff',
+  })
+  async seedStaff() {
+    console.info('Start seeding of staff')
+    const staff = await this.seedService.addStaffFromJson()
+    console.info(`${staff.length} staff are added`)
+  }
+
+  @Command({
+    command: 'seed:reset:staff',
+    describe: 'Delete all data from the staff table',
+  })
+  async deleteStaff() {
+    console.info('🔪 Start deleting staff')
+    await this.seedService.deleteAllStaff()
+    console.info('Removed staff')
+  }
+
+  @Command({
+    command: 'seed:reset:service',
+    describe: 'Delete all data from the service table',
+  })
+  async deleteServices() {
+    console.info('Deleting all services')
+    await this.seedService.deleteAllServices()
+    console.log('removed services')
+  }
+
+  @Command({
+    command: 'seed:database:service',
+    describe: 'Seed services from json file',
+  })
+  async seedServices() {
+    console.log('About to seed services to database')
+    const services = await this.seedService.addServicesFromJson()
+    console.info(`added ${services.length} services to the database`)
   }
 }
