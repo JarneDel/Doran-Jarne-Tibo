@@ -28,7 +28,7 @@ export class Staff {
   @Column()
   holidaysLeft: number
 
-  @Field(() => [Date])
+  @Field(() => [Date], { nullable: true })
   @Column()
   holidayDates: Date[]
 }

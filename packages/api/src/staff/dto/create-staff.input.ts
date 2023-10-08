@@ -17,6 +17,6 @@ export class CreateStaffInput {
   @Field()
   holidaysLeft: number
 
-  @Field(() => [Date])
+  @Field(() => [Date], { nullable: true })
   holidayDates: Date[]
 }
