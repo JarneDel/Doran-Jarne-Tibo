@@ -24,18 +24,20 @@ export class DatabaseSeedCommand {
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
     console.log('🧑🏻‍🤝‍🧑🏼 Started seeding staff')
     const staff = await this.seedService.addStaffFromJson()
-    console.log(staff.length, ' staff were added')
-    const services = await this.seedService.addServicesFromJson()
-    console.info(services.length, 'services were added')
 
-    // stocks have to be after services because of the foreign key
-    console.info('🗃️ Start seeding of stocks')
-    const stocks = await this.seedService.addStockFromJson()
-    console.info(` ${stocks.length} pieces of stock were added`)
     //Rooms
     console.info('🌱 Start seeding of rooms')
     const rooms = await this.seedService.addRoomsFromJson()
     console.info(`${rooms.length} rooms are added`)
+
+    console.log(staff.length, ' staff were added')
+    const services = await this.seedService.addServicesFromJson()
+    console.info(services.length, 'services were added')
+
+    // stocks have to be after services and rooms because of the foreign key
+    console.info('🗃️ Start seeding of stocks')
+    const stocks = await this.seedService.addStockFromJson()
+    console.info(` ${stocks.length} pieces of stock were added`)
     //Sports
     console.info('⛹️‍♂️ Start seeding of sports')
     const sports = await this.seedService.addSportsFromJson()
