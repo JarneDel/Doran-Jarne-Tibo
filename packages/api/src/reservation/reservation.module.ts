@@ -6,8 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Reservation } from './entities/reservation.entity';
 
 @Module({
-  providers: [ReservationResolver, ReservationService],
   imports: [TypeOrmModule.forFeature([Reservation])],
+  providers: [ReservationResolver, ReservationService],
   exports: [ReservationService],
 })
 export class ReservationModule {}
