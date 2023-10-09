@@ -8,7 +8,28 @@ export const ALL_STOCK = gql`
       description
       amountInStock
       idealStock
-      service
+      service {
+        id
+        name
+        description
+      }
     }
   }
 `
+
+export interface AllStock {
+  stock: StockItem[]
+}
+
+export interface StockItem {
+  id: string
+  name: string
+  description: string
+  amountInStock: number
+  idealStock: number
+  service: {
+    id: string
+    name: string
+    description: string
+  }
+}

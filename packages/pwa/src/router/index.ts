@@ -37,14 +37,19 @@ export const router = createRouter({
       },
     },
     {
-      path:'/admin',
+      path: '/admin',
       component: () => import('@/components/wrapper/adminWrapper.vue'),
       children: [
         {
           path: 'groups',
           component: () => import('@/views/admin/Groups.vue'),
-        }
-      ]
+        },
+        {
+          path: 'inventory',
+          component: () =>
+            import('@/views/administration/inventory/Overview.vue'),
+        },
+      ],
     },
     {
       path: '/administration',
@@ -58,9 +63,9 @@ export const router = createRouter({
           path: 'inventory',
           children: [
             {
-              path: '',
+              path: 'overview',
               component: () =>
-                import('@/views/administration/inventory/Inventory.vue'),
+                import('@/views/administration/inventory/Overview.vue'),
             },
           ],
         },
