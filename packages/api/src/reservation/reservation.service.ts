@@ -29,15 +29,15 @@ export class ReservationService {
     return this.reservationRepository.find();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} reservation`;
-  }
+  // findOne(id: string) {
+  //   return `This action returns a #${id} reservation`;
+  // }
 
-  update(id: string, updateReservationInput: UpdateReservationInput) {
-    return `This action updates a #${id} reservation`;
-  }
+  // update(id: string, updateReservationInput: UpdateReservationInput) {
+  //   return `This action updates a #${id} reservation`;
+  // }
 
-  remove(id: string) {
-    return `This action removes a #${id} reservation`;
-  }
+  // remove(id: string) {
+  //   return `This action removes a #${id} reservation`;
+  // }
 }

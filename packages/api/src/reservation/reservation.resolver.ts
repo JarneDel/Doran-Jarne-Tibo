@@ -18,18 +18,18 @@ export class ReservationResolver {
     return this.reservationService.findAll();
   }
 
-  @Query(() => Reservation, { name: 'reservation' })
-  findOne(@Args('id', { type: () => String }) id: string) {
-    return this.reservationService.findOne(id);
-  }
+  // @Query(() => Reservation, { name: 'reservation' })
+  // findOne(@Args('id', { type: () => String }) id: string) {
+  //   return this.reservationService.findOne(id);
+  // }
 
-  @Mutation(() => Reservation)
-  updateReservation(@Args('updateReservationInput') updateReservationInput: UpdateReservationInput) {
-    return this.reservationService.update(updateReservationInput.id, updateReservationInput);
-  }
+  // @Mutation(() => Reservation)
+  // updateReservation(@Args('updateReservationInput') updateReservationInput: UpdateReservationInput) {
+  //   return this.reservationService.update(updateReservationInput.id, updateReservationInput);
+  // }
 
-  @Mutation(() => Reservation)
-  removeReservation(@Args('id', { type: () => String }) id: string) {
-    return this.reservationService.remove(id);
-  }
+  // @Mutation(() => Reservation)
+  // removeReservation(@Args('id', { type: () => String }) id: string) {
+  //   return this.reservationService.remove(id);
+  // }
 }

@@ -1,32 +1,33 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
-import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity';
-import { Room } from 'src/room/entities/room.entity';
-import { Column, ObjectIdColumn } from 'typeorm';
+import { ObjectType, Field, Int, ID } from '@nestjs/graphql'
+import { Materials } from './material.entity'
+import { Rooms } from '../entities/room.entity'
+import { Column, Entity, ObjectIdColumn } from 'typeorm'
 
+@Entity()
 @ObjectType()
 export class Reservation {
   @ObjectIdColumn()
-  @Field(()=>ID, {nullable:true})
-  _id: string;
+  @Field(() => ID, { nullable: true })
+  _id: string
   @Column()
   @Field()
-  date: Date;
+  date: Date
   @Column()
   @Field()
-  start_time: string;
+  start_time: string
   @Column()
   @Field()
-  end_time: string;
+  end_time: string
   @Column()
   @Field()
-  group_id: string;
+  group_id: string
+  @Column()
+  @Field(() => [Rooms])
+  rooms: [Rooms]
+  @Column()
+  @Field(() => [Materials])
+  reserved_materials: [Materials]
   @Column()
   @Field()
-  reserved_materials: [LoanableMaterial]
-  @Column()
-  @Field()
-  rooms: [Room]
-  @Column()
-  @Field()
-  price: number;
+  price: number
 }
