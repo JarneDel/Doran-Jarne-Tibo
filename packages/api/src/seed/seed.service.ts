@@ -29,8 +29,6 @@ import { SportService } from 'src/sport/sport.service'
 import { StaffService } from 'src/staff/staff.service'
 import { ServiceService } from '../service/service.service'
 
-
-
 @Injectable()
 export class SeedService {
   constructor(
@@ -41,8 +39,7 @@ export class SeedService {
     private sportService: SportService,
     private staffService: StaffService,
     private serviceService: ServiceService,
-  ) {
-  }
+  ) {}
 
   async addStockFromJson(): Promise<Stock[]> {
     let outStocks: Stock[] = []
@@ -170,11 +167,20 @@ export class SeedService {
     if (staff.length === 0) {
       throw new Error('No staff found, please seed staff first')
     }
+    const rooms = await this.roomService.findAll()
+    if (rooms.length === 0) {
+      throw new Error('No rooms found, please seed rooms first')
+    }
     let outServices: Service[] = []
     for (let service of services) {
       const s = new Service()
       s.name = service.name
       s.description = service.description
+      s.roomId = [
+        new ObjectId(
+          rooms[Math.floor(Math.random() * rooms.length)].id,
+        ).toString(),
+      ]
       s.staffId = [
         new ObjectId(
           staff[Math.floor(Math.random() * staff.length)].id,
