@@ -18,8 +18,8 @@ export class ReservationService {
     r.end_time = createReservationInput.end_time;
     r.group_id = createReservationInput.group_id;
     r.price = createReservationInput.price;
-    r.rooms = createReservationInput.rooms;
-    r.reserved_materials = createReservationInput.reserved_materials;
+    // r.rooms = createReservationInput.rooms;
+    // r.reserved_materials = createReservationInput.reserved_materials;
 
 
     return this.reservationRepository.save(r);
