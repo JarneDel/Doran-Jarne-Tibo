@@ -33,7 +33,7 @@ Seed database with groups data
 Seed database with loanableMaterials data
 ```shell
  cd ./packages/api
- npx nestjs-command seed:database:loanablematerials   
+ npx nestjs-command seed:database:loanableMaterials   
 ```
 
 clear All containers

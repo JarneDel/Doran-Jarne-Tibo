@@ -1,7 +1,7 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { Column, Entity, ObjectIdColumn } from 'typeorm'
 
-@InputType('Rooms') // Database link - Typeorm
+@InputType('RoomsInput') // Database link - Typeorm
 @ObjectType()
 export class Rooms {
   @Column() // Database link - Typeorm
@@ -10,7 +10,7 @@ export class Rooms {
 
   @Column() // Database link - Typeorm
   @Field(() => [String], {nullable:true}) // Graphql
-  sports: string[]
+  sports: string[] 
 
   @Column() // Database link - Typeorm
   @Field() // Graphql

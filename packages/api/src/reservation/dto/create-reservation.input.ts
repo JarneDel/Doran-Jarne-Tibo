@@ -1,7 +1,9 @@
 import { InputType, Int, Field } from '@nestjs/graphql'
 import { Type } from 'class-transformer'
-import { Materials } from '../entities/material.entity'
+import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
+import { Room } from 'src/room/entities/room.entity'
 import { Rooms } from '../entities/room.entity'
+import { Materials } from '../entities/material.entity'
 
 @InputType()
 export class CreateReservationInput {

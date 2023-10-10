@@ -1,8 +1,11 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
 import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
+import { Materials } from './material.entity'
 import { Room } from 'src/room/entities/room.entity'
-import { Column, ObjectIdColumn } from 'typeorm'
+import { Rooms } from './room.entity'
+import { Column, Entity, ObjectIdColumn } from 'typeorm'
 
+@Entity()
 @ObjectType()
 export class Reservation {
   @ObjectIdColumn()
@@ -26,14 +29,18 @@ export class Reservation {
   group_id: string
 
   @Column()
-  @Field(() => [LoanableMaterial])
-  reserved_materials: [LoanableMaterial]
+  @Field(() => [Materials])
+  reserved_materials: [Materials]
 
   @Column()
-  @Field(() => [Room])
-  rooms: [Room]
+  @Field(() => [Rooms])
+  rooms: [Rooms]
 
   @Column()
   @Field()
   price: number
+
+  @Column()
+  @Field({ defaultValue: false })
+  isCancelled: boolean
 }
