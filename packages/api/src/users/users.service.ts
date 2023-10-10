@@ -11,8 +11,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>
-  ) {
-  }
+  ) {}
 
   create(uid: string, createUserInput: CreateUserInput) {
     const user = new User()
@@ -28,6 +27,10 @@ export class UsersService {
 
   findOne(id: string) {
     return new Error(`This action returns a #${id} user`)
+  }
+
+  findOneByUid(uid: string) {
+    return this.userRepository.findOneByOrFail({ UID: uid })
   }
 
   update(id: string, updateUserInput: UpdateUserInput) {
