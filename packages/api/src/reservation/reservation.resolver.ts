@@ -13,20 +13,25 @@ export class ReservationResolver {
     return this.reservationService.create(createReservationInput);
   }
 
-  @Query(() => [Reservation], { name: 'reservation' })
+  @Query(() => [Reservation], { name: 'GetAllReservations' })
   findAll() {
     return this.reservationService.findAll();
   }
 
-  // @Query(() => Reservation, { name: 'reservation' })
-  // findOne(@Args('id', { type: () => String }) id: string) {
-  //   return this.reservationService.findOne(id);
-  // }
+  @Query(() => Reservation, { name: 'GetReservatiounById' })
+  findOne(@Args('id', { type: () => String }) id: string) {
+    return this.reservationService.findOne(id);
+  }
 
-  // @Mutation(() => Reservation)
-  // updateReservation(@Args('updateReservationInput') updateReservationInput: UpdateReservationInput) {
-  //   return this.reservationService.update(updateReservationInput.id, updateReservationInput);
-  // }
+  @Query(() => [Reservation], { name: 'GetReservationsByDate' })
+  findByDate(@Args('date', { type: () => Date }) date: Date) {
+    return this.reservationService.findByDate(date);
+  }
+
+  @Mutation(() => Reservation, { name: 'UpdateReservation' })
+  updateReservation(@Args('updateReservationInput') updateReservationInput: UpdateReservationInput) {
+    return this.reservationService.update(updateReservationInput.id, updateReservationInput);
+  }
 
   // @Mutation(() => Reservation)
   // removeReservation(@Args('id', { type: () => String }) id: string) {
