@@ -89,7 +89,7 @@ export class SeedService {
     return this.groupsService.truncate()
   }
 
-  async deleteAllBirds(): Promise<void> {
+  async deleteAllLoanableMaterials(): Promise<void> {
     return this.loanableMaterialsService.truncate()
   }
 
