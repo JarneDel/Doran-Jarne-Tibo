@@ -26,7 +26,7 @@ export class User {
 
   @Column({ default: Role.USER })
   @Field(() => String)
-  role?: Role
+  role: Role
 
   @CreateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
