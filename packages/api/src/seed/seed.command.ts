@@ -19,8 +19,7 @@ export class DatabaseSeedCommand {
     console.info(`${groups.length} groups are added`)
     //LoanableMaterials
     console.info('🌱 Start seeding of loanableMaterials')
-    const loanableMaterials =
-      await this.seedService.addLoanableMaterialsFromJson()
+    const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
     console.log('🧑🏻‍🤝‍🧑🏼 Started seeding staff')
     const staff = await this.seedService.addStaffFromJson()
@@ -59,7 +58,7 @@ export class DatabaseSeedCommand {
     console.info('🪶 Removed groups')
     //LoanableMaterials
     console.info('🔪 Start deleting loanableMaterials')
-    await this.seedService.deleteAllBirds()
+    await this.seedService.deleteAllLoanableMaterials()
     console.info('Removed loanableMaterials')
     //Rooms
     console.info('🔪 Start deleting rooms')
@@ -127,8 +126,7 @@ export class DatabaseSeedCommand {
   })
   async seedLoanableMaterials() {
     console.info('🌱 Start seeding of loanableMaterials')
-    const loanableMaterials =
-      await this.seedService.addLoanableMaterialsFromJson()
+    const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
   }
   //Delete
@@ -138,7 +136,7 @@ export class DatabaseSeedCommand {
   })
   async deleteLoanableMaterials() {
     console.info('🔪 Start deleting loanableMaterials')
-    await this.seedService.deleteAllBirds()
+    await this.seedService.deleteAllLoanableMaterials()
     console.info('Removed loanableMaterials')
   }
 

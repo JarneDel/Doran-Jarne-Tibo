@@ -9,16 +9,6 @@ import { UpdateGroupInput } from './dto/update-group.input'
 export class GroupsResolver {
   constructor(private readonly groupsService: GroupsService) {}
 
-  // @Mutation(() => Group)
-  // createGroup(@Args('createGroupInput') createGroupInput: CreateGroupInput) {
-  //   return this.groupsService.create(createGroupInput)
-  // }
-
-  // @Query(() => [Group], { name: 'birds' })
-  // getGroups() {
-  //   return []
-  // }
-
   @Query(() => [Group], { name: 'groups' })
   findAll() {
     return this.groupsService.findAll()
