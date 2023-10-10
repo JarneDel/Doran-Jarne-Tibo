@@ -94,4 +94,10 @@ async function generateTranslations(auth) {
   }
 }
 
-authorize().then(generateTranslations).catch(console.error)
+authorize()
+  .then(generateTranslations)
+  .catch(console.error)
+  .then(() => {
+    console.log('Done')
+    process.exit()
+  })

@@ -1,6 +1,6 @@
 import { createI18n, type I18nOptions } from 'vue-i18n'
 
-export const DEFAULT_LOCALE = 'en'
+export const DEFAULT_LOCALE = 'nl'
 
 export const SUPPORTED_LOCALES: Record<string, string> = {
   en: 'English',
