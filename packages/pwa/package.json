@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "language": "bun ./src/utils/sheet.ts"
   },
   "dependencies": {
     "@google-cloud/local-auth": "2.1.0",
