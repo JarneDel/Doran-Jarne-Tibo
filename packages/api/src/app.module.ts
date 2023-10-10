@@ -14,6 +14,7 @@ import { StaffModule } from './staff/staff.module';
 import { ServiceModule } from './service/service.module';
 import { RoomModule } from './room/room.module';
 import { SportModule } from './sport/sport.module';
+import { UsersModule } from './users/users.module';
 
 
 @Module({
@@ -43,6 +44,7 @@ import { SportModule } from './sport/sport.module';
     ServiceModule,
     RoomModule,
     SportModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
