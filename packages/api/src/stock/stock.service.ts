@@ -3,16 +3,17 @@ import { CreateStockInput } from './dto/create-stock.input'
 import { UpdateStockInput } from './dto/update-stock.input'
 import { Stock } from './entities/stock.entity'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { FindManyOptions, MongoRepository } from 'typeorm'
 import { ObjectId } from 'mongodb'
 import { ServiceService } from '../service/service.service'
 import { GraphQLError } from 'graphql/error'
+import { FilterStockArgs } from './args/filter.stock.args'
 
 @Injectable()
 export class StockService {
   constructor(
     @InjectRepository(Stock)
-    private readonly stockRepository: Repository<Stock>,
+    private readonly stockRepository: MongoRepository<Stock>,
     private readonly serviceService: ServiceService,
   ) {}
 
@@ -68,5 +69,34 @@ export class StockService {
 
   truncate(): Promise<void> {
     return this.stockRepository.clear()
+  }
+
+  findWithFilter(args: FilterStockArgs): Promise<Stock[]> {
+    const { orderDirection, orderByField, searchName } = args
+
+    const options: FindManyOptions<Stock> = {}
+    if (orderDirection && orderByField) {
+      const validateOrderFields = ['name', 'amountInStock', 'idealStock']
+      if (!validateOrderFields.includes(orderByField)) {
+        throw new GraphQLError(`Invalid orderByField ${orderByField} for Stock`)
+      }
+      options.order = {
+        [orderByField]: orderDirection,
+      }
+    }
+    if (searchName) {
+      options.where = {
+        name: {
+          // @ts-ignore
+          $regex: searchName,
+          $options: 'i',
+        },
+      }
+    }
+    console.log('options', options)
+
+    return this.stockRepository.find({
+      ...options,
+    })
   }
 }

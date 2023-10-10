@@ -1,8 +1,12 @@
 import gql from 'graphql-tag'
 
 export const ALL_STOCK = gql`
-  query {
-    stock {
+  query ($orderByField: String, $orderDirection: String, $searchName: String) {
+    stock(
+      orderByField: $orderByField
+      orderDirection: $orderDirection
+      searchName: $searchName
+    ) {
       id
       name
       description

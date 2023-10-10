@@ -1,16 +1,22 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { ALL_STOCK, AllStock } from '@/graphql/stock.graphql.ts'
 
 export default defineComponent({
   name: 'Overview',
   setup() {
-    const { error, loading, result } = useQuery<AllStock>(ALL_STOCK)
+    const search = ref<string>('')
+
+    const { error, loading, result, refetch } = useQuery<AllStock>(ALL_STOCK, {
+      searchName: search.value,
+    })
     return {
       error,
       loading,
       result,
+      search,
+      refetch,
     }
   },
 })
@@ -18,6 +24,14 @@ export default defineComponent({
 
 <template>
   <h2>Inventory overview</h2>
+  <input
+    type="text"
+    @change="
+      e => {
+        refetch({ searchName: e.target.value })
+      }
+    "
+  />
   <div
     v-if="!loading && result"
     class="mx-2xl overflow-hidden rounded-lg shadow-lg"
