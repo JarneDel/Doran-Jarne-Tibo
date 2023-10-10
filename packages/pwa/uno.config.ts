@@ -3,6 +3,7 @@ import { defineConfig } from 'unocss'
 export default defineConfig({
   // GEEN THEME!
   // wel manifesteren van genereren css
+  safelist: [...Array.from({ length: 100 }, (_, i) => `left-[${i + 1}%]`)],
   theme: {
     colors: {
       secondary: {
