@@ -15,6 +15,7 @@ import { ServiceModule } from './service/service.module';
 import { RoomModule } from './room/room.module';
 import { SportModule } from './sport/sport.module';
 import { UsersModule } from './users/users.module';
+import { ReservationModule } from './reservation/reservation.module';
 
 
 @Module({
@@ -45,6 +46,7 @@ import { UsersModule } from './users/users.module';
     RoomModule,
     SportModule,
     UsersModule,
+    ReservationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
