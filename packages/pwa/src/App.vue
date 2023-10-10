@@ -15,7 +15,7 @@ export default defineComponent({
     provide(DefaultApolloClient, apolloClient)
     const { setLocale } = useLanguage()
     const { locale } = useLanguage()
-    setLocale(SUPPORTED_LOCALES.en)
+    setLocale(Object.keys(SUPPORTED_LOCALES)[0])
     console.log(locale)
     return {}
   },

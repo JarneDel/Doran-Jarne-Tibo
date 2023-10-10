@@ -82,13 +82,13 @@ async function generateTranslations(auth) {
       return
     }
 
-    const translations = { [locale]: {} }
+    const translations = { [key]: {} }
     for (const row of rows) {
-      translations[locale][row[0]] = row[2]
+      translations[key][row[0]] = row[2]
     }
 
     await fs.writeFile(
-      Path.join(process.cwd(), `/src/locales/${locale}.json`),
+      Path.join(process.cwd(), `/src/locales/${key}.json`),
       JSON.stringify(translations),
     )
   }

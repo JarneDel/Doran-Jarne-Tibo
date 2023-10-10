@@ -6,6 +6,7 @@ import { defineComponent, ref } from 'vue'
 import UseFirebase from '@/composables/useFirebase'
 import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
 import UseLanguage from '@/composables/useLanguage.ts'
+import ChangeLanguage from '@/components/ChangeLanguage.vue'
 
 interface Group {
   groups: [{ _id: string; name: string }]
@@ -15,6 +16,7 @@ interface Stock {
 }
 
 export default defineComponent({
+  components: { ChangeLanguage },
   computed: {
     SUPPORTED_LOCALES() {
       return SUPPORTED_LOCALES
@@ -81,13 +83,8 @@ export default defineComponent({
       </ul>
     </div>
     <div>loading</div>
-
+    <ChangeLanguage />
     <label for="language"> </label>
-    <select id="language" name="language">
-      <option v-for="locale in SUPPORTED_LOCALES">
-        {{ SUPPORTED_LOCALES[locale] }}
-      </option>
-    </select>
   </div>
 </template>
 
