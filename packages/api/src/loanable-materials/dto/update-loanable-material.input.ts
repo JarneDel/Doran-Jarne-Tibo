@@ -9,17 +9,21 @@ export class UpdateLoanableMaterialInput extends PartialType(
   name: string;
 
   @Field()
-  loanedOut: boolean;
+  totalAmount: number;
 
   @Field()
-  totalAmount: number;
+  wantedAmount: number;
+
+  @Field(() => [String], { nullable: true })
+  sports: string[];
+
+  @Field()
+  price: number;
 
   @Field()
   isComplete: boolean;
 
   @Field({ nullable: true })
   description?: string;
-
-  // @Field({ nullable: true })
-  // materialInSet?: Array<JSON>;
 }
+

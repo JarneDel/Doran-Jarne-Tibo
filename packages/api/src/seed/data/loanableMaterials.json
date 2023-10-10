@@ -1,16 +1,18 @@
 [
     {
         "name": "name",
-        "loanedOut" : true,
         "isComplete" : true,
-        "totalAmount" : 1,
+        "totalAmount" : 4,
+        "wantedAmount" : 2,
+        "price" : 3,
         "description" : "description"
     },
     {
         "name": "name2",
-        "loanedOut" : false,
-        "isComplete" : true,
-        "totalAmount" : 4,
-        "description" : "description2"
+        "isComplete" : false,
+        "totalAmount" : 20,
+        "wantedAmount" : 5,
+        "price" : 10,
+        "description" : "description 2"
     }
 ]

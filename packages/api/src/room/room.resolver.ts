@@ -48,7 +48,7 @@ export class RoomResolver {
 
   @Mutation(() => Room)
   updateRoom(@Args('updateRoomInput') updateRoomInput: UpdateRoomInput) {
-    return this.roomService.update(updateRoomInput.id, updateRoomInput)
+    return this.roomService.update(updateRoomInput._id, updateRoomInput)
   }
 
   @Mutation(() => Room)
