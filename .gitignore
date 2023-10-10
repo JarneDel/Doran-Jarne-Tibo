@@ -226,5 +226,5 @@ dist
 
 graphql.config.yml
 schema.graphql
-graphql/
+/graphql/
 .vscode/settings.json

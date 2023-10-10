@@ -41,32 +41,36 @@ export default defineComponent({
 
 <template>
   <form class="c-primary-text" @submit.prevent="handleLogin">
-    <h1 class="font-600 text-xl">Login</h1>
+    <h1 class="font-600 text-xl">{{ $t('auth.login') }}</h1>
     <p v-if="error">{{ error }}</p>
-    <p v-if="firebaseUser">Logged in as {{ firebaseUser.email }}</p>
+    <p v-if="firebaseUser">
+      {{ $t('auth.loggedInAs') }} {{ firebaseUser.email }}
+    </p>
     <styled-input-text
       v-model="credentials.email"
+      :label="$t('auth.email')"
       autocomplete="email"
       class="w-full"
-      label="Email"
       required
       type="email"
     />
     <styled-input-text
       v-model="credentials.password"
+      :label="$t('auth.password')"
       autocomplete="current-password"
       class="w-full"
-      label="Password"
       required
       type="password"
     />
     <div class="my-3 text-right">
-      <styled-link to="/password-reset">Forgot Password?</styled-link>
+      <styled-link to="/password-reset"
+        >{{ $t('auth.forgotPassword') }}
+      </styled-link>
     </div>
     <StyledButton class="my-2 w-full" type="submit"> Login</StyledButton>
     <div class="text-center">
-      No account yet?
-      <StyledLink to="/register">Register</StyledLink>
+      {{ $t('auth.noAccount') }}
+      <StyledLink to="/register">{{ $t('auth.register') }}</StyledLink>
     </div>
   </form>
 </template>

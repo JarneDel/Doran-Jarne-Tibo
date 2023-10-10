@@ -51,22 +51,23 @@ export default defineComponent({
     <a @click="go(-1)">
       <lucide-arrow-left class="hover:text-primary-500 inline" />
     </a>
-    Reset your password
+    {{ $t('auth.passwordReset.title') }}
   </h2>
   <form v-if="!form.success" class="max-w-md" @submit.prevent="reset">
     <p>
-      We will send you an email with a password-reset link if there is an
-      account with that email
+      {{ $t('auth.passwordReset.description') }}
     </p>
     <styled-input-text
       v-model="form.email"
+      :label="$t('auth.email')"
       autocomplete="email"
       class="w-full"
-      label="Email"
       required
       type="email"
     />
-    <StyledButton class="my-2 w-full" type="submit">Send</StyledButton>
+    <StyledButton class="my-2 w-full" type="submit">{{
+      $t('auth.passwordReset.submit')
+    }}</StyledButton>
 
     <p v-if="form.error" class="text-red">
       {{ form.error }}
@@ -74,10 +75,9 @@ export default defineComponent({
   </form>
   <div v-if="form.success" class="max-w-md">
     <p class="text-green-500">
-      Check your email for a link to reset your password. If it doesn’t appear
-      within a few minutes, check your spam folder.
+      {{ $t('auth.passwordReset.success') }}
     </p>
-    <p class="text-green-500">If you don’t receive an email, contact support</p>
+    <p class="text-green-500">{{ $t('auth.passwordReset.support') }}</p>
   </div>
 </template>
 

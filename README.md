@@ -10,7 +10,7 @@
 - Onderhoud gebouw
 - poetsdienst
 
-## seeding and clearing database
+## [seeding and clearing database](packages/api/seeding.md)
 
 Seed database with all data
 ```shell

@@ -46,37 +46,39 @@ export default defineComponent({
 <template>
   <div class="c-primary-text">
     <form @submit.prevent="register">
-      <h2 class="font-600 text-xl">Register</h2>
+      <h2 class="font-600 text-xl">{{ $t('auth.register') }}</h2>
       <StyledInputText
         v-model="form.email"
+        :label="$t('auth.email')"
         autocomplete="email"
         class="w-full"
-        label="Email"
         required
         type="email"
       />
       <StyledInputText
         v-model="form.displayName"
+        :label="$t('auth.displayName')"
         autocomplete="username"
         class="w-full"
-        label="Username"
         required
         type="text"
       />
 
       <StyledInputText
         v-model="form.password"
+        :label="$t('auth.password')"
         autocomplete="current-password"
         class="w-full"
-        label="Password"
         required
         type="password"
       />
 
       <div v-if="form.error" class="text-red">{{ form.error }}</div>
-      <StyledButton class="w-full" type="submit"> Register</StyledButton>
+      <StyledButton class="w-full" type="submit">
+        {{ $t('auth.register') }}</StyledButton
+      >
       <p class="my3 text-right">
-        <styled-link to="/login"> Already have an account? Login </styled-link>
+        <styled-link to="/login"> {{ $t('auth.register.login') }} </styled-link>
       </p>
     </form>
   </div>

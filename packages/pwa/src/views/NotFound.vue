@@ -6,10 +6,8 @@ export default defineComponent({})
 
 <template>
   <div>
-    404: page not found
+    {{ $t('page.notFound') }}
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

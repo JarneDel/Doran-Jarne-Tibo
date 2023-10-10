@@ -5,24 +5,38 @@ import { Stock } from './entities/stock.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { ObjectId } from 'mongodb'
+import { ServiceService } from '../service/service.service'
+import { GraphQLError } from 'graphql/error'
 
 @Injectable()
 export class StockService {
   constructor(
     @InjectRepository(Stock)
     private readonly stockRepository: Repository<Stock>,
-  ) {
-  }
+    private readonly serviceService: ServiceService,
+  ) {}
 
-  create(createStockInput: CreateStockInput) {
+  async create(createStockInput: CreateStockInput) {
     const s = new Stock()
-    const { name, service, description, idealStock, amountInStock, needToOrderMore } = createStockInput
+    const {
+      name,
+      serviceId,
+      description,
+      idealStock,
+      amountInStock,
+      needToOrderMore,
+    } = createStockInput
+    // check if service exists
+    const service = await this.serviceService.findOne(serviceId)
+    if (!service) throw new GraphQLError(`Service ${serviceId} not found}`)
+
     s.name = name
-    s.service = service
     s.description = description
     s.idealStock = idealStock
     s.amountInStock = amountInStock
     s.needToOrderMore = needToOrderMore
+    s.serviceId = new ObjectId(serviceId)
+
     return this.stockRepository.save(s)
   }
 
@@ -39,7 +53,6 @@ export class StockService {
     })
   }
 
-
   update(id: string, updateStockInput: UpdateStockInput) {
     return `This action updates a #${id} stock`
   }
@@ -47,6 +60,7 @@ export class StockService {
   remove(id: number) {
     return `This action removes a #${id} stock`
   }
+
   // logic for seeding
   saveAll(stockItems: Stock[]): Promise<Stock[]> {
     return this.stockRepository.save(stockItems)
