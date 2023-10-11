@@ -67,7 +67,7 @@ export default defineComponent({
     }}
   </h2>
   <div>
-    {{ idToken }}
+    {"Authorization": "Bearer {{ idToken }} "}
     <div>
       <ul>
         <li v-for="group in result?.groups" :key="group._id">

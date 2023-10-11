@@ -1,57 +1,23 @@
 [
   {
-    "name":"De koninklijke zwemclub van Waregem",
+    "name":"koninklijke zwemclub van Waregem",
     "btw_number":"BE0123456789",
-    "score": 2
+    "score": 2,
+    "uid":"ys97J2CskUQJOarNWmptXvoywb62",
+    "locale":"nl"
   },
   {
     "name": "Sportclub De Actieve Lopers",
     "btw_number": "BE0123456789",
-    "score": 15
+    "score": 15,
+    "uid":"6Ywe5DmQB4gd6aakAc0rJBkKRqA2",
+    "locale":"nl"
   },
   {
     "name": "Voetbalvereniging De Sprinters",
     "btw_number": "BE0987654321",
-    "score": 12
-  },
-  {
-    "name": "Tennisclub De Racketeers",
-    "btw_number": "BE0555555555",
-    "score": 1
-  },
-  {
-    "name": "Zwemclub De Waterratten",
-    "btw_number": "BE0987654321",
-    "score": 23
-  },
-  {
-    "name": "Atletiekvereniging De Sprinters",
-    "btw_number": "BE0012345678",
-    "score": 8
-  },
-  {
-    "name": "Basketbalclub De Dunkers",
-    "btw_number": "BE0876543210",
-    "score": 4
-  },
-  {
-    "name": "Hockeyclub De Slagmensen",
-    "btw_number": "BE0777777777",
-    "score": 0
-  },
-  {
-    "name": "Wielrennersclub De Snelle Trappers",
-    "btw_number": "BE0666666666",
-    "score": 3
-  },
-  {
-    "name": "Turnvereniging De Gymnasten",
-    "btw_number": "BE0333333333",
-    "score": 5
-  },
-  {
-    "name": "Rugbyclub De Tacklers",
-    "btw_number": "BE0999999999",
-    "score": 9
+    "score": 12,
+    "uid":"BqotFU2VmOOz5igIM83iYxgaPXl1",
+    "locale":"nl"
   }
 ]
