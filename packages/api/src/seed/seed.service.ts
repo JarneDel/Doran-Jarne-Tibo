@@ -28,6 +28,7 @@ import { RoomService } from 'src/room/room.service'
 import { SportService } from 'src/sport/sport.service'
 import { StaffService } from 'src/staff/staff.service'
 import { ServiceService } from '../service/service.service'
+import { Role } from 'src/users/entities/user.entity'
 
 @Injectable()
 export class SeedService {
@@ -78,6 +79,9 @@ export class SeedService {
       g.name = group.name
       g.btw_number = group.btw_number
       g.score = group.score
+      g.locale = group.locale
+      g.UID = group.uid
+      g.role = Role.GROUP 
 
       theGroups.push(g)
     }
