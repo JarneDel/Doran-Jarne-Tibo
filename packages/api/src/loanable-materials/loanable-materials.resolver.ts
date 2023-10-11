@@ -35,8 +35,31 @@ export class LoanableMaterialsResolver {
   }
 
   @Mutation(() => LoanableMaterial)
-  removeLoanableMaterialById(@Args('id', { type: () => String }) id: number) {
-    this.loanableMaterialsService.remove(id)
-    return 'Deleted loanableMaterial with id: ' + id
+  updateLoanableMaterial(
+    @Args('updateLoanableMaterialInput')
+    updateLoanableMaterialInput: UpdateLoanableMaterialInput
+  ) {
+    return this.loanableMaterialsService.update(
+      updateLoanableMaterialInput._id,
+      updateLoanableMaterialInput
+    )
+  }
+
+  @Mutation(() => String)
+  removeLoanableMaterialById(@Args('id', { type: () => String }) id: string) {
+    return this.loanableMaterialsService
+      .remove(id)
+      .then((res) => {
+        const obj = JSON.parse(JSON.stringify(res))
+        if (obj.raw.deletedCount > 0) {
+          return 'Deleted room with id: ' + id + ' succesfully'
+        } else {
+          return 'No room with id: ' + id + ' found'
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+        return 'Error'
+      })
   }
 }

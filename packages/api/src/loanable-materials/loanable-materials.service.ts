@@ -44,32 +44,30 @@ export class LoanableMaterialsService {
   async update(
     id: string,
     updateLoanableMaterialInput: UpdateLoanableMaterialInput
-  ): Promise<UpdateResult> {
-    const LM = new LoanableMaterial()
-    const {
-      name,
-      isComplete,
-      totalAmount,
-      wantedAmount,
-      price,
-      description,
-    } = updateLoanableMaterialInput
-    LM.name = name
-    LM.totalAmount = totalAmount
-    LM.wantedAmount = wantedAmount
-    LM.price = price
-    LM.isComplete = isComplete
-    LM.description = description
-
-    return this.LoanableMaterialRepository.update(id, LM)
+  ) {
+    const lm = await this.findOneById(id)
+    lm.name = updateLoanableMaterialInput.name
+    lm.totalAmount = updateLoanableMaterialInput.totalAmount
+    lm.wantedAmount = updateLoanableMaterialInput.wantedAmount
+    lm.price = updateLoanableMaterialInput.price
+    lm.sports = updateLoanableMaterialInput.sports
+    lm.isComplete = updateLoanableMaterialInput.isComplete
+    lm.description = updateLoanableMaterialInput.description
+    return this.LoanableMaterialRepository.save(lm)
   }
 
   save(loanableMaterials: LoanableMaterial[]): Promise<LoanableMaterial[]> {
     return this.LoanableMaterialRepository.save(loanableMaterials)
   }
 
-  remove(id: number): Promise<DeleteResult> {
+  remove(id: string): Promise<String> {
     return this.LoanableMaterialRepository.delete(id)
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 
   truncate(): Promise<void> {

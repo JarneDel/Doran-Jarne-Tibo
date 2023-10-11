@@ -47,17 +47,23 @@ export class RoomService {
   }
 
   async update(id: string, updateRoomInput: UpdateRoomInput) {
-    const r = new Room()
-    const { name, sports, pricePerHour, type } = updateRoomInput
-    r.name = name
-    r.sports = sports
-    r.pricePerHour = pricePerHour
-    r.type = type
-    return this.roomRepository.update(id, r)
+    const r = await this.findOneById(id)
+    r.name = updateRoomInput.name
+    r.pricePerHour = updateRoomInput.pricePerHour
+    r.sports = updateRoomInput.sports
+    r.type = updateRoomInput.type
+    return this.roomRepository.save(r)
   }
 
-  remove(id: string) {
-    return this.roomRepository.delete(id)
+  remove(id: string): Promise<string> {
+    return this.roomRepository
+      .delete(id)
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 
   // logic for seeding

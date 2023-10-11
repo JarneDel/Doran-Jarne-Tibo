@@ -1,10 +1,15 @@
+import { ObjectIdColumn } from "typeorm";
 import { CreateLoanableMaterialInput } from "./create-loanable-material.input";
-import { InputType, Field, Int, PartialType } from "@nestjs/graphql";
+import { InputType, Field, PartialType, ID } from "@nestjs/graphql";
 
 @InputType()
 export class UpdateLoanableMaterialInput extends PartialType(
   CreateLoanableMaterialInput
 ) {
+  @ObjectIdColumn()
+  @Field(() => ID)
+  _id: string;
+  
   @Field()
   name: string;
 
