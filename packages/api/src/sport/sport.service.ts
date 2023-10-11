@@ -35,12 +35,21 @@ export class SportService {
     return this.sportRepository.findOne({ _id: new ObjectId(id) })
   }
 
-  update(id: string, updateSportInput: UpdateSportInput) {
-    return `This action updates a #${id} sport`
+  async update(id: string, updateSportInput: UpdateSportInput) {
+    const s = await this.findOneById(id)
+    s.name = updateSportInput.name
+    return this.sportRepository.save(s)
   }
 
-  remove(id: string) {
-    return this.sportRepository.delete(id)
+  remove(id: string): Promise<string> {
+    return this.sportRepository
+      .delete(id)
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 
   // logic for seeding

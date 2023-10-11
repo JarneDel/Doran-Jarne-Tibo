@@ -1,7 +1,9 @@
 // Create input
 import { CreateRoomInput } from './create-room.input'
 // GraphQL
-import { InputType, Field, PartialType } from '@nestjs/graphql'
+import { InputType, Field, PartialType, ID } from '@nestjs/graphql'
+// Typeorm
+import { ObjectIdColumn } from 'typeorm'
 // Class validator
 import {
   IsString,
@@ -23,8 +25,9 @@ const typeList = [
 
 @InputType()
 export class UpdateRoomInput extends PartialType(CreateRoomInput) {
-  @Field() // Graphql
-  id: string
+  @ObjectIdColumn()
+  @Field(()=>ID)
+  _id: string
 
   @IsString()
   @IsNotEmpty()

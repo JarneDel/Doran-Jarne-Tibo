@@ -98,9 +98,10 @@ export class SeedService {
     for (let loanableMaterial of loanableMaterials) {
       const lm = new LoanableMaterial()
       lm.name = loanableMaterial.name
-      lm.loanedOut = loanableMaterial.loanedOut
-      lm.isComplete = loanableMaterial.isComplete
       lm.totalAmount = loanableMaterial.totalAmount
+      lm.wantedAmount = loanableMaterial.wantedAmount
+      lm.price = loanableMaterial.price
+      lm.isComplete = loanableMaterial.isComplete
       lm.description = loanableMaterial.description
 
       LoanableMaterials.push(lm)
