@@ -226,5 +226,8 @@ dist
 
 graphql.config.yml
 schema.graphql
+<<<<<<< develop
 /graphql/
+=======
+>>>>>>> fix: room query gitignore
 .vscode/settings.json
