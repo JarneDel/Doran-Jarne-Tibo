@@ -3,15 +3,12 @@ interface Group {
   groups: [{ _id: string; name: string; btw_number: string; score: number }]
 }
 
-import { useQuery } from '@vue/apollo-composable'
-import { ALL_GROUPS } from '@/graphql/group.query'
+import { useMutation, useQuery } from '@vue/apollo-composable'
+import { ALL_GROUPS, UPDATE_SCORE } from '@/graphql/group.query'
 import { defineComponent, ref } from 'vue'
 import UseFirebase from '@/composables/useFirebase'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { Plus } from 'lucide-vue-next'
-import { Minus } from 'lucide-vue-next'
-import { useMutation } from '@vue/apollo-composable'
-import { UPDATE_SCORE } from '@/graphql/group.query'
+import { Minus, Plus } from 'lucide-vue-next'
 
 export default defineComponent({
   setup() {
@@ -21,7 +18,7 @@ export default defineComponent({
       idToken.value = await firebaseUser.value?.getIdToken()
     }
     getIdToken()
-    const {mutate} = useMutation(UPDATE_SCORE)
+    const { mutate } = useMutation(UPDATE_SCORE)
     const { loading, result, error } = useQuery<Group>(ALL_GROUPS)
     const getScore = (score: number) => {
       let s: number = 0
@@ -32,11 +29,11 @@ export default defineComponent({
       }
       return s
     }
-    const addScore = (id:string) => {
-      mutate({id: id, amount: 1})
+    const addScore = (id: string) => {
+      mutate({ id: id, amount: 1 })
     }
-    const removeScore = (id:string) => {
-      mutate({id: id, amount: -1})
+    const removeScore = (id: string) => {
+      mutate({ id: id, amount: -1 })
     }
     return {
       idToken,
@@ -46,7 +43,7 @@ export default defineComponent({
       getScore,
       addScore,
       removeScore,
-      mutate
+      mutate,
     }
   },
   components: { StyledButton, Plus, Minus },
@@ -72,12 +69,12 @@ export default defineComponent({
           </div>
           <div class="flex items-center justify-between">
             <StyledButton class="my-2" @click="addScore(group._id)">
-              <Plus
-            /></StyledButton>
+              <Plus />
+            </StyledButton>
             <p class="text-lg">{{ getScore(group.score) }}</p>
             <StyledButton class="my-2" @click="removeScore(group._id)">
-              <Minus
-            /></StyledButton>
+              <Minus />
+            </StyledButton>
           </div>
         </div>
       </li>

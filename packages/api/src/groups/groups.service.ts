@@ -42,7 +42,7 @@ export class GroupsService {
   async updateScore(id: string, amount:number) {
    const exGroup=await this.findOne(id)
     exGroup.score = exGroup.score + amount
-    this.groupRepository.update(id, exGroup)
+    this.groupRepository.update(id, exGroup) 
     return exGroup
   }
 
