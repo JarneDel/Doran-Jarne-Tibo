@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Staff } from './entities/staff.entity'
 import { Repository } from 'typeorm'
 import { ObjectId } from 'mongodb'
+import { Role } from 'src/users/entities/user.entity'
 
 @Injectable()
 export class StaffService {
@@ -13,7 +14,7 @@ export class StaffService {
     private readonly staffRepository: Repository<Staff>,
   ) {}
 
-  create(createStaffInput: CreateStaffInput) {
+  create(uid:string,createStaffInput: CreateStaffInput) {
     // todo: validate input && check if staff already exists
     const s = new Staff()
     s.firstName = createStaffInput.firstName
@@ -22,6 +23,8 @@ export class StaffService {
     s.phone = createStaffInput.phone
     s.holidaysLeft = createStaffInput.holidaysLeft
     s.holidayDates = createStaffInput.holidayDates
+    s.role = Role.STAFF
+    s.UID = uid
     return this.staffRepository.save(s)
   }
 

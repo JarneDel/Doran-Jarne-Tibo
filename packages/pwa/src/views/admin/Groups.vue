@@ -1,6 +1,6 @@
 <script lang="ts">
 interface Group {
-  groups: [{ _id: string; name: string; btw_number: string; score: number }]
+  groups: [{ id: string; name: string; btw_number: string; score: number }]
 }
 
 import { useMutation, useQuery } from '@vue/apollo-composable'
@@ -53,7 +53,7 @@ export default defineComponent({
 <template>
   <div class="m-8">
     <ul class="mx-auto grid grid-cols-3 gap-6">
-      <li v-for="group in result?.groups" :key="group._id">
+      <li v-for="group in result?.groups" :key="group.id">
         <div class="h-full rounded-lg bg-white p-4 shadow-md">
           <p class="h-18 text-2xl">{{ group.name }}</p>
           <p class="text-lg">{{ group.btw_number }}</p>
@@ -68,11 +68,11 @@ export default defineComponent({
             ></div>
           </div>
           <div class="flex items-center justify-between">
-            <StyledButton class="my-2" @click="addScore(group._id)">
+            <StyledButton class="my-2" @click="addScore(group.id)">
               <Plus />
             </StyledButton>
             <p class="text-lg">{{ getScore(group.score) }}</p>
-            <StyledButton class="my-2" @click="removeScore(group._id)">
+            <StyledButton class="my-2" @click="removeScore(group.id)">
               <Minus />
             </StyledButton>
           </div>
