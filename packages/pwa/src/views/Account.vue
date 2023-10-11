@@ -1,7 +1,7 @@
 <script lang="ts">
 import { useQuery } from '@vue/apollo-composable'
 import { ALL_GROUPS } from '@/graphql/group.query'
-import { ALL_STOCK } from '@/graphql/stock.graphql'
+import { ALL_STOCK_AND_SERVICES } from '@/graphql/stock.graphql'
 import { defineComponent, ref } from 'vue'
 import UseFirebase from '@/composables/useFirebase'
 import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
@@ -42,7 +42,7 @@ export default defineComponent({
       loading: loadingStock,
       result: resultStock,
       error: errorStock,
-    } = useQuery<Stock>(ALL_STOCK)
+    } = useQuery<Stock>(ALL_STOCK_AND_SERVICES)
     return {
       idToken,
       result,

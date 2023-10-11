@@ -10,4 +10,7 @@ export class FilterStockArgs {
 
   @Field({ nullable: true })
   searchName?: string
+
+  @Field({ nullable: true })
+  searchServiceId?: string
 }

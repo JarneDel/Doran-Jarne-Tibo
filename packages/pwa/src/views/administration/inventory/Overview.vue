@@ -1,22 +1,80 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
-import { ALL_STOCK, AllStock } from '@/graphql/stock.graphql.ts'
+import {
+  ALL_STOCK_AND_SERVICES,
+  AllStockAndServices,
+} from '@/graphql/stock.graphql.ts'
 
 export default defineComponent({
   name: 'Overview',
   setup() {
     const search = ref<string>('')
+    const searchServiceId = ref<string>('')
+    const sortDirection = ref<string>('ASC')
+    const sortField = ref<string>('name')
 
-    const { error, loading, result, refetch } = useQuery<AllStock>(ALL_STOCK, {
-      searchName: search.value,
-    })
+    const { error, loading, result, refetch } = useQuery<AllStockAndServices>(
+      ALL_STOCK_AND_SERVICES,
+      {
+        searchName: search.value,
+        // searchServiceId: searchServiceId.value,
+        orderDirection: sortDirection.value,
+        orderByField: sortField.value,
+      },
+    )
+    const sortName = () => {
+      console.log('sortName')
+      if (sortField.value === 'name') {
+        sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC'
+        console.log(sortDirection.value)
+      } else {
+        sortField.value = 'name'
+        sortDirection.value = 'asc'
+      }
+      fetchWithFilters()
+    }
+    const sortService = () => {
+      console.log('sortService')
+      if (sortField.value === 'service') {
+        sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC'
+      } else {
+        sortField.value = 'service'
+        sortDirection.value = 'asc'
+      }
+      fetchWithFilters()
+    }
+
+    const whereName = (e: Event) => {
+      const target = e.target as HTMLInputElement
+      search.value = target.value
+      fetchWithFilters()
+    }
+
+    const fetchWithFilters = () => {
+      refetch({
+        searchName: search.value,
+        orderDirection: sortDirection.value,
+        orderByField: sortField.value,
+        searchServiceId: searchServiceId.value,
+      })
+    }
+
+    const whereService = (e: Event) => {
+      const target = e.target as HTMLSelectElement
+      searchServiceId.value = target.value
+      fetchWithFilters()
+    }
+
     return {
       error,
       loading,
       result,
       search,
-      refetch,
+      sortName,
+      sortService,
+      whereName,
+      whereService,
     }
   },
 })
@@ -24,29 +82,31 @@ export default defineComponent({
 
 <template>
   <h2>Inventory overview</h2>
-  <input
-    type="text"
-    @change="
-      e => {
-        refetch({ searchName: e.target.value })
-      }
-    "
-  />
-  <div
-    v-if="!loading && result"
-    class="mx-2xl overflow-hidden rounded-lg shadow-lg"
-  >
+  <input type="text" @input.capture="whereName" />
+  <select id="service" name="service" @change="whereService">
+    <option value="">All</option>
+    <option
+      v-for="service of result.service"
+      v-if="result"
+      :key="service.id"
+      :value="service.id"
+    >
+      {{ service.name }}
+    </option>
+  </select>
+
+  <div class="mx-2xl overflow-hidden rounded-lg shadow-lg">
     <table class="w-full border-separate border-spacing-0">
       <thead class="bg-primary-light rounded-t-lg text-left">
         <tr>
-          <th>Name</th>
+          <th @click="sortName">Name</th>
           <th>Description</th>
           <th>Amount</th>
-          <th>Service</th>
+          <th @click="sortService">Service</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="result">
         <tr v-for="stock of result.stock" :key="stock.id">
           <td>{{ stock.name }}</td>
           <td :title="stock.description" class="truncate">
@@ -60,6 +120,11 @@ export default defineComponent({
             </router-link>
             <button>delete</button>
           </td>
+        </tr>
+      </tbody>
+      <tbody v-else>
+        <tr v-for="_ of 5" class="loader">
+          <td v-for="_ of 5" class="loader">loading</td>
         </tr>
       </tbody>
     </table>
@@ -87,5 +152,21 @@ td {
 tbody tr:nth-child(odd) {
   /* apply tailwind primary-surface color */
   background-color: #edf2fa;
+}
+
+.loader {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% {
+    background-color: white;
+  }
+  50% {
+    background-color: #edf2fa;
+  }
+  100% {
+    background-color: #fff;
+  }
 }
 </style>

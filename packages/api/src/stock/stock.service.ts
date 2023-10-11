@@ -75,15 +75,7 @@ export class StockService {
     const { orderDirection, orderByField, searchName } = args
 
     const options: FindManyOptions<Stock> = {}
-    if (orderDirection && orderByField) {
-      const validateOrderFields = ['name', 'amountInStock', 'idealStock']
-      if (!validateOrderFields.includes(orderByField)) {
-        throw new GraphQLError(`Invalid orderByField ${orderByField} for Stock`)
-      }
-      options.order = {
-        [orderByField]: orderDirection,
-      }
-    }
+    this.validateOrder(orderDirection, orderByField, options)
     if (searchName) {
       options.where = {
         name: {
@@ -93,10 +85,62 @@ export class StockService {
         },
       }
     }
+
+    if (args.searchServiceId) {
+      options.where = {
+        ...options.where,
+        serviceId: new ObjectId(args.searchServiceId),
+      }
+    }
+
     console.log('options', options)
 
+    options.where = {
+      ...options.where,
+    }
     return this.stockRepository.find({
       ...options,
     })
+  }
+
+  private validateOrder = (
+    orderDirection: string,
+    orderByField: string,
+    options: FindManyOptions<Stock>,
+  ) => {
+    if (!orderDirection || !orderByField) {
+      return
+    }
+
+    console.log('setting sorting order', orderDirection, orderByField)
+
+    const validateOrderDirections = ['ASC', 'DESC', 'asc', 'desc']
+    if (!validateOrderDirections.includes(orderDirection)) {
+      throw new GraphQLError(
+        `Invalid orderDirection ${orderDirection} for Stock`,
+      )
+    }
+    const direction = orderDirection as 'ASC' | 'DESC' | 'asc' | 'desc'
+
+    const validateOrderFields = [
+      'name',
+      'amountInStock',
+      'idealStock',
+      'service',
+    ]
+    if (!validateOrderFields.includes(orderByField)) {
+      throw new GraphQLError(`Invalid orderByField ${orderByField} for Stock`)
+    }
+
+    if (orderByField === 'service') {
+      options.order = {
+        serviceId: direction,
+      }
+      return
+    }
+
+    options.order = {
+      [orderByField]: direction,
+    }
   }
 }
