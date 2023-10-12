@@ -11,3 +11,17 @@ query{
     }
   }
 `
+
+export const GET_ROOM_BY_ID = gql`
+query {
+  GetRoomById(
+    $id: String!
+  ) {
+    id
+    name
+    sports
+    pricePerHour
+    type
+  }
+}
+`
