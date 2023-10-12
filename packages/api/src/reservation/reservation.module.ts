@@ -5,7 +5,6 @@ import { Type } from 'class-transformer';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Reservation } from './entities/reservation.entity';
 import { GroupsModule } from 'src/groups/groups.module';
-
 @Module({
   imports: [TypeOrmModule.forFeature([Reservation]), GroupsModule],
   providers: [ReservationResolver, ReservationService],

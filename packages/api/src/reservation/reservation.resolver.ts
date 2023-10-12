@@ -43,9 +43,4 @@ export class ReservationResolver {
     if (!groupId) throw new GraphQLError(`No groupId found ${reservation}`)
     return this.groupService.findOne(groupId)
   }
-
-  // @Mutation(() => Reservation)
-  // removeReservation(@Args('id', { type: () => String }) id: string) {
-  //   return this.reservationService.remove(id);
-  // }
 }
