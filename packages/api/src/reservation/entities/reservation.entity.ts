@@ -4,6 +4,7 @@ import { Materials } from './material.entity'
 import { Room } from 'src/room/entities/room.entity'
 import { Rooms } from './room.entity'
 import { Column, Entity, ObjectIdColumn } from 'typeorm'
+import { Group } from 'src/groups/entities/group.entity'
 
 @Entity()
 @ObjectType()
@@ -24,9 +25,11 @@ export class Reservation {
   @Field()
   end_time: string
 
+  @Field(()=>Group)
+  group:Group	
+  
   @Column()
-  @Field()
-  group_id: string
+  groupId: string
 
   @Column()
   @Field(() => [Materials])

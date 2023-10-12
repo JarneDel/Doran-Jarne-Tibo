@@ -107,6 +107,7 @@ export class SeedService {
       lm.price = loanableMaterial.price
       lm.isComplete = loanableMaterial.isComplete
       lm.description = loanableMaterial.description
+      lm.sports = loanableMaterial.sports
 
       LoanableMaterials.push(lm)
     }

@@ -18,7 +18,7 @@ export class ReservationService {
     r.date = createReservationInput.date;
     r.start_time = createReservationInput.start_time;
     r.end_time = createReservationInput.end_time;
-    r.group_id = createReservationInput.group_id;
+    r.groupId = createReservationInput.group_id;
     r.price = createReservationInput.price;
     r.rooms = createReservationInput.rooms;
     r.reserved_materials = createReservationInput.reserved_materials;
@@ -47,7 +47,7 @@ export class ReservationService {
     r.date = updateReservationInput.date;
     r.start_time = updateReservationInput.start_time;
     r.end_time = updateReservationInput.end_time;
-    r.group_id = updateReservationInput.group_id;
+    r.groupId = updateReservationInput.group_id;
     r.price = updateReservationInput.price;
     r.rooms = updateReservationInput.rooms;
     r.reserved_materials = updateReservationInput.reserved_materials;
