@@ -5,8 +5,8 @@ import { LoanableMaterial } from "./entities/loanable-material.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 @Module({
-  providers: [LoanableMaterialsResolver, LoanableMaterialsService],
   imports: [TypeOrmModule.forFeature([LoanableMaterial])],
+  providers: [LoanableMaterialsResolver, LoanableMaterialsService],
   exports: [LoanableMaterialsService],
 })
 export class LoanableMaterialsModule {}

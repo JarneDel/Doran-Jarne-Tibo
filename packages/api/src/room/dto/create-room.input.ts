@@ -20,8 +20,8 @@ export class CreateRoomInput {
   @Field(() => [String]) // Graphql
   sports: string[]
 
-  @Max(1000)
   @Min(0)
+  @Max(1000)
   @IsPositive()
   @Field({ defaultValue: 0 }) // Graphql
   pricePerHour: number
