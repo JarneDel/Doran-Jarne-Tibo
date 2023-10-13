@@ -37,7 +37,6 @@ export class GroupsService {
 
   async findOneByUid(uid: string) {
     //@ts-ignore
-    console.info(uid)
     return await this.groupRepository.findOneByOrFail({ UID: uid})
   }
 

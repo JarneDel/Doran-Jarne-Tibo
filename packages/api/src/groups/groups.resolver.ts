@@ -41,7 +41,6 @@ export class GroupsResolver {
     @Args('createGroupInput') createGroupInput: CreateGroupInput,
     @FirebaseUser() user: UserRecord,
   ): Promise<Group> {
-    console.info(user)
     return this.groupsService.create(user.uid, createGroupInput)
   }
 
