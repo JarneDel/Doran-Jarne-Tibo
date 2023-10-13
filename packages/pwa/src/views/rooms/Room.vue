@@ -1,13 +1,5 @@
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts"></script>
 
-export default defineComponent({})
-</script>
+<template> </template>
 
-<template>
-
-</template>
-
-<style scoped>
-
-</style>
+<style scoped></style>
