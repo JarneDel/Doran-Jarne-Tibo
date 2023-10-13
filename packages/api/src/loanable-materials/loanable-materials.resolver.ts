@@ -6,6 +6,7 @@ import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
 import { LoanableMaterialsService } from './loanable-materials.service'
 // Entities
 import { LoanableMaterial } from './entities/loanable-material.entity'
+import { Role } from 'src/users/entities/user.entity'
 // Inputs
 import { CreateLoanableMaterialInput } from './dto/create-loanable-material.input'
 import { UpdateLoanableMaterialInput } from './dto/update-loanable-material.input'
@@ -14,12 +15,14 @@ import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
 
+
 @Resolver(() => LoanableMaterial)
 export class LoanableMaterialsResolver {
   constructor(
     private readonly loanableMaterialsService: LoanableMaterialsService
   ) {}
-
+  
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
   @Mutation(() => LoanableMaterial)
   createLoanableMaterial(
     @Args('createLoanableMaterialInput')
