@@ -14,7 +14,10 @@ export class LoanableMaterialsService {
   ) {}
 
   findAll() {
+<<<<<<< HEAD
     // Get all loanableMaterials
+=======
+>>>>>>> 42-rooms
     return this.LoanableMaterialRepository.find()
   }
 
