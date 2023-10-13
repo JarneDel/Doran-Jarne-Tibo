@@ -223,4 +223,24 @@ export class DatabaseSeedCommand {
     const services = await this.seedService.addServicesFromJson()
     console.info(`added ${services.length} services to the database`)
   }
+
+  @Command({
+    command: 'seed:database:reservation',
+    describe: 'Seed reservations from json file',
+  })
+  async seedReservations() {
+    console.log('About to seed reservations to database')
+    const reservations = await this.seedService.addReservationsFromJson()
+    console.info(`added ${reservations.length} reservations to the database`)
+  }
+
+  @Command({
+    command: 'seed:reset:reservation',
+    describe: 'Delete all data from the reservation table',
+  })
+  async deleteReservations() {
+    console.info('Deleting all reservations')
+    await this.seedService.deleteAllReservations()
+    console.log('removed reservations')
+  }
 }

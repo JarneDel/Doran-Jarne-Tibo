@@ -43,4 +43,6 @@ export class ReservationResolver {
     if (!groupId) throw new GraphQLError(`No groupId found ${reservation}`)
     return this.groupService.findOne(groupId)
   }
+
+  
 }

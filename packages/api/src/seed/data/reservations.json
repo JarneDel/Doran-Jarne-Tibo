@@ -1,0 +1,95 @@
+[
+  {
+    "date": "1996-03-15T00:00:00.000Z",
+    "start_time": "10:00",
+    "end_time": "10:30",
+    "groupId": "6526b87005382b4c7441a810",
+    "reserved_materials": [
+      {
+        "name": "Voetbal",
+        "totalAmount": 5,
+        "wantedAmount": 2,
+        "price": 4,
+        "sports": ["Voetbal"],
+        "isComplete": true,
+        "description": "Een bal om mee te voetballen"
+      }
+    ],
+    "rooms": [
+      {
+        "name": "Sportzaal 1",
+        "sports": ["Voetbal", "Handbal", "Basketbal"],
+        "pricePerHour": 35,
+        "type": "Sportzaal"
+      },
+      {
+        "name": "Sportzaal 2",
+        "sports": ["Voetbal", "Handbal"],
+        "pricePerHour": 30,
+        "type": "Sportzaal"
+      }
+    ],
+    "price": 10,
+    "isCancelled": true
+  },
+  {
+    "date": "1996-04-20T00:00:00.000Z",
+    "start_time": "14:30",
+    "end_time": "15:00",
+    "groupId": "6526b87005382b4c7441a811",
+    "reserved_materials": [
+      {
+        "name": "Basketbal",
+        "totalAmount": 8,
+        "wantedAmount": 3,
+        "price": 5,
+        "sports": ["Basketbal"],
+        "isComplete": false,
+        "description": "Een basketbal om mee te spelen"
+      }
+    ],
+    "rooms": [
+      {
+        "name": "Sportzaal 3",
+        "sports": ["Basketbal", "Volleybal"],
+        "pricePerHour": 40,
+        "type": "Sportzaal"
+      },
+      {
+        "name": "Kleedkamer 3",
+        "sports": null,
+        "pricePerHour": 15,
+        "type": "Kleedkamer"
+      }
+    ],
+    "price": 12,
+    "isCancelled": false
+  },
+  {
+    "date": "1996-05-10T00:00:00.000Z",
+    "start_time": "09:00",
+    "end_time": "09:45",
+    "groupId": "6526b87005382b4c7441a812",
+    "reserved_materials": [
+      {
+        "name": "Basketbal",
+        "totalAmount": 8,
+        "wantedAmount": 3,
+        "price": 5,
+        "sports": ["Basketbal"],
+        "isComplete": false,
+        "description": "Een basketbal om mee te spelen"
+      }
+    ],
+    "rooms": [
+      {
+        "name": "Sportzaal 4",
+        "sports": ["Yoga", "Pilates"],
+        "pricePerHour": 25,
+        "type": "Zaal"
+      }
+    ],
+    "price": 8,
+    "isCancelled": true
+  }
+]
