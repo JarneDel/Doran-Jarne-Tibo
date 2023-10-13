@@ -14,7 +14,7 @@ export class LoanableMaterialsService {
   ) {}
 
   findAll() {
-    this.LoanableMaterialRepository.find()
+    return this.LoanableMaterialRepository.find()
   }
 
   create(
