@@ -41,6 +41,10 @@ export class DatabaseSeedCommand {
     console.info('⛹️‍♂️ Start seeding of sports')
     const sports = await this.seedService.addSportsFromJson()
     console.info(`${sports.length} sports are added`)
+
+    console.log('📅 Start seeding of reservations')
+    const reservations = await this.seedService.addReservationsFromJson()
+    console.info(`${reservations.length} reservations are added`)
   }
 
   @Command({
@@ -72,6 +76,8 @@ export class DatabaseSeedCommand {
     console.log('removed all staff')
     await this.seedService.deleteAllServices()
     console.info('Removed all services')
+    await this.seedService.deleteAllReservations()
+    console.info('Removed all reservations')
   }
 
   //Stocks

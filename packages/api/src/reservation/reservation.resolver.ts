@@ -6,35 +6,57 @@ import { UpdateReservationInput } from './dto/update-reservation.input';
 import { GroupsService } from 'src/groups/groups.service';
 import { GraphQLError } from 'graphql/error'
 import { Group } from 'src/groups/entities/group.entity';
+import { AllowedRoles } from 'src/users/decorators/role.decorator';
+import { Role } from 'src/users/entities/user.entity';
+import { UseGuards } from '@nestjs/common';
+import { FirebaseGuard } from 'src/authentication/guards/firebase.guard';
 
 @Resolver(() => Reservation)
 export class ReservationResolver {
-  constructor(private readonly reservationService: ReservationService,
-    private readonly groupService:GroupsService) {}
+  constructor(
+    private readonly reservationService: ReservationService,
+    private readonly groupService: GroupsService,
+  ) {}
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard)
   @Mutation(() => Reservation)
-  createReservation(@Args('createReservationInput') createReservationInput: CreateReservationInput) {
-    return this.reservationService.create(createReservationInput);
+  createReservation(
+    @Args('createReservationInput')
+    createReservationInput: CreateReservationInput,
+  ) {
+    return this.reservationService.create(createReservationInput)
   }
-
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
+  @UseGuards(FirebaseGuard)
   @Query(() => [Reservation], { name: 'GetAllReservations' })
   findAll() {
-    return this.reservationService.findAll();
+    return this.reservationService.findAll()
   }
-
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
+  @UseGuards(FirebaseGuard)
   @Query(() => Reservation, { name: 'GetReservatiounById' })
   findOne(@Args('id', { type: () => String }) id: string) {
-    return this.reservationService.findOne(id);
+    return this.reservationService.findOne(id)
   }
-
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
+  @UseGuards(FirebaseGuard)
   @Query(() => [Reservation], { name: 'GetReservationsByDate' })
   findByDate(@Args('date', { type: () => Date }) date: Date) {
-    return this.reservationService.findByDate(date);
+    return this.reservationService.findByDate(date)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard)
   @Mutation(() => Reservation, { name: 'UpdateReservation' })
-  updateReservation(@Args('updateReservationInput') updateReservationInput: UpdateReservationInput) {
-    return this.reservationService.update(updateReservationInput.id, updateReservationInput);
+  updateReservation(
+    @Args('updateReservationInput')
+    updateReservationInput: UpdateReservationInput,
+  ) {
+    return this.reservationService.update(
+      updateReservationInput.id,
+      updateReservationInput,
+    )
   }
 
   @ResolveField()
@@ -43,6 +65,4 @@ export class ReservationResolver {
     if (!groupId) throw new GraphQLError(`No groupId found ${reservation}`)
     return this.groupService.findOne(groupId)
   }
-
-  
 }
