@@ -1,11 +1,17 @@
-<script lang="ts"></script>
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'Logo',
+})
+</script>
 
 <template>
   <svg
-    width="43"
+    fill="none"
     height="44"
     viewBox="0 0 43 44"
-    fill="none"
+    width="43"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
