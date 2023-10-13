@@ -16,6 +16,6 @@ export class Group extends User {
   btw_number: string
 
   @Column()
-  @Field({ defaultValue: 0 , nullable: false})
+  @Field({ defaultValue: 50 , nullable: false})
   score: number
 }
