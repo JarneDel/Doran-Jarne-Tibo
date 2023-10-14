@@ -48,6 +48,23 @@ export const router = createRouter({
           path: 'inventory',
           component: () =>
             import('@/views/administration/inventory/Overview.vue'),
+          children: [
+            {
+              path: ':id',
+              component: () =>
+                import('@/views/administration/inventory/Item.vue'),
+            },
+            {
+              path: ':id/edit',
+              component: () =>
+                import('@/views/administration/inventory/Edit.vue'),
+            },
+            {
+              path: 'new',
+              component: () =>
+                import('@/views/administration/inventory/New.vue'),
+            },
+          ],
         },
       ],
     },

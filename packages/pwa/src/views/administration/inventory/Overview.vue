@@ -9,12 +9,13 @@ import {
   ArrowDownNarrowWide,
   ArrowUpDown,
   ArrowUpNarrowWide,
+  ChevronRight,
   Edit2,
   Search,
-  ChevronRight,
 } from 'lucide-vue-next'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import Modal from '@/components/Modal.vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'Overview',
@@ -29,18 +30,19 @@ export default defineComponent({
     ChevronRight,
   },
 
-  setup() {
+  setup: function () {
     const search = ref<string>('')
     const searchServiceId = ref<string>('')
     const sortDirection = ref<string>('ASC')
     const sortField = ref<string>('name')
     const isModalShown = ref<boolean>(true)
 
+    const { push } = useRouter()
+
     const { error, loading, result, refetch } = useQuery<AllStockAndServices>(
       ALL_STOCK_AND_SERVICES,
       {
         searchName: search.value,
-        // searchServiceId: searchServiceId.value,
         orderDirection: sortDirection.value,
         orderByField: sortField.value,
       },
@@ -72,6 +74,11 @@ export default defineComponent({
       search.value = target.value
       fetchWithFilters()
     }
+    const whereService = (e: Event) => {
+      const target = e.target as HTMLSelectElement
+      searchServiceId.value = target.value
+      fetchWithFilters()
+    }
 
     const fetchWithFilters = () => {
       refetch({
@@ -82,14 +89,9 @@ export default defineComponent({
       })
     }
 
-    const whereService = (e: Event) => {
-      const target = e.target as HTMLSelectElement
-      searchServiceId.value = target.value
-      fetchWithFilters()
-    }
-
     watch(isModalShown, (newValue, oldValue) => {
-      console.log('watch isModalShown', newValue, oldValue)
+      if (newValue) return
+      push('/admin/inventory')
     })
 
     return {
@@ -110,7 +112,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <Modal v-model:show="isModalShown"> content </Modal>
+  <Modal v-model:show="isModalShown">
+    <RouterView />
+  </Modal>
 
   <h2>Inventory overview</h2>
 
@@ -119,18 +123,18 @@ export default defineComponent({
       <div class="py4 flex flex-row gap-4">
         <label class="grid grid-cols-1 grid-rows-1">
           <input
-            type="text"
             :placeholder="$t('search')"
-            @input.capture="whereName"
             class="p1 bg-primary-surface b-2 col-start-1 row-start-1 border-neutral-200 px-4"
+            type="text"
+            @input.capture="whereName"
           />
           <Search class="m2 col-start-1 row-start-1 mx-3 justify-self-end" />
         </label>
         <select
           id="service"
+          class="bg-primary-surface b-2 border-neutral-200 px-4"
           name="service"
           @change="whereService"
-          class="bg-primary-surface b-2 border-neutral-200 px-4"
         >
           <option value="">{{ $t('inventory.sort.service.all') }}</option>
           <option
@@ -152,16 +156,16 @@ export default defineComponent({
       <thead class="border-2 border-neutral-200 bg-neutral-200/60 text-left">
         <tr class="text-neutral-8">
           <th
-            @click="sortName"
             class="gap2 flex cursor-pointer flex-row items-center"
+            @click="sortName"
           >
             <span>{{ $t('inventory.name') }}</span>
-            <arrow-up-down :size="16" v-if="sortField !== 'name'" />
+            <arrow-up-down v-if="sortField !== 'name'" :size="16" />
             <arrow-down-narrow-wide
-              :size="16"
               v-else-if="sortDirection === 'DESC'"
+              :size="16"
             />
-            <arrow-up-narrow-wide :size="16" v-else />
+            <arrow-up-narrow-wide v-else :size="16" />
           </th>
           <th>Description</th>
           <th :title="$t('inventory.title.amount.tooltip')">
@@ -172,12 +176,12 @@ export default defineComponent({
             @click="sortService"
           >
             <span>{{ $t('inventory.service') }}</span>
-            <arrow-up-down :size="16" v-if="sortField !== 'service'" />
+            <arrow-up-down v-if="sortField !== 'service'" :size="16" />
             <arrow-down-narrow-wide
-              :size="16"
               v-else-if="sortDirection === 'DESC'"
+              :size="16"
             />
-            <arrow-up-narrow-wide :size="16" v-else />
+            <arrow-up-narrow-wide v-else :size="16" />
           </th>
           <!--          <th>Actions</th>-->
           <th></th>
@@ -198,7 +202,7 @@ export default defineComponent({
           </td>
           <td :title="stock.service.description">{{ stock.service.name }}</td>
           <td class="gap4 flex flex-row justify-end">
-            <router-link :to="`/administration/inventory/${stock.id}`">
+            <router-link :to="`/admin/inventory/${stock.id}`">
               <Edit2 />
             </router-link>
             <button>
