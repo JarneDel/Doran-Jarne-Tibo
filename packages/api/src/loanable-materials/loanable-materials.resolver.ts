@@ -12,8 +12,7 @@ import { CreateLoanableMaterialInput } from './dto/create-loanable-material.inpu
 import { UpdateLoanableMaterialInput } from './dto/update-loanable-material.input'
 // Auth
 import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
-import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
-import { UserRecord } from 'firebase-admin/auth'
+import { AllowedRoles } from '../users/decorators/role.decorator'
 
 
 @Resolver(() => LoanableMaterial)
@@ -21,8 +20,9 @@ export class LoanableMaterialsResolver {
   constructor(
     private readonly loanableMaterialsService: LoanableMaterialsService
   ) {}
-  
+
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard)
   @Mutation(() => LoanableMaterial)
   createLoanableMaterial(
     @Args('createLoanableMaterialInput')
@@ -31,6 +31,7 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.create(createLoanableMaterialInput)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
   @UseGuards(FirebaseGuard)
   @Query(() => [LoanableMaterial], {
     name: 'GetAllloanableMaterials',

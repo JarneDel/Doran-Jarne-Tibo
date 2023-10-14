@@ -1,48 +1,48 @@
 <script lang="ts">
-import { useQuery } from '@vue/apollo-composable'
-import { ALL_GROUPS } from '@/graphql/group.query'
-import { ALL_STOCK } from '@/graphql/stock.graphql'
-import { defineComponent, ref } from 'vue'
-import UseFirebase from '@/composables/useFirebase'
-import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
-import UseLanguage from '@/composables/useLanguage.ts'
-import ChangeLanguage from '@/components/ChangeLanguage.vue'
+import { useQuery } from '@vue/apollo-composable';
+import { ALL_GROUPS } from '@/graphql/group.query';
+import { ALL_STOCK } from '@/graphql/stock.graphql';
+import { defineComponent, ref } from 'vue';
+import UseFirebase from '@/composables/useFirebase';
+import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts';
+import UseLanguage from '@/composables/useLanguage.ts';
+import ChangeLanguage from '@/components/ChangeLanguage.vue';
 
 interface Group {
-  groups: [{ _id: string; name: string }]
+  groups: [{ _id: string; name: string }];
 }
 interface Stock {
-  stock: [{ _id: string; name: string }]
+  stock: [{ _id: string; name: string }];
 }
 
 export default defineComponent({
   components: { ChangeLanguage },
   computed: {
     SUPPORTED_LOCALES() {
-      return SUPPORTED_LOCALES
+      return SUPPORTED_LOCALES;
     },
   },
   setup() {
-    const { firebaseUser } = UseFirebase()
-    const idToken = ref()
-    const { setLocale: setLanguage } = UseLanguage()
+    const { firebaseUser } = UseFirebase();
+    const idToken = ref();
+    const { setLocale: setLanguage } = UseLanguage();
 
     const getIdToken = async () => {
-      idToken.value = await firebaseUser.value?.getIdToken()
-    }
+      idToken.value = await firebaseUser.value?.getIdToken();
+    };
     const setLocale = (event: Event) => {
-      const target = event.target as HTMLSelectElement
-      console.log(target.value)
-      setLanguage(target.value)
-    }
+      const target = event.target as HTMLSelectElement;
+      console.log(target.value);
+      setLanguage(target.value);
+    };
 
-    getIdToken()
-    const { loading, result, error } = useQuery<Group>(ALL_GROUPS)
+    getIdToken();
+    const { loading, result, error } = useQuery<Group>(ALL_GROUPS);
     const {
       loading: loadingStock,
       result: resultStock,
       error: errorStock,
-    } = useQuery<Stock>(ALL_STOCK)
+    } = useQuery<Stock>(ALL_STOCK);
     return {
       idToken,
       result,
@@ -53,9 +53,9 @@ export default defineComponent({
       errorStock,
       setLocale,
       firebaseUser,
-    }
+    };
   },
-})
+});
 </script>
 
 <template>
@@ -67,7 +67,11 @@ export default defineComponent({
     }}
   </h2>
   <div>
-    {"Authorization": "Bearer {{ idToken }} "}
+    <pre class="overflow-hidden">
+    {
+      "Authorization": "Bearer {{ idToken }} "
+    }</pre
+    >
     <div>
       <ul>
         <li v-for="group in result?.groups" :key="group._id">
