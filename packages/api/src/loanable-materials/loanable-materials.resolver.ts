@@ -14,6 +14,7 @@ import { UpdateLoanableMaterialInput } from './dto/update-loanable-material.inpu
 import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { AllowedRoles } from '../users/decorators/role.decorator'
 
+
 @Resolver(() => LoanableMaterial)
 export class LoanableMaterialsResolver {
   constructor(
