@@ -52,32 +52,33 @@ export default defineComponent({
 
 <template>
   <div class="m-8">
-    <ul class="mx-auto grid grid-cols-3 gap-6">
-      <li v-for="group in result?.groups" :key="group.id">
-        <div class="h-full rounded-lg bg-white p-4 shadow-md">
-          <p class="h-18 text-2xl">{{ group.name }}</p>
-          <p class="text-lg">{{ group.btw_number }}</p>
-          <div class="relative h-4 w-full">
+    <div class="mx-auto w-fit grid lg:grid-cols-3 md:grid-cols-2 gap-6">
+      <div v-for="group in result?.groups" :key="group.id" class="2xl:w-90 xl:w-70 md:w-55 h-full rounded-lg bg-white p-4 shadow-md">
+
+          <p class=" xl:h-20 h-16 xl:text-2xl text-xl">{{ group.name }}</p>
+          <p class="xl:text-lg text-base h-5">{{ group.btw_number }}</p>
+          <p class="xl:text-lg text-base">Score:</p>
+          <div class="relative h-4 w-full rounded-md overflow-hidden">
             <div
-              class="absolute h-4 w-full bg-gradient-to-r from-green-600 via-yellow-400 to-red-600"
+            class="absolute h-4 w-full bg-gradient-to-r from-green-600 via-yellow-400 to-red-600"
             ></div>
+            
             <div
-              :class="`absolute h-4 w-px bg-black left-[${getScore(
-                group.score,
-              )}%]`"
+              :class="`absolute h-4 w-px bg-black left-[${
+                group.score}%]`"
             ></div>
           </div>
           <div class="flex items-center justify-between">
-            <StyledButton class="my-2" @click="addScore(group.id)">
-              <Plus />
-            </StyledButton>
-            <p class="text-lg">{{ getScore(group.score) }}</p>
             <StyledButton class="my-2" @click="removeScore(group.id)">
-              <Minus />
+              <Minus class="xl:h-4 h-3"/>
+            </StyledButton>
+            <p class="xl:text-lg lg:text-base">{{ group.score}}</p>
+            <StyledButton class="my-2" @click="addScore(group.id)">
+              <Plus class="xl:h-4 h-3"/>
             </StyledButton>
           </div>
         </div>
-      </li>
-    </ul>
+
+      </div>
   </div>
 </template>
