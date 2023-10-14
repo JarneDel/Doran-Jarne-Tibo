@@ -23,6 +23,7 @@ export default defineConfig({
         light: '#ADD7F6',
         surface: '#F5F7FA',
         text: '#133C55',
+        medium: '#073978',
         dark: '#0A1004',
       },
     },
