@@ -31,9 +31,30 @@ export const ALL_STOCK_AND_SERVICES = gql`
   }
 `
 
+export const ONE_STOCK = gql`
+  query ($id: String!) {
+    stockItem(id: $id) {
+      id
+      name
+      description
+      amountInStock
+      idealStock
+      service {
+        id
+        name
+        description
+      }
+    }
+  }
+`
+
 export interface AllStockAndServices {
   stock: StockItem[]
   service: ServiceItem[]
+}
+
+export interface IOneStockItem {
+  stockItem: StockItem
 }
 
 export interface ServiceItem {

@@ -34,36 +34,22 @@ export default defineComponent({
     const search = ref<string>('')
     const searchServiceId = ref<string>('')
     const sortDirection = ref<string>('ASC')
-    const sortField = ref<string>('name')
+    const sortFieldName = ref<string>('name')
     const isModalShown = ref<boolean>(true)
-
-    const { push } = useRouter()
 
     const { error, loading, result, refetch } = useQuery<AllStockAndServices>(
       ALL_STOCK_AND_SERVICES,
       {
         searchName: search.value,
         orderDirection: sortDirection.value,
-        orderByField: sortField.value,
+        orderByField: sortFieldName.value,
       },
     )
-    const sortName = () => {
-      console.log('sortName')
-      if (sortField.value === 'name') {
-        sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC'
-        console.log(sortDirection.value)
-      } else {
-        sortField.value = 'name'
-        sortDirection.value = 'asc'
-      }
-      fetchWithFilters()
-    }
-    const sortService = () => {
-      console.log('sortService')
-      if (sortField.value === 'service') {
+    const sortField = (field: string) => {
+      if (sortFieldName.value === field) {
         sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC'
       } else {
-        sortField.value = 'service'
+        sortFieldName.value = field
         sortDirection.value = 'asc'
       }
       fetchWithFilters()
@@ -84,15 +70,10 @@ export default defineComponent({
       refetch({
         searchName: search.value,
         orderDirection: sortDirection.value,
-        orderByField: sortField.value,
+        orderByField: sortFieldName.value,
         searchServiceId: searchServiceId.value,
       })
     }
-
-    watch(isModalShown, (newValue, oldValue) => {
-      if (newValue) return
-      push('/admin/inventory')
-    })
 
     return {
       error,
@@ -100,10 +81,9 @@ export default defineComponent({
       result,
       search,
       sortDirection,
-      sortField,
+      sortFieldName,
       isModalShown,
-      sortName,
-      sortService,
+      sortField,
       whereName,
       whereService,
     }
@@ -112,10 +92,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <Modal v-model:show="isModalShown">
-    <RouterView />
-  </Modal>
-
+  <RouterView />
   <h2>Inventory overview</h2>
 
   <div class="mx-2xl max-w-7xl">
@@ -157,10 +134,10 @@ export default defineComponent({
         <tr class="text-neutral-8">
           <th
             class="gap2 flex cursor-pointer flex-row items-center"
-            @click="sortName"
+            @click="sortField('name')"
           >
             <span>{{ $t('inventory.name') }}</span>
-            <arrow-up-down v-if="sortField !== 'name'" :size="16" />
+            <arrow-up-down v-if="sortFieldName !== 'name'" :size="16" />
             <arrow-down-narrow-wide
               v-else-if="sortDirection === 'DESC'"
               :size="16"
@@ -168,15 +145,30 @@ export default defineComponent({
             <arrow-up-narrow-wide v-else :size="16" />
           </th>
           <th>Description</th>
-          <th :title="$t('inventory.title.amount.tooltip')">
-            {{ $t('inventory.amount') }}
+          <th
+            :title="$t('inventory.title.amount.tooltip')"
+            class="cursor-pointer"
+            @click="sortField('amountInStock')"
+          >
+            <span>{{ $t('inventory.amount') }} &nbsp;</span>
+            <arrow-up-down
+              class="inline"
+              v-if="sortFieldName !== 'amountInStock'"
+              :size="16"
+            />
+            <arrow-down-narrow-wide
+              class="inline"
+              v-else-if="sortDirection === 'DESC'"
+              :size="16"
+            />
+            <arrow-up-narrow-wide v-else :size="16" class="inline" />
           </th>
           <th
             class="flex cursor-pointer flex-row items-center gap-2"
-            @click="sortService"
+            @click="sortField('service')"
           >
             <span>{{ $t('inventory.service') }}</span>
-            <arrow-up-down v-if="sortField !== 'service'" :size="16" />
+            <arrow-up-down v-if="sortFieldName !== 'service'" :size="16" />
             <arrow-down-narrow-wide
               v-else-if="sortDirection === 'DESC'"
               :size="16"
@@ -202,12 +194,12 @@ export default defineComponent({
           </td>
           <td :title="stock.service.description">{{ stock.service.name }}</td>
           <td class="gap4 flex flex-row justify-end">
-            <router-link :to="`/admin/inventory/${stock.id}`">
+            <router-link :to="`/admin/inventory/${stock.id}/edit`">
               <Edit2 />
             </router-link>
-            <button>
+            <router-link :to="`/admin/inventory/${stock.id}`">
               <ChevronRight />
-            </button>
+            </router-link>
           </td>
         </tr>
       </tbody>
