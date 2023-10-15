@@ -7,10 +7,6 @@ export default defineComponent({
   name: 'Modal',
   emits: ['close'],
   props: {
-    title: {
-      type: String,
-      default: '',
-    },
     maxWidth: {
       type: String,
       default: 'max-w-2xl',
@@ -21,7 +17,7 @@ export default defineComponent({
   },
   setup(_, ctx) {
     const target = ref(null)
-    onClickOutside(target, e => {
+    onClickOutside(target, () => {
       ctx.emit('close')
     })
     return {
