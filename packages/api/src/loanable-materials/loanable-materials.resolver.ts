@@ -62,6 +62,8 @@ export class LoanableMaterialsResolver {
     )
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard)
   @Mutation(() => String)
   removeLoanableMaterialById(@Args('id', { type: () => String }) id: string) {
     return this.loanableMaterialsService

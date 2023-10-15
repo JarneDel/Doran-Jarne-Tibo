@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
-import { Column, Entity, ObjectIdColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity() // Database link - Typeorm
 @ObjectType()
@@ -23,4 +23,12 @@ export class Room {
   @Column() // Database link - Typeorm
   @Field() // Graphql
   type: string
+
+  @CreateDateColumn({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
+  createdAt: Date
+
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
+  updatedAt: Date
 }

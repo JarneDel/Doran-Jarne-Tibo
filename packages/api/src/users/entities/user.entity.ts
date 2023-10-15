@@ -1,7 +1,7 @@
 // Grahpql
 import { ObjectType, Field, ID } from '@nestjs/graphql'
 // Typeorm
-import { Column, CreateDateColumn, Entity, ObjectIdColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm'
 
 export enum Role {
   SUPER_ADMIN = 'SUPER_ADMIN',
@@ -35,7 +35,7 @@ export class User {
   @Field({ nullable: true })
   createdAt: Date
 
-  @CreateDateColumn({ type: 'timestamp', nullable: true })
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
   updatedAt: Date
 }

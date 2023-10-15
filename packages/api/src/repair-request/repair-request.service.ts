@@ -1,26 +1,65 @@
+// Common
 import { Injectable } from '@nestjs/common';
+// Inputs
 import { CreateRepairRequestInput } from './dto/create-repair-request.input';
 import { UpdateRepairRequestInput } from './dto/update-repair-request.input';
+// Typeorm
+import { InjectRepository } from '@nestjs/typeorm';
+import { ObjectId, Repository } from 'typeorm';
+// Entities
+import { RepairRequest } from './entities/repair-request.entity';
 
 @Injectable()
 export class RepairRequestService {
+  constructor(
+    @InjectRepository(RepairRequest)
+    private readonly RepairRequestRepository: Repository<RepairRequest>
+  ) {}
+
   create(createRepairRequestInput: CreateRepairRequestInput) {
-    return 'This action adds a new repairRequest';
+    const RR = new RepairRequest()
+    RR.UID = "Temporarily UID"
+    RR.description = createRepairRequestInput.description
+    RR.room = createRepairRequestInput.room
+    RR.loanableMaterial = createRepairRequestInput.loanableMaterial
+    console.log('Created: ' + RR.description)
+    return this.RepairRequestRepository.save(RR)
   }
 
   findAll() {
-    return `This action returns all repairRequest`;
+    return this.RepairRequestRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} repairRequest`;
+  findOneById(id: string): Promise<RepairRequest> {
+    const obj = new ObjectId(id)
+    console.log(obj)
+    // @ts-ignore
+    return this.RepairRequestRepository.findOne({ id: new ObjectId(id) })
   }
 
-  update(id: number, updateRepairRequestInput: UpdateRepairRequestInput) {
-    return `This action updates a #${id} repairRequest`;
+  async update(id: string, updateRepairRequestInput: UpdateRepairRequestInput) {
+    const rr = await this.findOneById(id)
+    rr.description = updateRepairRequestInput.description
+    rr.room = updateRepairRequestInput.room
+    rr.loanableMaterial = updateRepairRequestInput.loanableMaterial
+    return this.RepairRequestRepository.save(rr)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} repairRequest`;
+  remove(id: string): Promise<String> {
+    return this.RepairRequestRepository.delete(id)
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  }
+
+  save(repairRequests: RepairRequest[]): Promise<RepairRequest[]> {
+    return this.RepairRequestRepository.save(repairRequests)
+  }
+
+  truncate(): Promise<void> {
+    return this.RepairRequestRepository.clear()
   }
 }
