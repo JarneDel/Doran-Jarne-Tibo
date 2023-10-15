@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import {
   ALL_STOCK_AND_SERVICES,
@@ -36,6 +36,8 @@ export default defineComponent({
     const sortDirection = ref<string>('ASC')
     const sortFieldName = ref<string>('name')
     const isModalShown = ref<boolean>(true)
+
+    const { push } = useRouter()
 
     const { error, loading, result, refetch } = useQuery<AllStockAndServices>(
       ALL_STOCK_AND_SERVICES,
@@ -86,6 +88,7 @@ export default defineComponent({
       sortField,
       whereName,
       whereService,
+      push,
     }
   },
 })
@@ -93,9 +96,7 @@ export default defineComponent({
 
 <template>
   <RouterView />
-  <h2>Inventory overview</h2>
-
-  <div class="mx-2xl max-w-7xl">
+  <div class="mx-a max-w-7xl">
     <div class="flex items-center justify-between">
       <div class="py4 flex flex-row gap-4">
         <label class="grid grid-cols-1 grid-rows-1">
@@ -125,55 +126,57 @@ export default defineComponent({
         </select>
       </div>
       <div>
-        <StyledButton type="button"> {{ $t('inventory.new') }}</StyledButton>
+        <StyledButton type="button" @click="push('inventory/new')">
+          {{ $t('inventory.new') }}
+        </StyledButton>
       </div>
     </div>
 
     <table class="w-full border-collapse border-spacing-0">
       <thead class="border-2 border-neutral-200 bg-neutral-200/60 text-left">
         <tr class="text-neutral-8">
-          <th
-            class="gap2 flex cursor-pointer flex-row items-center"
-            @click="sortField('name')"
-          >
-            <span>{{ $t('inventory.name') }}</span>
-            <arrow-up-down v-if="sortFieldName !== 'name'" :size="16" />
-            <arrow-down-narrow-wide
-              v-else-if="sortDirection === 'DESC'"
-              :size="16"
-            />
-            <arrow-up-narrow-wide v-else :size="16" />
+          <th class="cursor-pointer" @click="sortField('name')">
+            <button class="gap2 flex flex-row items-center">
+              <span>{{ $t('inventory.name') }}</span>
+              <arrow-up-down v-if="sortFieldName !== 'name'" :size="16" />
+              <arrow-down-narrow-wide
+                v-else-if="sortDirection === 'DESC'"
+                :size="16"
+              />
+              <arrow-up-narrow-wide v-else :size="16" />
+            </button>
           </th>
-          <th>Description</th>
+          <th>{{ $t('inventory.description') }}</th>
           <th
             :title="$t('inventory.title.amount.tooltip')"
             class="cursor-pointer"
             @click="sortField('amountInStock')"
           >
-            <span>{{ $t('inventory.amount') }} &nbsp;</span>
-            <arrow-up-down
-              class="inline"
-              v-if="sortFieldName !== 'amountInStock'"
-              :size="16"
-            />
-            <arrow-down-narrow-wide
-              class="inline"
-              v-else-if="sortDirection === 'DESC'"
-              :size="16"
-            />
-            <arrow-up-narrow-wide v-else :size="16" class="inline" />
+            <button class="flex flex-row items-center gap-2">
+              <span>{{ $t('inventory.amount') }} &nbsp;</span>
+              <arrow-up-down
+                v-if="sortFieldName !== 'amountInStock'"
+                :size="16"
+                class="inline"
+              />
+              <arrow-down-narrow-wide
+                v-else-if="sortDirection === 'DESC'"
+                :size="16"
+                class="inline"
+              />
+              <arrow-up-narrow-wide v-else :size="16" class="inline" />
+            </button>
           </th>
-          <th
-            class="flex cursor-pointer flex-row items-center gap-2"
-            @click="sortField('service')"
-          >
-            <span>{{ $t('inventory.service') }}</span>
-            <arrow-up-down v-if="sortFieldName !== 'service'" :size="16" />
-            <arrow-down-narrow-wide
-              v-else-if="sortDirection === 'DESC'"
-              :size="16"
-            />
-            <arrow-up-narrow-wide v-else :size="16" />
+          <th class="cursor-pointer" @click="sortField('service')">
+            <button class="flex flex-row items-center gap-2">
+              <span>{{ $t('inventory.service') }}</span>
+              <arrow-up-down v-if="sortFieldName !== 'service'" :size="16" />
+              <arrow-down-narrow-wide
+                v-else-if="sortDirection === 'DESC'"
+                :size="16"
+              />
+              <arrow-up-narrow-wide v-else :size="16" />
+            </button>
           </th>
           <!--          <th>Actions</th>-->
           <th></th>
