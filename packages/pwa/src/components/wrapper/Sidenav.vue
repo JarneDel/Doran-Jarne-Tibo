@@ -42,49 +42,36 @@ export default defineComponent({
       'w-1/6': !isClosed,
       'w-16': isClosed,
     }"
-    class="h-screen rounded-r-xl bg-white transition-all duration-200"
+    class="h-screen bg-white transition-all duration-200"
   >
-    <div class="mt-4">
-      <router-link
-        class="flex items-center gap-4"
-        to="/"
+    <div class="mt-4 grid">
+      <button
         :class="{
           'mx-8': !isClosed,
           'mx-4': isClosed,
         }"
+        class="flex items-center gap-4 py-2"
+        @click="isClosed = !isClosed"
       >
-        <Logo class="h-8 w-8" />
-        <h1 v-if="!isClosed" class="text-2xl">{{ $t('navigation.title') }}</h1>
-      </router-link>
-      <div class="mt-4 grid">
-        <button
-          @click="isClosed = !isClosed"
-          :class="{
-            'mx-8': !isClosed,
-            'mx-4': isClosed,
-          }"
-          class="flex items-center gap-4 py-2"
-        >
-          <panel-left-close v-if="!isClosed" />
-          <panel-right-close v-else />
-        </button>
+        <panel-left-close v-if="!isClosed" />
+        <panel-right-close v-else />
+      </button>
 
-        <RouterLink
-          v-for="page of pages"
-          :key="page.name"
-          :to="page.route"
-          :class="{
-            'px-8': !isClosed,
-            'px-4': isClosed,
-            'bg-primary-light/40': section === page.name,
-            'rounded-r-md': section === page.name,
-          }"
-          class="flex items-center gap-4 py-2"
-        >
-          <component :is="page.icon" />
-          <h2 v-if="!isClosed" class="font-500 text-lg">{{ page.content }}</h2>
-        </RouterLink>
-      </div>
+      <RouterLink
+        v-for="page of pages"
+        :key="page.name"
+        :class="{
+          'px-8': !isClosed,
+          'px-4': isClosed,
+          'bg-primary-light/40': section === page.name,
+          'rounded-r-md': section === page.name,
+        }"
+        :to="page.route"
+        class="flex items-center gap-4 py-2"
+      >
+        <component :is="page.icon" />
+        <h2 v-if="!isClosed" class="font-500">{{ page.content }}</h2>
+      </RouterLink>
     </div>
   </div>
 </template>
