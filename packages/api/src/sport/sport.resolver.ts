@@ -43,7 +43,19 @@ export class SportResolver {
 
   @Mutation(() => Sport)
   async removeSportById(@Args('id', { type: () => String }) id: string) {
-    this.sportService.remove(id)
-    return 'Deleted sport with id: ' + id
+    return this.sportService
+      .remove(id)
+      .then((res) => {
+        const obj = JSON.parse(JSON.stringify(res))
+        if (obj.raw.deletedCount > 0) {
+          return 'Deleted sport with id: ' + id + ' succesfully'
+        } else {
+          return 'No sport with id: ' + id + ' found'
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+        return 'Error'
+      })
   }
 }

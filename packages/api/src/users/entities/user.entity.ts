@@ -7,6 +7,8 @@ export enum Role {
   SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
   USER = 'USER',
+  GROUP='GROUP',
+  STAFF='STAFF'
 }
 
 // User entity

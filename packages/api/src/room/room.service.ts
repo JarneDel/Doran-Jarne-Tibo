@@ -15,7 +15,7 @@ import { Room } from './entities/room.entity'
 export class RoomService {
   constructor(
     @InjectRepository(Room)
-    private readonly roomRepository: Repository<Room>,
+    private readonly roomRepository: Repository<Room>
   ) {}
 
   create(createRoomInput: CreateRoomInput) {
@@ -35,7 +35,7 @@ export class RoomService {
   findByIds(ids: string[]): Promise<Room[]> {
     return this.roomRepository.find({
       // @ts-ignore
-      _id: { $in: ids.map(id => new ObjectId(id)) },
+      _id: { $in: ids.map((id) => new ObjectId(id)) },
     })
   }
 
@@ -46,12 +46,24 @@ export class RoomService {
     return this.roomRepository.findOne({ _id: new ObjectId(id) })
   }
 
-  update(id: string, updateRoomInput: UpdateRoomInput) {
-    return `This action updates a #${id} room`
+  async update(id: string, updateRoomInput: UpdateRoomInput) {
+    const r = await this.findOneById(id)
+    r.name = updateRoomInput.name
+    r.pricePerHour = updateRoomInput.pricePerHour
+    r.sports = updateRoomInput.sports
+    r.type = updateRoomInput.type
+    return this.roomRepository.save(r)
   }
 
-  remove(id: string) {
-    return this.roomRepository.delete(id)
+  remove(id: string): Promise<string> {
+    return this.roomRepository
+      .delete(id)
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 
   // logic for seeding

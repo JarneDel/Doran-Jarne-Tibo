@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Group } from './entities/group.entity'
 import { Repository } from 'typeorm'
 import { ObjectId } from 'mongodb'
+import { Role } from 'src/users/entities/user.entity'
 
 @Injectable()
 export class GroupsService {
@@ -17,10 +18,15 @@ export class GroupsService {
     return this.groupRepository.find()
   }
 
-  create(createGroupInput: CreateGroupInput) {
+  create(uid: string,createGroupInput: CreateGroupInput) {
     const g = new Group()
     g.name = createGroupInput.name
     g.btw_number = createGroupInput.btw_number
+    g.locale = createGroupInput.locale
+    g.UID = uid
+    g.score = createGroupInput.score
+    g.role = Role.GROUP 
+
     return this.groupRepository.save(g)
   }
 

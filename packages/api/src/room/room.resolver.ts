@@ -48,12 +48,24 @@ export class RoomResolver {
 
   @Mutation(() => Room)
   updateRoom(@Args('updateRoomInput') updateRoomInput: UpdateRoomInput) {
-    return this.roomService.update(updateRoomInput.id, updateRoomInput)
+    return this.roomService.update(updateRoomInput._id, updateRoomInput)
   }
 
-  @Mutation(() => Room)
+  @Mutation(() => String)
   removeRoomById(@Args('id', { type: () => String }) id: string) {
-    this.roomService.remove(id)
-    return 'Deleted room with id: ' + id
+    return this.roomService
+      .remove(id)
+      .then((res) => {
+        const obj = JSON.parse(JSON.stringify(res))
+        if (obj.raw.deletedCount > 0) {
+          return 'Deleted room with id: ' + id + ' succesfully'
+        } else {
+          return 'No room with id: ' + id + ' found'
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+        return err
+      })
   }
 }
