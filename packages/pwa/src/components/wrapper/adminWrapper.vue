@@ -10,7 +10,7 @@ export default {
 <template>
   <div class="bg-primary-surface flex w-full">
     <Sidenav />
-    <div class="w-3/4">
+    <div class="w-full">
       <RouterView />
     </div>
   </div>
