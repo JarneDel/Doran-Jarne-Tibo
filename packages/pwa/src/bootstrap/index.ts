@@ -45,6 +45,11 @@ export const router = createRouter({
           component: () => import('@/views/admin/Groups.vue'),
         },
         {
+          path: 'inventory/new',
+          component: () => import('@/views/administration/inventory/New.vue'),
+        },
+
+        {
           path: 'inventory',
           component: () =>
             import('@/views/administration/inventory/Overview.vue'),
@@ -58,11 +63,6 @@ export const router = createRouter({
               path: ':id/edit',
               component: () =>
                 import('@/views/administration/inventory/Edit.vue'),
-            },
-            {
-              path: 'new',
-              component: () =>
-                import('@/views/administration/inventory/New.vue'),
             },
           ],
         },
