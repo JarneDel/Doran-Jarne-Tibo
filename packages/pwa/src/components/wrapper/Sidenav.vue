@@ -42,15 +42,11 @@ export default defineComponent({
       'w-1/6': !isClosed,
       'w-16': isClosed,
     }"
-    class="h-screen bg-white transition-all duration-200"
+    class="h-screen overflow-hidden bg-white transition-all duration-200"
   >
     <div class="mt-4 grid">
       <button
-        :class="{
-          'mx-8': !isClosed,
-          'mx-4': isClosed,
-        }"
-        class="flex items-center gap-4 py-2"
+        class="flex items-center gap-4 px-4 py-2"
         @click="isClosed = !isClosed"
       >
         <panel-left-close v-if="!isClosed" />
@@ -61,13 +57,11 @@ export default defineComponent({
         v-for="page of pages"
         :key="page.name"
         :class="{
-          'px-8': !isClosed,
-          'px-4': isClosed,
           'bg-primary-light/40': section === page.name,
           'rounded-r-md': section === page.name,
         }"
         :to="page.route"
-        class="flex items-center gap-4 py-2"
+        class="px4 flex items-center gap-4 py-2"
       >
         <component :is="page.icon" />
         <h2 v-if="!isClosed" class="font-500">{{ page.content }}</h2>
