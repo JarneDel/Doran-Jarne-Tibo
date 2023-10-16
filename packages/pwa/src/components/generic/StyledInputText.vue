@@ -24,16 +24,21 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    name: {
+      type: String,
+      default: '',
+    },
   },
   emits: ['update:modelValue'],
 })
 </script>
 
 <template>
-  <label class="my-3 block">
+  <label class="block">
     <span class="c-primary-text font-medium">{{ label }}</span>
     <br />
     <input
+      :name="name"
       :autocomplete="autocomplete"
       :required="required"
       :type="type"

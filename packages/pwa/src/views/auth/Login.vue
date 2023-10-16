@@ -58,7 +58,7 @@ export default defineComponent({
       v-model="credentials.email"
       :label="$t('auth.email')"
       autocomplete="email"
-      class="w-full"
+      class="my-3 w-full"
       required
       type="email"
     />
@@ -66,7 +66,7 @@ export default defineComponent({
       v-model="credentials.password"
       :label="$t('auth.password')"
       autocomplete="current-password"
-      class="w-full"
+      class="my-3 w-full"
       required
       type="password"
     />

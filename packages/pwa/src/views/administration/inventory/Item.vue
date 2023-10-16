@@ -3,7 +3,7 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import Modal from '@/components/Modal.vue'
 import { useRouter } from 'vue-router'
 import { useQuery } from '@vue/apollo-composable'
-import { IOneStockItem, ONE_STOCK } from '@/graphql/stock.graphql.ts'
+import { IOneStockItem, ONE_STOCK } from '@/graphql/stock.query.ts'
 import { Edit2, Minus, Plus } from 'lucide-vue-next'
 
 export default defineComponent({

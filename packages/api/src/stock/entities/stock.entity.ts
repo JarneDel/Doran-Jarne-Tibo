@@ -15,7 +15,7 @@ export class Stock {
   name: string
 
   @Column()
-  @Field() // Graphql
+  @Field({ nullable: true }) // Graphql
   description: string
 
   @Column()

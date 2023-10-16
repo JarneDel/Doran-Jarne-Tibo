@@ -24,7 +24,7 @@ export const ALL_STOCK_AND_SERVICES = gql`
         description
       }
     }
-    service {
+    services {
       id
       name
     }
@@ -48,9 +48,23 @@ export const ONE_STOCK = gql`
   }
 `
 
+export const CREATE_STOCK = gql`
+  mutation ($createStockInput: CreateStockInput!) {
+    createStock(createStockInput: $createStockInput) {
+      id
+    }
+  }
+`
+
+export interface ICreateStock {
+  createStock: {
+    id: string
+  }
+}
+
 export interface AllStockAndServices {
   stock: StockItem[]
-  service: ServiceItem[]
+  services: ServiceItem[]
 }
 
 export interface IOneStockItem {
@@ -74,4 +88,13 @@ export interface StockItem {
     name: string
     description: string
   }
+}
+
+export interface CreateStockInput {
+  amountInStock?: number
+  description: String
+  idealStock: number
+  name: string
+  needToOrderMore: boolean
+  serviceId: string
 }

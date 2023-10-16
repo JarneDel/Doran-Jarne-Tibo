@@ -4,7 +4,7 @@ import { useQuery } from '@vue/apollo-composable'
 import {
   ALL_STOCK_AND_SERVICES,
   AllStockAndServices,
-} from '@/graphql/stock.graphql.ts'
+} from '@/graphql/stock.query.ts'
 import {
   ArrowDownNarrowWide,
   ArrowUpDown,
@@ -116,7 +116,7 @@ export default defineComponent({
         >
           <option value="">{{ $t('inventory.sort.service.all') }}</option>
           <option
-            v-for="service of result.service"
+            v-for="service of result.services"
             v-if="result"
             :key="service.id"
             :value="service.id"
@@ -213,6 +213,7 @@ export default defineComponent({
       </tbody>
     </table>
   </div>
+
   <div v-if="loading">Loading...</div>
 </template>
 
