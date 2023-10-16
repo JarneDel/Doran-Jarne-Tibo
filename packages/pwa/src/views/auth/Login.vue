@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { type AuthError } from 'firebase/auth'
 
 import useFirebase from '@/composables/useFirebase'
@@ -15,6 +15,8 @@ export default defineComponent({
 
     const { push } = useRouter()
     const { login, firebaseUser } = useFirebase()
+    const { currentRoute } = useRouter()
+
     const credentials = ref({
       email: '',
       password: '',
@@ -23,16 +25,22 @@ export default defineComponent({
       login(credentials.value.email, credentials.value.password)
         .then(() => {
           console.log('logged in')
-          push('/')
+          push((currentRoute.value.query.redirect as string) || '/')
         })
         .catch((err: AuthError) => {
           error.value = err
         })
     }
+
+    const redirectToQueryParams = computed(() => {
+      return '?redirect=' + (currentRoute.value.query.redirect as string) || ''
+    })
+
     return {
       credentials,
       firebaseUser,
       error,
+      redirectToQueryParams,
       handleLogin,
     }
   },
@@ -70,7 +78,9 @@ export default defineComponent({
     <StyledButton class="my-2 w-full" type="submit"> Login</StyledButton>
     <div class="text-center">
       {{ $t('auth.noAccount') }}
-      <StyledLink to="/register">{{ $t('auth.register') }}</StyledLink>
+      <StyledLink :to="'/register' + redirectToQueryParams"
+        >{{ $t('auth.register') }}
+      </StyledLink>
     </div>
   </form>
 </template>
