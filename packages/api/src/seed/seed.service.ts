@@ -39,7 +39,7 @@ export class SeedService {
     private roomService: RoomService,
     private sportService: SportService,
     private staffService: StaffService,
-    private serviceService: ServiceService,
+    private serviceService: ServiceService
   ) {}
 
   async addStockFromJson(): Promise<Stock[]> {
@@ -51,8 +51,13 @@ export class SeedService {
     }
     for (let stockItem of stock) {
       const s = new Stock()
-      const { name, description, idealStock, amountInStock, needToOrderMore } =
-        stockItem
+      const {
+        name,
+        description,
+        idealStock,
+        amountInStock,
+        needToOrderMore,
+      } = stockItem
 
       const service = services[Math.floor(Math.random() * services.length)]
       s.serviceId = new ObjectId(service.id)
@@ -61,7 +66,7 @@ export class SeedService {
       s.description = description
       s.idealStock = idealStock
       s.amountInStock = amountInStock
-      s.needToOrderMore = needToOrderMore as unknown as boolean
+      s.needToOrderMore = (needToOrderMore as unknown) as boolean
       outStocks.push(s)
     }
 
@@ -81,7 +86,7 @@ export class SeedService {
       g.score = group.score
       g.locale = group.locale
       g.UID = group.uid
-      g.role = Role.GROUP 
+      g.role = Role.GROUP
 
       theGroups.push(g)
     }
@@ -117,12 +122,14 @@ export class SeedService {
   }
 
   async addRoomsFromJson(): Promise<Room[]> {
+    const sports = await this.sportService.findAll()
     let Rooms: Room[] = []
     for (let room of rooms) {
       const r = new Room()
+      const sport = sports[Math.floor(Math.random() * sports.length)]
       r.name = room.name
       r.pricePerHour = room.pricePerHour
-      r.sports = room.sports
+      r.SportId = [new ObjectId(sport.id).toString()]
       r.type = room.type
       Rooms.push(r)
     }
@@ -158,7 +165,7 @@ export class SeedService {
       s.lastName = staffMember.lastName
       s.phone = staffMember.phone
       s.holidaysLeft = staffMember.holidaysLeft
-      s.holidayDates = staffMember.holidayDates.map(date => new Date(date))
+      s.holidayDates = staffMember.holidayDates.map((date) => new Date(date))
 
       outStaff.push(s)
     }
@@ -186,12 +193,12 @@ export class SeedService {
       s.description = service.description
       s.roomId = [
         new ObjectId(
-          rooms[Math.floor(Math.random() * rooms.length)].id,
+          rooms[Math.floor(Math.random() * rooms.length)].id
         ).toString(),
       ]
       s.staffId = [
         new ObjectId(
-          staff[Math.floor(Math.random() * staff.length)].id,
+          staff[Math.floor(Math.random() * staff.length)].id
         ).toString(),
       ]
       outServices.push(s)

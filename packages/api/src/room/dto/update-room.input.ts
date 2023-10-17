@@ -35,8 +35,8 @@ export class UpdateRoomInput extends PartialType(CreateRoomInput) {
   @Field() // Graphql
   name: string
 
-  @Field(() => [String]) // Graphql
-  sports: string[]
+  @Field(() => [String], { nullable: true })
+  SportId: string[];
 
   @Max(1000)
   @Min(0)

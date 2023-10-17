@@ -1,5 +1,13 @@
 // GraphQL
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql'
 // Services
 import { RoomService } from './room.service'
 // Inputs
@@ -13,10 +21,16 @@ import { UseGuards } from '@nestjs/common'
 import { FirebaseGuard } from '../authentication/guards/firebase.guard'
 import { UserRecord } from 'firebase-admin/auth'
 import { FirebaseUser } from '../authentication/decorators/user.decorator'
+import { GraphQLError } from 'graphql/error'
+import { Sport } from 'src/sport/entities/sport.entity'
+import { SportService } from 'src/sport/sport.service'
 
 @Resolver(() => Room)
 export class RoomResolver {
-  constructor(private readonly roomService: RoomService) {}
+  constructor(
+    private readonly roomService: RoomService,
+    private readonly sportService: SportService
+  ) {}
 
   @Mutation(() => Room)
   createRoom(
@@ -67,5 +81,18 @@ export class RoomResolver {
         console.log(err)
         return err
       })
+  }
+
+  @ResolveField() // "sports" must be the same as the field in the room entity
+  async sports(@Parent() room: Room): Promise<Sport[]> {
+    const { SportId } = room
+    if (!SportId) throw new GraphQLError('No SportId found')
+    let sports: Sport[] = []
+    for (let id of SportId) {
+      const sport = await this.sportService.findOneById(id)
+      if (!sport) throw new GraphQLError('No sport found')
+      sports.push(sport)
+    }
+    return sports
   }
 }
