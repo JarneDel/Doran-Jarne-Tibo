@@ -1,6 +1,6 @@
 // common
 
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
+import { CanActivate, ExecutionContext, Global, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { GqlExecutionContext } from '@nestjs/graphql'
 import { UsersService } from '../users.service'
@@ -14,7 +14,6 @@ import { Staff } from 'src/staff/entities/staff.entity'
 
 // Injectable
 @Injectable()
-@Global()
 export class RolesGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
