@@ -10,20 +10,22 @@ import {
 } from '@nestjs/graphql'
 // Services
 import { RoomService } from './room.service'
+import { SportService } from 'src/sport/sport.service'
 // Inputs
 import { CreateRoomInput } from './dto/create-room.input'
 import { UpdateRoomInput } from './dto/update-room.input'
 // Entities
 import { Room } from './entities/room.entity'
+import { Sport } from 'src/sport/entities/sport.entity'
+import { Role } from 'src/users/entities/user.entity'
 // Common
 import { UseGuards } from '@nestjs/common'
-// Firebase
-import { FirebaseGuard } from '../authentication/guards/firebase.guard'
-import { UserRecord } from 'firebase-admin/auth'
-import { FirebaseUser } from '../authentication/decorators/user.decorator'
+// Auth
+import { AllowedRoles } from '../users/decorators/role.decorator'
 import { GraphQLError } from 'graphql/error'
-import { Sport } from 'src/sport/entities/sport.entity'
-import { SportService } from 'src/sport/sport.service'
+// Guards
+import { FirebaseGuard } from '../authentication/guards/firebase.guard'
+import { RolesGuard } from 'src/users/guards/roles.guard'
 
 @Resolver(() => Room)
 export class RoomResolver {
@@ -32,6 +34,8 @@ export class RoomResolver {
     private readonly sportService: SportService
   ) {}
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Room)
   createRoom(
     @Args('createRoomInput')
@@ -40,6 +44,8 @@ export class RoomResolver {
     return this.roomService.create(createRoomInput)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [Room], {
     name: 'GetAllRooms',
   })
@@ -47,6 +53,8 @@ export class RoomResolver {
     return this.roomService.findAll()
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => Room, {
     name: 'GetRoomById',
     nullable: true,
@@ -55,16 +63,15 @@ export class RoomResolver {
     return this.roomService.findOneById(id)
   }
 
-  @Query(() => Room, { name: 'room' })
-  findOne(@Args('id', { type: () => String }) id: string) {
-    return this.roomService.findOneById(id)
-  }
-
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Room)
   updateRoom(@Args('updateRoomInput') updateRoomInput: UpdateRoomInput) {
     return this.roomService.update(updateRoomInput._id, updateRoomInput)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => String)
   removeRoomById(@Args('id', { type: () => String }) id: string) {
     return this.roomService

@@ -21,9 +21,11 @@ import { Sport } from 'src/sport/entities/sport.entity'
 import { CreateLoanableMaterialInput } from './dto/create-loanable-material.input'
 import { UpdateLoanableMaterialInput } from './dto/update-loanable-material.input'
 // Auth
-import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { AllowedRoles } from '../users/decorators/role.decorator'
 import { GraphQLError } from 'graphql/error'
+// Guards
+import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
+import { RolesGuard } from 'src/users/guards/roles.guard'
 
 @Resolver(() => LoanableMaterial)
 export class LoanableMaterialsResolver {
@@ -33,7 +35,7 @@ export class LoanableMaterialsResolver {
   ) {}
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => LoanableMaterial)
   createLoanableMaterial(
     @Args('createLoanableMaterialInput')
@@ -43,7 +45,7 @@ export class LoanableMaterialsResolver {
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [LoanableMaterial], {
     name: 'GetAllloanableMaterials',
     nullable: true,
@@ -52,7 +54,8 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.findAll()
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => LoanableMaterial, {
     name: 'GetloanableMaterialById',
     nullable: true,
@@ -61,7 +64,8 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.findOneById(id)
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => LoanableMaterial)
   updateLoanableMaterial(
     @Args('updateLoanableMaterialInput')
@@ -74,7 +78,7 @@ export class LoanableMaterialsResolver {
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => String)
   removeLoanableMaterialById(@Args('id', { type: () => String }) id: string) {
     return this.loanableMaterialsService
