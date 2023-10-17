@@ -8,22 +8,35 @@ import { UseGuards } from '@nestjs/common'
 import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
+import { AllowedRoles } from 'src/users/decorators/role.decorator'
+import { Role } from 'src/users/entities/user.entity'
+import { RolesGuard } from 'src/users/guards/roles.guard'
 
 @Resolver(() => Group)
 export class GroupsResolver {
   constructor(private readonly groupsService: GroupsService) {}
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [Group], { name: 'groups' })
   findAll() {
     return this.groupsService.findAll()
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => Group, { name: 'group' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.groupsService.findOne(id)
   }
+  @AllowedRoles(Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => Group, { name: 'groupByUid' })
+  findOneByUid(@FirebaseUser() user: UserRecord): Promise<Group> {
+    return this.groupsService.findOneByUid(user.uid)
+  }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Group, { description: 'Create a bird using the DTO.' })
   createGroup(
     @Args('createGroupInput') createGroupInput: CreateGroupInput,
@@ -32,6 +45,8 @@ export class GroupsResolver {
     return this.groupsService.create(user.uid, createGroupInput)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Group, { description: 'adds a score to a group' })
   updateScore(
     @Args('id', { type: () => String }) id: string,
@@ -40,11 +55,15 @@ export class GroupsResolver {
     return this.groupsService.updateScore(id, amount)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Group)
   updateGroup(@Args('updateGroupInput') updateGroupInput: UpdateGroupInput) {
     return this.groupsService.update(updateGroupInput._id, updateGroupInput)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Group)
   removeGroup(@Args('id', { type: () => Int }) id: number) {
     return this.groupsService.remove(id)

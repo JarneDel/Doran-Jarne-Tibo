@@ -24,7 +24,7 @@ export class GroupsService {
     g.btw_number = createGroupInput.btw_number
     g.locale = createGroupInput.locale
     g.UID = uid
-    g.score = createGroupInput.score
+    g.score = 50
     g.role = Role.GROUP 
 
     return this.groupRepository.save(g)
@@ -33,6 +33,11 @@ export class GroupsService {
   async findOne(id: string) {
     //@ts-ignore
     return await this.groupRepository.findOne({ _id:new ObjectId(id)})
+  }
+
+  async findOneByUid(uid: string) {
+    //@ts-ignore
+    return await this.groupRepository.findOneByOrFail({ UID: uid})
   }
 
   async update(id: string, updateGroupInput: UpdateGroupInput) {
@@ -53,7 +58,7 @@ export class GroupsService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} group`
+    this.groupRepository.delete(id)
   }
 
   save(group: Group[]) {

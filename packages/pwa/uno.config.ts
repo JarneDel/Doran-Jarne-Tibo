@@ -26,6 +26,11 @@ export default defineConfig({
         medium: '#073978',
         dark: '#0A1004',
       },
+      neutral: {
+        DEFAULT: '#f5f9ff',
+        100: '#fff5f5',
+        200: '#e6e6e6',
+      },
     },
   },
 })

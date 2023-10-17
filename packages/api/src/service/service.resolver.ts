@@ -36,7 +36,7 @@ export class ServiceResolver {
     return this.serviceService.findAll()
   }
 
-  @Query(() => Service, { name: 'service' })
+  @Query(() => Service, { name: 'services' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.serviceService.findOne(id)
   }
