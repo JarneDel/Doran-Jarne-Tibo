@@ -27,7 +27,7 @@ export class StaffResolver {
   }
 
   @Query(() => Staff, { name: 'staffItem', nullable: true })
-  findOne(@Args('id') id: number) {
+  findOne(@Args('id') id: string) {
     return this.staffService.findOne(id)
   }
 
@@ -37,7 +37,7 @@ export class StaffResolver {
   }
 
   @Mutation(() => String, { name: 'removeStaff' })
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.staffService.remove(id)
   }
 
