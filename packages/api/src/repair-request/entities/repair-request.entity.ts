@@ -1,33 +1,50 @@
 // Graphql
-import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity';
+import { ObjectType, Field, ID, createUnionType } from '@nestjs/graphql'
+import { IsOptional } from 'class-validator'
+import { type } from 'os'
+import { Group } from 'src/groups/entities/group.entity'
+import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
 // Entities
-import { Room } from 'src/room/entities/room.entity';
+import { Room } from 'src/room/entities/room.entity'
+import { Staff } from 'src/staff/entities/staff.entity'
 // Typeorm
-import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ObjectIdColumn,
+  UpdateDateColumn,
+} from 'typeorm'
+
+export const GrSt = createUnionType({
+  name: 'GrSt',
+  types: () => [Group, Staff] as const,
+})
 
 @Entity()
 @ObjectType()
 export class RepairRequest {
   @ObjectIdColumn()
   @Field(() => ID)
-  id: string;
+  id: string
+
+  @Field(() => GrSt)
+  requestUser: Group | Staff
 
   @Column()
-  @Field()
-  UID: string;
+  requestUserId: string
 
   @Column()
   @Field({ nullable: true })
-  description?: string;
+  description?: string
 
   @Column()
   @Field(() => [String], { nullable: true })
-  room: Room;
+  room: Room
 
   @Column()
   @Field(() => [String], { nullable: true })
-  loanableMaterial: LoanableMaterial;
+  loanableMaterial: LoanableMaterial
 
   @CreateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })

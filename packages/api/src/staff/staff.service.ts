@@ -32,10 +32,10 @@ export class StaffService {
     return this.staffRepository.find()
   }
 
-  findOne(id: Object) {
+  findOne(id: string) {
     return this.staffRepository.findOneByOrFail({
       //@ts-ignore
-      _id: new Object(id),
+      _id: new ObjectId(id),
     })
   }
 
@@ -50,7 +50,7 @@ export class StaffService {
     return this.staffRepository.update(id, updateStaffInput)
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} staff`
   }
 

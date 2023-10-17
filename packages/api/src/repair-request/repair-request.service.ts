@@ -1,13 +1,13 @@
 // Common
-import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common'
 // Inputs
-import { CreateRepairRequestInput } from './dto/create-repair-request.input';
-import { UpdateRepairRequestInput } from './dto/update-repair-request.input';
+import { CreateRepairRequestInput } from './dto/create-repair-request.input'
+import { UpdateRepairRequestInput } from './dto/update-repair-request.input'
 // Typeorm
-import { InjectRepository } from '@nestjs/typeorm';
-import { ObjectId, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm'
+import { ObjectId, Repository } from 'typeorm'
 // Entities
-import { RepairRequest } from './entities/repair-request.entity';
+import { RepairRequest } from './entities/repair-request.entity'
 
 @Injectable()
 export class RepairRequestService {
@@ -18,7 +18,7 @@ export class RepairRequestService {
 
   create(createRepairRequestInput: CreateRepairRequestInput) {
     const RR = new RepairRequest()
-    RR.UID = "Temporarily UID"
+    RR.requestUserId = createRepairRequestInput.requestUserId
     RR.description = createRepairRequestInput.description
     RR.room = createRepairRequestInput.room
     RR.loanableMaterial = createRepairRequestInput.loanableMaterial
