@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { CreateGroupInput } from './create-group.input';
 import { InputType, Field, Int, PartialType, ID } from '@nestjs/graphql';
 import { ObjectIdColumn } from 'typeorm';
-import { IsInt, IsNotEmpty, IsString, Max, MinLength } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, Max, Min, MinLength } from 'class-validator';
 
 @InputType()
 export class UpdateGroupInput extends PartialType(CreateGroupInput) {
@@ -21,12 +21,17 @@ export class UpdateGroupInput extends PartialType(CreateGroupInput) {
   @Max(100)
   @IsNotEmpty()
   @IsInt()
+  @Min(0)
   @Field({ defaultValue: 0 })
   score: number
 }
 
 @InputType()
 export class UpdateGroupScoreInput {
+  @Max(100)
+  @IsNotEmpty()
+  @IsInt()
+  @Min(0)
   @Field()
-  score: number;
+  score: number
 }
