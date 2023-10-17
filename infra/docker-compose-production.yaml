@@ -2,15 +2,15 @@ version: '3.1'
 name: sport-complex-prod
 
 services:
-  sportdb:
+  db:
     image: mongo
-    restart: on-failure:5 # On error, try to restart for a maximum of 5 times
+    restart: unless-stopped
     ports:
-      - "27031:27017" # External:Internal
+      - "27017:27017" # Internal
     environment:
       MONGO_INITDB_DATABASE: api
     volumes:
-      - dbvolumesportcomplexproduction:/data/db
+      - dbvolume:/data/db
     networks:
       - database
 
@@ -30,6 +30,11 @@ services:
       - my-google-secret
     networks:
       - database
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://api:3000/" ]
+      interval: 5s
+    depends_on:
+      - db
 
 
 
@@ -43,11 +48,11 @@ services:
 
 
 volumes:
-  dbvolumesportcomplexproduction:
+  dbvolume:
 
 secrets:
   my-google-secret:
     file: /home/jarne/WebstormProjects/Doran-Jarne-Tibo/packages/api/credentials.json
+
 networks:
   database:
-    driver: bridge

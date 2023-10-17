@@ -28,12 +28,13 @@ import { ReservationModule } from './reservation/reservation.module'
     }),
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: `mongodb://${process.env.DB_HOST}}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-      // url: 'mongodb://sportdb:27017/api',
+      // url: `mongodb://${process.env.DB_HOST}}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+      url: 'mongodb://db:27017',
       entities: [__dirname + '/**/*.entity.{js,ts}'],
       synchronize: process.env.NODE_ENV != 'production', // Careful with this in production
       useNewUrlParser: true,
       useUnifiedTopology: true, // Disable deprecated warnings
+      directConnection: true,
     }),
     StockModule,
     GroupsModule,

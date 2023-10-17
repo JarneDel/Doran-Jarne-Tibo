@@ -48,6 +48,8 @@ USER node
 
 FROM node:18-alpine As production
 WORKDIR /usr/src/app
+# install curl for health check
+RUN apk add --no-cache curl
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
