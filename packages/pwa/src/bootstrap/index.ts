@@ -37,14 +37,36 @@ export const router = createRouter({
       },
     },
     {
-      path:'/admin',
+      path: '/admin',
       component: () => import('@/components/wrapper/adminWrapper.vue'),
       children: [
         {
           path: 'groups',
           component: () => import('@/views/admin/Groups.vue'),
-        }
-      ]
+        },
+        {
+          path: 'inventory/new',
+          component: () => import('@/views/administration/inventory/New.vue'),
+        },
+
+        {
+          path: 'inventory',
+          component: () =>
+            import('@/views/administration/inventory/Overview.vue'),
+          children: [
+            {
+              path: ':id',
+              component: () =>
+                import('@/views/administration/inventory/Item.vue'),
+            },
+            {
+              path: ':id/edit',
+              component: () =>
+                import('@/views/administration/inventory/Edit.vue'),
+            },
+          ],
+        },
+      ],
     },
     {
       path: '/administration',
@@ -58,9 +80,9 @@ export const router = createRouter({
           path: 'inventory',
           children: [
             {
-              path: '',
+              path: 'overview',
               component: () =>
-                import('@/views/administration/inventory/Inventory.vue'),
+                import('@/views/administration/inventory/Overview.vue'),
             },
           ],
         },

@@ -1,4 +1,5 @@
 // common
+
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { GqlExecutionContext } from '@nestjs/graphql'
@@ -10,8 +11,10 @@ import { StaffService } from 'src/staff/staff.service'
 import { Group } from 'src/groups/entities/group.entity'
 import { Staff } from 'src/staff/entities/staff.entity'
 
+
 // Injectable
 @Injectable()
+@Global()
 export class RolesGuard implements CanActivate {
   constructor(
     private reflector: Reflector,

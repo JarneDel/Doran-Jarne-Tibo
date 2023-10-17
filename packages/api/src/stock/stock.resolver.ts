@@ -17,6 +17,7 @@ import { UserRecord } from 'firebase-admin/auth'
 import { FirebaseUser } from '../authentication/decorators/user.decorator'
 import { Service } from '../service/entities/service.entity'
 import { ServiceService } from '../service/service.service'
+import { FilterStockArgs } from './args/filter.stock.args'
 
 @Resolver(() => Stock)
 export class StockResolver {
@@ -32,7 +33,11 @@ export class StockResolver {
 
   @UseGuards(FirebaseGuard)
   @Query(() => [Stock], { name: 'stock' })
-  findAll(@FirebaseUser() user: UserRecord) {
+  findAll(@FirebaseUser() user: UserRecord, @Args() args: FilterStockArgs) {
+    console.log(args)
+    if (args) {
+      return this.stockService.findWithFilter(args)
+    }
     return this.stockService.findAll()
   }
 
