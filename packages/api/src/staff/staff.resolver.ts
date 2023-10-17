@@ -15,8 +15,9 @@ export class StaffResolver {
   @UseGuards(FirebaseGuard)
   @Mutation(() => Staff, { name: 'createStaff' })
   createStaff(
-    @Args('createStaffInput') createStaffInput: CreateStaffInput ,
-    @FirebaseUser() user: UserRecord,): Promise<Staff>{
+    @Args('createStaffInput') createStaffInput: CreateStaffInput,
+    @FirebaseUser() user: UserRecord,
+  ): Promise<Staff> {
     return this.staffService.create(user.uid, createStaffInput)
   }
 
@@ -38,5 +39,12 @@ export class StaffResolver {
   @Mutation(() => String, { name: 'removeStaff' })
   remove(@Args('id') id: number) {
     return this.staffService.remove(id)
+  }
+
+  @UseGuards(FirebaseGuard)
+  @Query(() => Staff, { name: 'StaffByUid' })
+  findOneByUid(@FirebaseUser() user: UserRecord): Promise<Staff> {
+    console.log(user.uid)
+    return this.staffService.findOneByUid(user.uid)
   }
 }
