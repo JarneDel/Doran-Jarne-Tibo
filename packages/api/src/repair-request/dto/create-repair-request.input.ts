@@ -16,6 +16,9 @@ import {
 // Entities
 import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
 import { Room } from 'src/room/entities/room.entity'
+// Entities from other modules (reservation)
+import { Rooms } from 'src/reservation/entities/room.entity'
+import { Materials } from 'src/reservation/entities/material.entity'
 
 @InputType()
 export class CreateRepairRequestInput {
@@ -29,11 +32,11 @@ export class CreateRepairRequestInput {
   // Either room or loanableMaterial should be filled in (validateIf)
   @ValidateIf((o) => o.loanableMaterial == undefined)
   @IsNotEmpty()
-  @Field(() => [String], { nullable: true })
-  room: Room
+  @Field(() => [Rooms], { nullable: true })
+  room: Rooms
 
   @ValidateIf((o) => o.room == undefined)
   @IsNotEmpty()
-  @Field(() => [String], { nullable: true })
-  loanableMaterial: LoanableMaterial
+  @Field(() => [Materials], { nullable: true })
+  loanableMaterial: Materials
 }

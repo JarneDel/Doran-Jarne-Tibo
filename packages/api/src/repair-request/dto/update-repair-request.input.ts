@@ -9,6 +9,9 @@ import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-mater
 import { Room } from 'src/room/entities/room.entity';
 // Typeorm
 import { ObjectIdColumn } from 'typeorm';
+// Entities from other modules (reservation)
+import { Rooms } from 'src/reservation/entities/room.entity'
+import { Materials } from 'src/reservation/entities/material.entity'
 
 @InputType()
 export class UpdateRepairRequestInput extends PartialType(CreateRepairRequestInput) {
@@ -20,9 +23,9 @@ export class UpdateRepairRequestInput extends PartialType(CreateRepairRequestInp
   @Field({ nullable: true })
   description?: string;
 
-  @Field(() => [String], { nullable: true })
-  room: Room;
+  @Field(() => [Rooms], { nullable: true })
+  room: Rooms;
 
-  @Field(() => [String], { nullable: true })
-  loanableMaterial: LoanableMaterial;
+  @Field(() => [Materials], { nullable: true })
+  loanableMaterial: Materials;
 }

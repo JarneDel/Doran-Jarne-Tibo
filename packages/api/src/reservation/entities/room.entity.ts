@@ -5,7 +5,7 @@ import { Column, Entity, ObjectIdColumn } from 'typeorm'
 @ObjectType()
 export class Rooms {
   @Column() // Database link - Typeorm
-  @Field() // Graphql
+  @Field({nullable:true}) // Graphql
   name: string
 
   @Column() // Database link - Typeorm
@@ -13,10 +13,10 @@ export class Rooms {
   sports: string[] 
 
   @Column() // Database link - Typeorm
-  @Field() // Graphql
+  @Field({nullable:true}) // Graphql
   pricePerHour: number
 
   @Column() // Database link - Typeorm
-  @Field() // Graphql
+  @Field({nullable:true}) // Graphql
   type: string
 }

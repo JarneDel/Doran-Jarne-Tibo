@@ -5,7 +5,6 @@ import { type } from 'os'
 import { Group } from 'src/groups/entities/group.entity'
 import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
 // Entities
-import { Room } from 'src/room/entities/room.entity'
 import { Staff } from 'src/staff/entities/staff.entity'
 // Typeorm
 import {
@@ -15,6 +14,9 @@ import {
   ObjectIdColumn,
   UpdateDateColumn,
 } from 'typeorm'
+// Entities from other modules (reservation)
+import { Rooms } from 'src/reservation/entities/room.entity'
+import { Materials } from 'src/reservation/entities/material.entity'
 
 export const GrSt = createUnionType({
   name: 'GrSt',
@@ -39,12 +41,12 @@ export class RepairRequest {
   description?: string
 
   @Column()
-  @Field(() => [String], { nullable: true })
-  room: Room
+  @Field(() => [Rooms], { nullable: true })
+  room: Rooms
 
   @Column()
-  @Field(() => [String], { nullable: true })
-  loanableMaterial: LoanableMaterial
+  @Field(() => [Materials], { nullable: true })
+  loanableMaterial: Materials
 
   @CreateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })

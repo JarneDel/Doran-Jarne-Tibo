@@ -5,9 +5,10 @@ import { CreateRepairRequestInput } from './dto/create-repair-request.input'
 import { UpdateRepairRequestInput } from './dto/update-repair-request.input'
 // Typeorm
 import { InjectRepository } from '@nestjs/typeorm'
-import { ObjectId, Repository } from 'typeorm'
 // Entities
 import { RepairRequest } from './entities/repair-request.entity'
+import { ObjectId } from 'mongodb'
+import { Repository } from 'typeorm'
 
 @Injectable()
 export class RepairRequestService {
@@ -34,7 +35,7 @@ export class RepairRequestService {
     const obj = new ObjectId(id)
     console.log(obj)
     // @ts-ignore
-    return this.RepairRequestRepository.findOne({ id: new ObjectId(id) })
+    return this.RepairRequestRepository.findOneByOrFail({ _id: new ObjectId(id) })
   }
 
   async update(id: string, updateRepairRequestInput: UpdateRepairRequestInput) {
