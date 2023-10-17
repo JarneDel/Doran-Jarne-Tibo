@@ -33,7 +33,7 @@ export class UpdateLoanableMaterialInput extends PartialType(
   wantedAmount: number;
 
   @Field(() => [String], { nullable: true })
-  sports: string[];
+  SportId: string[];
 
   @IsNumber()
   @Min(0)

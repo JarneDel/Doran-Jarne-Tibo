@@ -11,18 +11,25 @@ export class DatabaseSeedCommand {
     describe: 'Seed the database with stocks',
   })
   async seedAll() {
-    //Stocks
-
     //Groups
     console.info('🌱 Start seeding of groups')
     const groups = await this.seedService.addGroupsFromJson()
     console.info(`${groups.length} groups are added`)
-    //LoanableMaterials
+
+    //Sports
+    console.info('⛹️‍♂️ Start seeding of sports')
+    const sports = await this.seedService.addSportsFromJson()
+    console.info(`${sports.length} sports are added`)
+
+    //LoanableMaterials (after sports because of foreign key)
     console.info('🌱 Start seeding of loanableMaterials')
     const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
+
+    //Staff
     console.log('🧑🏻‍🤝‍🧑🏼 Started seeding staff')
     const staff = await this.seedService.addStaffFromJson()
+    console.log(`${staff.length} staff were added`)
 
     //Rooms
     console.info('🌱 Start seeding of rooms')
@@ -37,10 +44,6 @@ export class DatabaseSeedCommand {
     console.info('🗃️ Start seeding of stocks')
     const stocks = await this.seedService.addStockFromJson()
     console.info(` ${stocks.length} pieces of stock were added`)
-    //Sports
-    console.info('⛹️‍♂️ Start seeding of sports')
-    const sports = await this.seedService.addSportsFromJson()
-    console.info(`${sports.length} sports are added`)
   }
 
   @Command({

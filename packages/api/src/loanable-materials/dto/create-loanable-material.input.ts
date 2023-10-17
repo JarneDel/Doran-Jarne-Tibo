@@ -26,7 +26,7 @@ export class CreateLoanableMaterialInput {
   wantedAmount: number;
 
   @Field(() => [String], { nullable: true })
-  sports: string[];
+  SportId: string[];
 
   @IsNumber()
   @Min(0)

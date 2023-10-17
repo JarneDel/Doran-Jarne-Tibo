@@ -98,6 +98,7 @@ export class SeedService {
   }
 
   async addLoanableMaterialsFromJson(): Promise<LoanableMaterial[]> {
+    const sports = await this.sportService.findAll()
     let LoanableMaterials: LoanableMaterial[] = []
     for (let loanableMaterial of loanableMaterials) {
       const lm = new LoanableMaterial()
@@ -107,7 +108,8 @@ export class SeedService {
       lm.price = loanableMaterial.price
       lm.isComplete = loanableMaterial.isComplete
       lm.description = loanableMaterial.description
-      lm.sports = loanableMaterial.sports
+      const sport = sports[Math.floor(Math.random() * sports.length)]
+      lm.SportId = [new ObjectId(sport.id).toString()]
 
       LoanableMaterials.push(lm)
     }

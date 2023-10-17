@@ -1,40 +1,49 @@
-import { ObjectType, Field, ID } from "@nestjs/graphql";
-import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from "typeorm";
+import { ObjectType, Field, ID } from '@nestjs/graphql'
+import { Sport } from 'src/sport/entities/sport.entity'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ObjectIdColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 
 @Entity()
 @ObjectType()
 export class LoanableMaterial {
   @ObjectIdColumn()
   @Field(() => ID)
-  id: string;
+  id: string
 
   @Column()
   @Field()
-  name: string;
+  name: string
 
   @Column()
   @Field()
-  totalAmount: number;
+  totalAmount: number
 
   @Column()
   @Field()
-  wantedAmount: number;
+  wantedAmount: number
 
   @Column()
   @Field()
-  price: number;
+  price: number
 
-  @Column()
-  @Field(() => [String], { nullable: true })
-  sports: string[];
+  @Field(() => [Sport], { nullable: true })
+  sports: [Sport]
+
+  @Column({ type: 'array' })
+  SportId: string[]
 
   @Column()
   @Field()
-  isComplete: boolean;
+  isComplete: boolean
 
   @Column()
   @Field({ nullable: true })
-  description?: string;
+  description?: string
 
   @CreateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
@@ -43,5 +52,4 @@ export class LoanableMaterial {
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
   updatedAt: Date
-
 }
