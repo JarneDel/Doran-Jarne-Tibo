@@ -17,6 +17,7 @@ import { SportModule } from './sport/sport.module'
 import { UsersModule } from './users/users.module'
 import { ReservationModule } from './reservation/reservation.module'
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({}),
@@ -28,8 +29,8 @@ import { ReservationModule } from './reservation/reservation.module'
     }),
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      // url: `mongodb://${process.env.DB_HOST}}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-      url: 'mongodb://db:27017',
+      url: `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}`,
+      database: process.env.DB_NAME ?? 'api',
       entities: [__dirname + '/**/*.entity.{js,ts}'],
       synchronize: process.env.NODE_ENV != 'production', // Careful with this in production
       useNewUrlParser: true,

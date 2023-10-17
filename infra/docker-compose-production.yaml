@@ -5,16 +5,16 @@ services:
   db:
     image: mongo
     restart: unless-stopped
-    ports:
-      - "27017:27017" # Internal
+    #    ports:
+    #      - "27017:27017" # Internal
+    expose:
+      - "27017" # Internal
     environment:
       MONGO_INITDB_DATABASE: api
     volumes:
       - dbvolume:/data/db
     networks:
       - database
-
-
 
   api:
     build:
@@ -25,7 +25,7 @@ services:
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/my-google-secret
     ports:
-      - 3000:3000 # External:What Is Set In Main.ts
+      - 3001:3000 # External:What Is Set In Main.ts
     secrets:
       - my-google-secret
     networks:
@@ -33,10 +33,11 @@ services:
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://api:3000/" ]
       interval: 5s
+      timeout: 5s
+      retries: 5
+
     depends_on:
       - db
-
-
 
   pwa:
     build:
@@ -45,14 +46,12 @@ services:
     ports:
       - 8081:80
 
-
-
 volumes:
   dbvolume:
 
 secrets:
   my-google-secret:
-    file: /home/jarne/WebstormProjects/Doran-Jarne-Tibo/packages/api/credentials.json
+    file: ../packages/api/credentials.json
 
 networks:
   database:
