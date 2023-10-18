@@ -52,6 +52,16 @@ export const CREATE_STOCK = gql`
   mutation ($createStockInput: CreateStockInput!) {
     createStock(createStockInput: $createStockInput) {
       id
+      service {
+        id
+        name
+        description
+      }
+      name
+      amountInStock
+      idealStock
+      description
+      needToOrderMore
     }
   }
 `

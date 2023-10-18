@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import {
   ALL_STOCK_AND_SERVICES,
@@ -16,6 +16,7 @@ import {
 import StyledButton from '@/components/generic/StyledButton.vue'
 import Modal from '@/components/Modal.vue'
 import { useRouter } from 'vue-router'
+import useLastRoute from '@/composables/useLastRoute.ts'
 
 export default defineComponent({
   name: 'Overview',
@@ -37,7 +38,7 @@ export default defineComponent({
     const sortFieldName = ref<string>('name')
     const isModalShown = ref<boolean>(true)
 
-    const { push } = useRouter()
+    const { push, currentRoute, afterEach } = useRouter()
 
     const { error, loading, result, refetch } = useQuery<AllStockAndServices>(
       ALL_STOCK_AND_SERVICES,
@@ -45,6 +46,10 @@ export default defineComponent({
         searchName: search.value,
         orderDirection: sortDirection.value,
         orderByField: sortFieldName.value,
+      },
+      {
+        nextFetchPolicy: 'cache-and-network',
+        fetchPolicy: 'cache-and-network',
       },
     )
     const sortField = (field: string) => {
@@ -76,6 +81,19 @@ export default defineComponent({
         searchServiceId: searchServiceId.value,
       })
     }
+
+    const { lastRoute } = useLastRoute()
+    watch(
+      lastRoute,
+      value => {
+        console.log(lastRoute)
+        if (value == '/admin/inventory/new') {
+          console.log('refetching')
+          fetchWithFilters()
+        }
+      },
+      { immediate: true },
+    )
 
     return {
       error,
@@ -126,7 +144,7 @@ export default defineComponent({
         </select>
       </div>
       <div>
-        <StyledButton type="button" @click="push('inventory/new')">
+        <StyledButton type="button" @click="push('/admin/inventory/new')">
           {{ $t('inventory.new') }}
         </StyledButton>
       </div>

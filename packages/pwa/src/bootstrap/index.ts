@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import useFirebase from '@/composables/useFirebase.ts'
+import useLastRoute from '@/composables/useLastRoute.ts'
 
 const { firebaseUser, logout } = useFirebase()
-
+const { lastRoute } = useLastRoute()
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -144,4 +145,8 @@ router.beforeEach((to, _, next) => {
   } else {
     next()
   }
+})
+
+router.afterEach((to, from, failure) => {
+  lastRoute.value = from.path
 })

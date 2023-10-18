@@ -30,7 +30,8 @@ export class StockService {
     // check if service exists
     const service = await this.serviceService.findOne(serviceId)
     if (!service) throw new GraphQLError(`Service ${serviceId} not found}`)
-
+    if (!(await this.isNameUnique(name))) return new GraphQLError(`item exists`)
+    console.log('creating new item')
     s.name = name
     s.description = description
     s.idealStock = idealStock
@@ -141,6 +142,19 @@ export class StockService {
 
     options.order = {
       [orderByField]: direction,
+    }
+  }
+
+  private async isNameUnique(name: string): Promise<boolean> {
+    try {
+      const stockItemWithName = await this.stockRepository.find({
+        where: {
+          name: name,
+        },
+      })
+      return !stockItemWithName || stockItemWithName.length == 0
+    } catch (e) {
+      return false
     }
   }
 }

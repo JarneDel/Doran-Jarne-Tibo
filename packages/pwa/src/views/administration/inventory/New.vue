@@ -35,7 +35,6 @@ export default defineComponent({
     } = useQuery<IServices>(ALL_SERVICES)
 
     const { mutate } = useMutation<ICreateStock>(CREATE_STOCK)
-
     const createNewItem = async (e: Event) => {
       if (service.value == '') {
         errors.value.push('Please select a service')
@@ -51,9 +50,28 @@ export default defineComponent({
         needToOrderMore: false,
         serviceId: service.value,
       }
-      const res = await mutate({
-        createStockInput: params,
-      })
+      const res = await mutate(
+        {
+          createStockInput: params,
+        },
+        // {
+        // update: (cache, result) => {
+        //   const res = cache.readQuery({
+        //     query: ALL_STOCK_AND_SERVICES,
+        //   })
+        //
+        //   cache.writeQuery({
+        //     query: ALL_STOCK_AND_SERVICES,
+        //     data: {
+        //       ...res,
+        //       stock: [...res.stock, result.data?.createStock],
+        //     },
+        //   })
+        // },
+        // },
+      )
+      console.info(res)
+
       // todo: error handling, possible redirect to edit if name already exists
       if (res?.data?.createStock.id) {
         await push('/admin/inventory/' + res.data.createStock.id)
@@ -78,8 +96,8 @@ export default defineComponent({
 
 <template>
   <form
-    @submit.prevent="createNewItem"
     class="mx-auto mt-12 flex max-w-lg flex-col"
+    @submit.prevent="createNewItem"
   >
     <h2 class="font-500 mb-1 text-xl">{{ $t('item.new.title') }}</h2>
     <div class="text-sm text-gray-800">
@@ -87,17 +105,17 @@ export default defineComponent({
       <styled-link to="/admin/inventory/edit">Edit an item</styled-link>
     </div>
     <styled-input-text
-      name="name"
+      v-model="name"
       :label="$t('inventory.name')"
       class="my-1"
-      v-model="name"
+      name="name"
       required
     />
     <styled-input-text
-      name="description"
-      :label="$t('inventory.description')"
       v-model="description"
+      :label="$t('inventory.description')"
       class="my-1"
+      name="description"
     />
 
     <label class="my-1" for="idealAmountInStock">
@@ -106,13 +124,13 @@ export default defineComponent({
       </span>
       <input
         id="idealAmountInStock"
+        v-model="idealAmountInStock"
         class="block w-16"
         max="200"
         min="0"
         name="idealAmountInStock"
         step="1"
         type="number"
-        v-model="idealAmountInStock"
       />
     </label>
 
@@ -120,13 +138,13 @@ export default defineComponent({
       <span>{{ $t('item.new.inStock') }}</span>
       <input
         id="inStock"
+        v-model="inStock"
         class="block w-16"
         max="200"
         min="0"
         name="inStock"
         step="1"
         type="number"
-        v-model="inStock"
     /></label>
 
     <label for="service">{{ $t('item.new.services') }}</label>
@@ -134,12 +152,11 @@ export default defineComponent({
     <div>
       <select
         id="service"
+        v-model="service"
         class="bg-primary-surface b-2 border-neutral-200 px-4"
         name="service"
-        v-model="service"
-        required
       >
-        <option value="" disabled></option>
+        <option value="">empty</option>
         <option
           v-for="service of services.services"
           v-if="services"
@@ -150,6 +167,11 @@ export default defineComponent({
         </option>
       </select>
     </div>
+
+    <StyledLink to="/admin/service/new"
+      >{{ $t('inventory.service.new') }}
+    </StyledLink>
+
     <div class="flex justify-end py-3">
       <StyledButton :px="2" :py="1" type="submit"
         >{{ $t('item.new.submit') }}

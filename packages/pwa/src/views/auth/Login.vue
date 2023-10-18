@@ -13,7 +13,7 @@ export default defineComponent({
   setup() {
     const error = ref<AuthError | null>(null)
 
-    const { push } = useRouter()
+    const { replace } = useRouter()
     const { login, firebaseUser } = useFirebase()
     const { currentRoute } = useRouter()
 
@@ -25,7 +25,7 @@ export default defineComponent({
       login(credentials.value.email, credentials.value.password)
         .then(() => {
           console.log('logged in')
-          push((currentRoute.value.query.redirect as string) || '/')
+          replace((currentRoute.value.query.redirect as string) || '/')
         })
         .catch((err: AuthError) => {
           error.value = err
