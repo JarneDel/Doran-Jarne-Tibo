@@ -23,6 +23,7 @@ export class RepairRequestService {
     RR.description = createRepairRequestInput.description
     RR.room = createRepairRequestInput.room
     RR.loanableMaterial = createRepairRequestInput.loanableMaterial
+    RR.isRepaired = false
     console.log('Created: ' + RR.description)
     return this.RepairRequestRepository.save(RR)
   }
@@ -34,15 +35,15 @@ export class RepairRequestService {
   findOneById(id: string): Promise<RepairRequest> {
     const obj = new ObjectId(id)
     console.log(obj)
-    // @ts-ignore
-    return this.RepairRequestRepository.findOneByOrFail({ _id: new ObjectId(id) })
+    return this.RepairRequestRepository.findOneByOrFail({
+      // @ts-ignore
+      _id: new ObjectId(id),
+    })
   }
 
   async update(id: string, updateRepairRequestInput: UpdateRepairRequestInput) {
     const rr = await this.findOneById(id)
-    rr.description = updateRepairRequestInput.description
-    rr.room = updateRepairRequestInput.room
-    rr.loanableMaterial = updateRepairRequestInput.loanableMaterial
+    rr.isRepaired = updateRepairRequestInput.isRepaired
     return this.RepairRequestRepository.save(rr)
   }
 

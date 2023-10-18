@@ -1,9 +1,6 @@
 // Graphql
 import { ObjectType, Field, ID, createUnionType } from '@nestjs/graphql'
-import { IsOptional } from 'class-validator'
-import { type } from 'os'
 import { Group } from 'src/groups/entities/group.entity'
-import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
 // Entities
 import { Staff } from 'src/staff/entities/staff.entity'
 // Typeorm
@@ -47,6 +44,10 @@ export class RepairRequest {
   @Column()
   @Field(() => [Materials], { nullable: true })
   loanableMaterial: Materials
+
+  @Column()
+  @Field()
+  isRepaired: boolean
 
   @CreateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })

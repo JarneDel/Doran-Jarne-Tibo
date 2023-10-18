@@ -75,9 +75,9 @@ export class RepairRequestResolver {
       .then((res) => {
         const obj = JSON.parse(JSON.stringify(res))
         if (obj.raw.deletedCount > 0) {
-          return 'Deleted repair request with id: ' + id + 'successfully'
+          return 'Deleted repair-request with id: ' + id + 'successfully'
         } else {
-          return 'No room with id: ' + id + ' found'
+          return 'No repair-request with id: ' + id + ' found'
         }
       })
       .catch((err) => {

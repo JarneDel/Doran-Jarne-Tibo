@@ -29,6 +29,7 @@ import { RoomService } from 'src/room/room.service'
 import { SportService } from 'src/sport/sport.service'
 import { StaffService } from 'src/staff/staff.service'
 import { ServiceService } from '../service/service.service'
+import { RepairRequestService } from '../repair-request/repair-request.service'
 import { Role } from 'src/users/entities/user.entity'
 import { Reservation } from 'src/reservation/entities/reservation.entity'
 import { ReservationService } from 'src/reservation/reservation.service'
@@ -46,6 +47,7 @@ export class SeedService {
     private staffService: StaffService,
     private serviceService: ServiceService,
     private reservationService: ReservationService,
+    private RepairRequestService: RepairRequestService
   ) {}
 
   async addStockFromJson(): Promise<Stock[]> {
@@ -195,47 +197,47 @@ export class SeedService {
     const loanableMaterials = await this.loanableMaterialsService.findAll()
     if (loanableMaterials.length === 0) {
       throw new Error(
-        'No loanable materials found, please seed loanable materials first',
+        'No loanable materials found, please seed loanable materials first'
       )
     }
-    
-      let outReservations: Reservation[] = [];
-      for (let reservation of reservations) {
-        const r = new Reservation()
-        r.date = new Date(reservation.date)
-        r.start_time = reservation.start_time
-        r.end_time = reservation.end_time
-        r.groupId = groups[Math.floor(Math.random() * groups.length)].id
-        const materials: Materials[] = []
-        for (let material of reservation.reserved_materials) {
-          const m = new Materials()
-          m.name = material.name
-          m.totalAmount = material.totalAmount
-          m.wantedAmount = material.wantedAmount
-          m.price = material.price
-          m.sports = material.sports
-          m.isComplete = material.isComplete
-          m.description = material.description
-          materials.push(m)
-        }
-        const rooms: Rooms[] = []
-        for (let room of reservation.rooms) {
-          const r = new Rooms()
-          r.name = room.name
-          r.pricePerHour = room.pricePerHour
-          r.sports = room.sports
-          r.type = room.type
-          rooms.push(r)
-        }
-        //@ts-ignore
-        r.reserved_materials = materials
-        //@ts-ignore
-        r.rooms = rooms
-        r.price = reservation.price
-        r.isCancelled = reservation.isCancelled
-        outReservations.push(r)
+
+    let outReservations: Reservation[] = []
+    for (let reservation of reservations) {
+      const r = new Reservation()
+      r.date = new Date(reservation.date)
+      r.start_time = reservation.start_time
+      r.end_time = reservation.end_time
+      r.groupId = groups[Math.floor(Math.random() * groups.length)].id
+      const materials: Materials[] = []
+      for (let material of reservation.reserved_materials) {
+        const m = new Materials()
+        m.name = material.name
+        m.totalAmount = material.totalAmount
+        m.wantedAmount = material.wantedAmount
+        m.price = material.price
+        m.sports = material.sports
+        m.isComplete = material.isComplete
+        m.description = material.description
+        materials.push(m)
       }
-      return this.reservationService.saveAll(outReservations)
+      const rooms: Rooms[] = []
+      for (let room of reservation.rooms) {
+        const r = new Rooms()
+        r.name = room.name
+        r.pricePerHour = room.pricePerHour
+        r.sports = room.sports
+        r.type = room.type
+        rooms.push(r)
+      }
+      //@ts-ignore
+      r.reserved_materials = materials
+      //@ts-ignore
+      r.rooms = rooms
+      r.price = reservation.price
+      r.isCancelled = reservation.isCancelled
+      outReservations.push(r)
+    }
+    return this.reservationService.saveAll(outReservations)
   }
 
   async deleteAllReservations(): Promise<void> {
@@ -273,5 +275,13 @@ export class SeedService {
 
   async deleteAllServices(): Promise<void> {
     return this.serviceService.truncate()
+  }
+
+  async addRepairRequestsFromJson(): Promise<Service[]> {
+    return null
+  }
+
+  async deleteAllRepairRequests(): Promise<void> {
+    return this.RepairRequestService.truncate()
   }
 }
