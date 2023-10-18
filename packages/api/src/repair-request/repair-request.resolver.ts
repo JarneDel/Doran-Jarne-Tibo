@@ -68,7 +68,7 @@ export class RepairRequestResolver {
   }
 
   @UseGuards(FirebaseGuard)
-  @Mutation(() => RepairRequest)
+  @Mutation(() => String)
   removeRepairRequest(@Args('id', { type: () => String }) id: string) {
     return this.repairRequestService
       .remove(id)
