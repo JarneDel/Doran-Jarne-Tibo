@@ -1,9 +1,11 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue'
-import { useQuery } from '@vue/apollo-composable'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   ALL_STOCK_AND_SERVICES,
   AllStockAndServices,
+  IUpdateStock,
+  UPDATE_STOCK,
 } from '@/graphql/stock.query.ts'
 import {
   ArrowDownNarrowWide,
@@ -17,10 +19,12 @@ import StyledButton from '@/components/generic/StyledButton.vue'
 import Modal from '@/components/Modal.vue'
 import { useRouter } from 'vue-router'
 import useLastRoute from '@/composables/useLastRoute.ts'
+import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
 
 export default defineComponent({
   name: 'Overview',
   components: {
+    DoubleClickEdit,
     Modal,
     StyledButton,
     Edit2,
@@ -40,6 +44,7 @@ export default defineComponent({
 
     const { push, currentRoute, afterEach } = useRouter()
 
+    // graphql
     const { error, loading, result, refetch } = useQuery<AllStockAndServices>(
       ALL_STOCK_AND_SERVICES,
       {
@@ -52,6 +57,13 @@ export default defineComponent({
         fetchPolicy: 'cache-and-network',
       },
     )
+
+    const { mutate: updateItem } = useMutation(UPDATE_STOCK)
+
+    /**
+     * Sorts the table by the given field and requests the data again
+     * @param field
+     */
     const sortField = (field: string) => {
       if (sortFieldName.value === field) {
         sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC'
@@ -95,6 +107,25 @@ export default defineComponent({
       { immediate: true },
     )
 
+    const updateItemService = (id: string, serviceId: string) => {
+      console.log('updating item')
+      console.log(id, serviceId)
+      const stockItem = result?.value.stock.find(s => s.id === id)
+      if (!stockItem) return
+      const updatedStockItem: IUpdateStock = {
+        serviceId: serviceId,
+        amountInStock: stockItem.amountInStock,
+        description: stockItem.description,
+        idealStock: stockItem.idealStock,
+        name: stockItem.name,
+        needToOrderMore: stockItem.needToOrderMore,
+        id: id,
+      }
+      updateItem({
+        updateStockInput: updatedStockItem,
+      })
+    }
+
     return {
       error,
       loading,
@@ -107,6 +138,7 @@ export default defineComponent({
       whereName,
       whereService,
       push,
+      updateItemService,
     }
   },
 })
@@ -207,13 +239,38 @@ export default defineComponent({
           class="hover:bg-primary-light/20 transition-colors duration-200"
         >
           <td>{{ stock.name }}</td>
-          <td :title="stock.description" class="truncate">
-            {{ stock.description }}
+          <td
+            :title="stock.description"
+            class="truncate"
+            @contextmenu=""
+            @dblclick=""
+          >
+            <DoubleClickEdit :value="stock.description" />
           </td>
           <td :title="$t('inventory.title.amount.tooltip')">
             {{ stock.amountInStock }} / {{ stock.idealStock }}
           </td>
-          <td :title="stock.service.description">{{ stock.service.name }}</td>
+          <td :title="stock.service.description">
+            <select
+              class="hover-text-primary hover:border-primary-light ring-offset-primary-lighter appearance-none rounded bg-inherit outline-none ring-black ring-offset-4 hover:ring focus-visible:ring active:ring"
+              name="service"
+              @change="updateItemService(stock.id, $event.target.value)"
+            >
+              <option :value="stock.service.id">
+                {{ stock.service.name }}
+              </option>
+              <option
+                v-for="s of result.services.filter(
+                  s => s.id !== stock.service.id,
+                )"
+                v-if="result"
+                :key="s.id"
+                :value="s.id"
+              >
+                {{ s.name }}
+              </option>
+            </select>
+          </td>
           <td class="gap4 flex flex-row justify-end">
             <router-link :to="`/admin/inventory/${stock.id}/edit`">
               <Edit2 />

@@ -21,6 +21,7 @@ export default defineConfig({
       primary: {
         DEFAULT: '#386FA4',
         light: '#ADD7F6',
+        lighter: '#E7F1F9',
         surface: '#F5F7FA',
         text: '#133C55',
         medium: '#073978',

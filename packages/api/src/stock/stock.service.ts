@@ -55,8 +55,19 @@ export class StockService {
     })
   }
 
-  update(id: string, updateStockInput: UpdateStockInput) {
-    return `This action updates a #${id} stock`
+  async update(id: string, updateStockInput: UpdateStockInput) {
+    console.log('updateStockInput', updateStockInput)
+    const s = await this.stockRepository.findOneByOrFail({
+      //@ts-ignore
+      _id: new ObjectId(id),
+    })
+    s.name = updateStockInput.name
+    s.description = updateStockInput.description
+    s.idealStock = updateStockInput.idealStock
+    s.amountInStock = updateStockInput.amountInStock
+    s.needToOrderMore = updateStockInput.needToOrderMore
+    s.serviceId = new ObjectId(updateStockInput.serviceId)
+    return this.stockRepository.save(s)
   }
 
   remove(id: number) {
