@@ -28,10 +28,10 @@ export const router = createRouter({
           path: '',
           component: () => import('@/views/rooms/Rooms.vue'),
         },
-        {
-          path: ':id',
-          component: () => import('@/views/rooms/Room.vue'),
-        },
+        // {
+        //   path: ':id',
+        //   component: () => import('@/views/rooms/Room.vue'),
+        // },
       ],
       meta: {
         shouldBeAuthenticated: true,

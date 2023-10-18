@@ -41,6 +41,8 @@ export default defineComponent({
       console.log(widthPercentage.value)
       progressbar.value.style.width = widthPercentage.value + '%'
     })
+    const subtractItems = () => {}
+    const addItems = () => {}
 
     return {
       push,
@@ -50,6 +52,8 @@ export default defineComponent({
       loading,
       progressbar,
       widthPercentage,
+      subtractItems,
+      addItems,
     }
   },
 })
@@ -58,8 +62,8 @@ export default defineComponent({
 <template>
   <Modal
     :title="result?.stockItem.name + ' - ' + result?.stockItem.service.name"
-    @close="push('/admin/inventory')"
     max-width="max-w-xl"
+    @close="push('/admin/inventory')"
   >
     <template v-slot:title>
       <div class="flex w-full flex-row items-center justify-between">
@@ -103,15 +107,15 @@ export default defineComponent({
           <div ref="progressbar" class="bg-primary h-3 w-0 rounded-full"></div>
         </div>
         <button
-          @click="subtractItems"
           class="bg-primary-surface hover:bg-primary-surface/80 active:bg-primary-surface/60 mr-2 self-end rounded-full p-2"
+          @click="subtractItems"
         >
           <Minus></Minus>
         </button>
-        <input type="number" placeholder="0" class="w-12" v-model="addAmount" />
+        <input v-model="addAmount" class="w-12" placeholder="0" type="number" />
         <button
-          @click="addItems"
           class="bg-primary-surface hover:bg-primary-surface/80 active:bg-primary-surface/60 mr-2 self-end rounded-full p-2"
+          @click="addItems"
         >
           <Plus></Plus>
         </button>

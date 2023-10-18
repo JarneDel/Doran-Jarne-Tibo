@@ -1,92 +1,35 @@
 [
   {
-    "id": "1",
-    "firstName": "John",
-    "lastName": "Doe",
-    "email": "john.doe@example.com",
-    "phone": "+1-555-555-5555",
-    "holidaysLeft": 20,
-    "holidayDates": ["2023-10-04", "2023-10-05"]
-  },
-  {
-    "id": "2",
-    "firstName": "Jane",
-    "lastName": "Doe",
-    "email": "jane.doe@example.com",
-    "phone": "+1-555-555-5556",
-    "holidaysLeft": 15,
-    "holidayDates": ["2023-10-06", "2023-10-07"]
-  },
-  {
-    "id": "3",
-    "firstName": "Peter",
-    "lastName": "Parker",
-    "email": "peter.parker@example.com",
-    "phone": "+1-555-555-5557",
-    "holidaysLeft": 10,
-    "holidayDates": ["2023-10-08", "2023-10-09"]
-  },
-  {
-    "id": "4",
-    "firstName": "Mary",
-    "lastName": "Jane",
-    "email": "mary.jane@example.com",
-    "phone": "+1-555-555-5558",
-    "holidaysLeft": 5,
-    "holidayDates": ["2023-10-10", "2023-10-11"]
-  },
-  {
-    "id": "5",
-    "firstName": "Bruce",
-    "lastName": "Wayne",
-    "email": "bruce.wayne@example.com",
-    "phone": "+1-555-555-5559",
-    "holidaysLeft": 0,
+    "UID": "Yk098gcTiwdFNRQaaZAkZpbhASx2",
+    "locale": "nl",
+    "role": "STAFF",
+    "firstName": "staff",
+    "lastName": "staff",
+    "email": "staff@test.test",
+    "phone": "+32490123456",
+    "holidaysleft": 0,
     "holidayDates": []
   },
   {
-    "id": "6",
-    "firstName": "Clark",
-    "lastName": "Kent",
-    "email": "clark.kent@example.com",
-    "phone": "+1-555-555-5560",
-    "holidaysLeft": 25,
+    "UID": "nmf9VfViiqSQuPVfJR0W2tiOu6M2",
+    "locale": "nl",
+    "role": "ADMIN",
+    "firstName": "admin",
+    "lastName": "admin",
+    "email": "admin@test.test",
+    "phone": "+32490123456",
+    "holidaysleft": 0,
     "holidayDates": []
   },
   {
-    "id": "7",
-    "firstName": "Diana",
-    "lastName": "Prince",
-    "email": "diana.prince@example.com",
-    "phone": "+1-555-555-5561",
-    "holidaysLeft": 30,
-    "holidayDates": []
-  },
-  {
-    "id": "8",
-    "firstName": "Arthur",
-    "lastName": "Curry",
-    "email": "arthur.curry@example.com",
-    "phone": "+1-555-555-5562",
-    "holidaysLeft": 20,
-    "holidayDates": []
-  },
-  {
-    "id": "9",
-    "firstName": "Barry",
-    "lastName": "Allen",
-    "email": "barry.allen@example.com",
-    "phone": "+1-555-555-5563",
-    "holidaysLeft": 15,
-    "holidayDates": []
-  },
-  {
-    "id": "10",
-    "firstName": "Oliver",
-    "lastName": "Queen",
-    "email": "oliver.queen@example.com",
-    "phone": "+1-555-555-5564",
-    "holidaysLeft": 10,
+    "UID": "291gtX2Lb2QQdJWcLNKNpFW5O7z1",
+    "locale": "nl",
+    "role": "SUPER_ADMIN",
+    "firstName": "superadmin",
+    "lastName": "superadmin",
+    "email": "superadmin@test.test",
+    "phone": "+32490123456",
+    "holidaysleft": 0,
     "holidayDates": []
   }
 ]

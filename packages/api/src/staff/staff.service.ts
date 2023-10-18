@@ -14,7 +14,7 @@ export class StaffService {
     private readonly staffRepository: Repository<Staff>,
   ) {}
 
-  create(uid:string,createStaffInput: CreateStaffInput) {
+  create(uid: string, createStaffInput: CreateStaffInput) {
     // todo: validate input && check if staff already exists
     const s = new Staff()
     s.firstName = createStaffInput.firstName
@@ -32,10 +32,10 @@ export class StaffService {
     return this.staffRepository.find()
   }
 
-  findOne(id: Object) {
+  findOne(id: string) {
     return this.staffRepository.findOneByOrFail({
       //@ts-ignore
-      _id: new Object(id),
+      _id: new ObjectId(id),
     })
   }
 
@@ -50,7 +50,7 @@ export class StaffService {
     return this.staffRepository.update(id, updateStaffInput)
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} staff`
   }
 
@@ -60,5 +60,11 @@ export class StaffService {
 
   truncate(): Promise<void> {
     return this.staffRepository.clear()
+  }
+
+  async findOneByUid(uid: string) {
+    console.log(uid)
+    //@ts-ignore
+    return await this.staffRepository.findOneByOrFail({ UID: uid })
   }
 }

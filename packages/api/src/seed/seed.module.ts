@@ -13,6 +13,7 @@ import { StaffModule } from '../staff/staff.module'
 import { ServiceModule } from '../service/service.module'
 import { SportModule } from 'src/sport/sport.module'
 import { RoomModule } from 'src/room/room.module'
+import { ReservationModule } from 'src/reservation/reservation.module'
 
 
 
@@ -27,6 +28,7 @@ import { RoomModule } from 'src/room/room.module'
     SportModule,
     SeedModule,
     RoomModule,
+    ReservationModule,
   ],
   providers: [DatabaseSeedCommand, SeedService],
 })

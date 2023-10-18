@@ -41,6 +41,10 @@ export class DatabaseSeedCommand {
     console.info('⛹️‍♂️ Start seeding of sports')
     const sports = await this.seedService.addSportsFromJson()
     console.info(`${sports.length} sports are added`)
+
+    console.log('📅 Start seeding of reservations')
+    const reservations = await this.seedService.addReservationsFromJson()
+    console.info(`${reservations.length} reservations are added`)
   }
 
   @Command({
@@ -72,6 +76,8 @@ export class DatabaseSeedCommand {
     console.log('removed all staff')
     await this.seedService.deleteAllServices()
     console.info('Removed all services')
+    await this.seedService.deleteAllReservations()
+    console.info('Removed all reservations')
   }
 
   //Stocks
@@ -222,5 +228,25 @@ export class DatabaseSeedCommand {
     console.log('About to seed services to database')
     const services = await this.seedService.addServicesFromJson()
     console.info(`added ${services.length} services to the database`)
+  }
+
+  @Command({
+    command: 'seed:database:reservation',
+    describe: 'Seed reservations from json file',
+  })
+  async seedReservations() {
+    console.log('About to seed reservations to database')
+    const reservations = await this.seedService.addReservationsFromJson()
+    console.info(`added ${reservations.length} reservations to the database`)
+  }
+
+  @Command({
+    command: 'seed:reset:reservation',
+    describe: 'Delete all data from the reservation table',
+  })
+  async deleteReservations() {
+    console.info('Deleting all reservations')
+    await this.seedService.deleteAllReservations()
+    console.log('removed reservations')
   }
 }
