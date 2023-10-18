@@ -161,8 +161,20 @@ export class SeedService {
       s.firstName = staffMember.firstName
       s.lastName = staffMember.lastName
       s.phone = staffMember.phone
-      s.holidaysLeft = staffMember.holidaysLeft
+      s.holidaysLeft = staffMember.holidaysleft
       s.holidayDates = staffMember.holidayDates.map(date => new Date(date))
+      const role = staffMember.role
+      if (role === 'ADMIN') {
+        s.role = Role.ADMIN
+      } else if (role === 'STAFF') {
+        s.role = Role.STAFF
+      } else if (role === 'SUPER_ADMIN') {
+        s.role = Role.SUPER_ADMIN
+      }
+      s.UID = staffMember.UID
+      s.locale = staffMember.locale
+
+
 
       outStaff.push(s)
     }

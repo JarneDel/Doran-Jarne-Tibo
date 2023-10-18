@@ -60,6 +60,13 @@ export class ReservationResolver {
     )
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Mutation(() => Reservation, { name: 'DeleteReservation' })
+  deleteReservation(@Args('id', { type: () => String }) id: string) {
+    return this.reservationService.delete(id)
+  }
+
   @ResolveField()
   async group(@Parent() reservation: Reservation): Promise<Group> {
     const { groupId } = reservation

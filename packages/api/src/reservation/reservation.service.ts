@@ -64,6 +64,11 @@ export class ReservationService {
   truncate() {
     return this.reservationRepository.clear()
   }
+
+  delete(id: string) {
+    return this.reservationRepository.delete(id)
+  }
+
   // remove(id: string) {
   //   return `This action removes a #${id} reservation`;
   // }
