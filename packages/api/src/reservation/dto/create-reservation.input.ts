@@ -13,13 +13,13 @@ export class CreateReservationInput {
   date: Date
   @IsString()
   @Field()
-  start_time: string
+  startTime: string
   @IsString()
   @Field()
-  end_time: string
+  endTime: string
   @IsString()
   @Field()
-  group_id: string
+  groupId: string
   @IsNotEmpty()
   @Type(type => Rooms)
   @Field(() => [Rooms])
@@ -27,7 +27,7 @@ export class CreateReservationInput {
   @IsNotEmpty()
   @Type(type => Materials)
   @Field(() => [Materials])
-  reserved_materials: [Materials]
+  reservedMaterials: [Materials]
   @IsInt()
   @Min(0)
   @Field()

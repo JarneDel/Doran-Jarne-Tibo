@@ -16,12 +16,12 @@ export class ReservationService {
   create(createReservationInput: CreateReservationInput) {
     const r = new Reservation()
     r.date = createReservationInput.date
-    r.start_time = createReservationInput.start_time
-    r.end_time = createReservationInput.end_time
-    r.groupId = createReservationInput.group_id
+    r.startTime = createReservationInput.startTime
+    r.endTime = createReservationInput.endTime
+    r.groupId = createReservationInput.groupId
     r.price = createReservationInput.price
     r.rooms = createReservationInput.rooms
-    r.reserved_materials = createReservationInput.reserved_materials
+    r.reservedMaterials = createReservationInput.reservedMaterials
     r.isCancelled = false
     // r.rooms = createReservationInput.rooms;
     // r.reserved_materials = createReservationInput.reserved_materials;
@@ -45,12 +45,12 @@ export class ReservationService {
   async update(id: string, updateReservationInput: UpdateReservationInput) {
     let r = await this.findOne(id)
     r.date = updateReservationInput.date
-    r.start_time = updateReservationInput.start_time
-    r.end_time = updateReservationInput.end_time
-    r.groupId = updateReservationInput.group_id
+    r.startTime = updateReservationInput.startTime
+    r.endTime = updateReservationInput.endTime
+    r.groupId = updateReservationInput.groupId
     r.price = updateReservationInput.price
     r.rooms = updateReservationInput.rooms
-    r.reserved_materials = updateReservationInput.reserved_materials
+    r.reservedMaterials = updateReservationInput.reservedMaterials
     r.isCancelled = updateReservationInput.isCancelled
     // r.rooms = updateReservationInput.rooms;
     // r.reserved_materials = updateReservationInput.reserved_materials;
