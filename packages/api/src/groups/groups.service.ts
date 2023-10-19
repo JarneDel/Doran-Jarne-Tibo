@@ -21,7 +21,7 @@ export class GroupsService {
   create(uid: string,createGroupInput: CreateGroupInput) {
     const g = new Group()
     g.name = createGroupInput.name
-    g.btw_number = createGroupInput.btw_number
+    g.btwNumber = createGroupInput.btwNumber
     g.locale = createGroupInput.locale
     g.UID = uid
     g.score = 50
@@ -43,8 +43,8 @@ export class GroupsService {
   async update(id: string, updateGroupInput: UpdateGroupInput) {
     const g = await this.findOne(id)
     g.name = updateGroupInput.name
-    if (updateGroupInput.btw_number)
-    g.btw_number = updateGroupInput.btw_number
+    if (updateGroupInput.btwNumber)
+    g.btwNumber = updateGroupInput.btwNumber
     if (updateGroupInput.score)
     g.score = updateGroupInput.score
     return this.groupRepository.save( g)

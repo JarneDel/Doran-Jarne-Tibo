@@ -13,5 +13,5 @@ export class CreateGroupInput extends CreateUserInput {
   @IsString()
   @MinLength(12)
   @Field({ nullable: true })
-  btw_number: string
+  btwNumber: string
 }
