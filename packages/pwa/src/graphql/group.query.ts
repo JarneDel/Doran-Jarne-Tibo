@@ -5,7 +5,7 @@ export const ALL_GROUPS = gql`
     groups {
       id
       name
-      btw_number
+      btwNumber
       score
     }
   }
@@ -15,7 +15,7 @@ export const UPDATE_SCORE = gql`
     updateScore(id: $id, amount: $amount) {
       id
       name
-      btw_number
+      btwNumber
       score
     }
   }
