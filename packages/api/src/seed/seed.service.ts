@@ -83,7 +83,7 @@ export class SeedService {
     for (let group of groups) {
       const g = new Group()
       g.name = group.name
-      g.btw_number = group.btw_number
+      g.btwNumber = group.btw_number
       g.score = group.score
       g.locale = group.locale
       g.UID = group.uid
@@ -206,8 +206,8 @@ export class SeedService {
       for (let reservation of reservations) {
         const r = new Reservation()
         r.date = new Date(reservation.date)
-        r.start_time = reservation.start_time
-        r.end_time = reservation.end_time
+        r.startTime = reservation.start_time
+        r.endTime = reservation.end_time
         r.groupId = groups[Math.floor(Math.random() * groups.length)].id
         const materials: Materials[] = []
         for (let material of reservation.reserved_materials) {

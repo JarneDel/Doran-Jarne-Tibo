@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { CreateReservationInput } from './dto/create-reservation.input';
-import { UpdateReservationInput } from './dto/update-reservation.input';
-import { Reservation } from './entities/reservation.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common'
+import { CreateReservationInput } from './dto/create-reservation.input'
+import { UpdateReservationInput } from './dto/update-reservation.input'
+import { Reservation } from './entities/reservation.entity'
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
 
 import { ObjectId } from 'mongodb'
 
@@ -23,8 +23,6 @@ export class ReservationService {
     r.rooms = createReservationInput.rooms
     r.reservedMaterials = createReservationInput.reservedMaterials
     r.isCancelled = false
-    // r.rooms = createReservationInput.rooms;
-    // r.reserved_materials = createReservationInput.reserved_materials;
 
     return this.reservationRepository.save(r)
   }
