@@ -1,12 +1,18 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
+import StyledButton from '@/components/generic/StyledButton.vue'
 
-export default defineComponent({});
+export default defineComponent({
+  setup() {
+    return {}
+  },
+  components: {StyledButton},
+})
 </script>
 
 <template>
   <div
-    class="flex items-center justify-between shadow-md bg-white fill-slate-700 p-2"
+    class="flex items-center justify-between bg-white fill-slate-700 p-2 shadow-md"
   >
     <router-link to="/" class="flex items-center justify-center gap-2">
       <svg
@@ -43,17 +49,28 @@ export default defineComponent({});
         />
       </svg>
 
-      <h1 class="text-xl text-primary-text font-bold">
+      <h1 class="text-primary-text text-xl font-bold">
         {{ $t('navigation.title') }}
       </h1>
     </router-link>
-    <div class="flex gap-2">
-      <div class="flex w-20 justify-center hover:font-bold">
-        <router-link to="/">{{ $t('navigation.home') }}</router-link>
+    <div class="flex justify-center gap-8">
+      <div class="flex gap-4 justify-center">
+        <div class="hover:font-bold">
+          <router-link to="/">{{ $t('navigation.home') }}</router-link>
+        </div>
+        <div class="hover:font-bold">
+          <router-link to="/repair">{{ $t('navigation.repair') }}</router-link>
+        </div>
+        <div class="hover:font-bold">
+          <router-link to="/admin">{{ $t('navigation.admin') }}</router-link>
+        </div>
+        <div class="hover:font-bold">
+          <router-link to="/reservation">{{
+            $t('navigation.reservation')
+          }}</router-link>
+        </div>
       </div>
-      <div class="flex w-20 justify-center hover:font-bold">
-        <router-link to="/Shop">{{ $t('navigation.shop') }}</router-link>
-      </div>
+      <StyledButton><p>Profile</p></StyledButton>
     </div>
   </div>
 </template>

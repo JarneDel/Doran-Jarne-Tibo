@@ -9,10 +9,18 @@ import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
 import { AllowedRoles } from './decorators/role.decorator'
 import { RolesGuard } from './guards/roles.guard'
+import { query } from 'express'
+import { Group } from 'src/groups/entities/group.entity'
+import { Staff } from 'src/staff/entities/staff.entity'
+import { GroupsService } from 'src/groups/groups.service'
+import { StaffService } from 'src/staff/staff.service'
 
 @Resolver(() => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService,
+    private readonly groupservice: GroupsService,
+    private readonly StaffService: StaffService,
+    ) {}
 
   @UseGuards(FirebaseGuard)
   @Mutation(() => User)
@@ -43,5 +51,18 @@ export class UsersResolver {
   @Mutation(() => User)
   removeUser(@Args('String', { type: () => String }) id: string) {
     return this.usersService.remove(id)
+  }
+
+  @Query(() => Group||Staff ,{name:'userByUid'})
+  @UseGuards(FirebaseGuard)
+  async userByUid(@FirebaseUser() user: UserRecord){
+    let returnUser
+    try {
+      returnUser=await this.StaffService.findOneByUid(user.uid)
+    } catch (error) {
+      
+      returnUser =await this.groupservice.findOneByUid(user.uid)
+    }
+    return returnUser
   }
 }
