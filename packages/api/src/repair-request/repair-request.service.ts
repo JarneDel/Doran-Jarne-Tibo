@@ -57,7 +57,7 @@ export class RepairRequestService {
       })
   }
 
-  save(repairRequests: RepairRequest[]): Promise<RepairRequest[]> {
+  saveAll(repairRequests: RepairRequest[]): Promise<RepairRequest[]> {
     return this.RepairRequestRepository.save(repairRequests)
   }
 

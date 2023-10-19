@@ -20,6 +20,7 @@ import * as sports from './data/sports.json'
 import * as staff from './data/staff.json'
 import * as services from './data/services.json'
 import * as reservations from './data/reservations.json'
+import * as repairRequests from './data/repairRequests.json'
 
 // services
 import { StockService } from '../stock/stock.service'
@@ -35,6 +36,7 @@ import { Reservation } from 'src/reservation/entities/reservation.entity'
 import { ReservationService } from 'src/reservation/reservation.service'
 import { Materials } from 'src/reservation/entities/material.entity'
 import { Rooms } from 'src/reservation/entities/room.entity'
+import { RepairRequest } from 'src/repair-request/entities/repair-request.entity'
 
 @Injectable()
 export class SeedService {
@@ -277,8 +279,9 @@ export class SeedService {
     return this.serviceService.truncate()
   }
 
-  async addRepairRequestsFromJson(): Promise<Service[]> {
-    return null
+  async addRepairRequestsFromJson(): Promise<RepairRequest[]> {
+    const repairRequests = await this.RepairRequestService.findAll()
+    return this.RepairRequestService.saveAll(repairRequests)
   }
 
   async deleteAllRepairRequests(): Promise<void> {

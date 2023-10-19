@@ -14,6 +14,7 @@ import {
 import { RepairRequestService } from './repair-request.service'
 // Entities
 import { RepairRequest } from './entities/repair-request.entity'
+import { Role } from 'src/users/entities/user.entity'
 // Inputs
 import { CreateRepairRequestInput } from './dto/create-repair-request.input'
 import { UpdateRepairRequestInput } from './dto/update-repair-request.input'
@@ -25,6 +26,7 @@ import { Group } from 'src/groups/entities/group.entity'
 import { GraphQLError } from 'graphql/error'
 import { GroupsService } from 'src/groups/groups.service'
 import { StaffService } from 'src/staff/staff.service'
+import { RolesGuard } from 'src/users/guards/roles.guard'
 
 @Resolver(() => RepairRequest)
 export class RepairRequestResolver {
@@ -34,7 +36,8 @@ export class RepairRequestResolver {
     private readonly staffService: StaffService
   ) {}
 
-  @UseGuards(FirebaseGuard)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => RepairRequest)
   createRepairRequest(
     @Args('createRepairRequestInput')
@@ -43,19 +46,24 @@ export class RepairRequestResolver {
     return this.repairRequestService.create(createRepairRequestInput)
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [RepairRequest], { name: 'GetAllRepairRequests' })
   findAll() {
     return this.repairRequestService.findAll()
   }
 
-  @UseGuards(FirebaseGuard)
+ 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => RepairRequest, { name: 'GetRepairRequestById' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.repairRequestService.findOneById(id)
   }
 
-  @UseGuards(FirebaseGuard)
+  
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => RepairRequest)
   updateRepairRequest(
     @Args('updateRepairRequestInput')
@@ -67,7 +75,8 @@ export class RepairRequestResolver {
     )
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => String)
   removeRepairRequest(@Args('id', { type: () => String }) id: string) {
     return this.repairRequestService
