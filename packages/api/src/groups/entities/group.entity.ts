@@ -13,7 +13,7 @@ export class Group extends User {
 
   @Column()
   @Field({ nullable: true })
-  btw_number: string
+  btwNumber: string
 
   @Column()
   @Field({ defaultValue: 50 , nullable: false})
