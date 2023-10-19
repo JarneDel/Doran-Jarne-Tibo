@@ -20,11 +20,12 @@ export class RoomService {
 
   create(createRoomInput: CreateRoomInput) {
     const r = new Room()
-    const { name, sports, pricePerHour, type } = createRoomInput
+    const { name, sports, pricePerHour, type, canBeUsed } = createRoomInput
     r.name = name
     r.sports = sports
     r.pricePerHour = pricePerHour
     r.type = type
+    r.canBeUsed = canBeUsed
     return this.roomRepository.save(r)
   }
 
@@ -52,6 +53,7 @@ export class RoomService {
     r.pricePerHour = updateRoomInput.pricePerHour
     r.sports = updateRoomInput.sports
     r.type = updateRoomInput.type
+    r.canBeUsed = updateRoomInput.canBeUsed
     return this.roomRepository.save(r)
   }
 

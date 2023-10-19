@@ -23,4 +23,8 @@ export class Room {
   @Column() // Database link - Typeorm
   @Field() // Graphql
   type: string
+
+  @Column() // Database link - Typeorm
+  @Field() // Graphql
+  canBeUsed: boolean
 }
