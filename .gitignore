@@ -226,11 +226,6 @@ dist
 
 graphql.config.yml
 schema.graphql
-<<<<<<< HEAD
-<<<<<<< develop
 /graphql/
-=======
->>>>>>> fix: room query gitignore
-=======
->>>>>>> 42-rooms
 .vscode/settings.json
+start-toggl.sh

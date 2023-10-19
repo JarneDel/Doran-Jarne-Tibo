@@ -5,10 +5,10 @@ services:
   db:
     image: mongo
     restart: unless-stopped
-    #    ports:
-    #      - "27017:27017" # Internal
-    expose:
-      - "27017" # Internal
+    ports:
+      - "27017:27017" # Internal
+    #    expose:
+    #      - "27017" # Internal
     environment:
       MONGO_INITDB_DATABASE: api
     volumes:

@@ -4,6 +4,8 @@ import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   ALL_STOCK_AND_SERVICES,
   AllStockAndServices,
+  getUpdatedStockItem,
+  IUpdateItemOptional,
   IUpdateStock,
   UPDATE_STOCK,
 } from '@/graphql/stock.query.ts'
@@ -42,7 +44,7 @@ export default defineComponent({
     const sortFieldName = ref<string>('name')
     const isModalShown = ref<boolean>(true)
 
-    const { push, currentRoute, afterEach } = useRouter()
+    const { push } = useRouter()
 
     // graphql
     const { error, loading, result, refetch } = useQuery<AllStockAndServices>(
@@ -58,7 +60,7 @@ export default defineComponent({
       },
     )
 
-    const { mutate: updateItem } = useMutation(UPDATE_STOCK)
+    const { mutate: mutateUpdateItem } = useMutation(UPDATE_STOCK)
 
     /**
      * Sorts the table by the given field and requests the data again
@@ -107,22 +109,16 @@ export default defineComponent({
       { immediate: true },
     )
 
-    const updateItemService = (id: string, serviceId: string) => {
-      console.log('updating item')
-      console.log(id, serviceId)
-      const stockItem = result?.value.stock.find(s => s.id === id)
+    const updateItem = (
+      id: string,
+      fieldsToUpdate: Partial<IUpdateItemOptional>,
+    ) => {
+      const stockItem = result.value?.stock.find(s => s.id == id)
       if (!stockItem) return
-      const updatedStockItem: IUpdateStock = {
-        serviceId: serviceId,
-        amountInStock: stockItem.amountInStock,
-        description: stockItem.description,
-        idealStock: stockItem.idealStock,
-        name: stockItem.name,
-        needToOrderMore: stockItem.needToOrderMore,
-        id: id,
-      }
-      updateItem({
-        updateStockInput: updatedStockItem,
+      mutateUpdateItem({
+        updateStockInput: getUpdatedStockItem(stockItem, fieldsToUpdate),
+      }).then(() => {
+        fetchWithFilters()
       })
     }
 
@@ -138,7 +134,7 @@ export default defineComponent({
       whereName,
       whereService,
       push,
-      updateItemService,
+      updateItem,
     }
   },
 })
@@ -238,23 +234,39 @@ export default defineComponent({
           :key="stock.id"
           class="hover:bg-primary-light/20 transition-colors duration-200"
         >
-          <td>{{ stock.name }}</td>
-          <td
-            :title="stock.description"
-            class="truncate"
-            @contextmenu=""
-            @dblclick=""
-          >
-            <DoubleClickEdit :value="stock.description" />
+          <td>
+            <DoubleClickEdit
+              :value="stock.name"
+              @submit="newValue => updateItem(stock.id, { name: newValue })"
+            />
           </td>
-          <td :title="$t('inventory.title.amount.tooltip')">
-            {{ stock.amountInStock }} / {{ stock.idealStock }}
+          <td :title="stock.description" class="truncate">
+            <DoubleClickEdit
+              :value="stock.description"
+              @submit="
+                newValue => updateItem(stock.id, { description: newValue })
+              "
+            />
+          </td>
+          <td
+            :title="$t('inventory.title.amount.tooltip')"
+            :class="{
+              'text-primary': stock.amountInStock >= stock.idealStock,
+              'text-warning': stock.amountInStock < stock.idealStock,
+            }"
+          >
+            {{ stock.amountInStock }}
           </td>
           <td :title="stock.service.description">
             <select
-              class="hover-text-primary hover:border-primary-light ring-offset-primary-lighter appearance-none rounded bg-inherit outline-none ring-black ring-offset-4 hover:ring focus-visible:ring active:ring"
+              class="hover:border-primary-light ring-offset-primary-lighter appearance-none rounded bg-inherit outline-none ring-black ring-offset-4 hover:ring focus-visible:ring active:ring"
               name="service"
-              @change="updateItemService(stock.id, $event.target.value)"
+              @change="
+                e => {
+                  const target = e.target as HTMLSelectElement
+                  updateItem(stock.id, { serviceId: target.value })
+                }
+              "
             >
               <option :value="stock.service.id">
                 {{ stock.service.name }}
@@ -272,9 +284,6 @@ export default defineComponent({
             </select>
           </td>
           <td class="gap4 flex flex-row justify-end">
-            <router-link :to="`/admin/inventory/${stock.id}/edit`">
-              <Edit2 />
-            </router-link>
             <router-link :to="`/admin/inventory/${stock.id}`">
               <ChevronRight />
             </router-link>
@@ -316,13 +325,6 @@ table {
   border: 2px solid #e6edfa;
 }
 
-/*
-   tbody tr:nth-child(odd) {
-//   apply tailwind primary-surface color
-//  background-color: #edf2fa;
-
-*/
-
 .loader {
   animation: blink 1s infinite;
 }
@@ -337,5 +339,13 @@ table {
   100% {
     background-color: #fff;
   }
+}
+
+.text-primary {
+  @apply text-primary;
+}
+
+.text-warning {
+  @apply text-red-500;
 }
 </style>

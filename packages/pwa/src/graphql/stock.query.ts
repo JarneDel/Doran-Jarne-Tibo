@@ -75,6 +75,31 @@ export const UPDATE_STOCK = gql`
   }
 `
 
+export const getUpdatedStockItem = (
+  item: StockItem,
+  update: IUpdateItemOptional,
+): IUpdateStock => {
+  let updatedItem: IUpdateStock = {
+    id: item.id,
+    amountInStock: item.amountInStock,
+    description: item.description,
+    idealStock: item.idealStock,
+    name: item.name,
+    needToOrderMore: item.needToOrderMore,
+    serviceId: item.service.id,
+  }
+  return { ...updatedItem, ...update }
+}
+
+export interface IUpdateItemOptional {
+  amountInStock?: number
+  description?: string
+  idealStock?: number
+  name?: string
+  needToOrderMore?: boolean
+  serviceId?: string
+}
+
 export interface IUpdateStock {
   // input UpdateStockInput {
   amountInStock: number

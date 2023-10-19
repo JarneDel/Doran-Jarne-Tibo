@@ -1,9 +1,11 @@
 import { defineConfig } from 'unocss'
+import transformerDirectives from '@unocss/transformer-directives'
 
 export default defineConfig({
   // GEEN THEME!
   // wel manifesteren van genereren css
   safelist: [...Array.from({ length: 100 }, (_, i) => `left-[${i + 1}%]`)],
+  transformers: [transformerDirectives()],
   theme: {
     colors: {
       secondary: {
@@ -31,6 +33,10 @@ export default defineConfig({
         DEFAULT: '#f5f9ff',
         100: '#fff5f5',
         200: '#e6e6e6',
+      },
+      danger: {
+        DEFAULT: '#c7525c',
+        active: '#e65e69',
       },
     },
   },
