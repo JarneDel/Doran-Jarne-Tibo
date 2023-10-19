@@ -44,6 +44,11 @@ export class DatabaseSeedCommand {
     console.info('🗃️ Start seeding of stocks')
     const stocks = await this.seedService.addStockFromJson()
     console.info(` ${stocks.length} pieces of stock were added`)
+
+    //repairRequests (after loanableMaterials, rooms, groups, sports and staff because of foreign key)
+    console.log('About to seed repairRequests to database')
+    const repairRequests = await this.seedService.addRepairRequestsFromJson()
+    console.info(`added ${repairRequests.length} repairRequests to the database`)
   }
 
   @Command({
@@ -257,6 +262,15 @@ export class DatabaseSeedCommand {
 
   //RepairRequests
   //ADD
+  @Command({
+    command: 'seed:database:repairRequest',
+    describe: 'Seed repairRequests from json file',
+  })
+  async seedRepairRequests() {
+    console.log('About to seed reservations to database')
+    const repairRequests = await this.seedService.addRepairRequestsFromJson()
+    console.info(`added ${repairRequests.length} repairRequests to the database`)
+  }
   //Delete
   @Command({
     command: 'seed:reset:repairRequest',

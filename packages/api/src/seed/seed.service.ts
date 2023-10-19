@@ -280,8 +280,57 @@ export class SeedService {
   }
 
   async addRepairRequestsFromJson(): Promise<RepairRequest[]> {
-    const repairRequests = await this.RepairRequestService.findAll()
-    return this.RepairRequestService.saveAll(repairRequests)
+    const outrepairRequests: RepairRequest[] = []
+
+    const rooms = await this.roomService.findAll()
+    const loanableMaterials = await this.loanableMaterialsService.findAll()
+    const groups = await this.groupsService.findAll()
+    const staff = await this.staffService.findAll()
+
+    for (let repairRequest of repairRequests) {
+      const rr = new RepairRequest()
+      rr.description = repairRequest.description
+      rr.isRepaired = false
+
+      const randNumb1 = Math.floor(Math.random() * 2)
+      if(randNumb1 === 0) {
+        //Room
+        const room = await rooms[Math.floor(Math.random() * rooms.length)]
+        const specialRoom: Rooms = new Rooms()
+        specialRoom.name = room.name
+        specialRoom.pricePerHour = room.pricePerHour
+        // specialRoom.sports = room.sports.map((sport) => sport.name)
+        specialRoom.sports = ["sport1", "sport2"]
+        specialRoom.type = room.type
+        rr.room = specialRoom
+      } else {
+        //LoanableMaterial
+        const loanableMaterial = await loanableMaterials[Math.floor(Math.random() * loanableMaterials.length)]
+        const material = new Materials()
+        material.name = loanableMaterial.name
+        material.totalAmount = loanableMaterial.totalAmount
+        material.wantedAmount = loanableMaterial.wantedAmount
+        material.price = loanableMaterial.price
+        // material.sports = loanableMaterial.sports.map((sport) => sport.name)
+        material.sports = ["sport1", "sport2"]
+        material.isComplete = loanableMaterial.isComplete
+        material.description = loanableMaterial.description
+        rr.loanableMaterial = material
+      }
+
+      const randNumb2 = Math.floor(Math.random() * 2)
+      if(randNumb2 === 0) {
+        //Group
+        rr.requestUserId = await groups[Math.floor(Math.random() * groups.length)].UID
+      } else {
+        //Staff
+        rr.requestUserId = await staff[Math.floor(Math.random() * staff.length)].UID
+      }
+
+      console.log(rr)
+      outrepairRequests.push(rr)
+    }
+    return this.RepairRequestService.saveAll(outrepairRequests)
   }
 
   async deleteAllRepairRequests(): Promise<void> {
