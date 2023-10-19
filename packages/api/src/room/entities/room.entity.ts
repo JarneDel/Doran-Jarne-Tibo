@@ -25,6 +25,6 @@ export class Room {
   type: string
 
   @Column() // Database link - Typeorm
-  @Field() // Graphql
+  @Field( {defaultValue:true}) // Graphql
   canBeUsed: boolean
 }
