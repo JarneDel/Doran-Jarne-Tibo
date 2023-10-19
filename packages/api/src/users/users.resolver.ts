@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
+import { Resolver, Query, Mutation, Args, Int, createUnionType } from '@nestjs/graphql'
 import { UsersService } from './users.service'
 import { Role, User } from './entities/user.entity'
 import { CreateUserInput } from './dto/create-user.input'
@@ -14,6 +14,11 @@ import { Group } from 'src/groups/entities/group.entity'
 import { Staff } from 'src/staff/entities/staff.entity'
 import { GroupsService } from 'src/groups/groups.service'
 import { StaffService } from 'src/staff/staff.service'
+
+export const GrSt = createUnionType({
+  name: 'GrSt',
+  types: () => [Group, Staff] as const,
+})
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -53,7 +58,8 @@ export class UsersResolver {
     return this.usersService.remove(id)
   }
 
-  @Query(() => Group||Staff ,{name:'userByUid'})
+
+  @Query(() =>GrSt ,{name:'userByUid'})
   @UseGuards(FirebaseGuard)
   async userByUid(@FirebaseUser() user: UserRecord){
     let returnUser
