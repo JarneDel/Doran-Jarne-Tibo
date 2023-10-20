@@ -123,6 +123,7 @@ export class SeedService {
       lm.price = loanableMaterial.price
       lm.isComplete = loanableMaterial.isComplete
       lm.description = loanableMaterial.description
+      // Veranderen van random naar juiste sport
       const sport = sports[Math.floor(Math.random() * sports.length)]
       lm.SportId = [new ObjectId(sport.id).toString()]
 
@@ -296,23 +297,37 @@ export class SeedService {
       if(randNumb1 === 0) {
         //Room
         const room = await rooms[Math.floor(Math.random() * rooms.length)]
-        const specialRoom: Rooms = new Rooms()
-        specialRoom.name = room.name
-        specialRoom.pricePerHour = room.pricePerHour
-        // specialRoom.sports = room.sports.map((sport) => sport.name)
-        specialRoom.sports = ["sport1", "sport2"]
-        specialRoom.type = room.type
-        rr.room = specialRoom
+        const r = new Rooms()
+        r.name = room.name
+        r.pricePerHour = room.pricePerHour
+        const sports: string[] = []
+        for (let sportId of room.SportId) {
+          console.log(sportId)
+          const s = this.sportService.findOneById(sportId)
+          s.then((sport) => {
+            sports.push(sport.name)
+          })
+        }
+        r.sports = sports
+        r.type = room.type
+        rr.room = r
       } else {
         //LoanableMaterial
         const loanableMaterial = await loanableMaterials[Math.floor(Math.random() * loanableMaterials.length)]
         const material = new Materials()
+        const sports: string[] = []
+        for (let sportId of loanableMaterial.SportId) {
+          console.log(sportId)
+          const s = this.sportService.findOneById(sportId)
+          s.then((sport) => {
+            sports.push(sport.name)
+          })
+        }
         material.name = loanableMaterial.name
         material.totalAmount = loanableMaterial.totalAmount
         material.wantedAmount = loanableMaterial.wantedAmount
         material.price = loanableMaterial.price
-        // material.sports = loanableMaterial.sports.map((sport) => sport.name)
-        material.sports = ["sport1", "sport2"]
+        material.sports = sports
         material.isComplete = loanableMaterial.isComplete
         material.description = loanableMaterial.description
         rr.loanableMaterial = material
