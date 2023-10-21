@@ -6,17 +6,16 @@ import { ChevronDown } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import firebase from '@/composables/useFirebase'
 import logo from '@/components/generic/Logo.vue'
-
-
+import { OnClickOutside } from '@vueuse/components'
 export default defineComponent({
   setup() {
-    const { logout} = firebase()
-    const { firebaseUser}= firebase()
-    let options=ref(false)
+    const { logout } = firebase()
+    const { firebaseUser } = firebase()
+    let options = ref(false)
     const toggleOptions = () => {
       options.value = !options.value
-    }
-    const{customUser,restoreCustomUser, userLogout}=useUser()
+    const { customUser, restoreCustomUser, userLogout } = useUser()
+
     restoreCustomUser()
     const logoutbutton = () => {
       logout().then(() => {
@@ -25,9 +24,9 @@ export default defineComponent({
       })
     }
     console.log(firebaseUser.value?.email)
-    return { options, toggleOptions, customUser , logoutbutton, firebaseUser }
+    return { options, toggleOptions, customUser, logoutbutton, firebaseUser }
   },
-  components: { StyledButton, ChevronDown, logo },
+  components: { StyledButton, ChevronDown, logo, OnClickOutside },
 })
 </script>
 
@@ -36,7 +35,7 @@ export default defineComponent({
     class="flex items-center justify-between bg-white fill-slate-700 p-2 shadow-md"
   >
     <router-link to="/" class="flex items-center justify-center gap-2">
-      <logo class="h-10"/>
+      <logo class="h-10" />
 
       <h1 class="text-primary-text text-xl font-bold">
         {{ $t('navigation.title') }}
@@ -56,21 +55,39 @@ export default defineComponent({
         >
           <router-link to="/admin">{{ $t('navigation.admin') }}</router-link>
         </div>
-        <div v-if="customUser?.userByUid.role == 'GROUP'" class="hover:font-bold">
+        <div
+          v-if="customUser?.userByUid.role == 'GROUP'"
+          class="hover:font-bold"
+        >
           <router-link to="/reservation">{{
             $t('navigation.reservation')
           }}</router-link>
         </div>
       </div>
       <div class="relative">
-        <button v-if="customUser" class="flex items-center justify-center" @click="toggleOptions()">
+        <button
+          v-if="customUser"
+          class="flex items-center justify-center gap-4"
+          @click="toggleOptions()"
+        >
           <ChevronDown />
-          <p v-if="customUser?.userByUid.__typename == 'Staff'">
-            {{ customUser?.userByUid.firstName }}
-          </p>
-          <p v-if="customUser?.userByUid.__typename == 'Group'">
-            {{ customUser?.userByUid.name }}
-          </p>
+          <div class="mx-2">
+            <p
+              class="w-25 overflow-hidden text-ellipsis whitespace-nowrap"
+              :title="customUser?.userByUid.firstName"
+              v-if="customUser?.userByUid.__typename == 'Staff'"
+            >
+              {{ customUser?.userByUid.firstName }}
+            </p>
+
+            <p
+              class="w-25 overflow-hidden text-ellipsis whitespace-nowrap"
+              :title="customUser?.userByUid.name"
+              v-if="customUser?.userByUid.__typename == 'Group'"
+            >
+              {{ customUser?.userByUid.name }}
+            </p>
+          </div>
         </button>
         <router-link
           v-if="!customUser"
@@ -79,10 +96,19 @@ export default defineComponent({
         >
           {{ $t('auth.login') }}
         </router-link>
-        <div v-if="options" class="absolute right-0 top-10 p-4 bg-white shadow-md rounded-md">
-          <router-link to="/profile">profile</router-link>
-          <StyledButton @click="logoutbutton()" class="mt-2"> logout </StyledButton>
-        </div>
+        <OnClickOutside
+        @trigger="options = false"
+        >
+          <div
+            v-if="options"
+            class="absolute right-0 top-9 rounded-md bg-white p-4 shadow-md"
+          >
+            <router-link to="/profile">profile</router-link>
+            <StyledButton @click="logoutbutton()" class="mt-2">
+              logout
+            </StyledButton>
+          </div>
+        </OnClickOutside>
       </div>
     </div>
   </div>
