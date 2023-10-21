@@ -63,6 +63,7 @@ export class UsersResolver {
   @UseGuards(FirebaseGuard)
   async userByUid(@FirebaseUser() user: UserRecord){
     let returnUser
+    console.log("useraanvraag")
     try {
       returnUser=await this.StaffService.findOneByUid(user.uid)
     } catch (error) {

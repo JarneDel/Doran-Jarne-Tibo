@@ -19,6 +19,7 @@ const httpLink = createHttpLink({
   credentials: 'same-origin',
 })
 
+
 const authLink = setContext(async (_, { headers }) => ({
   headers: {
     ...headers,

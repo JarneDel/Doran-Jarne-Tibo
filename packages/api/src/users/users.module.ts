@@ -9,7 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), StaffModule, GroupsModule],
+  imports: [TypeOrmModule.forFeature([User]),],
   providers: [UsersResolver, UsersService],
   exports: [UsersService],
 })

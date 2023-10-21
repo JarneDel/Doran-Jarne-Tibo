@@ -1,12 +1,34 @@
 import gql from 'graphql-tag'
 
-export const ALL_GROUPS = gql`
+export const USER_BY_UID = gql`
   query {
-    groups {
-      id
-      name
-      btwNumber
-      score
+    userByUid {
+      __typename
+      ... on Group {
+        id
+        UID
+        locale
+        role
+        createdAt
+        updatedAt
+        name
+        btwNumber
+        score
+      }
+      ... on Staff {
+        id
+        UID
+        locale
+        role
+        createdAt
+        updatedAt
+        firstName
+        lastName
+        email
+        phone
+        holidaysLeft
+        holidayDates
+      }
     }
   }
 `

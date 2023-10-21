@@ -90,7 +90,7 @@ VITE_API_URL=http://localhost:3000
 1. (create credentials > Create Oauth client Id > Choose for : Desktop App).
 2. Download SportComplexApp json file
 
-Save it as `credentials.json` in `packages/pwa/src/utils/`
+Save it as `oauthsecret.json` in `packages/pwa/src/utils/`
 
 Add yourself as test user in
 [OAuth consent screen](https://console.cloud.google.com/apis/credentials/consent)
