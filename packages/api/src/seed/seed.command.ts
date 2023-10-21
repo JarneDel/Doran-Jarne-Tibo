@@ -11,18 +11,25 @@ export class DatabaseSeedCommand {
     describe: 'Seed the database with stocks',
   })
   async seedAll() {
-    //Stocks
-
     //Groups
     console.info('🌱 Start seeding of groups')
     const groups = await this.seedService.addGroupsFromJson()
     console.info(`${groups.length} groups are added`)
-    //LoanableMaterials
+
+    //Sports
+    console.info('⛹️‍♂️ Start seeding of sports')
+    const sports = await this.seedService.addSportsFromJson()
+    console.info(`${sports.length} sports are added`)
+
+    //LoanableMaterials (after sports because of foreign key)
     console.info('🌱 Start seeding of loanableMaterials')
     const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
+
+    //Staff
     console.log('🧑🏻‍🤝‍🧑🏼 Started seeding staff')
     const staff = await this.seedService.addStaffFromJson()
+    console.log(`${staff.length} staff were added`)
 
     //Rooms
     console.info('🌱 Start seeding of rooms')
@@ -37,14 +44,11 @@ export class DatabaseSeedCommand {
     console.info('🗃️ Start seeding of stocks')
     const stocks = await this.seedService.addStockFromJson()
     console.info(` ${stocks.length} pieces of stock were added`)
-    //Sports
-    console.info('⛹️‍♂️ Start seeding of sports')
-    const sports = await this.seedService.addSportsFromJson()
-    console.info(`${sports.length} sports are added`)
 
-    console.log('📅 Start seeding of reservations')
-    const reservations = await this.seedService.addReservationsFromJson()
-    console.info(`${reservations.length} reservations are added`)
+    //repairRequests (after loanableMaterials, rooms, groups, sports and staff because of foreign key)
+    console.log('About to seed repairRequests to database')
+    const repairRequests = await this.seedService.addRepairRequestsFromJson()
+    console.info(`added ${repairRequests.length} repairRequests to the database`)
   }
 
   @Command({
@@ -190,6 +194,8 @@ export class DatabaseSeedCommand {
     console.info('Removed sports')
   }
 
+  //Staff
+  //ADD
   @Command({
     command: 'seed:database:staff',
     describe: 'Seed the database with staff',
@@ -199,7 +205,7 @@ export class DatabaseSeedCommand {
     const staff = await this.seedService.addStaffFromJson()
     console.info(`${staff.length} staff are added`)
   }
-
+  //Delete
   @Command({
     command: 'seed:reset:staff',
     describe: 'Delete all data from the staff table',
@@ -210,6 +216,18 @@ export class DatabaseSeedCommand {
     console.info('Removed staff')
   }
 
+  //Services
+  //ADD
+  @Command({
+    command: 'seed:database:service',
+    describe: 'Seed services from json file',
+  })
+  async seedServices() {
+    console.log('About to seed services to database')
+    const services = await this.seedService.addServicesFromJson()
+    console.info(`added ${services.length} services to the database`)
+  }
+  //Delete
   @Command({
     command: 'seed:reset:service',
     describe: 'Delete all data from the service table',
@@ -220,16 +238,8 @@ export class DatabaseSeedCommand {
     console.log('removed services')
   }
 
-  @Command({
-    command: 'seed:database:service',
-    describe: 'Seed services from json file',
-  })
-  async seedServices() {
-    console.log('About to seed services to database')
-    const services = await this.seedService.addServicesFromJson()
-    console.info(`added ${services.length} services to the database`)
-  }
-
+  //Reservations
+  //ADD
   @Command({
     command: 'seed:database:reservation',
     describe: 'Seed reservations from json file',
@@ -239,7 +249,7 @@ export class DatabaseSeedCommand {
     const reservations = await this.seedService.addReservationsFromJson()
     console.info(`added ${reservations.length} reservations to the database`)
   }
-
+  //Delete
   @Command({
     command: 'seed:reset:reservation',
     describe: 'Delete all data from the reservation table',
@@ -248,5 +258,27 @@ export class DatabaseSeedCommand {
     console.info('Deleting all reservations')
     await this.seedService.deleteAllReservations()
     console.log('removed reservations')
+  }
+
+  //RepairRequests
+  //ADD
+  @Command({
+    command: 'seed:database:repairRequest',
+    describe: 'Seed repairRequests from json file',
+  })
+  async seedRepairRequests() {
+    console.log('About to seed reservations to database')
+    const repairRequests = await this.seedService.addRepairRequestsFromJson()
+    console.info(`added ${repairRequests.length} repairRequests to the database`)
+  }
+  //Delete
+  @Command({
+    command: 'seed:reset:repairRequest',
+    describe: 'Delete all data from the reservation table',
+  })
+  async deleteRepairRequest() {
+    console.info('Deleting all reservations')
+    await this.seedService.deleteAllRepairRequests()
+    console.log('removed repair requests')
   }
 }

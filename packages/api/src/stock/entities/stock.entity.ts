@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
-import { Column, Entity, ObjectIdColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm'
 import { Service } from '../../service/entities/service.entity'
 import { ObjectId } from 'mongodb'
 
@@ -35,4 +35,12 @@ export class Stock {
   @Column()
   @Field()
   idealStock: number
+
+  @CreateDateColumn({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
+  createdAt: Date
+
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
+  updatedAt: Date
 }

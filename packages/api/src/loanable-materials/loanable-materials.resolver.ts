@@ -1,28 +1,41 @@
 // Common
 import { UseGuards } from '@nestjs/common'
 // Graphql
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql'
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql'
 // Services
 import { LoanableMaterialsService } from './loanable-materials.service'
+import { SportService } from 'src/sport/sport.service'
 // Entities
 import { LoanableMaterial } from './entities/loanable-material.entity'
 import { Role } from 'src/users/entities/user.entity'
+import { Sport } from 'src/sport/entities/sport.entity'
 // Inputs
 import { CreateLoanableMaterialInput } from './dto/create-loanable-material.input'
 import { UpdateLoanableMaterialInput } from './dto/update-loanable-material.input'
 // Auth
-import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { AllowedRoles } from '../users/decorators/role.decorator'
-
+import { GraphQLError } from 'graphql/error'
+// Guards
+import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
+import { RolesGuard } from 'src/users/guards/roles.guard'
 
 @Resolver(() => LoanableMaterial)
 export class LoanableMaterialsResolver {
   constructor(
-    private readonly loanableMaterialsService: LoanableMaterialsService
+    private readonly loanableMaterialsService: LoanableMaterialsService,
+    private readonly sportService: SportService
   ) {}
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => LoanableMaterial)
   createLoanableMaterial(
     @Args('createLoanableMaterialInput')
@@ -32,7 +45,7 @@ export class LoanableMaterialsResolver {
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [LoanableMaterial], {
     name: 'GetAllloanableMaterials',
     nullable: true,
@@ -41,7 +54,8 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.findAll()
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => LoanableMaterial, {
     name: 'GetloanableMaterialById',
     nullable: true,
@@ -50,7 +64,8 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.findOneById(id)
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => LoanableMaterial)
   updateLoanableMaterial(
     @Args('updateLoanableMaterialInput')
@@ -62,6 +77,8 @@ export class LoanableMaterialsResolver {
     )
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => String)
   removeLoanableMaterialById(@Args('id', { type: () => String }) id: string) {
     return this.loanableMaterialsService
@@ -78,5 +95,18 @@ export class LoanableMaterialsResolver {
         console.log(err)
         return 'Error'
       })
+  }
+
+  @ResolveField() // "sports" must be the same as the field in the LoanableMaterial entity
+  async sports(@Parent() loanableMaterial: LoanableMaterial): Promise<Sport[]> {
+    const { SportId } = loanableMaterial
+    if (!SportId) throw new GraphQLError('No SportId found')
+    let sports: Sport[] = []
+    for (let id of SportId) {
+      const sport = await this.sportService.findOneById(id)
+      if (!sport) throw new GraphQLError('No sport found')
+      sports.push(sport)
+    }
+    return sports
   }
 }

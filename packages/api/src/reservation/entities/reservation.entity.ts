@@ -3,7 +3,13 @@ import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-mater
 import { Materials } from './material.entity'
 import { Room } from 'src/room/entities/room.entity'
 import { Rooms } from './room.entity'
-import { Column, Entity, ObjectIdColumn } from 'typeorm'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ObjectIdColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 import { Group } from 'src/groups/entities/group.entity'
 
 @Entity()
@@ -25,9 +31,9 @@ export class Reservation {
   @Field()
   endTime: string
 
-  @Field(()=>Group)
-  group:Group	
-  
+  @Field(() => Group)
+  group: Group
+
   @Column()
   groupId: string
 
@@ -46,4 +52,12 @@ export class Reservation {
   @Column()
   @Field({ defaultValue: false })
   isCancelled: boolean
+
+  @CreateDateColumn({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
+  createdAt: Date
+
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
+  updatedAt: Date
 }

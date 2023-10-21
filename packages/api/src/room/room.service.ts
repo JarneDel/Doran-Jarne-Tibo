@@ -18,14 +18,16 @@ export class RoomService {
     private readonly roomRepository: Repository<Room>
   ) {}
 
-  create(createRoomInput: CreateRoomInput) {
+  create(createRoomInput: CreateRoomInput): Promise<Room> {
     const r = new Room()
-    const { name, sports, pricePerHour, type, canBeUsed } = createRoomInput
-    r.name = name
-    r.sports = sports
-    r.pricePerHour = pricePerHour
-    r.type = type
-    r.canBeUsed = canBeUsed
+    r.name = createRoomInput.name
+    r.pricePerHour = createRoomInput.pricePerHour
+    r.SportId = createRoomInput.SportId
+    r.type = createRoomInput.type
+    r.canBeUsed = createRoomInput.canBeUsed
+    
+    console.log('Created: ' + r.name)
+    
     return this.roomRepository.save(r)
   }
 
@@ -51,7 +53,7 @@ export class RoomService {
     const r = await this.findOneById(id)
     r.name = updateRoomInput.name
     r.pricePerHour = updateRoomInput.pricePerHour
-    r.sports = updateRoomInput.sports
+    r.SportId = updateRoomInput.SportId
     r.type = updateRoomInput.type
     r.canBeUsed = updateRoomInput.canBeUsed
     return this.roomRepository.save(r)

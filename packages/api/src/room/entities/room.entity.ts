@@ -1,5 +1,9 @@
+// Grahpql
 import { Field, ID, ObjectType } from '@nestjs/graphql'
-import { Column, Entity, ObjectIdColumn } from 'typeorm'
+// Entities
+import { Sport } from 'src/sport/entities/sport.entity'
+// Typeorm
+import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity() // Database link - Typeorm
 @ObjectType()
@@ -12,9 +16,11 @@ export class Room {
   @Field() // Graphql
   name: string
 
-  @Column() // Database link - Typeorm
-  @Field(() => [String], {nullable:true}) // Graphql
-  sports: string[]
+  @Field(() => [Sport], { nullable: true })
+  sports: [Sport]
+
+  @Column({ type: 'array' })
+  SportId: string[]
 
   @Column() // Database link - Typeorm
   @Field() // Graphql
@@ -27,4 +33,12 @@ export class Room {
   @Column() // Database link - Typeorm
   @Field( {defaultValue:true}) // Graphql
   canBeUsed: boolean
+
+  @CreateDateColumn({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
+  createdAt: Date
+
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
+  updatedAt: Date
 }

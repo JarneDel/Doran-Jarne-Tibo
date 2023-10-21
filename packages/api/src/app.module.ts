@@ -10,12 +10,13 @@ import { GroupsModule } from './groups/groups.module'
 import { LoanableMaterialsModule } from './loanable-materials/loanable-materials.module'
 import { AuthenticationModule } from './authentication/authentication.module'
 import { ConfigModule } from '@nestjs/config'
-import { StaffModule } from './staff/staff.module'
-import { ServiceModule } from './service/service.module'
-import { RoomModule } from './room/room.module'
-import { SportModule } from './sport/sport.module'
-import { UsersModule } from './users/users.module'
-import { ReservationModule } from './reservation/reservation.module'
+import { StaffModule } from './staff/staff.module';
+import { ServiceModule } from './service/service.module';
+import { RoomModule } from './room/room.module';
+import { SportModule } from './sport/sport.module';
+import { UsersModule } from './users/users.module';
+import { ReservationModule } from './reservation/reservation.module';
+import { RepairRequestModule } from './repair-request/repair-request.module';
 
 
 @Module({
@@ -48,6 +49,7 @@ import { ReservationModule } from './reservation/reservation.module'
     SportModule,
     UsersModule,
     ReservationModule,
+    RepairRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

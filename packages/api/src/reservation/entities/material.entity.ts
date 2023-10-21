@@ -6,19 +6,19 @@ import { Column, Entity, ObjectIdColumn } from "typeorm";
 @ObjectType()
 export class Materials {
   @Column()
-  @Field()
+  @Field({nullable:true})
   name: string
 
   @Column()
-  @Field()
+  @Field({nullable:true})
   totalAmount: number
 
   @Column()
-  @Field()
+  @Field({nullable:true})
   wantedAmount: number
 
   @Column()
-  @Field()
+  @Field({nullable:true})
   price: number
 
   @Column()
@@ -26,7 +26,7 @@ export class Materials {
   sports: string[]
 
   @Column()
-  @Field()
+  @Field({nullable:true})
   isComplete: boolean
 
   @Column()
