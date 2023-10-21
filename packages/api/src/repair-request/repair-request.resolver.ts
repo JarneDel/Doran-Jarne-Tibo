@@ -102,7 +102,6 @@ export class RepairRequestResolver {
     const { requestUserId } = repairRequest
     if (!requestUserId)
       throw new GraphQLError(`No groupId found ${repairRequest}`)
-    console.log(requestUserId)
     let user: Group | Staff
     try {
       user = await this.groupService.findOne(requestUserId)
@@ -113,8 +112,6 @@ export class RepairRequestResolver {
         user = await this.staffService.findOne(requestUserId)
       } catch (error) {}
     }
-
-    console.log(user)
     return user
   }
 }

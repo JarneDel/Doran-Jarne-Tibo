@@ -140,12 +140,9 @@ export class SeedService {
       const r = new Room()
       const SportIds = []
       for (let sportName of room.sports) {
-        console.log(sportName)
         const s = await this.sportService.findOneByName(sportName)
-        console.log(s)
         if(s) SportIds.push(s.id.toString())
         else console.log('Sport not found:' + sportName)
-        console.log(SportIds)
       }
       r.name = room.name
       r.pricePerHour = room.pricePerHour
@@ -323,7 +320,6 @@ export class SeedService {
         r.pricePerHour = room.pricePerHour
         const sports: string[] = []
         for (let sportId of room.SportId) {
-          console.log(sportId)
           const s = this.sportService.findOneById(sportId)
           s.then((sport) => {
             sports.push(sport.name)
@@ -340,7 +336,6 @@ export class SeedService {
         const material = new Materials()
         const sports: string[] = []
         for (let sportId of loanableMaterial.SportId) {
-          console.log(sportId)
           const s = this.sportService.findOneById(sportId)
           s.then((sport) => {
             sports.push(sport.name)
@@ -366,8 +361,6 @@ export class SeedService {
         //Staff
         rr.requestUserId = await staff[Math.floor(Math.random() * staff.length)].id.toString()
       }
-
-      console.log(rr)
       outrepairRequests.push(rr)
     }
     return this.RepairRequestService.saveAll(outrepairRequests)

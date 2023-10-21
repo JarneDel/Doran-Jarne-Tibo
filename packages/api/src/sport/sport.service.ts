@@ -36,10 +36,6 @@ export class SportService {
   }
 
   findOneByName(name: string): Promise<Sport> {
-    console.log(name)
-    this.sportRepository.findOne({ where: { name: name } }).then((res) => {
-      console.log(res)
-    })
     return this.sportRepository.findOne({ where: { name: name } })
   }
 
