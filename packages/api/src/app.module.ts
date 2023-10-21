@@ -21,21 +21,22 @@ import { RepairRequestModule } from './repair-request/repair-request.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-
-    }),
+    ConfigModule.forRoot({}),
 
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
+      // playground: process.env.NODE_ENV == "production" ? false : true, // todo: uncomment before production
     }),
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: 'mongodb://localhost:27031/api',
+      url: `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}`,
+      database: process.env.DB_NAME ?? 'api',
       entities: [__dirname + '/**/*.entity.{js,ts}'],
-      synchronize: true, // Careful with this in production
+      synchronize: process.env.NODE_ENV != 'production', // Careful with this in production
       useNewUrlParser: true,
       useUnifiedTopology: true, // Disable deprecated warnings
+      directConnection: true,
     }),
     StockModule,
     GroupsModule,

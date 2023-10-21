@@ -92,7 +92,7 @@ export class SeedService {
     for (let group of groups) {
       const g = new Group()
       g.name = group.name
-      g.btw_number = group.btw_number
+      g.btwNumber = group.btw_number
       g.score = group.score
       g.locale = group.locale
       g.UID = group.uid
@@ -184,8 +184,18 @@ export class SeedService {
       s.firstName = staffMember.firstName
       s.lastName = staffMember.lastName
       s.phone = staffMember.phone
-      s.holidaysLeft = staffMember.holidaysLeft
-      s.holidayDates = staffMember.holidayDates.map((date) => new Date(date))
+      s.holidaysLeft = staffMember.holidaysleft
+      s.holidayDates = staffMember.holidayDates.map(date => new Date(date))
+      const role = staffMember.role
+      if (role === 'ADMIN') {
+        s.role = Role.ADMIN
+      } else if (role === 'STAFF') {
+        s.role = Role.STAFF
+      } else if (role === 'SUPER_ADMIN') {
+        s.role = Role.SUPER_ADMIN
+      }
+      s.UID = staffMember.UID
+      s.locale = staffMember.locale
 
       outStaff.push(s)
     }
@@ -212,42 +222,42 @@ export class SeedService {
         'No loanable materials found, please seed loanable materials first'
       )
     }
-
-    let outReservations: Reservation[] = []
-    for (let reservation of reservations) {
-      const r = new Reservation()
-      r.date = new Date(reservation.date)
-      r.start_time = reservation.start_time
-      r.end_time = reservation.end_time
-      r.groupId = groups[Math.floor(Math.random() * groups.length)].id
-      const materials: Materials[] = []
-      for (let material of reservation.reserved_materials) {
-        const m = new Materials()
-        m.name = material.name
-        m.totalAmount = material.totalAmount
-        m.wantedAmount = material.wantedAmount
-        m.price = material.price
-        m.sports = material.sports
-        m.isComplete = material.isComplete
-        m.description = material.description
-        materials.push(m)
-      }
-      const rooms: Rooms[] = []
-      for (let room of reservation.rooms) {
-        const r = new Rooms()
-        r.name = room.name
-        r.pricePerHour = room.pricePerHour
-        r.sports = room.sports
-        r.type = room.type
-        rooms.push(r)
-      }
-      //@ts-ignore
-      r.reserved_materials = materials
-      //@ts-ignore
-      r.rooms = rooms
-      r.price = reservation.price
-      r.isCancelled = reservation.isCancelled
-      outReservations.push(r)
+    
+      let outReservations: Reservation[] = [];
+      for (let reservation of reservations) {
+        const r = new Reservation()
+        r.date = new Date(reservation.date)
+        r.startTime = reservation.start_time
+        r.endTime = reservation.end_time
+        r.groupId = groups[Math.floor(Math.random() * groups.length)].id
+        const materials: Materials[] = []
+        for (let material of reservation.reserved_materials) {
+          const m = new Materials()
+          m.name = material.name
+          m.totalAmount = material.totalAmount
+          m.wantedAmount = material.wantedAmount
+          m.price = material.price
+          m.sports = material.sports
+          m.isComplete = material.isComplete
+          m.description = material.description
+          materials.push(m)
+        }
+        const rooms: Rooms[] = []
+        for (let room of reservation.rooms) {
+          const r = new Rooms()
+          r.name = room.name
+          r.pricePerHour = room.pricePerHour
+          r.sports = room.sports
+          r.type = room.type
+          rooms.push(r)
+        }
+        //@ts-ignore
+        r.reserved_materials = materials
+        //@ts-ignore
+        r.rooms = rooms
+        r.price = reservation.price
+        r.isCancelled = reservation.isCancelled
+        outReservations.push(r)
     }
     return this.reservationService.saveAll(outReservations)
   }

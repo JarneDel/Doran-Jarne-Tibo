@@ -17,7 +17,7 @@ export class UpdateGroupInput extends PartialType(CreateGroupInput) {
   @IsString()
   @MinLength(12)
   @Field({ nullable: true })
-  btw_number: string
+  btwNumber: string
   @Max(100)
   @IsNotEmpty()
   @IsInt()

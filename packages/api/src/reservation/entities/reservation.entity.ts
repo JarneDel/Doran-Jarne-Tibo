@@ -17,7 +17,7 @@ import { Group } from 'src/groups/entities/group.entity'
 export class Reservation {
   @ObjectIdColumn()
   @Field(() => ID, { nullable: true })
-  _id: string
+  id: string
 
   @Column()
   @Field()
@@ -25,11 +25,11 @@ export class Reservation {
 
   @Column()
   @Field()
-  start_time: string
+  startTime: string
 
   @Column()
   @Field()
-  end_time: string
+  endTime: string
 
   @Field(() => Group)
   group: Group
@@ -39,7 +39,7 @@ export class Reservation {
 
   @Column()
   @Field(() => [Materials])
-  reserved_materials: [Materials]
+  reservedMaterials: [Materials]
 
   @Column()
   @Field(() => [Rooms])

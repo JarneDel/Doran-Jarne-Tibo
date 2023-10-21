@@ -24,9 +24,10 @@ export class RoomService {
     r.pricePerHour = createRoomInput.pricePerHour
     r.SportId = createRoomInput.SportId
     r.type = createRoomInput.type
-
+    r.canBeUsed = createRoomInput.canBeUsed
+    
     console.log('Created: ' + r.name)
-
+    
     return this.roomRepository.save(r)
   }
 
@@ -54,6 +55,7 @@ export class RoomService {
     r.pricePerHour = updateRoomInput.pricePerHour
     r.SportId = updateRoomInput.SportId
     r.type = updateRoomInput.type
+    r.canBeUsed = updateRoomInput.canBeUsed
     return this.roomRepository.save(r)
   }
 

@@ -13,6 +13,7 @@ import {
   IsIn,
   IsPositive,
   Min,
+  IsBoolean,
 } from 'class-validator'
 
 const typeList = [
@@ -26,7 +27,7 @@ const typeList = [
 @InputType()
 export class UpdateRoomInput extends PartialType(CreateRoomInput) {
   @ObjectIdColumn()
-  @Field(()=>ID)
+  @Field(() => ID)
   _id: string
 
   @IsString()
@@ -48,4 +49,8 @@ export class UpdateRoomInput extends PartialType(CreateRoomInput) {
   @IsIn(typeList)
   @Field({ defaultValue: 'Sportzaal' }) // Graphql
   type: string
+
+  @IsBoolean()
+  @Field({ defaultValue: true }) // Graphql
+  canBeUsed: boolean
 }

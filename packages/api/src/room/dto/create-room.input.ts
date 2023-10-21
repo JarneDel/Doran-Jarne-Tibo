@@ -38,4 +38,8 @@ export class CreateRoomInput {
   @IsIn(typeList)
   @Field({ defaultValue: 'Sportzaal' }) // Graphql
   type: string
+
+  @IsBoolean()
+  @Field({ defaultValue: true }) // Graphql
+  canBeUsed: boolean
 }

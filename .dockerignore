@@ -1,0 +1,10 @@
+**/node-modules
+**/dist
+**/.env*
+!**/pwa/.env.production.local
+**/.git
+**/.DS_Store
+**/Dockerfile
+**/.dockerignore
+**/.gitignore
+**/credentials.json

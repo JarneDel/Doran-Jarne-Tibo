@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "pwa": "npm run dev --workspace=pwa",
-    "api": "npm run dev --workspace=api"
+    "api": "npm run dev --workspace=api",
+    "language": "npm run language --workspace=pwa -y"
   },
   "repository": {
     "type": "git",

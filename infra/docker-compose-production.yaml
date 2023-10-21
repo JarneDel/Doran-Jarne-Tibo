@@ -1,0 +1,57 @@
+version: '3.1'
+name: sport-complex-prod
+
+services:
+  db:
+    image: mongo
+    restart: unless-stopped
+    #    ports:
+    #      - "27017:27017" # Internal
+    expose:
+      - "27017" # Internal
+    environment:
+      MONGO_INITDB_DATABASE: api
+    volumes:
+      - dbvolume:/data/db
+    networks:
+      - database
+
+  api:
+    build:
+      context: ../.
+      dockerfile: packages/api/Dockerfile
+    env_file:
+      - ./../packages/api/.env.production.local
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/my-google-secret
+    ports:
+      - 3001:3000 # External:What Is Set In Main.ts
+    secrets:
+      - my-google-secret
+    networks:
+      - database
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://api:3000/" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    depends_on:
+      - db
+
+  pwa:
+    build:
+      context: ../.
+      dockerfile: packages/pwa/Dockerfile
+    ports:
+      - 8081:80
+
+volumes:
+  dbvolume:
+
+secrets:
+  my-google-secret:
+    file: ../packages/api/credentials.json
+
+networks:
+  database:

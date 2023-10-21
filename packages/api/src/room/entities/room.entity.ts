@@ -30,6 +30,10 @@ export class Room {
   @Field() // Graphql
   type: string
 
+  @Column() // Database link - Typeorm
+  @Field( {defaultValue:true}) // Graphql
+  canBeUsed: boolean
+
   @CreateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
   createdAt: Date
