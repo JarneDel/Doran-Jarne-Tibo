@@ -18,6 +18,8 @@ import { FirebaseUser } from '../authentication/decorators/user.decorator'
 import { Service } from '../service/entities/service.entity'
 import { ServiceService } from '../service/service.service'
 import { FilterStockArgs } from './args/filter.stock.args'
+import { Role } from '../users/entities/user.entity'
+import { AllowedRoles } from '../users/decorators/role.decorator'
 
 @Resolver(() => Stock)
 export class StockResolver {
@@ -31,7 +33,8 @@ export class StockResolver {
     return this.stockService.create(createStockInput)
   }
 
-  @UseGuards(FirebaseGuard)
+  // @UseGuards(FirebaseGuard)
+  // @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @Query(() => [Stock], { name: 'stock' })
   findAll(@FirebaseUser() user: UserRecord, @Args() args: FilterStockArgs) {
     console.log(args)

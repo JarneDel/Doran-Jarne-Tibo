@@ -4,7 +4,7 @@ import { Field, InputType, PartialType } from '@nestjs/graphql'
 @InputType()
 export class UpdateStockInput extends PartialType(CreateStockInput) {
   @Field()
-  id: string;
+  id: string
 
   @Field()
   name: string
@@ -12,15 +12,12 @@ export class UpdateStockInput extends PartialType(CreateStockInput) {
   @Field({ nullable: true }) //graphql
   description: string
 
-  @Field({defaultValue: 0} ) //graphql
+  @Field({ defaultValue: 0 }) //graphql
   needToOrderMore: boolean
 
-  @Field( { defaultValue: 0}) //graphql
+  @Field({ defaultValue: 0 }) //graphql
   amountInStock: number
 
-  @Field() //graphql
-  service: string
-
-  @Field({nullable: true}) //graphql
+  @Field({ nullable: true }) //graphql
   idealStock: number
 }

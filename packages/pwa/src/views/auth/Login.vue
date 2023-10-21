@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { type AuthError } from 'firebase/auth'
 
 import useFirebase from '@/composables/useFirebase'
@@ -13,8 +13,10 @@ export default defineComponent({
   setup() {
     const error = ref<AuthError | null>(null)
 
-    const { push } = useRouter()
+    const { replace } = useRouter()
     const { login, firebaseUser } = useFirebase()
+    const { currentRoute } = useRouter()
+
     const credentials = ref({
       email: '',
       password: '',
@@ -23,16 +25,22 @@ export default defineComponent({
       login(credentials.value.email, credentials.value.password)
         .then(() => {
           console.log('logged in')
-          push('/')
+          replace((currentRoute.value.query.redirect as string) || '/')
         })
         .catch((err: AuthError) => {
           error.value = err
         })
     }
+
+    const redirectToQueryParams = computed(() => {
+      return '?redirect=' + (currentRoute.value.query.redirect as string) || ''
+    })
+
     return {
       credentials,
       firebaseUser,
       error,
+      redirectToQueryParams,
       handleLogin,
     }
   },
@@ -50,7 +58,7 @@ export default defineComponent({
       v-model="credentials.email"
       :label="$t('auth.email')"
       autocomplete="email"
-      class="w-full"
+      class="my-3 w-full"
       required
       type="email"
     />
@@ -58,7 +66,7 @@ export default defineComponent({
       v-model="credentials.password"
       :label="$t('auth.password')"
       autocomplete="current-password"
-      class="w-full"
+      class="my-3 w-full"
       required
       type="password"
     />
@@ -70,7 +78,9 @@ export default defineComponent({
     <StyledButton class="my-2 w-full" type="submit"> Login</StyledButton>
     <div class="text-center">
       {{ $t('auth.noAccount') }}
-      <StyledLink to="/register">{{ $t('auth.register') }}</StyledLink>
+      <StyledLink :to="'/register' + redirectToQueryParams"
+        >{{ $t('auth.register') }}
+      </StyledLink>
     </div>
   </form>
 </template>

@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import useFirebase from '@/composables/useFirebase.ts'
+import useLastRoute from '@/composables/useLastRoute.ts'
 
 const { firebaseUser, logout } = useFirebase()
-
+const { lastRoute } = useLastRoute()
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -39,6 +40,9 @@ export const router = createRouter({
     {
       path: '/admin',
       component: () => import('@/components/wrapper/adminWrapper.vue'),
+      meta: {
+        shouldBeAuthenticated: true,
+      },
       children: [
         {
           path: 'groups',
@@ -55,10 +59,16 @@ export const router = createRouter({
             import('@/views/administration/inventory/Overview.vue'),
           children: [
             {
+              path: 'edit',
+              component: () =>
+                import('@/views/administration/inventory/SelectEditItem.vue'),
+            },
+            {
               path: ':id',
               component: () =>
                 import('@/views/administration/inventory/Item.vue'),
             },
+
             {
               path: ':id/edit',
               component: () =>
@@ -125,7 +135,7 @@ export const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
-    next('/login')
+    next('/login?redirect=' + to.path)
   } else if (to.meta.avoidAuth && firebaseUser.value) {
     next('/')
   } else if (to.path === '/logout') {
@@ -135,4 +145,8 @@ router.beforeEach((to, _, next) => {
   } else {
     next()
   }
+})
+
+router.afterEach((to, from, failure) => {
+  lastRoute.value = from.path
 })

@@ -31,12 +31,12 @@ export class ServiceResolver {
     return this.serviceService.create(createServiceInput)
   }
 
-  @Query(() => [Service], { name: 'service' })
+  @Query(() => [Service], { name: 'services' })
   findAll() {
     return this.serviceService.findAll()
   }
 
-  @Query(() => Service, { name: 'services' })
+  @Query(() => Service, { name: 'service' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.serviceService.findOne(id)
   }

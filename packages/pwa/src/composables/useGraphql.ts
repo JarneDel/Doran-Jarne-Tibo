@@ -1,10 +1,13 @@
 import {
   ApolloClient,
   createHttpLink,
+  from,
   InMemoryCache,
 } from '@apollo/client/core'
 import { setContext } from '@apollo/client/link/context'
 import useFirebase from './useFirebase'
+import { logErrorMessages } from '@vue/apollo-util'
+import { onError } from '@apollo/client/link/error'
 
 const { firebaseUser } = useFirebase()
 
@@ -26,10 +29,14 @@ const authLink = setContext(async (_, { headers }) => ({
   },
 }))
 
+const errorLink = onError(error => {
+  if (import.meta.env.DEV) logErrorMessages(error)
+})
 const apolloClient = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: from([authLink, errorLink, httpLink]),
   cache: new InMemoryCache(),
 })
+
 export default () => {
   return { apolloClient }
 }

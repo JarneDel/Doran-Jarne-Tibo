@@ -30,7 +30,8 @@ export class StockService {
     // check if service exists
     const service = await this.serviceService.findOne(serviceId)
     if (!service) throw new GraphQLError(`Service ${serviceId} not found}`)
-
+    if (!(await this.isNameUnique(name))) return new GraphQLError(`item exists`)
+    console.log('creating new item')
     s.name = name
     s.description = description
     s.idealStock = idealStock
@@ -54,8 +55,19 @@ export class StockService {
     })
   }
 
-  update(id: string, updateStockInput: UpdateStockInput) {
-    return `This action updates a #${id} stock`
+  async update(id: string, updateStockInput: UpdateStockInput) {
+    console.log('updateStockInput', updateStockInput)
+    const s = await this.stockRepository.findOneByOrFail({
+      //@ts-ignore
+      _id: new ObjectId(id),
+    })
+    s.name = updateStockInput.name
+    s.description = updateStockInput.description
+    s.idealStock = updateStockInput.idealStock
+    s.amountInStock = updateStockInput.amountInStock
+    s.needToOrderMore = updateStockInput.needToOrderMore
+    s.serviceId = new ObjectId(updateStockInput.serviceId)
+    return this.stockRepository.save(s)
   }
 
   remove(id: number) {
@@ -141,6 +153,19 @@ export class StockService {
 
     options.order = {
       [orderByField]: direction,
+    }
+  }
+
+  private async isNameUnique(name: string): Promise<boolean> {
+    try {
+      const stockItemWithName = await this.stockRepository.find({
+        where: {
+          name: name,
+        },
+      })
+      return !stockItemWithName || stockItemWithName.length == 0
+    } catch (e) {
+      return false
     }
   }
 }
