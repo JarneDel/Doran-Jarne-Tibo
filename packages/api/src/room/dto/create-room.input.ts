@@ -7,6 +7,7 @@ import {
   IsIn,
   IsPositive,
   Min,
+  IsBoolean
 } from 'class-validator'
 
 const typeList = [

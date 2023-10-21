@@ -76,12 +76,18 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting sports')
     await this.seedService.deleteAllSports()
     console.info('Removed sports')
+    //Staff
     await this.seedService.deleteAllStaff()
     console.log('removed all staff')
     await this.seedService.deleteAllServices()
+    //Services
     console.info('Removed all services')
+    //Reservations
     await this.seedService.deleteAllReservations()
     console.info('Removed all reservations')
+    //RepairRequests
+    await this.seedService.deleteAllRepairRequests()
+    console.info('Removed all repair requests')
   }
 
   //Stocks
