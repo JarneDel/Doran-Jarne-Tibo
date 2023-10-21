@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'Edit',
   components: { Modal },
-  setup(props, ctx) {
+  setup() {
     const { push } = useRouter()
     return {
       push,

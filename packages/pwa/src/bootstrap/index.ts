@@ -50,29 +50,26 @@ export const router = createRouter({
         },
         {
           path: 'inventory/new',
-          component: () => import('@/views/administration/inventory/New.vue'),
+          component: () => import('@/views/admin/inventory/New.vue'),
         },
 
         {
           path: 'inventory',
-          component: () =>
-            import('@/views/administration/inventory/Overview.vue'),
+          component: () => import('@/views/admin/inventory/Overview.vue'),
           children: [
             {
               path: 'edit',
               component: () =>
-                import('@/views/administration/inventory/SelectEditItem.vue'),
+                import('@/views/admin/inventory/SelectEditItem.vue'),
             },
             {
               path: ':id',
-              component: () =>
-                import('@/views/administration/inventory/Item.vue'),
+              component: () => import('@/views/admin/inventory/Item.vue'),
             },
 
             {
               path: ':id/edit',
-              component: () =>
-                import('@/views/administration/inventory/Edit.vue'),
+              component: () => import('@/views/admin/inventory/Edit.vue'),
             },
           ],
         },
@@ -91,8 +88,7 @@ export const router = createRouter({
           children: [
             {
               path: 'overview',
-              component: () =>
-                import('@/views/administration/inventory/Overview.vue'),
+              component: () => import('@/views/admin/inventory/Overview.vue'),
             },
           ],
         },

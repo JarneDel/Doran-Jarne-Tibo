@@ -37,6 +37,8 @@ export default defineConfig({
       danger: {
         DEFAULT: '#c7525c',
         active: '#e65e69',
+        surface: '#ffd9da',
+        light: '#ffb3b5',
       },
     },
   },

@@ -26,35 +26,37 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    class="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black bg-opacity-50"
-  >
-    <on-click-outside @trigger="$emit('close')">
-      <div
-        ref="target"
-        :class="maxWidth"
-        class="m-4 flex w-full flex-col overflow-y-auto rounded bg-white p-6 pt-4 shadow-lg"
-      >
-        <div class="mb-1 flex flex-row items-center justify-between gap-4">
-          <!--        <h2 class="text-2xl font-bold">{{ title }}</h2>-->
-          <slot name="title"></slot>
-          <button
-            class="bg-primary-surface hover:bg-primary-surface/80 active:bg-primary-surface/60 self-end rounded-full p-2"
-            @click="$emit('close')"
-          >
-            <LucideX :size="16" />
-          </button>
+  <teleport to="#app">
+    <div
+      class="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black bg-opacity-50"
+    >
+      <on-click-outside @trigger="$emit('close')">
+        <div
+          ref="target"
+          :class="maxWidth"
+          class="m-4 flex w-full flex-col overflow-y-auto rounded bg-white p-6 pt-4 shadow-lg"
+        >
+          <div class="mb-1 flex flex-row items-center justify-between gap-4">
+            <!--        <h2 class="text-2xl font-bold">{{ title }}</h2>-->
+            <slot name="title"></slot>
+            <button
+              class="bg-primary-surface hover:bg-primary-surface/80 active:bg-primary-surface/60 self-end rounded-full p-2"
+              @click="$emit('close')"
+            >
+              <LucideX :size="16" />
+            </button>
+          </div>
+          <main class="my-2">
+            <slot></slot>
+          </main>
+          <!--  Buttons    -->
+          <div class="flex justify-between gap-4">
+            <slot name="actions"></slot>
+          </div>
         </div>
-        <main class="my-2">
-          <slot></slot>
-        </main>
-        <!--  Buttons    -->
-        <div class="flex justify-between gap-4">
-          <slot name="actions"></slot>
-        </div>
-      </div>
-    </on-click-outside>
-  </div>
+      </on-click-outside>
+    </div>
+  </teleport>
 </template>
 
 <style scoped></style>
