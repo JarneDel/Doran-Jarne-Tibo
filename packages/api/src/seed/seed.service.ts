@@ -307,6 +307,7 @@ export class SeedService {
         //Room
         rr.loanableMaterial = null // Set to null because it's a room
         const room = await rooms[Math.floor(Math.random() * rooms.length)]
+        const roomList: Rooms[] = []
         const r = new Rooms()
         r.name = room.name
         r.pricePerHour = room.pricePerHour
@@ -320,7 +321,8 @@ export class SeedService {
         }
         r.sports = sports
         r.type = room.type
-        rr.room = r
+        roomList.push(r)
+        rr.room = roomList
       } else {
         //LoanableMaterial
         rr.room = null // Set to null because it's a loanable material
@@ -341,16 +343,18 @@ export class SeedService {
         material.sports = sports
         material.isComplete = loanableMaterial.isComplete
         material.description = loanableMaterial.description
-        rr.loanableMaterial = material
+        const materialList: Materials[] = []
+        materialList.push(material)
+        rr.loanableMaterial = materialList
       }
 
       const randNumb2 = Math.floor(Math.random() * 2)
       if(randNumb2 === 0) {
         //Group
-        rr.requestUserId = await groups[Math.floor(Math.random() * groups.length)].UID
+        rr.requestUserId = await groups[Math.floor(Math.random() * groups.length)].id.toString()
       } else {
         //Staff
-        rr.requestUserId = await staff[Math.floor(Math.random() * staff.length)].UID
+        rr.requestUserId = await staff[Math.floor(Math.random() * staff.length)].id.toString()
       }
 
       console.log(rr)

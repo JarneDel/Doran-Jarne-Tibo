@@ -39,11 +39,11 @@ export class RepairRequest {
 
   @Column()
   @Field(() => [Rooms], { nullable: true })
-  room: Rooms
+  room: Rooms[]
 
   @Column()
   @Field(() => [Materials], { nullable: true })
-  loanableMaterial: Materials
+  loanableMaterial:  Materials[]
 
   @Column()
   @Field()

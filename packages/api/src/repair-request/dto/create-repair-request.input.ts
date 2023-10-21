@@ -33,10 +33,10 @@ export class CreateRepairRequestInput {
   @ValidateIf((o) => o.loanableMaterial == undefined)
   @IsNotEmpty()
   @Field(() => [Rooms], { nullable: true })
-  room: Rooms
+  room: Rooms[]
 
   @ValidateIf((o) => o.room == undefined)
   @IsNotEmpty()
   @Field(() => [Materials], { nullable: true })
-  loanableMaterial: Materials
+  loanableMaterial: Materials[]
 }
