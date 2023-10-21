@@ -6,7 +6,6 @@ import {
   AllStockAndServices,
   getUpdatedStockItem,
   IUpdateItemOptional,
-  IUpdateStock,
   UPDATE_STOCK,
 } from '@/graphql/stock.query.ts'
 import {
@@ -22,10 +21,12 @@ import Modal from '@/components/Modal.vue'
 import { useRouter } from 'vue-router'
 import useLastRoute from '@/composables/useLastRoute.ts'
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
+import DoubleClickSelect from '@/components/generic/DoubleClickSelect.vue'
 
 export default defineComponent({
   name: 'Overview',
   components: {
+    DoubleClickSelect,
     DoubleClickEdit,
     Modal,
     StyledButton,
@@ -249,39 +250,43 @@ export default defineComponent({
             />
           </td>
           <td
-            :title="$t('inventory.title.amount.tooltip')"
             :class="{
               'text-primary': stock.amountInStock >= stock.idealStock,
               'text-warning': stock.amountInStock < stock.idealStock,
             }"
+            :title="$t('inventory.title.amount.tooltip')"
           >
-            {{ stock.amountInStock }}
+            <DoubleClickEdit
+              :value="stock.amountInStock"
+              class="inline"
+              type="number"
+              @submit="
+                newValue => updateItem(stock.id, { amountInStock: newValue })
+              "
+            />
+            /
+            <DoubleClickEdit
+              :value="stock.idealStock"
+              class="inline"
+              type="number"
+              @submit="
+                newValue => updateItem(stock.id, { idealStock: newValue })
+              "
+            />
           </td>
           <td :title="stock.service.description">
-            <select
-              class="hover:border-primary-light ring-offset-primary-lighter appearance-none rounded bg-inherit outline-none ring-black ring-offset-4 hover:ring focus-visible:ring active:ring"
-              name="service"
-              @change="
-                e => {
-                  const target = e.target as HTMLSelectElement
-                  updateItem(stock.id, { serviceId: target.value })
-                }
+            <DoubleClickSelect
+              :options="
+                result.services.reduce((acc, s) => {
+                  acc[s.id] = s.name
+                  return acc
+                }, {})
               "
-            >
-              <option :value="stock.service.id">
-                {{ stock.service.name }}
-              </option>
-              <option
-                v-for="s of result.services.filter(
-                  s => s.id !== stock.service.id,
-                )"
-                v-if="result"
-                :key="s.id"
-                :value="s.id"
-              >
-                {{ s.name }}
-              </option>
-            </select>
+              :selected="{ key: stock.service.id, value: stock.service.name }"
+              @submit="
+                newValue => updateItem(stock.id, { serviceId: newValue })
+              "
+            />
           </td>
           <td class="gap4 flex flex-row justify-end">
             <router-link :to="`/admin/inventory/${stock.id}`">
@@ -346,6 +351,6 @@ table {
 }
 
 .text-warning {
-  @apply text-red-500;
+  @apply text-danger;
 }
 </style>

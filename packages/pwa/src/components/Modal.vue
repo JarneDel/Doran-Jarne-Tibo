@@ -32,15 +32,15 @@ export default defineComponent({
     <on-click-outside @trigger="$emit('close')">
       <div
         ref="target"
-        class="m-4 flex w-full flex-col overflow-y-auto rounded bg-white p-6 pt-4 shadow-lg"
         :class="maxWidth"
+        class="m-4 flex w-full flex-col overflow-y-auto rounded bg-white p-6 pt-4 shadow-lg"
       >
         <div class="mb-1 flex flex-row items-center justify-between gap-4">
           <!--        <h2 class="text-2xl font-bold">{{ title }}</h2>-->
           <slot name="title"></slot>
           <button
-            @click="$emit('close')"
             class="bg-primary-surface hover:bg-primary-surface/80 active:bg-primary-surface/60 self-end rounded-full p-2"
+            @click="$emit('close')"
           >
             <LucideX :size="16" />
           </button>
