@@ -15,7 +15,14 @@ import { StaffService } from '../staff/staff.service'
 import { GraphQLError } from 'graphql/error'
 import { RoomService } from '../room/room.service'
 import { Room } from '../room/entities/room.entity'
+import { UseGuards } from '@nestjs/common'
+import { FirebaseGuard } from '../authentication/guards/firebase.guard'
+import { RolesGuard } from '../authentication/guards/roles.guard'
+import { AllowedRoles } from '../authentication/decorators/role.decorator'
+import { Role } from '../users/entities/user.entity'
 
+@UseGuards(FirebaseGuard, RolesGuard)
+@AllowedRoles(Role.STAFF, Role.ADMIN, Role.SUPER_ADMIN)
 @Resolver(() => Service)
 export class ServiceResolver {
   constructor(
