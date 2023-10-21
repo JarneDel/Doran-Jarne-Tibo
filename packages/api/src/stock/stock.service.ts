@@ -70,8 +70,13 @@ export class StockService {
     return this.stockRepository.save(s)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} stock`
+  async remove(id: string): Promise<string> {
+    console.log('deleting')
+    const result = await this.stockRepository.delete(id)
+    if (result.affected === 1) {
+      console.log('deleted item with id', id)
+      return id
+    }
   }
 
   // logic for seeding

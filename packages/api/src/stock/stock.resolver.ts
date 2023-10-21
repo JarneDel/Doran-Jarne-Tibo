@@ -1,6 +1,5 @@
 import {
   Args,
-  Int,
   Mutation,
   Parent,
   Query,
@@ -11,15 +10,11 @@ import { StockService } from './stock.service'
 import { Stock } from './entities/stock.entity'
 import { CreateStockInput } from './dto/create-stock.input'
 import { UpdateStockInput } from './dto/update-stock.input'
-import { UseGuards } from '@nestjs/common'
-import { FirebaseGuard } from '../authentication/guards/firebase.guard'
 import { UserRecord } from 'firebase-admin/auth'
 import { FirebaseUser } from '../authentication/decorators/user.decorator'
 import { Service } from '../service/entities/service.entity'
 import { ServiceService } from '../service/service.service'
 import { FilterStockArgs } from './args/filter.stock.args'
-import { Role } from '../users/entities/user.entity'
-import { AllowedRoles } from '../users/decorators/role.decorator'
 
 @Resolver(() => Stock)
 export class StockResolver {
@@ -54,8 +49,8 @@ export class StockResolver {
     return this.stockService.update(updateStockInput.id, updateStockInput)
   }
 
-  @Mutation(() => Stock)
-  removeStock(@Args('id', { type: () => Int }) id: number) {
+  @Mutation(() => String)
+  removeStock(@Args('id', { type: () => String }) id: string) {
     return this.stockService.remove(id)
   }
 

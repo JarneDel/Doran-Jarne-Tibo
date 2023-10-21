@@ -75,6 +75,12 @@ export const UPDATE_STOCK = gql`
   }
 `
 
+export const DELETE_STOCK = gql`
+  mutation ($id: String!) {
+    removeStock(id: $id)
+  }
+`
+
 export const getUpdatedStockItem = (
   item: StockItem,
   update: IUpdateItemOptional,

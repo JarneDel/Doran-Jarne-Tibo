@@ -13,7 +13,6 @@ import {
 } from '@/graphql/stock.query.ts'
 
 // todo: error handling
-// todo: fix issue: after creating a new item, the item is not shown in the list
 
 export default defineComponent({
   name: 'New.vue',
@@ -35,7 +34,7 @@ export default defineComponent({
     } = useQuery<IServices>(ALL_SERVICES)
 
     const { mutate } = useMutation<ICreateStock>(CREATE_STOCK)
-    const createNewItem = async (e: Event) => {
+    const createNewItem = async () => {
       if (service.value == '') {
         errors.value.push('Please select a service')
 
