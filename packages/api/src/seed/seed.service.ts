@@ -135,14 +135,21 @@ export class SeedService {
   }
 
   async addRoomsFromJson(): Promise<Room[]> {
-    const sports = await this.sportService.findAll()
     let Rooms: Room[] = []
     for (let room of rooms) {
       const r = new Room()
-      const sport = sports[Math.floor(Math.random() * sports.length)]
+      const SportIds = []
+      for (let sportName of room.sports) {
+        console.log(sportName)
+        const s = await this.sportService.findOneByName(sportName)
+        console.log(s)
+        if(s) SportIds.push(s.id.toString())
+        else console.log('Sport not found:' + sportName)
+        console.log(SportIds)
+      }
       r.name = room.name
       r.pricePerHour = room.pricePerHour
-      r.SportId = [new ObjectId(sport.id).toString()]
+      r.SportId = SportIds
       r.type = room.type
       Rooms.push(r)
     }
@@ -298,6 +305,7 @@ export class SeedService {
       const randNumb1 = Math.floor(Math.random() * 2)
       if(randNumb1 === 0) {
         //Room
+        rr.loanableMaterial = null // Set to null because it's a room
         const room = await rooms[Math.floor(Math.random() * rooms.length)]
         const r = new Rooms()
         r.name = room.name
@@ -315,6 +323,7 @@ export class SeedService {
         rr.room = r
       } else {
         //LoanableMaterial
+        rr.room = null // Set to null because it's a loanable material
         const loanableMaterial = await loanableMaterials[Math.floor(Math.random() * loanableMaterials.length)]
         const material = new Materials()
         const sports: string[] = []
