@@ -20,6 +20,10 @@ export default defineComponent({
       type: Number,
       default: 2,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['click'],
 })
@@ -27,15 +31,16 @@ export default defineComponent({
 
 <template>
   <button
-    :type="type"
-    class="focus-visible-outline-none transition-color rounded border-2 border-transparent hover:border-black focus:outline-none focus-visible:border-black focus-visible:border-black"
     :class="{
       primary: buttonType === 'primary',
       secondary: buttonType === 'secondary',
       danger: buttonType === 'danger',
       gray: buttonType === 'gray',
     }"
+    :disabled="disabled"
     :style="`padding: ${py / 4}rem ${px / 4}rem;`"
+    :type="type"
+    class="focus-visible-outline-none transition-color rounded border-2 border-transparent hover:border-black focus:outline-none focus-visible:border-black focus-visible:border-black"
     @click="$emit('click')"
   >
     <slot></slot>
@@ -57,5 +62,9 @@ export default defineComponent({
 
 .gray {
   @apply bg-gray-2 active:bg-gray-1;
+}
+
+button:disabled {
+  @apply bg-gray-1 active:bg-gray-1 hover:b-transparent;
 }
 </style>
