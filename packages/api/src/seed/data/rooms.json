@@ -68,13 +68,13 @@
         "name": "Onderhoudsruimte",
         "sports": [],
         "pricePerHour": 0.0,
-        "type": "werkruimte"
+        "type": "Werkruimte"
     },
     {
         "name": "Kuisruimte",
         "sports": [],
         "pricePerHour": 0.0,
-        "type": "werkruimte"
+        "type": "Werkruimte"
     },
     {
         "name": "Zwembad 1",
@@ -88,7 +88,27 @@
         "type": "Zwembad"
     },
     {
+        "name": "Zwembad 2",
+        "sports": [
+            "Zwemmen",
+            "Waterpolo",
+            "Synchroonzwemmen",
+            "Pilates"
+        ],
+        "pricePerHour": 50.0,
+        "type": "Zwembad"
+    },
+    {
         "name": "Duikput 1",
+        "sports": [
+            "Duiken",
+            "Zwemmen"
+        ],
+        "pricePerHour": 45.0,
+        "type": "Duikput"
+    },
+    {
+        "name": "Duikput 2",
         "sports": [
             "Duiken",
             "Zwemmen"

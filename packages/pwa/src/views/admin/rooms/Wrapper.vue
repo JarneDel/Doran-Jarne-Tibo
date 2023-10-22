@@ -6,7 +6,7 @@ export default defineComponent({ components: { AppHeader } });
 </script>
 
 <template>
-  <div>
+  <div class="m-8">
     <RouterView />
   </div>
 </template>

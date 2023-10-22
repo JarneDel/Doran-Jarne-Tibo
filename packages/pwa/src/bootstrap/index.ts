@@ -67,6 +67,10 @@ export const router = createRouter({
             //   path: ':id',
             //   component: () => import('@/views/rooms/Room.vue'),
             // },
+            {
+              path: 'create',
+              component: () => import('@/views/admin/rooms/Create.vue'),
+            }
           ],
           meta: {
             shouldBeAuthenticated: true,
