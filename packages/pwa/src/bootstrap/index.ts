@@ -10,15 +10,6 @@ export const router = createRouter({
       path: '/',
       component: () => import('@/views/Home.vue'),
     },
-    // todo: remove this route
-    {
-      path: '/test',
-      component: () => import('@/views/Temp.vue'),
-    },
-    {
-      path: '/shop',
-      component: () => import('@/views/Shop.vue'),
-    },
     {
       path: '/rooms',
       component: () => import('@/views/rooms/Wrapper.vue'),
@@ -69,26 +60,6 @@ export const router = createRouter({
       ],
     },
     {
-      path: '/administration',
-      component: () => import('@/views/administration/Wrapper.vue'),
-      children: [
-        {
-          path: '',
-          component: () => import('@/views/administration/Administration.vue'),
-        },
-        {
-          path: 'inventory',
-          children: [
-            {
-              path: 'overview',
-              component: () =>
-                import('@/views/administration/inventory/Overview.vue'),
-            },
-          ],
-        },
-      ],
-    },
-    {
       path: '/auth',
       component: () => import('@/views/auth/Wrapper.vue'),
       children: [
@@ -107,6 +78,13 @@ export const router = createRouter({
       ],
       meta: {
         avoidAuth: true,
+      },
+    },
+    {
+      path: '/profile',
+      component: () => import('@/views/Profile.vue'),
+      meta: {
+        shouldBeAuthenticated: true,
       },
     },
     {

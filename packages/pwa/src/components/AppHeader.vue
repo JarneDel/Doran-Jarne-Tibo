@@ -14,6 +14,7 @@ export default defineComponent({
     let options = ref(false)
     const toggleOptions = () => {
       options.value = !options.value
+    }
     const { customUser, restoreCustomUser, userLogout } = useUser()
 
     restoreCustomUser()
@@ -32,7 +33,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="flex items-center justify-between bg-white fill-slate-700 p-2 shadow-md"
+    class="flex items-center justify-between bg-white fill-slate-700 p-2 h-20 min-h-min shadow-md"
   >
     <router-link to="/" class="flex items-center justify-center gap-2">
       <logo class="h-10" />
@@ -103,9 +104,9 @@ export default defineComponent({
             v-if="options"
             class="absolute right-0 top-9 rounded-md bg-white p-4 shadow-md"
           >
-            <router-link to="/profile">profile</router-link>
+            <router-link to="/profile">{{$t('nav.profile')}}</router-link>
             <StyledButton @click="logoutbutton()" class="mt-2">
-              logout
+              {{$t('account.log.out')}}
             </StyledButton>
           </div>
         </OnClickOutside>

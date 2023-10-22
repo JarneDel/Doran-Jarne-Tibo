@@ -32,3 +32,31 @@ export const USER_BY_UID = gql`
     }
   }
 `
+
+export const UPDATE_GROUP = gql`
+  mutation updateGroup(
+    $_id: String!
+    $name: String!
+    $locale: String!
+    $btwNumber: String!
+  ) {
+    updateGroup(
+      updateGroupInput: {
+        _id: $_id
+        name: $name
+        locale: $locale
+        btwNumber: $btwNumber
+      }
+    ) {
+      id
+      UID
+      locale
+      role
+      createdAt
+      updatedAt
+      name
+      btwNumber
+      score
+    }
+  }
+`
