@@ -87,9 +87,9 @@ export const getUpdatedStockItem = (
 ): IUpdateStock => {
   let updatedItem: IUpdateStock = {
     id: item.id,
-    amountInStock: item.amountInStock,
+    amountInStock: Number(item.amountInStock),
     description: item.description,
-    idealStock: item.idealStock,
+    idealStock: Number(item.idealStock),
     name: item.name,
     needToOrderMore: item.needToOrderMore,
     serviceId: item.service.id,
