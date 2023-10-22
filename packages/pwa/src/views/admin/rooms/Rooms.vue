@@ -257,6 +257,14 @@ export default defineComponent({
             <h3 class="mb-2 font-bold text-2xl">{{ workRoom.name }}</h3>
           </div>
         </li>
+        <li>
+          <RouterLink
+            to="/admin/rooms/create"
+            class="flex w-full justify-center items-center h-full rounded-lg bg-white p-4 shadow-md"
+          >
+            <PlusCircle class="text-secondary-light" height="140" width="140" />
+          </RouterLink>
+        </li>
       </ul>
     </div>
     <div v-if="TypeSelector == 2">
@@ -273,6 +281,14 @@ export default defineComponent({
               <p>€{{ changingRoom.pricePerHour }}</p>
             </div>
           </div>
+        </li>
+        <li>
+          <RouterLink
+            to="/admin/rooms/create"
+            class="flex w-full justify-center items-center h-full rounded-lg bg-white p-4 shadow-md"
+          >
+            <PlusCircle class="text-secondary-light" height="140" width="140" />
+          </RouterLink>
         </li>
       </ul>
     </div>
@@ -303,6 +319,14 @@ export default defineComponent({
             </div>
           </div>
         </li>
+        <li>
+          <RouterLink
+            to="/admin/rooms/create"
+            class="flex w-full justify-center items-center h-full rounded-lg bg-white p-4 shadow-md"
+          >
+            <PlusCircle class="text-secondary-light" height="140" width="140" />
+          </RouterLink>
+        </li>
       </ul>
     </div>
     <div v-if="TypeSelector == 4">
@@ -331,6 +355,14 @@ export default defineComponent({
               <p>€{{ divePool.pricePerHour }}</p>
             </div>
           </div>
+        </li>
+        <li>
+          <RouterLink
+            to="/admin/rooms/create"
+            class="flex w-full justify-center items-center h-full rounded-lg bg-white p-4 shadow-md"
+          >
+            <PlusCircle class="text-secondary-light" height="140" width="140" />
+          </RouterLink>
         </li>
       </ul>
     </div>

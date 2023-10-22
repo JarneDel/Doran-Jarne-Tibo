@@ -41,7 +41,6 @@ export class UpdateRoomInput extends PartialType(CreateRoomInput) {
 
   @Max(1000)
   @Min(0)
-  @IsPositive()
   @Field() // Graphql
   pricePerHour: number
 

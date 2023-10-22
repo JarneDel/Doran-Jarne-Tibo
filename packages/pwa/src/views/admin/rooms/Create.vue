@@ -60,7 +60,9 @@ export default defineComponent({
       //get all form data
       const formData = new FormData(e.target as HTMLFormElement);
       const data = Object.fromEntries(formData.entries());
+      let Price = 0;
       const { title, price } = data;
+      if (price) Price = Number(price);
       const sportsIds = [];
       for (const key in data) {
         if (Object.prototype.hasOwnProperty.call(data, key)) {
@@ -76,7 +78,7 @@ export default defineComponent({
       } else if (typeSelector.value == 1) {
         type = 'Werkruimte';
       } else if (typeSelector.value == 2) {
-        type = 'Kleedkamer';
+        type = 'Kleedruimte';
       } else if (typeSelector.value == 3) {
         type = 'Zwembad';
       } else if (typeSelector.value == 4) {
@@ -85,7 +87,7 @@ export default defineComponent({
 
       const params: createRoomInput = {
         name: title.toString(),
-        pricePerHour: Number(price.toString()),
+        pricePerHour: Price,
         SportId: sportsIds,
         type: type,
       };
@@ -151,7 +153,7 @@ export default defineComponent({
           <label :for="sport.id" class="select-none">{{ sport.name }}</label>
         </div>
       </div>
-      <div v-if="typeSelector != -1 && typeSelector != 2" class="flex flex-col">
+      <div v-if="typeSelector != -1 && typeSelector != 1" class="flex flex-col">
         <label for="price">Price Per Hour</label>
         <input
           type="number"
