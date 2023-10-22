@@ -55,6 +55,15 @@ export class RoomResolver {
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
   @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllGyms',
+  })
+  findAllGyms() {
+    return this.roomService.findAllGyms()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => Room, {
     name: 'GetRoomById',
     nullable: true,

@@ -21,23 +21,6 @@ export const router = createRouter({
       component: () => import('@/views/Shop.vue'),
     },
     {
-      path: '/rooms',
-      component: () => import('@/views/rooms/Wrapper.vue'),
-      children: [
-        {
-          path: '',
-          component: () => import('@/views/rooms/Rooms.vue'),
-        },
-        // {
-        //   path: ':id',
-        //   component: () => import('@/views/rooms/Room.vue'),
-        // },
-      ],
-      meta: {
-        shouldBeAuthenticated: true,
-      },
-    },
-    {
       path: '/admin',
       component: () => import('@/components/wrapper/adminWrapper.vue'),
       meta: {
@@ -52,7 +35,6 @@ export const router = createRouter({
           path: 'inventory/new',
           component: () => import('@/views/admin/inventory/New.vue'),
         },
-
         {
           path: 'inventory',
           component: () => import('@/views/admin/inventory/Overview.vue'),
@@ -72,6 +54,23 @@ export const router = createRouter({
               component: () => import('@/views/admin/inventory/Edit.vue'),
             },
           ],
+        },
+        {
+          path: 'rooms',
+          component: () => import('@/views/admin/rooms/Wrapper.vue'),
+          children: [
+            {
+              path: '',
+              component: () => import('@/views/admin/rooms/Rooms.vue'),
+            },
+            // {
+            //   path: ':id',
+            //   component: () => import('@/views/rooms/Room.vue'),
+            // },
+          ],
+          meta: {
+            shouldBeAuthenticated: true,
+          },
         },
       ],
     },

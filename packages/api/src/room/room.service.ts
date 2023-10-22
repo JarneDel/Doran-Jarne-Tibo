@@ -35,6 +35,14 @@ export class RoomService {
     return this.roomRepository.find()
   }
 
+  findAllGyms() {
+    const AllRooms = this.roomRepository.find()
+    const Gyms = AllRooms.then((rooms) => {
+      return rooms.filter((room) => room.type === 'Sportzaal')
+    })
+    return Gyms
+  }
+
   findByIds(ids: string[]): Promise<Room[]> {
     return this.roomRepository.find({
       // @ts-ignore

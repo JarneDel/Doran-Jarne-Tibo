@@ -5,18 +5,25 @@ interface Rooms {
     {
       _id: string;
       name: string;
-      sports: string[];
+      sports: Sport[];
       pricePerHour: number;
       type: string;
+      createdAt: string;
+      updatedAt: string;
     }
   ];
 }
 
+interface Sport {
+  id: string;
+  name: string;
+}
+
 // Imports
 import { useQuery } from '@vue/apollo-composable';
-import { ALL_ROOMS } from '@/graphql/room.query';
+import { ALL_ROOMS } from '../../../graphql/room.query';
 import { defineComponent, ref } from 'vue';
-import UseFirebase from '@/composables/useFirebase';
+import UseFirebase from '../../../composables/useFirebase';
 
 // Export default
 export default defineComponent({
@@ -52,9 +59,9 @@ export default defineComponent({
                 v-for="sport in result?.GetAllRooms[
                   result?.GetAllRooms.indexOf(room)
                 ].sports"
-                :key="sport"
+                :key="sport.name"
               >
-                <p>{{ sport }}</p>
+                <p>{{ sport.name }}</p>
               </li>
             </ul>
           </div>

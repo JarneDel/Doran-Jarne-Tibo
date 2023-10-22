@@ -1,5 +1,5 @@
 <script lang="ts">
-import AppHeader from '@/components/AppHeader.vue';
+import AppHeader from '../../../components/AppHeader.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({ components: { AppHeader } });
@@ -7,7 +7,6 @@ export default defineComponent({ components: { AppHeader } });
 
 <template>
   <div>
-    <AppHeader />
     <RouterView />
   </div>
 </template>
