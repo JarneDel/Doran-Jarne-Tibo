@@ -6,4 +6,18 @@ import { Field, InputType } from '@nestjs/graphql'
 export class UpdateStaffInput extends PartialType(CreateStaffInput) {
   @Field()
   id: string
+  @Field()
+  firstName: string
+
+  @Field()
+  lastName: string
+
+  @Field()
+  email: string
+
+  @Field()
+  phone: string
+
+  @Field()
+  locale?: string;
 }

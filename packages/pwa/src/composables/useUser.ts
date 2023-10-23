@@ -4,6 +4,7 @@ import useGraphql from './useGraphql'
 import { provideApolloClient, useQuery } from '@vue/apollo-composable'
 import { USER_BY_UID } from '@/graphql/usser.query'
 import firebase from './useFirebase'
+import locale from './useLanguage'
 
 const customUser = ref<User | null | undefined>()
 
@@ -15,12 +16,16 @@ const restoreCustomUser = async () => {
   return new Promise<void>(resolve => {
     const {firebaseUser} = firebase()
     console.log(firebaseUser.value?.email)
+    const{setLocale}=locale()
     const { onResult } = useQuery(USER_BY_UID,{}, {
       fetchPolicy: 'no-cache',
     })
     onResult(result => {
       if (result.data) {
         customUser.value = result.data
+        console.log(customUser.value?.userByUid.locale)
+        if (customUser.value?.userByUid.locale)
+        setLocale(customUser.value?.userByUid.locale)
         resolve()
       }
     })

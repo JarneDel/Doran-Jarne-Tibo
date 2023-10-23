@@ -47,6 +47,7 @@ export class GroupsService {
     g.btwNumber = updateGroupInput.btwNumber
     if (updateGroupInput.score)
     g.score = updateGroupInput.score
+    g.locale = updateGroupInput.locale
     return this.groupRepository.save( g)
     
   }

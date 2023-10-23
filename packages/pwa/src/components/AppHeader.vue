@@ -68,13 +68,13 @@ export default defineComponent({
       <div class="relative">
         <button
           v-if="customUser"
-          class="flex items-center justify-center gap-4"
+          class="flex items-center justify-center gap-4 mx-2"
           @click="toggleOptions()"
         >
           <ChevronDown />
-          <div class="mx-2">
+          <div class="">
             <p
-              class="w-25 overflow-hidden text-ellipsis whitespace-nowrap"
+              class="w-24 overflow-hidden text-ellipsis whitespace-nowrap"
               :title="customUser?.userByUid.firstName"
               v-if="customUser?.userByUid.__typename == 'Staff'"
             >
@@ -82,7 +82,7 @@ export default defineComponent({
             </p>
 
             <p
-              class="w-25 overflow-hidden text-ellipsis whitespace-nowrap"
+              class="w-24 overflow-hidden text-ellipsis whitespace-nowrap"
               :title="customUser?.userByUid.name"
               v-if="customUser?.userByUid.__typename == 'Group'"
             >
