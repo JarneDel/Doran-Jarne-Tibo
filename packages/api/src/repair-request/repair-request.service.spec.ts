@@ -1,9 +1,15 @@
-import { Test, TestingModule } from '@nestjs/testing'
-import { RepairRequestService } from './repair-request.service'
-import { getRepositoryToken } from '@nestjs/typeorm'
-import { RepairRequest } from './entities/repair-request.entity'
+// Typeorm
 import { Repository } from 'typeorm'
+import { getRepositoryToken } from '@nestjs/typeorm'
+// testing
+import { Test, TestingModule } from '@nestjs/testing'
+// Services
+import { RepairRequestService } from './repair-request.service'
+// Entities
+import { RepairRequest } from './entities/repair-request.entity'
+// Stubs
 import { repairRequestStub } from './stubs/repair-request.stub'
+import { createRepairRequestInputStub } from './stubs/repair-request.stub'
 
 describe('RepairRequestService', () => {
   let service: RepairRequestService
@@ -17,6 +23,8 @@ describe('RepairRequestService', () => {
           provide: getRepositoryToken(RepairRequest),
           useValue: {
             save: jest.fn().mockResolvedValue(repairRequestStub()),
+            find: jest.fn().mockResolvedValue([repairRequestStub()]),
+            findOneByOrFail: jest.fn().mockResolvedValue(repairRequestStub()),
           },
         },
       ],
@@ -32,14 +40,68 @@ describe('RepairRequestService', () => {
     expect(service).toBeDefined()
   })
 
+  // Test create
   describe('create()', () => {
     describe('when create is called', () => {
-      it('should call repairRequest.save()', async () => {
+      it('should call repairRequest.save() exactly once', async () => {
         const repairRequest = new RepairRequest()
         const saveSpy = jest.spyOn(mockRepository, 'save')
 
         await service.create(repairRequest)
         expect(saveSpy).toBeCalledTimes(1)
+      })
+      it('should return a repairRequest', async () => {
+        const repairRequest = await service.create(
+          createRepairRequestInputStub()
+        )
+        expect(repairRequest).toEqual(repairRequestStub())
+      })
+    })
+  })
+
+  // Test findAll
+  describe('findAll()', () => {
+    describe('when findAll is called', () => {
+      it('should call repairRequest.find() and return all repairRequests', async () => {
+        const repairRequests = [repairRequestStub()]
+        const findSpy = jest.spyOn(mockRepository, 'find')
+
+        const result = await service.findAll()
+        expect(findSpy).toBeCalledTimes(1)
+        expect(result).toEqual(repairRequests)
+      })
+    })
+  })
+
+  // Test findOneById
+  describe('findOneById()', () => {
+    describe('when findOneById is called', () => {
+      it('should call repairRequest.findOne() and return a repairRequest', async () => {
+        const repairRequest = repairRequestStub()
+        const findOneSpy = jest
+          .spyOn(mockRepository, 'findOneByOrFail')
+          .mockResolvedValue(repairRequest)
+
+        const result = await service.findOneById('6536630b07fc7efb0be2114a')
+        expect(findOneSpy).toBeCalledTimes(1)
+        expect(result).toEqual(repairRequest)
+      })
+    })
+  })
+
+  // Test update
+  describe('update()', () => {
+    describe('when update is called', () => {
+      it('should call repairRequest.save() and return a repairRequest', async () => {
+        const repairRequest = repairRequestStub()
+        const saveSpy = jest.spyOn(mockRepository, 'save')
+
+        const result = await service.update(
+          '6536630b07fc7efb0be2114a',
+          repairRequest
+        )
+        expect(saveSpy).toBeCalledTimes(1)
+        expect(result).toEqual(repairRequest)
       })
     })
   })
