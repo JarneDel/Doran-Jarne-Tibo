@@ -38,7 +38,7 @@ export const UPDATE_GROUP = gql`
     $_id: String!
     $name: String!
     $locale: String!
-    $btwNumber: String!
+    $btwNumber: String
   ) {
     updateGroup(
       updateGroupInput: {
@@ -91,6 +91,24 @@ export const UPDATE_STAFF = gql`
       phone
       holidaysLeft
       holidayDates
+    }
+  }
+`
+
+export const CREATE_GROUP = gql`
+  mutation createGroup($name: String!, $locale: String!, $btwNummer: String) {
+    createGroup(
+      createGroupInput: { locale: $locale, name: $name, btwNumber: $btwNummer }
+    ) {
+      id
+      UID
+      locale
+      role
+      createdAt
+      updatedAt
+      name
+      btwNumber
+      score
     }
   }
 `

@@ -12,11 +12,11 @@ import useUser from '@/composables/useUser'
 export default defineComponent({
   components: { StyledLink, StyledInputText, StyledButton },
   setup() {
+    const { restoreCustomUser ,customUser} = useUser()
     const error = ref<AuthError | null>(null)
 
     const { push } = useRouter()
     const { login, firebaseUser } = useFirebase()
-    const { restoreCustomUser ,customUser} = useUser()
     const credentials = ref({
       email: '',
       password: '',
@@ -48,7 +48,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <form class="c-primary-text" @submit.prevent="handleLogin">
+  <form class="c-primary-text " @submit.prevent="handleLogin">
     <h1 class="font-600 text-xl">{{ $t('auth.login') }}</h1>
     <p v-if="error">{{ error }}</p>
     <p v-if="firebaseUser">

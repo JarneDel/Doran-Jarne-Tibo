@@ -25,6 +25,7 @@ export default defineComponent({
       })
     }
     console.log(firebaseUser.value?.email)
+    if (customUser.value?.userByUid.locale)
     return { options, toggleOptions, customUser, logoutbutton, firebaseUser }
   },
   components: { StyledButton, ChevronDown, logo, OnClickOutside },
@@ -43,7 +44,7 @@ export default defineComponent({
       </h1>
     </router-link>
     <div class="flex items-center justify-center gap-8">
-      <div class="flex justify-center gap-4">
+      <div class="flex justify-center gap-4" v-if="customUser">
         <div class="hover:font-bold">
           <router-link to="/">{{ $t('navigation.home') }}</router-link>
         </div>
@@ -74,7 +75,7 @@ export default defineComponent({
           <ChevronDown />
           <div class="">
             <p
-              class="w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+              class="max-w-[6rem] overflow-hidden text-ellipsis whitespace-nowrap"
               :title="customUser?.userByUid.firstName"
               v-if="customUser?.userByUid.__typename == 'Staff'"
             >
@@ -82,7 +83,7 @@ export default defineComponent({
             </p>
 
             <p
-              class="w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+              class="max-w-[6rem] overflow-hidden text-ellipsis whitespace-nowrap"
               :title="customUser?.userByUid.name"
               v-if="customUser?.userByUid.__typename == 'Group'"
             >

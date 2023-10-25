@@ -7,27 +7,6 @@ export const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: '/',
-      component: () => import('@/views/Home.vue'),
-    },
-    {
-      path: '/rooms',
-      component: () => import('@/views/rooms/Wrapper.vue'),
-      children: [
-        {
-          path: '',
-          component: () => import('@/views/rooms/Rooms.vue'),
-        },
-        // {
-        //   path: ':id',
-        //   component: () => import('@/views/rooms/Room.vue'),
-        // },
-      ],
-      meta: {
-        shouldBeAuthenticated: true,
-      },
-    },
-    {
       path: '/admin',
       component: () => import('@/components/wrapper/adminWrapper.vue'),
       children: [
@@ -58,6 +37,9 @@ export const router = createRouter({
           ],
         },
       ],
+      meta: {
+        shouldBeAuthenticated: true,
+      },
     },
     {
       path: '/auth',
@@ -85,7 +67,7 @@ export const router = createRouter({
       component: () => import('@/views/Profile.vue'),
       meta: {
         shouldBeAuthenticated: true,
-      },
+      }
     },
     {
       path: '/account',
