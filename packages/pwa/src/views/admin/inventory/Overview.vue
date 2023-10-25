@@ -1,10 +1,13 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { useQuery } from '@vue/apollo-composable'
+import { defineComponent, ref, watch } from 'vue'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   ALL_STOCK_AND_SERVICES,
   AllStockAndServices,
-} from '@/graphql/stock.graphql.ts'
+  getUpdatedStockItem,
+  IUpdateItemOptional,
+  UPDATE_STOCK,
+} from '@/graphql/stock.query.ts'
 import {
   ArrowDownNarrowWide,
   ArrowUpDown,
@@ -16,10 +19,15 @@ import {
 import StyledButton from '@/components/generic/StyledButton.vue'
 import Modal from '@/components/Modal.vue'
 import { useRouter } from 'vue-router'
+import useLastRoute from '@/composables/useLastRoute.ts'
+import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
+import DoubleClickSelect from '@/components/generic/DoubleClickSelect.vue'
 
 export default defineComponent({
   name: 'Overview',
   components: {
+    DoubleClickSelect,
+    DoubleClickEdit,
     Modal,
     StyledButton,
     Edit2,
@@ -39,6 +47,7 @@ export default defineComponent({
 
     const { push } = useRouter()
 
+    // graphql
     const { error, loading, result, refetch } = useQuery<AllStockAndServices>(
       ALL_STOCK_AND_SERVICES,
       {
@@ -46,7 +55,18 @@ export default defineComponent({
         orderDirection: sortDirection.value,
         orderByField: sortFieldName.value,
       },
+      {
+        nextFetchPolicy: 'cache-and-network',
+        fetchPolicy: 'cache-and-network',
+      },
     )
+
+    const { mutate: mutateUpdateItem } = useMutation(UPDATE_STOCK)
+
+    /**
+     * Sorts the table by the given field and requests the data again
+     * @param field
+     */
     const sortField = (field: string) => {
       if (sortFieldName.value === field) {
         sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC'
@@ -77,6 +97,32 @@ export default defineComponent({
       })
     }
 
+    const { lastRoute } = useLastRoute()
+    watch(
+      lastRoute,
+      value => {
+        console.log(lastRoute)
+        if (value.startsWith('/admin/inventory/')) {
+          console.log('refetching')
+          fetchWithFilters()
+        }
+      },
+      { immediate: true },
+    )
+
+    const updateItem = (
+      id: string,
+      fieldsToUpdate: Partial<IUpdateItemOptional>,
+    ) => {
+      const stockItem = result.value?.stock.find(s => s.id == id)
+      if (!stockItem) return
+      mutateUpdateItem({
+        updateStockInput: getUpdatedStockItem(stockItem, fieldsToUpdate),
+      }).then(() => {
+        fetchWithFilters()
+      })
+    }
+
     return {
       error,
       loading,
@@ -89,6 +135,7 @@ export default defineComponent({
       whereName,
       whereService,
       push,
+      updateItem,
     }
   },
 })
@@ -116,7 +163,7 @@ export default defineComponent({
         >
           <option value="">{{ $t('inventory.sort.service.all') }}</option>
           <option
-            v-for="service of result.service"
+            v-for="service of result.services"
             v-if="result"
             :key="service.id"
             :value="service.id"
@@ -126,7 +173,7 @@ export default defineComponent({
         </select>
       </div>
       <div>
-        <StyledButton type="button" @click="push('inventory/new')">
+        <StyledButton type="button" @click="push('/admin/inventory/new')">
           {{ $t('inventory.new') }}
         </StyledButton>
       </div>
@@ -188,18 +235,58 @@ export default defineComponent({
           :key="stock.id"
           class="hover:bg-primary-light/20 transition-colors duration-200"
         >
-          <td>{{ stock.name }}</td>
+          <td>
+            <DoubleClickEdit
+              :value="stock.name"
+              @submit="newValue => updateItem(stock.id, { name: newValue })"
+            />
+          </td>
           <td :title="stock.description" class="truncate">
-            {{ stock.description }}
+            <DoubleClickEdit
+              :value="stock.description"
+              @submit="
+                newValue => updateItem(stock.id, { description: newValue })
+              "
+            />
           </td>
-          <td :title="$t('inventory.title.amount.tooltip')">
-            {{ stock.amountInStock }} / {{ stock.idealStock }}
+          <td
+            :class="{
+              'text-primary': stock.amountInStock >= stock.idealStock,
+              'text-warning': stock.amountInStock < stock.idealStock,
+            }"
+            :title="$t('inventory.title.amount.tooltip')"
+          >
+            <DoubleClickEdit
+              :value="stock.amountInStock"
+              type="number"
+              @submit="
+                newValue => updateItem(stock.id, { amountInStock: newValue })
+              "
+            />
+            /
+            <DoubleClickEdit
+              :value="stock.idealStock"
+              type="number"
+              @submit="
+                newValue => updateItem(stock.id, { idealStock: newValue })
+              "
+            />
           </td>
-          <td :title="stock.service.description">{{ stock.service.name }}</td>
+          <td :title="stock.service.description">
+            <DoubleClickSelect
+              :options="
+                result.services.reduce((acc, s) => {
+                  acc[s.id] = s.name
+                  return acc
+                }, {})
+              "
+              :selected="{ key: stock.service.id, value: stock.service.name }"
+              @submit="
+                newValue => updateItem(stock.id, { serviceId: newValue })
+              "
+            />
+          </td>
           <td class="gap4 flex flex-row justify-end">
-            <router-link :to="`/admin/inventory/${stock.id}/edit`">
-              <Edit2 />
-            </router-link>
             <router-link :to="`/admin/inventory/${stock.id}`">
               <ChevronRight />
             </router-link>
@@ -213,6 +300,7 @@ export default defineComponent({
       </tbody>
     </table>
   </div>
+
   <div v-if="loading">Loading...</div>
 </template>
 
@@ -240,13 +328,6 @@ table {
   border: 2px solid #e6edfa;
 }
 
-/*
-   tbody tr:nth-child(odd) {
-//   apply tailwind primary-surface color
-//  background-color: #edf2fa;
-
-*/
-
 .loader {
   animation: blink 1s infinite;
 }
@@ -261,5 +342,13 @@ table {
   100% {
     background-color: #fff;
   }
+}
+
+.text-primary {
+  @apply text-primary;
+}
+
+.text-warning {
+  @apply text-danger;
 }
 </style>

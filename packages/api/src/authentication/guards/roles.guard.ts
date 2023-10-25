@@ -1,16 +1,13 @@
 // common
 
-import { CanActivate, ExecutionContext, Global, Injectable } from '@nestjs/common'
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { GqlExecutionContext } from '@nestjs/graphql'
-import { UsersService } from '../users.service'
-import { Role } from '../entities/user.entity'
+import { UsersService } from '../../users/users.service'
+import { Role } from '../../users/entities/user.entity'
 import { ROLES_KEY } from '../decorators/role.decorator'
 import { GroupsService } from 'src/groups/groups.service'
 import { StaffService } from 'src/staff/staff.service'
-import { Group } from 'src/groups/entities/group.entity'
-import { Staff } from 'src/staff/entities/staff.entity'
-
 
 // Injectable
 @Injectable()
@@ -37,14 +34,13 @@ export class RolesGuard implements CanActivate {
     //@ts-ignore
     let role: Role
     try {
-      role= (await this.StaffService.findOneByUid(user.uid)).role
-    } catch (error) {
-    }
+      role = (await this.StaffService.findOneByUid(user.uid)).role
+    } catch (error) {}
     // new Promise<Staff>(
     //   // await this.groupservice.findOneByUid(user.uid),
     //   this.StaffService.findOneByUid(user.uid),
     // )
-    if (role===undefined) {
+    if (role === undefined) {
       role = (await this.groupservice.findOneByUid(user.uid)).role
     }
     console.log(role)

@@ -14,6 +14,8 @@ import { Group } from 'src/groups/entities/group.entity'
 import { Staff } from 'src/staff/entities/staff.entity'
 import { GroupsService } from 'src/groups/groups.service'
 import { StaffService } from 'src/staff/staff.service'
+import { AllowedRoles } from '../authentication/decorators/role.decorator'
+import { RolesGuard } from '../authentication/guards/roles.guard'
 
 export const GrSt = createUnionType({
   name: 'GrSt',
@@ -31,7 +33,7 @@ export class UsersResolver {
   @Mutation(() => User)
   createUser(
     @Args('createUserInput') createUserInput: CreateUserInput,
-    @FirebaseUser() user: UserRecord
+    @FirebaseUser() user: UserRecord,
   ) {
     return this.usersService.create(user.uid, createUserInput)
   }

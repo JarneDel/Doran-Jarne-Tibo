@@ -1,7 +1,6 @@
 <script lang="ts">
-import { defineComponent, reactive } from 'vue'
+import { computed, defineComponent, reactive } from 'vue'
 import useFirebase from '@/composables/useFirebase.ts'
-import useRouting from '@/composables/useRouting.ts'
 import { useRouter } from 'vue-router'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledLink from '@/components/generic/StyledLink.vue'
@@ -24,11 +23,11 @@ export default defineComponent({
     })
 
     // composables
-    const { redirectUrlAfterLogin } = useRouting()
     const { push } = useRouter()
     const { register } = useFirebase()
     const { restoreCustomUser } = useUser()
     const { mutate } = useMutation(CREATE_GROUP)
+    const { currentRoute } = useRouter()
 
     // methods
     const submitForm = () => {
@@ -57,9 +56,14 @@ export default defineComponent({
         })
     }
 
+    const redirectToQueryParams = computed(() => {
+      return '?redirect=' + (currentRoute.value.query.redirect as string) || ''
+    })
+
     return {
       form,
       register: submitForm,
+      redirectToQueryParams,
     }
   },
 })
@@ -106,7 +110,9 @@ export default defineComponent({
         {{ $t('auth.register') }}</StyledButton
       >
       <p class="my3 text-right">
-        <styled-link to="/login"> {{ $t('auth.register.login') }} </styled-link>
+        <styled-link :to="'/login' + redirectToQueryParams">
+          {{ $t('auth.register.login') }}
+        </styled-link>
       </p>
     </form>
   </div>

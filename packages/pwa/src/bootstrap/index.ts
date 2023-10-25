@@ -1,14 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import useFirebase from '@/composables/useFirebase.ts'
+import useLastRoute from '@/composables/useLastRoute.ts'
 
 const { firebaseUser, logout } = useFirebase()
-
+const { lastRoute } = useLastRoute()
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: '/admin',
       component: () => import('@/components/wrapper/adminWrapper.vue'),
+      meta: {
+        shouldBeAuthenticated: true,
+      },
       children: [
         {
           path: 'groups',
@@ -16,23 +20,26 @@ export const router = createRouter({
         },
         {
           path: 'inventory/new',
-          component: () => import('@/views/administration/inventory/New.vue'),
+          component: () => import('@/views/admin/inventory/New.vue'),
         },
 
         {
           path: 'inventory',
-          component: () =>
-            import('@/views/administration/inventory/Overview.vue'),
+          component: () => import('@/views/admin/inventory/Overview.vue'),
           children: [
             {
-              path: ':id',
+              path: 'edit',
               component: () =>
-                import('@/views/administration/inventory/Item.vue'),
+                import('@/views/admin/inventory/SelectEditItem.vue'),
             },
             {
+              path: ':id',
+              component: () => import('@/views/admin/inventory/Item.vue'),
+            },
+
+            {
               path: ':id/edit',
-              component: () =>
-                import('@/views/administration/inventory/Edit.vue'),
+              component: () => import('@/views/admin/inventory/Edit.vue'),
             },
           ],
         },
@@ -85,7 +92,7 @@ export const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
-    next('/login')
+    next('/login?redirect=' + to.path)
   } else if (to.meta.avoidAuth && firebaseUser.value) {
     next('/')
   } else if (to.path === '/logout') {
@@ -95,4 +102,8 @@ router.beforeEach((to, _, next) => {
   } else {
     next()
   }
+})
+
+router.afterEach((to, from, failure) => {
+  lastRoute.value = from.path
 })

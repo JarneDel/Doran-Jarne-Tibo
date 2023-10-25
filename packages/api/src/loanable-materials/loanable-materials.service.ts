@@ -28,6 +28,7 @@ export class LoanableMaterialsService {
     LM.price = CreateLoanableMaterialInput.price
     LM.isComplete = CreateLoanableMaterialInput.isComplete
     LM.description = CreateLoanableMaterialInput.description
+    LM.SportId = CreateLoanableMaterialInput.SportId
 
     console.log('Created: ' + LM.name)
 
@@ -50,7 +51,7 @@ export class LoanableMaterialsService {
     lm.totalAmount = updateLoanableMaterialInput.totalAmount
     lm.wantedAmount = updateLoanableMaterialInput.wantedAmount
     lm.price = updateLoanableMaterialInput.price
-    lm.sports = updateLoanableMaterialInput.sports
+    lm.SportId = updateLoanableMaterialInput.SportId
     lm.isComplete = updateLoanableMaterialInput.isComplete
     lm.description = updateLoanableMaterialInput.description
     return this.LoanableMaterialRepository.save(lm)

@@ -4,10 +4,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'StyledInputText',
   props: {
-    modelValue: {
-      type: String,
-      default: '',
-    },
+    modelValue: {},
     type: {
       type: String,
       default: 'text',
@@ -24,17 +21,27 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    name: {
+      type: String,
+      default: '',
+    },
+    min: {
+      type: Number,
+      required: false,
+    },
   },
   emits: ['update:modelValue'],
 })
 </script>
 
 <template>
-  <label class="my-3 block">
+  <label class="block">
     <span class="c-primary-text font-medium">{{ label }}</span>
     <br />
     <input
       :autocomplete="autocomplete"
+      :min="min"
+      :name="name"
       :required="required"
       :type="type"
       :value="modelValue"

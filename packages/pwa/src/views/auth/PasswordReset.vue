@@ -61,7 +61,7 @@ export default defineComponent({
       v-model="form.email"
       :label="$t('auth.email')"
       autocomplete="email"
-      class="w-full"
+      class="my-3 w-full"
       required
       type="email"
     />

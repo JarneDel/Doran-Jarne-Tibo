@@ -35,6 +35,10 @@ export class SportService {
     return this.sportRepository.findOne({ _id: new ObjectId(id) })
   }
 
+  findOneByName(name: string): Promise<Sport> {
+    return this.sportRepository.findOne({ where: { name: name } })
+  }
+
   async update(id: string, updateSportInput: UpdateSportInput) {
     const s = await this.findOneById(id)
     s.name = updateSportInput.name

@@ -20,6 +20,7 @@ import * as sports from './data/sports.json'
 import * as staff from './data/staff.json'
 import * as services from './data/services.json'
 import * as reservations from './data/reservations.json'
+import * as repairRequests from './data/repairRequests.json'
 
 // services
 import { StockService } from '../stock/stock.service'
@@ -29,11 +30,13 @@ import { RoomService } from 'src/room/room.service'
 import { SportService } from 'src/sport/sport.service'
 import { StaffService } from 'src/staff/staff.service'
 import { ServiceService } from '../service/service.service'
+import { RepairRequestService } from '../repair-request/repair-request.service'
 import { Role } from 'src/users/entities/user.entity'
 import { Reservation } from 'src/reservation/entities/reservation.entity'
 import { ReservationService } from 'src/reservation/reservation.service'
 import { Materials } from 'src/reservation/entities/material.entity'
 import { Rooms } from 'src/reservation/entities/room.entity'
+import { RepairRequest } from 'src/repair-request/entities/repair-request.entity'
 
 @Injectable()
 export class SeedService {
@@ -46,6 +49,7 @@ export class SeedService {
     private staffService: StaffService,
     private serviceService: ServiceService,
     private reservationService: ReservationService,
+    private RepairRequestService: RepairRequestService
   ) {}
 
   async addStockFromJson(): Promise<Stock[]> {
@@ -57,8 +61,13 @@ export class SeedService {
     }
     for (let stockItem of stock) {
       const s = new Stock()
-      const { name, description, idealStock, amountInStock, needToOrderMore } =
-        stockItem
+      const {
+        name,
+        description,
+        idealStock,
+        amountInStock,
+        needToOrderMore,
+      } = stockItem
 
       const service = services[Math.floor(Math.random() * services.length)]
       s.serviceId = new ObjectId(service.id)
@@ -67,7 +76,7 @@ export class SeedService {
       s.description = description
       s.idealStock = idealStock
       s.amountInStock = amountInStock
-      s.needToOrderMore = needToOrderMore as unknown as boolean
+      s.needToOrderMore = (needToOrderMore as unknown) as boolean
       outStocks.push(s)
     }
 
@@ -87,7 +96,7 @@ export class SeedService {
       g.score = group.score
       g.locale = group.locale
       g.UID = group.uid
-      g.role = Role.GROUP 
+      g.role = Role.GROUP
 
       theGroups.push(g)
     }
@@ -113,8 +122,13 @@ export class SeedService {
       lm.price = loanableMaterial.price
       lm.isComplete = loanableMaterial.isComplete
       lm.description = loanableMaterial.description
-      lm.sports = loanableMaterial.sports
-
+      const sports = loanableMaterial.sports
+      const sportIds: string[] = []
+      for (let sport of sports) {
+        const s = await this.sportService.findOneByName(sport)
+        sportIds.push(s.id.toString())
+      }
+      lm.SportId = sportIds
       LoanableMaterials.push(lm)
     }
     return this.loanableMaterialsService.save(LoanableMaterials)
@@ -124,9 +138,15 @@ export class SeedService {
     let Rooms: Room[] = []
     for (let room of rooms) {
       const r = new Room()
+      const SportIds = []
+      for (let sportName of room.sports) {
+        const s = await this.sportService.findOneByName(sportName)
+        if(s) SportIds.push(s.id.toString())
+        else console.log('Sport not found:' + sportName)
+      }
       r.name = room.name
       r.pricePerHour = room.pricePerHour
-      r.sports = room.sports
+      r.SportId = SportIds
       r.type = room.type
       Rooms.push(r)
     }
@@ -174,8 +194,6 @@ export class SeedService {
       s.UID = staffMember.UID
       s.locale = staffMember.locale
 
-
-
       outStaff.push(s)
     }
 
@@ -198,7 +216,7 @@ export class SeedService {
     const loanableMaterials = await this.loanableMaterialsService.findAll()
     if (loanableMaterials.length === 0) {
       throw new Error(
-        'No loanable materials found, please seed loanable materials first',
+        'No loanable materials found, please seed loanable materials first'
       )
     }
     
@@ -237,8 +255,8 @@ export class SeedService {
         r.price = reservation.price
         r.isCancelled = reservation.isCancelled
         outReservations.push(r)
-      }
-      return this.reservationService.saveAll(outReservations)
+    }
+    return this.reservationService.saveAll(outReservations)
   }
 
   async deleteAllReservations(): Promise<void> {
@@ -261,12 +279,12 @@ export class SeedService {
       s.description = service.description
       s.roomId = [
         new ObjectId(
-          rooms[Math.floor(Math.random() * rooms.length)].id,
+          rooms[Math.floor(Math.random() * rooms.length)].id
         ).toString(),
       ]
       s.staffId = [
         new ObjectId(
-          staff[Math.floor(Math.random() * staff.length)].id,
+          staff[Math.floor(Math.random() * staff.length)].id
         ).toString(),
       ]
       outServices.push(s)
@@ -276,5 +294,79 @@ export class SeedService {
 
   async deleteAllServices(): Promise<void> {
     return this.serviceService.truncate()
+  }
+
+  async addRepairRequestsFromJson(): Promise<RepairRequest[]> {
+    const outrepairRequests: RepairRequest[] = []
+
+    const rooms = await this.roomService.findAll()
+    const loanableMaterials = await this.loanableMaterialsService.findAll()
+    const groups = await this.groupsService.findAll()
+    const staff = await this.staffService.findAll()
+
+    for (let repairRequest of repairRequests) {
+      const rr = new RepairRequest()
+      rr.description = repairRequest.description
+      rr.isRepaired = false
+
+      const randNumb1 = Math.floor(Math.random() * 2)
+      if(randNumb1 === 0) {
+        //Room
+        rr.loanableMaterial = null // Set to null because it's a room
+        const room = await rooms[Math.floor(Math.random() * rooms.length)]
+        const roomList: Rooms[] = []
+        const r = new Rooms()
+        r.name = room.name
+        r.pricePerHour = room.pricePerHour
+        const sports: string[] = []
+        for (let sportId of room.SportId) {
+          const s = this.sportService.findOneById(sportId)
+          s.then((sport) => {
+            sports.push(sport.name)
+          })
+        }
+        r.sports = sports
+        r.type = room.type
+        roomList.push(r)
+        rr.room = roomList
+      } else {
+        //LoanableMaterial
+        rr.room = null // Set to null because it's a loanable material
+        const loanableMaterial = await loanableMaterials[Math.floor(Math.random() * loanableMaterials.length)]
+        const material = new Materials()
+        const sports: string[] = []
+        for (let sportId of loanableMaterial.SportId) {
+          const s = this.sportService.findOneById(sportId)
+          s.then((sport) => {
+            sports.push(sport.name)
+          })
+        }
+        material.name = loanableMaterial.name
+        material.totalAmount = loanableMaterial.totalAmount
+        material.wantedAmount = loanableMaterial.wantedAmount
+        material.price = loanableMaterial.price
+        material.sports = sports
+        material.isComplete = loanableMaterial.isComplete
+        material.description = loanableMaterial.description
+        const materialList: Materials[] = []
+        materialList.push(material)
+        rr.loanableMaterial = materialList
+      }
+
+      const randNumb2 = Math.floor(Math.random() * 2)
+      if(randNumb2 === 0) {
+        //Group
+        rr.requestUserId = await groups[Math.floor(Math.random() * groups.length)].id.toString()
+      } else {
+        //Staff
+        rr.requestUserId = await staff[Math.floor(Math.random() * staff.length)].id.toString()
+      }
+      outrepairRequests.push(rr)
+    }
+    return this.RepairRequestService.saveAll(outrepairRequests)
+  }
+
+  async deleteAllRepairRequests(): Promise<void> {
+    return this.RepairRequestService.truncate()
   }
 }

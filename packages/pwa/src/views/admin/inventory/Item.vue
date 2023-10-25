@@ -2,32 +2,41 @@
 import { computed, defineComponent, ref, watch } from 'vue'
 import Modal from '@/components/Modal.vue'
 import { useRouter } from 'vue-router'
-import { useQuery } from '@vue/apollo-composable'
-import { IOneStockItem, ONE_STOCK } from '@/graphql/stock.graphql.ts'
-import { Edit2, Minus, Plus } from 'lucide-vue-next'
+import { useMutation, useQuery } from '@vue/apollo-composable'
+import {
+  DELETE_STOCK,
+  IOneStockItem,
+  ONE_STOCK,
+} from '@/graphql/stock.query.ts'
+import { Edit2, Trash2 } from 'lucide-vue-next'
+import StyledButton from '@/components/generic/StyledButton.vue'
 
 export default defineComponent({
   components: {
+    StyledButton,
     Modal,
     Edit2,
-    Plus,
-    Minus,
+    Trash: Trash2,
   },
   name: 'Item',
-  setup: (props, ctx) => {
-    const addAmount = ref<number>(0)
+  setup: () => {
     const progressbar = ref<HTMLDivElement | null>(null)
 
-    const { push, currentRoute } = useRouter()
+    const { push, replace, currentRoute } = useRouter()
     const id = computed(() => currentRoute.value.params.id)
     // region graphql
     const { error, loading, result } = useQuery<IOneStockItem>(ONE_STOCK, {
       id: id.value,
     })
+    const { mutate: deleteItem } = useMutation(DELETE_STOCK)
 
     const widthPercentage = computed(() => {
       if (!result.value?.stockItem.idealStock) return 0
       if (result.value.stockItem.amountInStock === 0) return 0
+      if (
+        result.value.stockItem.amountInStock > result.value.stockItem.idealStock
+      )
+        return 100
       return (
         (result.value?.stockItem.amountInStock /
           result.value?.stockItem.idealStock) *
@@ -39,35 +48,40 @@ export default defineComponent({
       if (!progressbar.value) return
       if (!widthPercentage.value) return
       console.log(widthPercentage.value)
-      progressbar.value.style.width = widthPercentage.value + '%'
+      if ('style' in progressbar.value) {
+        progressbar.value.style.width = widthPercentage.value + '%'
+      }
     })
-    const subtractItems = () => {}
-    const addItems = () => {}
+
+    const deleteItemWithConfirmation = (id: string) => {
+      if (!confirm('Are you sure you want to delete this item?')) return
+      deleteItem({ id }).then(e => {
+        if (e?.data && e.data.removeStock) {
+          if (e.data.removeStock === id) {
+            replace('/admin/inventory')
+          }
+        }
+      })
+    }
 
     return {
       push,
-      addAmount,
       result,
       error,
       loading,
       progressbar,
       widthPercentage,
-      subtractItems,
-      addItems,
+      deleteItemWithConfirmation,
     }
   },
 })
 </script>
 
 <template>
-  <Modal
-    :title="result?.stockItem.name + ' - ' + result?.stockItem.service.name"
-    max-width="max-w-xl"
-    @close="push('/admin/inventory')"
-  >
+  <Modal max-width="max-w-xl" @close="push('/admin/inventory')">
     <template v-slot:title>
       <div class="flex w-full flex-row items-center justify-between">
-        <h2 class="w-full">
+        <h2 class="mr-2 w-full">
           <span class="text-xl font-bold">
             {{ result?.stockItem.name }}
           </span>
@@ -76,10 +90,17 @@ export default defineComponent({
           </span>
         </h2>
         <button
+          v-if="result?.stockItem"
+          class="bg-danger-surface hover:bg-danger-light active:bg-danger-light mr-2 self-end rounded-full p-2 transition-colors duration-100 ease-in-out"
+          @click="deleteItemWithConfirmation(result?.stockItem.id)"
+        >
+          <trash :size="20" />
+        </button>
+        <button
           class="bg-primary-surface hover:bg-primary-surface/80 active:bg-primary-surface/60 mr-2 self-end rounded-full p-2"
           @click="push('/admin/inventory/' + result?.stockItem.id + '/edit')"
         >
-          <Edit2 />
+          <Edit2 :size="20" />
         </button>
         <div></div>
       </div>
@@ -106,25 +127,14 @@ export default defineComponent({
         <div class="bg-primary-light h-3 w-1/2 rounded-full">
           <div ref="progressbar" class="bg-primary h-3 w-0 rounded-full"></div>
         </div>
-        <button
-          class="bg-primary-surface hover:bg-primary-surface/80 active:bg-primary-surface/60 mr-2 self-end rounded-full p-2"
-          @click="subtractItems"
-        >
-          <Minus></Minus>
-        </button>
-        <input v-model="addAmount" class="w-12" placeholder="0" type="number" />
-        <button
-          class="bg-primary-surface hover:bg-primary-surface/80 active:bg-primary-surface/60 mr-2 self-end rounded-full p-2"
-          @click="addItems"
-        >
-          <Plus></Plus>
-        </button>
 
         <!--        <div v-if='success' ></div>-->
       </div>
     </template>
     <template v-slot:actions>
-      <button>Report broken / missing item</button>
+      <StyledButton :px="2" :py="1" button-type="danger"
+        >Report broken / missing item</StyledButton
+      >
     </template>
   </Modal>
 </template>
