@@ -1,16 +1,23 @@
-import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
-import { ReservationService } from './reservation.service';
-import { Reservation } from './entities/reservation.entity';
-import { CreateReservationInput } from './dto/create-reservation.input';
-import { UpdateReservationInput } from './dto/update-reservation.input';
-import { GroupsService } from 'src/groups/groups.service';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql'
+import { ReservationService } from './reservation.service'
+import { Reservation } from './entities/reservation.entity'
+import { CreateReservationInput } from './dto/create-reservation.input'
+import { UpdateReservationInput } from './dto/update-reservation.input'
+import { GroupsService } from 'src/groups/groups.service'
 import { GraphQLError } from 'graphql/error'
-import { Group } from 'src/groups/entities/group.entity';
-import { AllowedRoles } from 'src/users/decorators/role.decorator';
-import { Role } from 'src/users/entities/user.entity';
-import { UseGuards } from '@nestjs/common';
-import { FirebaseGuard } from 'src/authentication/guards/firebase.guard';
-import { RolesGuard } from 'src/users/guards/roles.guard';
+import { Group } from 'src/groups/entities/group.entity'
+import { AllowedRoles } from 'src/authentication/decorators/role.decorator'
+import { Role } from 'src/users/entities/user.entity'
+import { UseGuards } from '@nestjs/common'
+import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
+import { RolesGuard } from 'src/authentication/guards/roles.guard'
 
 @Resolver(() => Reservation)
 export class ReservationResolver {
