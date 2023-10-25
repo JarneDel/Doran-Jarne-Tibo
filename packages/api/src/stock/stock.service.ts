@@ -30,7 +30,8 @@ export class StockService {
     // check if service exists
     const service = await this.serviceService.findOne(serviceId)
     if (!service) throw new GraphQLError(`Service ${serviceId} not found}`)
-    if (!(await this.isNameUnique(name))) return new GraphQLError(`item exists`)
+    if (!(await this.isStockItemNameUnique(name)))
+      throw new GraphQLError(`item exists`)
     console.log('creating new item')
     s.name = name
     s.description = description
@@ -58,7 +59,7 @@ export class StockService {
   async update(id: string, updateStockInput: UpdateStockInput) {
     console.log('updateStockInput', updateStockInput)
     const s = await this.stockRepository.findOneByOrFail({
-      //@ts-ignore
+      //@ts-ignoregl sta
       _id: new ObjectId(id),
     })
     s.name = updateStockInput.name
@@ -161,7 +162,12 @@ export class StockService {
     }
   }
 
-  private async isNameUnique(name: string): Promise<boolean> {
+  /*
+   * Checks if a stock item with the given name already exists
+   * @param name The name to check
+   * @returns true if the name is unique, false otherwise
+   */
+  private async isStockItemNameUnique(name: string): Promise<boolean> {
     try {
       const stockItemWithName = await this.stockRepository.find({
         where: {
