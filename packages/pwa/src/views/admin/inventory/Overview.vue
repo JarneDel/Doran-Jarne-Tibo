@@ -102,7 +102,7 @@ export default defineComponent({
       lastRoute,
       value => {
         console.log(lastRoute)
-        if (value == '/admin/inventory/new') {
+        if (value.startsWith('/admin/inventory/')) {
           console.log('refetching')
           fetchWithFilters()
         }
@@ -258,7 +258,6 @@ export default defineComponent({
           >
             <DoubleClickEdit
               :value="stock.amountInStock"
-              class="inline"
               type="number"
               @submit="
                 newValue => updateItem(stock.id, { amountInStock: newValue })
@@ -267,7 +266,6 @@ export default defineComponent({
             /
             <DoubleClickEdit
               :value="stock.idealStock"
-              class="inline"
               type="number"
               @submit="
                 newValue => updateItem(stock.id, { idealStock: newValue })

@@ -1,7 +1,0 @@
-query  { stock
-{ id
-    name description amountInStock idealStock
-    service
-    { id name description __typename } __typename } services { id name __typename }}
-
-

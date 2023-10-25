@@ -9,9 +9,11 @@ import {
   ONE_STOCK,
 } from '@/graphql/stock.query.ts'
 import { Edit2, Trash2 } from 'lucide-vue-next'
+import StyledButton from '@/components/generic/StyledButton.vue'
 
 export default defineComponent({
   components: {
+    StyledButton,
     Modal,
     Edit2,
     Trash: Trash2,
@@ -76,10 +78,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <Modal max-width="max-w-xl" title="" @close="push('/admin/inventory')">
+  <Modal max-width="max-w-xl" @close="push('/admin/inventory')">
     <template v-slot:title>
       <div class="flex w-full flex-row items-center justify-between">
-        <h2 class="w-full">
+        <h2 class="mr-2 w-full">
           <span class="text-xl font-bold">
             {{ result?.stockItem.name }}
           </span>
@@ -88,6 +90,7 @@ export default defineComponent({
           </span>
         </h2>
         <button
+          v-if="result?.stockItem"
           class="bg-danger-surface hover:bg-danger-light active:bg-danger-light mr-2 self-end rounded-full p-2 transition-colors duration-100 ease-in-out"
           @click="deleteItemWithConfirmation(result?.stockItem.id)"
         >
@@ -129,7 +132,9 @@ export default defineComponent({
       </div>
     </template>
     <template v-slot:actions>
-      <button>Report broken / missing item</button>
+      <StyledButton :px="2" :py="1" button-type="danger"
+        >Report broken / missing item</StyledButton
+      >
     </template>
   </Modal>
 </template>

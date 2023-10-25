@@ -2,15 +2,14 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { GroupsService } from './groups.service'
 import { Group } from './entities/group.entity'
 import { CreateGroupInput } from './dto/create-group.input'
-import { number } from 'yargs'
 import { UpdateGroupInput } from './dto/update-group.input'
 import { UseGuards } from '@nestjs/common'
 import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
-import { AllowedRoles } from 'src/users/decorators/role.decorator'
+import { AllowedRoles } from 'src/authentication/decorators/role.decorator'
 import { Role } from 'src/users/entities/user.entity'
-import { RolesGuard } from 'src/users/guards/roles.guard'
+import { RolesGuard } from 'src/authentication/guards/roles.guard'
 
 @Resolver(() => Group)
 export class GroupsResolver {
