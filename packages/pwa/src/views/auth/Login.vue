@@ -12,7 +12,7 @@ import useUser from '@/composables/useUser'
 export default defineComponent({
   components: { StyledLink, StyledInputText, StyledButton },
   setup() {
-    const { restoreCustomUser ,customUser} = useUser()
+    const { restoreCustomUser, customUser } = useUser()
     const error = ref<AuthError | null>(null)
 
     const { replace } = useRouter()
@@ -27,13 +27,14 @@ export default defineComponent({
       login(credentials.value.email, credentials.value.password)
         .then(() => {
           console.log('logged in')
-        }).then(() => {
+        })
+        .then(() => {
           restoreCustomUser().then(() => {
             console.log(firebaseUser.value?.email)
             console.log(customUser.value?.userByUid)
             console.log('restored user')
-            push('/')
-        })
+            replace('/')
+          })
         })
         .catch((err: AuthError) => {
           error.value = err
@@ -56,7 +57,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <form class="c-primary-text " @submit.prevent="handleLogin">
+  <form class="c-primary-text" @submit.prevent="handleLogin">
     <h1 class="font-600 text-xl">{{ $t('auth.login') }}</h1>
     <p v-if="error">{{ error }}</p>
     <p v-if="firebaseUser">
