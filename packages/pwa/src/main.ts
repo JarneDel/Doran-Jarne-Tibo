@@ -8,6 +8,7 @@ import { i18n } from '@/bootstrap/i18n.ts'
 import { FocusTrap } from 'focus-trap-vue'
 import useCustomUser from '@/composables/useUser.ts'
 
+
 const { restoreUser, firebaseUser } = useFirebase()
 const { restoreCustomUser } = useCustomUser()
 
