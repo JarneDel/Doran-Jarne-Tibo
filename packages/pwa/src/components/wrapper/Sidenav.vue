@@ -42,7 +42,7 @@ export default defineComponent({
       'w-1/6': !isClosed,
       'w-16': isClosed,
     }"
-    class="h-screen overflow-hidden bg-white transition-all duration-200"
+    class="min-h-full overflow-hidden bg-white transition-all duration-200"
   >
     <div class="mt-4 grid">
       <button

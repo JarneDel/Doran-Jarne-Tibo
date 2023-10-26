@@ -47,11 +47,14 @@ export class GroupsService {
     g.btwNumber = updateGroupInput.btwNumber
     if (updateGroupInput.score)
     g.score = updateGroupInput.score
+    g.locale = updateGroupInput.locale
     return this.groupRepository.save( g)
     
   }
   async updateScore(id: string, amount:number) {
    const exGroup=await this.findOne(id)
+   if (exGroup.score + amount < 0) throw new Error('score can not be negative')
+   if (exGroup.score + amount > 100) throw new Error('score can not be higher than 100')
     exGroup.score = exGroup.score + amount
     this.groupRepository.update(id, exGroup) 
     return exGroup

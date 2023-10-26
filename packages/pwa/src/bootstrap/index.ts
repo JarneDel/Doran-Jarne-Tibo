@@ -1,47 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import useFirebase from '@/composables/useFirebase.ts'
 import useLastRoute from '@/composables/useLastRoute.ts'
+import useUser from '@/composables/useUser'
 
 const { firebaseUser, logout } = useFirebase()
 const { lastRoute } = useLastRoute()
+
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
-    {
-      path: '/',
-      component: () => import('@/views/Home.vue'),
-    },
-    // todo: remove this route
-    {
-      path: '/test',
-      component: () => import('@/views/Temp.vue'),
-    },
-    {
-      path: '/shop',
-      component: () => import('@/views/Shop.vue'),
-    },
-    {
-      path: '/rooms',
-      component: () => import('@/views/rooms/Wrapper.vue'),
-      children: [
-        {
-          path: '',
-          component: () => import('@/views/rooms/Rooms.vue'),
-        },
-        // {
-        //   path: ':id',
-        //   component: () => import('@/views/rooms/Room.vue'),
-        // },
-      ],
-      meta: {
-        shouldBeAuthenticated: true,
-      },
-    },
     {
       path: '/admin',
       component: () => import('@/components/wrapper/adminWrapper.vue'),
       meta: {
         shouldBeAuthenticated: true,
+        allowedRoles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
       },
       children: [
         {
@@ -76,25 +49,6 @@ export const router = createRouter({
       ],
     },
     {
-      path: '/administration',
-      component: () => import('@/views/administration/Wrapper.vue'),
-      children: [
-        {
-          path: '',
-          component: () => import('@/views/administration/Administration.vue'),
-        },
-        {
-          path: 'inventory',
-          children: [
-            {
-              path: 'overview',
-              component: () => import('@/views/admin/inventory/Overview.vue'),
-            },
-          ],
-        },
-      ],
-    },
-    {
       path: '/auth',
       component: () => import('@/views/auth/Wrapper.vue'),
       children: [
@@ -116,6 +70,13 @@ export const router = createRouter({
       },
     },
     {
+      path: '/profile',
+      component: () => import('@/views/Profile.vue'),
+      meta: {
+        shouldBeAuthenticated: true,
+      },
+    },
+    {
       path: '/account',
       component: () => import('@/views/Account.vue'),
       meta: {
@@ -130,14 +91,43 @@ export const router = createRouter({
 })
 
 router.beforeEach((to, _, next) => {
+  // get user from database
+  const { customUser, userLogout } = useUser()
+  // console.log(to.meta.allowedRoles, customUser.value.userByUid.role)
+  // console.log(to.meta.allowedRoles.includes(customUser.value.userByUid.role))
+  // when user is not logged in and route requires authentication redirect to login
   if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
     next('/login?redirect=' + to.path)
+    console.log('1')
   } else if (to.meta.avoidAuth && firebaseUser.value) {
+    // when user is logged in and route should be avoided redirect to home
+    console.log('2')
     next('/')
   } else if (to.path === '/logout') {
+    // logout user
+    console.log('3')
     logout().then(() => {
+      userLogout()
       next('/login')
     })
+  } else if (to.path === '/' && firebaseUser.value && customUser.value) {
+    console.log('4')
+    if (
+      ['ADMIN', 'SUPER_ADMIN', 'STAFF'].includes(
+        customUser.value?.userByUid.role,
+      )
+    ) {
+      console.log('admin')
+      next('/admin')
+    } else {
+      next('/profile')
+    }
+  } else if (
+    to.meta.allowedRoles &&
+    !to.meta.allowedRoles.includes(customUser.value?.userByUid.role)
+  ) {
+    console.log('5')
+    next('/profile')
   } else {
     next()
   }

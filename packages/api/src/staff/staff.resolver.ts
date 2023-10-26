@@ -31,7 +31,7 @@ export class StaffResolver {
     return this.staffService.findOne(id)
   }
 
-  @Mutation(() => Staff)
+  @Mutation(() => Staff,{ name: 'updateStaff' })
   update(@Args('updateStaffInput') updateStaffInput: UpdateStaffInput) {
     return this.staffService.update(updateStaffInput.id, updateStaffInput)
   }

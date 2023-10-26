@@ -35,8 +35,8 @@ export class GroupsResolver {
     return this.groupsService.findOneByUid(user.uid)
   }
 
-  @UseGuards(FirebaseGuard, RolesGuard)
-  @Mutation(() => Group, { description: 'Create a bird using the DTO.' })
+  @UseGuards(FirebaseGuard)
+  @Mutation(() => Group, { description: 'makes a group whit uid' })
   createGroup(
     @Args('createGroupInput') createGroupInput: CreateGroupInput,
     @FirebaseUser() user: UserRecord,

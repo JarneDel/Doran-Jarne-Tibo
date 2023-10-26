@@ -7,6 +7,7 @@ import Layout from '@/layout/Layout.vue'
 import useGraphql from './composables/useGraphql'
 import useLanguage from '@/composables/useLanguage.ts'
 import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
+import useCustomUser from '@/composables/useUser.ts'
 
 export default defineComponent({
   components: { Layout },
@@ -15,7 +16,10 @@ export default defineComponent({
     provide(DefaultApolloClient, apolloClient)
     const { setLocale } = useLanguage()
     const { locale } = useLanguage()
-    setLocale(Object.keys(SUPPORTED_LOCALES)[1])
+    const { customUser } = useCustomUser()
+    if (customUser.value) {
+      if (customUser.value) setLocale(customUser.value?.userByUid.locale)
+    } else setLocale(Object.keys(SUPPORTED_LOCALES)[1])
     console.log(locale)
     return {}
   },
