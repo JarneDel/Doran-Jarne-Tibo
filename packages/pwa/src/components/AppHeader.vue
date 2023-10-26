@@ -15,9 +15,7 @@ export default defineComponent({
     const toggleOptions = () => {
       options.value = !options.value
     }
-    const { customUser, restoreCustomUser, userLogout } = useUser()
-
-    restoreCustomUser()
+    const { customUser, userLogout } = useUser()
     const logoutbutton = () => {
       logout().then(() => {
         userLogout()
@@ -25,8 +23,7 @@ export default defineComponent({
       })
     }
     console.log(firebaseUser.value?.email)
-    if (customUser.value?.userByUid.locale)
-      return { options, toggleOptions, customUser, logoutbutton, firebaseUser }
+    return { options, toggleOptions, customUser, logoutbutton, firebaseUser }
   },
   components: { StyledButton, ChevronDown, logo, OnClickOutside },
 })
@@ -46,22 +43,26 @@ export default defineComponent({
     <div class="flex items-center justify-center gap-8">
       <div class="flex justify-center gap-4" v-if="customUser">
         <div
-        v-if="(['SUPER_ADMIN', 'ADMIN', 'STAFF'].includes(customUser?.userByUid.role))"
-        class="hover:font-bold"
+          v-if="
+            ['SUPER_ADMIN', 'ADMIN', 'STAFF'].includes(
+              customUser?.userByUid.role,
+            )
+          "
+          class="hover:font-bold"
         >
-        <router-link to="/admin">{{ $t('navigation.admin') }}</router-link>
-      </div>
-      <div
-      v-if="customUser?.userByUid.role == 'GROUP'"
-      class="hover:font-bold"
-      >
-      <router-link to="/reservation">{{
-        $t('navigation.reservation')
-      }}</router-link>
+          <router-link to="/admin">{{ $t('navigation.admin') }}</router-link>
         </div>
-      </div>
-      <div class="hover:font-bold">
-        <router-link to="/repair">{{ $t('navigation.repair') }}</router-link>
+        <div
+          v-if="customUser?.userByUid.role == 'GROUP'"
+          class="hover:font-bold"
+        >
+          <router-link to="/reservation">{{
+            $t('navigation.reservation')
+          }}</router-link>
+        </div>
+        <div class="hover:font-bold">
+          <router-link to="/repair">{{ $t('navigation.repair') }}</router-link>
+        </div>
       </div>
       <div class="relative">
         <button

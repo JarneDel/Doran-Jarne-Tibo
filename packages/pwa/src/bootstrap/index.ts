@@ -92,7 +92,7 @@ export const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   // get user from database
-  const { customUser } = useUser()
+  const { customUser, userLogout } = useUser()
   // console.log(to.meta.allowedRoles, customUser.value.userByUid.role)
   // console.log(to.meta.allowedRoles.includes(customUser.value.userByUid.role))
   // when user is not logged in and route requires authentication redirect to login
@@ -107,6 +107,7 @@ router.beforeEach((to, _, next) => {
     // logout user
     console.log('3')
     logout().then(() => {
+      userLogout()
       next('/login')
     })
   } else if (to.path === '/' && firebaseUser.value && customUser.value) {
