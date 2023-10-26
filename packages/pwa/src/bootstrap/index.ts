@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import useFirebase from '@/composables/useFirebase.ts'
 import useLastRoute from '@/composables/useLastRoute.ts'
 import useUser from '@/composables/useUser'
+import { useArrayIncludes } from '@vueuse/core'
 
 const { firebaseUser, logout } = useFirebase()
 const { lastRoute } = useLastRoute()
@@ -92,11 +93,11 @@ export const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   const { customUser } = useUser()
-  console.log("0")
-  console.log(to.meta.alowdRoles)
-  console.log(customUser)
-  console.log(customUser.value?.userByUid.role)
-  console.log(customUser.value?.userByUid.role in to.meta.alowdRoles)
+  // console.log("0")
+  // console.log(to.meta.alowdRoles)
+  // console.log(customUser)
+  // console.log(customUser.value?.userByUid.role)
+  // console.log(customUser.value?.userByUid.role in to.meta.alowdRoles)
   if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
     next('/login?redirect=' + to.path)
     console.log("1")
@@ -108,15 +109,17 @@ router.beforeEach((to, _, next) => {
     logout().then(() => {
       next('/login')
     })
-  } else if (to.path === '/' && firebaseUser.value) {
+  } else if (to.path === '/' && firebaseUser.value && customUser.value) {
     console.log("4")
-    if (customUser.value?.userByUid.role in ['ADMIN', 'SUPER_ADMIN', 'STAFF']) {
+    if (
+      ['ADMIN', 'SUPER_ADMIN', 'STAFF'].includes(customUser.value?.userByUid.role)
+    ) {
       console.log('admin')
       next('/admin')
     } else {
       next('/profile')
     }
-  } else if (customUser.value?.userByUid.role in to.meta.alowdRoles) {
+  } else if (to.meta.alowdRoles.includes(customUser.value?.userByUid.role)) {
     console.log("5")
     next('/profile')
   }

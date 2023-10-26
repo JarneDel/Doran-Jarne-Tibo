@@ -18,14 +18,12 @@ const { restoreCustomUser, } = useCustomUser()
 
 ;(async () => {
   await restoreUser()
+  if (firebaseUser.value) {await restoreCustomUser()
+}
   createApp(App)
     .use(router)
     .use(i18n)
     .component('FocusTrap', FocusTrap)
     .mount('#app')
-  if (firebaseUser.value) {await restoreCustomUser()
-    // if (customUser.value) 
-  // setLocale(customUser.value?.userByUid.locale)
-}
-  createApp(App).use(router).use(i18n).mount('#app')
+  // createApp(App).use(router).use(i18n).mount('#app')
 })()
