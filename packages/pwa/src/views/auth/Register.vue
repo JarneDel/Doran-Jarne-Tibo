@@ -9,10 +9,11 @@ import { useMutation } from '@vue/apollo-composable'
 import { CREATE_GROUP } from '@/graphql/usser.query'
 import useUser from '@/composables/useUser'
 import locale from '@/composables/useLanguage'
+
 export default defineComponent({
   components: { StyledInputText, StyledButton, StyledLink },
   setup() {
-    const{setLocale}=locale()
+    const { setLocale } = locale()
     // data
     const form = reactive({
       btwNummer: '',
@@ -23,7 +24,7 @@ export default defineComponent({
     })
 
     // composables
-    const { push } = useRouter()
+    const { replace } = useRouter()
     const { register } = useFirebase()
     const { restoreCustomUser } = useUser()
     const { mutate } = useMutation(CREATE_GROUP)
@@ -48,7 +49,7 @@ export default defineComponent({
           }
           await restoreCustomUser()
           setLocale('nl')
-          push(redirectUrlAfterLogin)
+          replace('/')
         })
         .catch(error => {
           console.info({ error })

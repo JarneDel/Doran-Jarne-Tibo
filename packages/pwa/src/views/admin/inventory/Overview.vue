@@ -275,9 +275,9 @@ export default defineComponent({
           <td :title="stock.service.description">
             <DoubleClickSelect
               :options="
-                result.services.reduce((acc, s) => {
-                  acc[s.id] = s.name
-                  return acc
+                result.services.reduce((service: Record<string, string>, s) => {
+                  service[s.id] = s.name
+                  return service
                 }, {})
               "
               :selected="{ key: stock.service.id, value: stock.service.name }"

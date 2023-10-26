@@ -93,6 +93,7 @@ export const router = createRouter({
 router.beforeEach((to, _, next) => {
   // get user from database
   const { customUser, userLogout } = useUser()
+  const allowedRoles: string[] = (to.meta.allowedRoles as []) || []
   // console.log(to.meta.allowedRoles, customUser.value.userByUid.role)
   // console.log(to.meta.allowedRoles.includes(customUser.value.userByUid.role))
   // when user is not logged in and route requires authentication redirect to login
@@ -123,8 +124,8 @@ router.beforeEach((to, _, next) => {
       next('/profile')
     }
   } else if (
-    to.meta.allowedRoles &&
-    !to.meta.allowedRoles.includes(customUser.value?.userByUid.role)
+    customUser.value &&
+    allowedRoles.includes(customUser.value?.userByUid.role)
   ) {
     console.log('5')
     next('/profile')
