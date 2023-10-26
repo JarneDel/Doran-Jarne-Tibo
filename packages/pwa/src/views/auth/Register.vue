@@ -13,7 +13,6 @@ import useLanguage from '@/composables/useLanguage'
 export default defineComponent({
   components: { StyledInputText, StyledButton, StyledLink },
   setup() {
-    const { setLocale } = locale()
     // data
     const form = reactive({
       btwNummer: '',
@@ -49,7 +48,6 @@ export default defineComponent({
             })
           }
           await restoreCustomUser()
-          setLocale('nl')
           replace('/')
         })
         .catch(error => {
