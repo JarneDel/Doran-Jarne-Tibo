@@ -46,7 +46,7 @@ export default defineComponent({
     <div class="flex items-center justify-center gap-8">
       <div class="flex justify-center gap-4" v-if="customUser">
         <div
-        v-if="(customUser?.userByUid.role in ['SUPER_ADMIN', 'ADMIN', 'STAFF'])"
+        v-if="(['SUPER_ADMIN', 'ADMIN', 'STAFF'].includes(customUser?.userByUid.role))"
         class="hover:font-bold"
         >
         <router-link to="/admin">{{ $t('navigation.admin') }}</router-link>
