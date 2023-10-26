@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import useFirebase from '@/composables/useFirebase.ts'
 import useLastRoute from '@/composables/useLastRoute.ts'
 import useUser from '@/composables/useUser'
-import { useArrayIncludes } from '@vueuse/core'
 
 const { firebaseUser, logout } = useFirebase()
 const { lastRoute } = useLastRoute()
@@ -15,7 +14,7 @@ export const router = createRouter({
       component: () => import('@/components/wrapper/adminWrapper.vue'),
       meta: {
         shouldBeAuthenticated: true,
-        alowdRoles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
+        allowedRoles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
       },
       children: [
         {
@@ -92,38 +91,43 @@ export const router = createRouter({
 })
 
 router.beforeEach((to, _, next) => {
+  // get user from database
   const { customUser } = useUser()
-  // console.log("0")
-  // console.log(to.meta.alowdRoles)
-  // console.log(customUser)
-  // console.log(customUser.value?.userByUid.role)
-  // console.log(customUser.value?.userByUid.role in to.meta.alowdRoles)
+  // console.log(to.meta.allowedRoles, customUser.value.userByUid.role)
+  // console.log(to.meta.allowedRoles.includes(customUser.value.userByUid.role))
+  // when user is not logged in and route requires authentication redirect to login
   if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
     next('/login?redirect=' + to.path)
-    console.log("1")
+    console.log('1')
   } else if (to.meta.avoidAuth && firebaseUser.value) {
-    console.log("2")
+    // when user is logged in and route should be avoided redirect to home
+    console.log('2')
     next('/')
   } else if (to.path === '/logout') {
-    console.log("3")
+    // logout user
+    console.log('3')
     logout().then(() => {
       next('/login')
     })
   } else if (to.path === '/' && firebaseUser.value && customUser.value) {
-    console.log("4")
+    console.log('4')
     if (
-      ['ADMIN', 'SUPER_ADMIN', 'STAFF'].includes(customUser.value?.userByUid.role)
+      ['ADMIN', 'SUPER_ADMIN', 'STAFF'].includes(
+        customUser.value?.userByUid.role,
+      )
     ) {
       console.log('admin')
       next('/admin')
     } else {
       next('/profile')
     }
-  } else if (to.meta.alowdRoles.includes(customUser.value?.userByUid.role)) {
-    console.log("5")
+  } else if (
+    to.meta.allowedRoles &&
+    !to.meta.allowedRoles.includes(customUser.value?.userByUid.role)
+  ) {
+    console.log('5')
     next('/profile')
-  }
-  else {
+  } else {
     next()
   }
 })
