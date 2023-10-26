@@ -5,7 +5,7 @@ import { provideApolloClient, useQuery } from '@vue/apollo-composable'
 import { USER_BY_UID } from '@/graphql/usser.query'
 import firebase from './useFirebase'
 
-const customUser = ref<User | null | undefined>()
+const customUser = ref<User | null>()
 
 const { apolloClient } = useGraphql()
 

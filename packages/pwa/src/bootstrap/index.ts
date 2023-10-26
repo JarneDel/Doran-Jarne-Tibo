@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import useFirebase from '@/composables/useFirebase.ts'
 import useLastRoute from '@/composables/useLastRoute.ts'
+import useUser from '@/composables/useUser'
 
 const { firebaseUser, logout } = useFirebase()
 const { lastRoute } = useLastRoute()
+
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -12,6 +14,7 @@ export const router = createRouter({
       component: () => import('@/components/wrapper/adminWrapper.vue'),
       meta: {
         shouldBeAuthenticated: true,
+        alowdRoles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
       },
       children: [
         {
@@ -44,9 +47,6 @@ export const router = createRouter({
           ],
         },
       ],
-      meta: {
-        shouldBeAuthenticated: true,
-      },
     },
     {
       path: '/auth',
@@ -74,7 +74,7 @@ export const router = createRouter({
       component: () => import('@/views/Profile.vue'),
       meta: {
         shouldBeAuthenticated: true,
-      }
+      },
     },
     {
       path: '/account',
@@ -91,15 +91,36 @@ export const router = createRouter({
 })
 
 router.beforeEach((to, _, next) => {
+  const { customUser } = useUser()
+  console.log("0")
+  console.log(to.meta.alowdRoles)
+  console.log(customUser)
+  console.log(customUser.value?.userByUid.role)
+  console.log(customUser.value?.userByUid.role in to.meta.alowdRoles)
   if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
     next('/login?redirect=' + to.path)
+    console.log("1")
   } else if (to.meta.avoidAuth && firebaseUser.value) {
+    console.log("2")
     next('/')
   } else if (to.path === '/logout') {
+    console.log("3")
     logout().then(() => {
       next('/login')
     })
-  } else {
+  } else if (to.path === '/' && firebaseUser.value) {
+    console.log("4")
+    if (customUser.value?.userByUid.role in ['ADMIN', 'SUPER_ADMIN', 'STAFF']) {
+      console.log('admin')
+      next('/admin')
+    } else {
+      next('/profile')
+    }
+  } else if (customUser.value?.userByUid.role in to.meta.alowdRoles) {
+    console.log("5")
+    next('/profile')
+  }
+  else {
     next()
   }
 })

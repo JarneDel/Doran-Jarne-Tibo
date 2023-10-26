@@ -7,8 +7,8 @@ import { UseGuards } from '@nestjs/common'
 import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
-import { AllowedRoles } from './decorators/role.decorator'
-import { RolesGuard } from './guards/roles.guard'
+// import { AllowedRoles } from './decorators/role.decorator'
+// import { RolesGuard } from './guards/roles.guard'
 import { query } from 'express'
 import { Group } from 'src/groups/entities/group.entity'
 import { Staff } from 'src/staff/entities/staff.entity'
@@ -17,8 +17,8 @@ import { StaffService } from 'src/staff/staff.service'
 import { AllowedRoles } from '../authentication/decorators/role.decorator'
 import { RolesGuard } from '../authentication/guards/roles.guard'
 
-export const GrSt = createUnionType({
-  name: 'GrSt',
+export const GrSt1 = createUnionType({
+  name: 'GrSt1',
   types: () => [Group, Staff] as const,
 })
 
@@ -61,7 +61,7 @@ export class UsersResolver {
   }
 
 
-  @Query(() =>GrSt ,{name:'userByUid'})
+  @Query(() =>GrSt1 ,{name:'userByUid'})
   @UseGuards(FirebaseGuard)
   async userByUid(@FirebaseUser() user: UserRecord){
     let returnUser

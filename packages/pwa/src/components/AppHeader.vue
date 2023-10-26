@@ -26,7 +26,7 @@ export default defineComponent({
     }
     console.log(firebaseUser.value?.email)
     if (customUser.value?.userByUid.locale)
-    return { options, toggleOptions, customUser, logoutbutton, firebaseUser }
+      return { options, toggleOptions, customUser, logoutbutton, firebaseUser }
   },
   components: { StyledButton, ChevronDown, logo, OnClickOutside },
 })
@@ -34,7 +34,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="flex items-center justify-between bg-white fill-slate-700 p-2 h-20 min-h-min shadow-md"
+    class="flex h-20 min-h-min items-center justify-between bg-white fill-slate-700 p-2 shadow-md"
   >
     <router-link to="/" class="flex items-center justify-center gap-2">
       <logo class="h-10" />
@@ -45,31 +45,28 @@ export default defineComponent({
     </router-link>
     <div class="flex items-center justify-center gap-8">
       <div class="flex justify-center gap-4" v-if="customUser">
-        <div class="hover:font-bold">
-          <router-link to="/">{{ $t('navigation.home') }}</router-link>
-        </div>
-        <div class="hover:font-bold">
-          <router-link to="/repair">{{ $t('navigation.repair') }}</router-link>
-        </div>
         <div
-          v-if="(customUser?.userByUid.role == 'STAFF', 'ADMIN', 'SUPER_ADMIN')"
-          class="hover:font-bold"
+        v-if="(customUser?.userByUid.role in ['SUPER_ADMIN', 'ADMIN', 'STAFF'])"
+        class="hover:font-bold"
         >
-          <router-link to="/admin">{{ $t('navigation.admin') }}</router-link>
+        <router-link to="/admin">{{ $t('navigation.admin') }}</router-link>
+      </div>
+      <div
+      v-if="customUser?.userByUid.role == 'GROUP'"
+      class="hover:font-bold"
+      >
+      <router-link to="/reservation">{{
+        $t('navigation.reservation')
+      }}</router-link>
         </div>
-        <div
-          v-if="customUser?.userByUid.role == 'GROUP'"
-          class="hover:font-bold"
-        >
-          <router-link to="/reservation">{{
-            $t('navigation.reservation')
-          }}</router-link>
-        </div>
+      </div>
+      <div class="hover:font-bold">
+        <router-link to="/repair">{{ $t('navigation.repair') }}</router-link>
       </div>
       <div class="relative">
         <button
           v-if="customUser"
-          class="flex items-center justify-center gap-4 mx-2"
+          class="mx-2 flex items-center justify-center gap-4"
           @click="toggleOptions()"
         >
           <ChevronDown />
@@ -98,16 +95,14 @@ export default defineComponent({
         >
           {{ $t('auth.login') }}
         </router-link>
-        <OnClickOutside
-        @trigger="options = false"
-        >
+        <OnClickOutside @trigger="options = false">
           <div
             v-if="options"
             class="absolute right-0 top-9 rounded-md bg-white p-4 shadow-md"
           >
-            <router-link to="/profile">{{$t('nav.profile')}}</router-link>
+            <router-link to="/profile">{{ $t('nav.profile') }}</router-link>
             <StyledButton @click="logoutbutton()" class="mt-2">
-              {{$t('account.log.out')}}
+              {{ $t('account.log.out') }}
             </StyledButton>
           </div>
         </OnClickOutside>
