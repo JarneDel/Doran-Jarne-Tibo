@@ -46,6 +46,10 @@ export const router = createRouter({
             },
           ],
         },
+        {
+          path: 'services',
+          component: () => import('@/views/admin/services/Services.vue'),
+        },
       ],
     },
     {

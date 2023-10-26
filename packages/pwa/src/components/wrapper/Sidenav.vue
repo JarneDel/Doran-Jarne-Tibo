@@ -1,7 +1,13 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import Logo from '@/components/generic/Logo.vue'
-import { Box, PanelLeftClose, PanelRightClose, Users } from 'lucide-vue-next'
+import {
+  Box,
+  PanelLeftClose,
+  PanelRightClose,
+  Users,
+  Wrench,
+} from 'lucide-vue-next'
 import { useLocalStorage } from '@vueuse/core'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -27,6 +33,12 @@ export default defineComponent({
           icon: Box,
           content: t('nav.inventory'),
           route: '/admin/inventory',
+        },
+        {
+          name: 'services',
+          content: t('nav.services'),
+          route: '/admin/services',
+          icon: Wrench,
         },
       ]
     })
