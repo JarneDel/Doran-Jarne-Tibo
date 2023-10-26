@@ -85,11 +85,13 @@ import { ALL_DIVE_POOLS } from '../../../graphql/room.query'
 import { defineComponent, ref } from 'vue'
 import UseFirebase from '../../../composables/useFirebase'
 import { PlusCircle } from 'lucide-vue-next'
+import Modal from '@/components/Modal.vue'
 
 // Export default
 export default defineComponent({
   components: {
     PlusCircle,
+    Modal,
   },
   setup() {
     const { firebaseUser } = UseFirebase()
@@ -161,6 +163,7 @@ export default defineComponent({
     )
 
     const TypeSelector = ref(0)
+    const isOpen = ref(false)
 
     return {
       idToken,
@@ -183,6 +186,7 @@ export default defineComponent({
       loadingDivePools,
       errorDivePools,
       TypeSelector,
+      isOpen,
     }
   },
 })
@@ -246,25 +250,27 @@ export default defineComponent({
       <h3 class="mb-2 text-3xl font-bold">Sportzalen</h3>
       <ul class="mx-auto grid grid-cols-3 gap-6">
         <li v-for="gym in resultGyms?.GetAllGyms" :key="gym._id">
-          <div class="h-full rounded-lg bg-white p-4 shadow-md">
-            <h3 class="mb-2 text-2xl font-bold">{{ gym.name }}</h3>
-            <p class="text-lg font-semibold">Sports:</p>
-            <ul>
-              <li
-                class="ml-4 list-disc"
-                v-for="sport in resultGyms?.GetAllGyms[
-                  resultGyms?.GetAllGyms.indexOf(gym)
-                ].sports"
-                :key="sport.name"
-              >
-                <p>{{ sport.name }}</p>
-              </li>
-            </ul>
-            <div class="flex items-center gap-1">
-              <p class="text-lg font-semibold">Price per hour:</p>
-              <p>€{{ gym.pricePerHour }}</p>
+          <button class="h-full w-full text-left" @click="">
+            <div class="h-full rounded-lg bg-white p-4 shadow-md">
+              <h3 class="mb-2 text-2xl font-bold">{{ gym.name }}</h3>
+              <p class="text-lg font-semibold">Sports:</p>
+              <ul>
+                <li
+                  class="ml-4 list-disc"
+                  v-for="sport in resultGyms?.GetAllGyms[
+                    resultGyms?.GetAllGyms.indexOf(gym)
+                  ].sports"
+                  :key="sport.name"
+                >
+                  <p>{{ sport.name }}</p>
+                </li>
+              </ul>
+              <div class="flex items-center gap-1">
+                <p class="text-lg font-semibold">Price per hour:</p>
+                <p>€{{ gym.pricePerHour }}</p>
+              </div>
             </div>
-          </div>
+          </button>
         </li>
         <li>
           <RouterLink
@@ -396,6 +402,16 @@ export default defineComponent({
         </li>
       </ul>
     </div>
+    <Modal v-if="isOpen">
+      <template v-slot:title>
+        <h2 class="mr-2 w-full">
+          <span class="text-lg font-bold">Create room</span>
+        </h2>
+      </template>
+      <template v-slot:default>
+        <p>Test</p>
+      </template>
+    </Modal>
   </div>
 </template>
 
