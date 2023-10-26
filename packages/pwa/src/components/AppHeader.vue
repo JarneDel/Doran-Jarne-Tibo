@@ -7,10 +7,12 @@ import useUser from '@/composables/useUser'
 import firebase from '@/composables/useFirebase'
 import logo from '@/components/generic/Logo.vue'
 import { OnClickOutside } from '@vueuse/components'
+import useLanguage from '@/composables/useLanguage'
 export default defineComponent({
   setup() {
     const { logout } = firebase()
     const { firebaseUser } = firebase()
+    const { setLocale, locale } = useLanguage()
     let options = ref(false)
     const toggleOptions = () => {
       options.value = !options.value
@@ -23,7 +25,7 @@ export default defineComponent({
       })
     }
     console.log(firebaseUser.value?.email)
-    return { options, toggleOptions, customUser, logoutbutton, firebaseUser }
+    return { options, toggleOptions, customUser, logoutbutton, firebaseUser,setLocale, locale }
   },
   components: { StyledButton, ChevronDown, logo, OnClickOutside },
 })
@@ -63,6 +65,20 @@ export default defineComponent({
         <div class="hover:font-bold">
           <router-link to="/repair">{{ $t('navigation.repair') }}</router-link>
         </div>
+      </div>
+      <div v-if="!customUser">
+        <label class="my-3 block">
+          <select
+            @change="setLocale(locale)"
+            v-model="locale"
+            class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
+          >
+            <option value="nl">Nederland</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="zh">中文</option>
+          </select>
+        </label>
       </div>
       <div class="relative">
         <button
