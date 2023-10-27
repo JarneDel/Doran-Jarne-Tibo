@@ -35,4 +35,8 @@ export class Materials {
   @Column()
   @Field({ nullable: true })
   description?: string
+
+  @Column()
+  @Field({ nullable: true })
+  amountReserved: number
 }
