@@ -74,6 +74,7 @@ export const router = createRouter({
       component: () => import('@/views/Profile.vue'),
       meta: {
         shouldBeAuthenticated: true,
+        allowedRoles: ['GROUP', 'ADMIN', 'SUPER_ADMIN', 'STAFF'],
       },
     },
     {
@@ -81,6 +82,15 @@ export const router = createRouter({
       component: () => import('@/views/Account.vue'),
       meta: {
         shouldBeAuthenticated: true,
+        allowedRoles: ['GROUP', 'ADMIN', 'SUPER_ADMIN', 'STAFF'],
+      },
+    },
+    {
+      path: '/reservation',
+      component: () => import('@/views/Reservation.vue'),
+      meta: {
+        shouldBeAuthenticated: true,
+        allowedRoles: ['GROUP'],
       },
     },
     {
@@ -113,16 +123,16 @@ router.beforeEach((to, _, next) => {
       next('/login')
     })
   } else if (to.path === '/' && firebaseUser.value && customUser.value) {
-    console.log('4')
     if (
       ['ADMIN', 'SUPER_ADMIN', 'STAFF'].includes(
         customUser.value?.userByUid.role,
-      )
-    ) {
-      console.log('admin')
-      next('/admin')
-    } else {
-      next('/profile')
+        )
+        ) {
+          console.log('admin')
+          next('/admin')
+        } else {
+      console.log('4')
+      next('/reservation')
     }
   } else if (
     customUser.value &&

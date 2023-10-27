@@ -5,6 +5,9 @@ import { Column, Entity, ObjectIdColumn } from "typeorm";
 @InputType('MaterialsInput')
 @ObjectType()
 export class Materials {
+  @ObjectIdColumn()
+  @Field(() => ID)
+  id: string
   @Column()
   @Field({nullable:true})
   name: string
