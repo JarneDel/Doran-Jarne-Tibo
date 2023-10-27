@@ -10,9 +10,10 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { Room } from './entities/room.entity'
 // Modules
 import { SportModule } from 'src/sport/sport.module'
+import { ReservationModule } from 'src/reservation/reservation.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Room]), SportModule],
+  imports: [TypeOrmModule.forFeature([Room]), SportModule, ReservationModule],
   providers: [RoomResolver, RoomService],
   exports: [RoomService],
 })

@@ -25,12 +25,14 @@ import { GraphQLError } from 'graphql/error'
 // Guards
 import { FirebaseGuard } from '../authentication/guards/firebase.guard'
 import { RolesGuard } from 'src/authentication/guards/roles.guard'
+import { ReservationService } from 'src/reservation/reservation.service'
 
 @Resolver(() => Room)
 export class RoomResolver {
   constructor(
     private readonly roomService: RoomService,
     private readonly sportService: SportService,
+    private readonly reservationService: ReservationService,
   ) {}
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
@@ -87,6 +89,20 @@ export class RoomResolver {
         console.log(err)
         return err
       })
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'getAvailableRooms',
+    nullable: true,
+  })
+  getAvailableRooms(
+    @Args('date', { type: () => String }) date: string,
+    @Args('startTime', { type: () => String }) startTime: string,
+    @Args('endTime', { type: () => String }) endTime: string,
+  ) {
+    return this.roomService.getAvailableRooms(date, startTime, endTime)
   }
 
   @ResolveField() // "sports" must be the same as the field in the room entity

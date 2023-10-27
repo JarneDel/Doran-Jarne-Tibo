@@ -10,12 +10,14 @@ import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 // Entities
 import { Room } from './entities/room.entity'
+import { ReservationService } from 'src/reservation/reservation.service'
 
 @Injectable()
 export class RoomService {
   constructor(
     @InjectRepository(Room)
-    private readonly roomRepository: Repository<Room>
+    private readonly roomRepository: Repository<Room>,
+    private readonly reservationService: ReservationService,
   ) {}
 
   create(createRoomInput: CreateRoomInput): Promise<Room> {
@@ -25,9 +27,9 @@ export class RoomService {
     r.SportId = createRoomInput.SportId
     r.type = createRoomInput.type
     r.canBeUsed = createRoomInput.canBeUsed
-    
+
     console.log('Created: ' + r.name)
-    
+
     return this.roomRepository.save(r)
   }
 
@@ -38,7 +40,7 @@ export class RoomService {
   findByIds(ids: string[]): Promise<Room[]> {
     return this.roomRepository.find({
       // @ts-ignore
-      _id: { $in: ids.map((id) => new ObjectId(id)) },
+      _id: { $in: ids.map(id => new ObjectId(id)) },
     })
   }
 
@@ -62,10 +64,10 @@ export class RoomService {
   remove(id: string): Promise<string> {
     return this.roomRepository
       .delete(id)
-      .then((res) => {
+      .then(res => {
         return res
       })
-      .catch((err) => {
+      .catch(err => {
         return err
       })
   }
@@ -77,5 +79,51 @@ export class RoomService {
 
   truncate(): Promise<void> {
     return this.roomRepository.clear()
+  }
+  async getAvailableRooms(
+    date: string,
+    startTime: string,
+    endTime: string,
+  ): Promise<Room[]> {
+    const rooms = (await this.findAll()).filter(
+      room =>
+        room.type === 'Sportzaal' ||
+        room.type === 'Kleedkamer' ||
+        room.type === 'Zwembad' ||
+        room.type === 'Duikput',
+    )
+
+    const availableRooms: Room[] = []
+    const resurveDate = new Date(date)
+    const reservations = await this.reservationService.findByDate(resurveDate)
+    //remove :
+    const start = new Date(date + ' ' + startTime)
+    const end = new Date(date + ' ' + endTime)
+    for (const room of rooms) {
+      let isAvailable = true
+      // console.log(room.name)
+      for (const reservation of reservations) {
+        for (const resroom of reservation.rooms) {
+          // console.log(room.id, resroom.id)
+          // console.log(room.id.toString() === resroom.id.toString())
+          if (room.id.toString() === resroom.id.toString()) {
+            let reservationStart = new Date(date + ' ' + reservation.startTime)
+            let reservationEnd = new Date(date + ' ' + reservation.endTime)
+            if (
+              (start < reservationStart && end > reservationStart) ||
+              (start < reservationEnd && end > reservationEnd)
+            ) {
+              isAvailable = false
+              console.log('Room not available: ' + room.name)
+            }
+          }
+        }
+      }
+      if (isAvailable) {
+        availableRooms.push(room)
+      }
+    }
+
+    return availableRooms
   }
 }

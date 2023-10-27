@@ -204,7 +204,13 @@ export class SeedService {
     if (groups.length === 0) {
       throw new Error('No groups found, please seed groups first')
     }
-    const rooms = await this.roomService.findAll()
+    const rooms = (await this.roomService.findAll()).filter(
+      room =>
+        room.type === 'Sportzaal' ||
+        room.type === 'Kleedkamer' ||
+        room.type === 'Zwembad' ||
+        room.type === 'Duikput',
+    )
     if (rooms.length === 0) {
       throw new Error('No rooms found, please seed rooms first')
     }
@@ -245,17 +251,6 @@ export class SeedService {
       material.amountReserved = Math.random() * 10
       const materialList: [Materials] = [material]
       r.reservedMaterials = materialList
-      // const rooms: Rooms[] = []
-      // for (let room of reservation.rooms) {
-      //   const r = new Rooms()
-      //   r.name = room.name
-      //   r.pricePerHour = room.pricePerHour
-      //   r.sports = room.sports
-      //   r.type = room.type
-      //   rooms.push(r)
-      // }
-      //@ts-ignore
-      // r.reserved_materials = materials
       //@ts-ignore
       const renroom = await rooms[Math.floor(Math.random() * rooms.length)]
       const room = new Rooms()
