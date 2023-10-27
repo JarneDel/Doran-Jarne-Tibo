@@ -46,7 +46,7 @@ export class UpdateRoomInput extends PartialType(CreateRoomInput) {
 
   @IsNotEmpty()
   @IsIn(typeList)
-  @Field({ defaultValue: 'Sportzaal' }) // Graphql
+  @Field() // Graphql
   type: string
 
   @IsBoolean()

@@ -120,6 +120,14 @@ export const CREATE_ROOM = gql`
   }
 `
 
+export const UPDATE_ROOM = gql`
+mutation ($updateRoomInput: UpdateRoomInput!){
+  updateRoom(updateRoomInput: $updateRoomInput){
+    id
+  }
+}
+`
+
 export interface ICreateRoom{
   createRoom: {
     id: string
