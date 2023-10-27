@@ -3,89 +3,89 @@
 interface Rooms {
   GetAllRooms: [
     {
-      _id: string
-      name: string
-      sports: Sport[]
-      pricePerHour: number
-      type: string
-      createdAt: string
-      updatedAt: string
-    },
-  ]
+      _id: string;
+      name: string;
+      sports: Sport[];
+      pricePerHour: number;
+      type: string;
+      createdAt: string;
+      updatedAt: string;
+    }
+  ];
   GetAllGyms: [
     {
-      _id: string
-      name: string
-      sports: Sport[]
-      pricePerHour: number
-      type: string
-      createdAt: string
-      updatedAt: string
-    },
-  ]
+      _id: string;
+      name: string;
+      sports: Sport[];
+      pricePerHour: number;
+      type: string;
+      createdAt: string;
+      updatedAt: string;
+    }
+  ];
   GetAllWorkRooms: [
     {
-      _id: string
-      name: string
-      sports: Sport[]
-      pricePerHour: number
-      type: string
-      createdAt: string
-      updatedAt: string
-    },
-  ]
+      _id: string;
+      name: string;
+      sports: Sport[];
+      pricePerHour: number;
+      type: string;
+      createdAt: string;
+      updatedAt: string;
+    }
+  ];
   GetAllChangingRooms: [
     {
-      _id: string
-      name: string
-      sports: Sport[]
-      pricePerHour: number
-      type: string
-      createdAt: string
-      updatedAt: string
-    },
-  ]
+      _id: string;
+      name: string;
+      sports: Sport[];
+      pricePerHour: number;
+      type: string;
+      createdAt: string;
+      updatedAt: string;
+    }
+  ];
   GetAllSwimmingPools: [
     {
-      _id: string
-      name: string
-      sports: Sport[]
-      pricePerHour: number
-      type: string
-      createdAt: string
-      updatedAt: string
-    },
-  ]
+      _id: string;
+      name: string;
+      sports: Sport[];
+      pricePerHour: number;
+      type: string;
+      createdAt: string;
+      updatedAt: string;
+    }
+  ];
   GetAllDivePools: [
     {
-      _id: string
-      name: string
-      sports: Sport[]
-      pricePerHour: number
-      type: string
-      createdAt: string
-      updatedAt: string
-    },
-  ]
+      _id: string;
+      name: string;
+      sports: Sport[];
+      pricePerHour: number;
+      type: string;
+      createdAt: string;
+      updatedAt: string;
+    }
+  ];
 }
 
 interface Sport {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 // Imports
-import { useQuery } from '@vue/apollo-composable'
-// import { ALL_ROOMS } from '../../../graphql/room.query';
-import { ALL_GYMS } from '../../../graphql/room.query'
-import { ALL_WORK_ROOMS } from '../../../graphql/room.query'
-import { ALL_CHANGING_ROOMS } from '../../../graphql/room.query'
-import { ALL_SWIMMING_POOLS } from '../../../graphql/room.query'
-import { ALL_DIVE_POOLS } from '../../../graphql/room.query'
-import { defineComponent, ref } from 'vue'
-import UseFirebase from '../../../composables/useFirebase'
-import { PlusCircle } from 'lucide-vue-next'
-import Modal from '@/components/Modal.vue'
+import { useQuery } from '@vue/apollo-composable';
+import { ALL_GYMS } from '../../../graphql/room.query';
+import { ALL_WORK_ROOMS } from '../../../graphql/room.query';
+import { ALL_CHANGING_ROOMS } from '../../../graphql/room.query';
+import { ALL_SWIMMING_POOLS } from '../../../graphql/room.query';
+import { ALL_DIVE_POOLS } from '../../../graphql/room.query';
+import { defineComponent, ref } from 'vue';
+import UseFirebase from '../../../composables/useFirebase';
+import { PlusCircle } from 'lucide-vue-next';
+import Modal from '@/components/Modal.vue';
+import { useRouter } from 'vue-router';
 
 // Export default
 export default defineComponent({
@@ -94,12 +94,14 @@ export default defineComponent({
     Modal,
   },
   setup() {
-    const { firebaseUser } = UseFirebase()
-    const idToken = ref()
+    const { push, currentRoute } = useRouter();
+    // Firebase
+    const { firebaseUser } = UseFirebase();
+    const idToken = ref();
     const getIdToken = async () => {
-      idToken.value = await firebaseUser.value?.getIdToken()
-    }
-    getIdToken()
+      idToken.value = await firebaseUser.value?.getIdToken();
+    };
+    getIdToken();
     // //All rooms
     // const {
     //   loading,
@@ -115,8 +117,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      },
-    )
+      }
+    );
     const {
       loading: loadingWorkRooms,
       result: resultWorkRooms,
@@ -126,8 +128,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      },
-    )
+      }
+    );
     const {
       loading: loadingChangingRooms,
       result: resultChangingRooms,
@@ -137,8 +139,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      },
-    )
+      }
+    );
     const {
       loading: loadingSwimmingPools,
       result: resultSwimmingPools,
@@ -148,8 +150,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      },
-    )
+      }
+    );
     const {
       loading: loadingDivePools,
       result: resultDivePools,
@@ -159,11 +161,34 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      },
-    )
+      }
+    );
 
-    const TypeSelector = ref(0)
-    const isOpen = ref(false)
+    // Selector type of room
+    const TypeSelector = ref(0);
+
+    // Modal
+    const isOpen = ref(false);
+    const currentRoom = ref({
+      _id: '',
+      name: '',
+      sports: [
+        {
+          id: '',
+          name: '',
+        },
+      ],
+      pricePerHour: 0,
+      type: '',
+      createdAt: '',
+      updatedAt: '',
+    });
+
+    const handleRoomDetail = (room: any) => {
+      isOpen.value = true;
+      currentRoom.value = room;
+      console.log(currentRoom.value);
+    };
 
     return {
       idToken,
@@ -187,9 +212,13 @@ export default defineComponent({
       errorDivePools,
       TypeSelector,
       isOpen,
-    }
+      currentRoom,
+      handleRoomDetail,
+      push,
+      currentRoute,
+    };
   },
-})
+});
 </script>
 
 <template>
@@ -249,7 +278,11 @@ export default defineComponent({
     <div v-if="TypeSelector == 0">
       <h3 class="mb-2 text-3xl font-bold">Sportzalen</h3>
       <ul class="mx-auto grid grid-cols-3 gap-6">
-        <li v-for="gym in resultGyms?.GetAllGyms" :key="gym._id">
+        <li
+          v-for="gym in resultGyms?.GetAllGyms"
+          :key="gym._id"
+          @click="handleRoomDetail(gym)"
+        >
           <button class="h-full w-full text-left" @click="">
             <div class="h-full rounded-lg bg-white p-4 shadow-md">
               <h3 class="mb-2 text-2xl font-bold">{{ gym.name }}</h3>
@@ -402,14 +435,27 @@ export default defineComponent({
         </li>
       </ul>
     </div>
-    <Modal v-if="isOpen">
+    <Modal v-if="isOpen" @close="console.log("closed")">
       <template v-slot:title>
         <h2 class="mr-2 w-full">
-          <span class="text-lg font-bold">Create room</span>
+          <span class="text-lg font-bold">{{ currentRoom.name }}</span>
         </h2>
       </template>
       <template v-slot:default>
-        <p>Test</p>
+        <p class="text-lg font-semibold">Sports:</p>
+        <ul>
+          <li
+            class="ml-4 list-disc"
+            v-for="sport in currentRoom.sports"
+            :key="sport.name"
+          >
+            <p>{{ sport.name }}</p>
+          </li>
+        </ul>
+        <div class="flex items-center gap-1">
+          <p class="text-lg font-semibold">Price per hour:</p>
+          <p>€{{ currentRoom.pricePerHour }}</p>
+        </div>
       </template>
     </Modal>
   </div>
