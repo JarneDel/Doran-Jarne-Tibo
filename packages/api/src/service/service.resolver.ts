@@ -48,6 +48,11 @@ export class ServiceResolver {
     return this.serviceService.findOne(id)
   }
 
+  @Query(() => [Service], { name: 'servicesByStaff' })
+  findByStaffId(@Args('staffId', { type: () => String }) staffId: string) {
+    return this.serviceService.findByStaffId(staffId)
+  }
+
   @Mutation(() => Service)
   updateService(
     @Args('updateServiceInput') updateServiceInput: UpdateServiceInput,
