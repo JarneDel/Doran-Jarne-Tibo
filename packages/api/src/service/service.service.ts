@@ -37,10 +37,10 @@ export class ServiceService {
     })
   }
 
-  findByStaffId(staffId: string): Promise<Service[]> {
+  findByStaffUId(staffId: string): Promise<Service[]> {
     return this.serviceRepository.find({
       //@ts-ignore
-      staffId: { $elemMatch: { $eq: staffId } },
+      staffUID: { $elemMatch: { $eq: staffId } },
     })
   }
 

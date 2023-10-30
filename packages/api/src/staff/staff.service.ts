@@ -39,6 +39,13 @@ export class StaffService {
     })
   }
 
+  findByUIDs(uIds: string[]): Promise<Staff[]> {
+    return this.staffRepository.find({
+      //@ts-ignore
+      UID: { $in: uIds },
+    })
+  }
+
   find(ids: string[]): Promise<Staff[]> {
     return this.staffRepository.find({
       //@ts-ignore
@@ -47,20 +54,20 @@ export class StaffService {
   }
 
   async update(id: string, updateStaffInput: UpdateStaffInput) {
-    const s =await this.findOne(id)
+    const s = await this.findOne(id)
     if (s) {
       s.firstName = updateStaffInput.firstName
       s.lastName = updateStaffInput.lastName
       s.email = updateStaffInput.email
       s.phone = updateStaffInput.phone
       if (updateStaffInput.holidaysLeft)
-      s.holidaysLeft = updateStaffInput.holidaysLeft
+        s.holidaysLeft = updateStaffInput.holidaysLeft
       if (updateStaffInput.holidayDates)
-      s.holidayDates = updateStaffInput.holidayDates
+        s.holidayDates = updateStaffInput.holidayDates
       s.locale = updateStaffInput.locale
     }
     console.log(s)
-    return this.staffRepository.save( s)
+    return this.staffRepository.save(s)
   }
 
   remove(id: string) {
