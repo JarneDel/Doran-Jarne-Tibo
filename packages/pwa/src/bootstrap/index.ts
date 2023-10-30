@@ -149,6 +149,6 @@ router.beforeEach((to, _, next) => {
   }
 })
 
-router.afterEach((to, from, failure) => {
+router.afterEach((to, from) => {
   lastRoute.value = from.path
 })
