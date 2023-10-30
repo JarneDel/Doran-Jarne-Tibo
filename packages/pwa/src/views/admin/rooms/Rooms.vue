@@ -283,7 +283,7 @@ export default defineComponent({
                     class="ml-4 list-disc"
                     v-for="sport in resultGyms?.GetAllGyms[
                       resultGyms?.GetAllGyms.indexOf(gym)
-                    ].sports"
+                    ].sports.sort((a, b) => a.name.localeCompare(b.name))"
                     :key="sport.name"
                   >
                     <p>{{ sport.name }}</p>
@@ -393,7 +393,7 @@ export default defineComponent({
                     class="ml-4 list-disc"
                     v-for="sport in resultSwimmingPools?.GetAllSwimmingPools[
                       resultSwimmingPools?.GetAllSwimmingPools.indexOf(pool)
-                    ].sports"
+                    ].sports.sort((a, b) => a.name.localeCompare(b.name))"
                     :key="sport.name"
                   >
                     <p>{{ sport.name }}</p>
@@ -439,7 +439,7 @@ export default defineComponent({
                     class="ml-4 list-disc"
                     v-for="sport in resultDivePools?.GetAllDivePools[
                       resultDivePools?.GetAllDivePools.indexOf(divePool)
-                    ].sports"
+                    ].sports.sort((a, b) => a.name.localeCompare(b.name))"
                     :key="sport.name"
                   >
                     <p>{{ sport.name }}</p>
@@ -467,82 +467,6 @@ export default defineComponent({
         </ul>
       </div>
       <RouterView />
-      <Modal v-if="isOpen" @close="handleCloseModal">
-        <template v-slot:title>
-          <h2 class="mr-2 w-full text-lg font-bold">
-            <DoubleClickEdit
-              :value="currentRoom.name"
-              @submit="
-                (newValue) => {
-                  currentRoom.name = newValue;
-                }
-              "
-            />
-          </h2>
-        </template>
-        <template v-slot:default>
-          <div
-            v-if="typeSelector == 0 || typeSelector == 3 || typeSelector == 4"
-          >
-            <p class="text-lg font-semibold">Sports:</p>
-            <ul>
-              <li>
-                <div
-                  v-for="sport in resultSports?.GetAllSports"
-                  :key="sport.id"
-                  class="flex items-center gap-2"
-                >
-                  <input
-                    type="checkbox"
-                    :name="sport.id"
-                    :id="sport.id"
-                    :checked="
-                      currentRoom.sports.some((s) => s.id === sport.id)
-                        ? true
-                        : false
-                    "
-                    @change="
-                      (e: any) => {
-                        if (e.target?.checked) {
-                          currentRoom.sports.push(sport);
-                        } else {
-                          currentRoom.sports = currentRoom.sports.filter(
-                            (s) => s.id !== sport.id
-                          );
-                        }
-                      }
-                    "
-                  />
-                  <label :for="sport.id" class="select-none">{{
-                    sport.name
-                  }}</label>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div
-            v-if="
-              typeSelector == 0 ||
-              typeSelector == 2 ||
-              typeSelector == 3 ||
-              typeSelector == 4
-            "
-            class="flex items-center gap-1"
-          >
-            <p class="text-lg font-semibold">Price per hour:</p>
-            <p>€</p>
-            <DoubleClickEdit
-              :value="currentRoom.pricePerHour"
-              type="number"
-              @submit="
-                (newValue) => {
-                  currentRoom.pricePerHour = newValue;
-                }
-              "
-            />
-          </div>
-        </template>
-      </Modal>
     </div>
   </div>
 </template>

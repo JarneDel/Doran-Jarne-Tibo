@@ -60,6 +60,15 @@ export default defineComponent({
       error: errorSports,
     } = useQuery<Sports>(ALL_SPORTS);
 
+    const sortedSports = computed(() => {
+      if (resultSports.value && resultSports.value.GetAllSports) {
+        return resultSports.value.GetAllSports.slice().sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+      }
+      return [];
+    });
+
     const currentRoom = ref<Room>({
       id: '',
       name: '',
@@ -111,6 +120,7 @@ export default defineComponent({
       errorSports,
       loadingSports,
       currentRoom,
+      sortedSports,
     };
   },
 });
@@ -153,7 +163,7 @@ export default defineComponent({
           <ul>
             <li>
               <div
-                v-for="sport in resultSports?.GetAllSports"
+                v-for="sport in sortedSports"
                 :key="sport.id"
                 class="flex items-center gap-2"
               >
