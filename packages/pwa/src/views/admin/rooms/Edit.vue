@@ -78,6 +78,7 @@ export default defineComponent({
       canBeUsed: false,
     });
 
+    // Set currentRoom based on result
     onBeforeMount(() => {
       if (result.value?.GetRoomById) {
         currentRoom.value = { ...result.value?.GetRoomById };
@@ -107,6 +108,8 @@ export default defineComponent({
           pricePerHour: Number(currentRoom.value.pricePerHour),
           type: currentRoom.value.type,
         },
+      }).then((e) => {
+        push('/admin/rooms');
       });
     };
 
