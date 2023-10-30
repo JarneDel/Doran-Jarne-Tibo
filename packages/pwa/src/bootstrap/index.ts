@@ -49,6 +49,20 @@ export const router = createRouter({
       ],
     },
     {
+      path: '/staff',
+      component: () => import('@/components/wrapper/StaffWrapper.vue'),
+      meta: {
+        shouldBeAuthenticated: true,
+        allowedRoles: ['STAFF', 'SUPER_ADMIN'],
+      },
+      children: [
+        {
+          path: '',
+          component: () => import('@/views/staff/StaffOverview.vue'),
+        },
+      ],
+    },
+    {
       path: '/auth',
       component: () => import('@/views/auth/Wrapper.vue'),
       children: [
@@ -135,6 +149,6 @@ router.beforeEach((to, _, next) => {
   }
 })
 
-router.afterEach((to, from, failure) => {
+router.afterEach((to, from) => {
   lastRoute.value = from.path
 })
