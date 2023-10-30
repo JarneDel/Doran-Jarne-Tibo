@@ -48,7 +48,6 @@ export const router = createRouter({
               path: ':id',
               component: () => import('@/views/admin/inventory/Item.vue'),
             },
-
             {
               path: ':id/edit',
               component: () => import('@/views/admin/inventory/Edit.vue'),
@@ -57,21 +56,24 @@ export const router = createRouter({
         },
         {
           path: 'rooms',
-          component: () => import('@/views/admin/rooms/Wrapper.vue'),
+          component: () => import('@/views/admin/rooms/Rooms.vue'),
           children: [
             {
-              path: '',
-              component: () => import('@/views/admin/rooms/Rooms.vue'),
+              path: ':id',
+              component: () => import('@/views/admin/rooms/Item.vue'),
             },
-            // {
-            //   path: ':id',
-            //   component: () => import('@/views/rooms/Room.vue'),
-            // },
             {
-              path: 'create',
-              component: () => import('@/views/admin/rooms/Create.vue'),
-            }
+              path: ':id/edit',
+              component: () => import('@/views/admin/rooms/Edit.vue'),
+            },
           ],
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'rooms/create',
+          component: () => import('@/views/admin/rooms/Create.vue'),
           meta: {
             shouldBeAuthenticated: true,
           },

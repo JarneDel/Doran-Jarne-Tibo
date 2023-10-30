@@ -102,6 +102,22 @@ query{
 }
 `
 
+export const GET_ONE_ROOM = gql`
+query GetRoomById($roomId: String!) {
+  GetRoomById(id: $roomId) {
+    id
+    name
+    sports {
+      id
+      name
+    }
+    pricePerHour
+    type
+    canBeUsed
+  }
+}
+`
+
 export const CREATE_ROOM = gql`
   mutation ($createRoomInput: CreateRoomInput!) {
     createRoom(createRoomInput:$createRoomInput)
@@ -125,6 +141,12 @@ mutation ($updateRoomInput: UpdateRoomInput!){
   updateRoom(updateRoomInput: $updateRoomInput){
     id
   }
+}
+`
+
+export const DELETE_ROOM = gql`
+mutation RemoveRoomById($roomId: String!) {
+  removeRoomById(id: $roomId)
 }
 `
 
