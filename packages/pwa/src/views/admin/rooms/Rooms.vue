@@ -223,7 +223,7 @@ export default defineComponent({
         }"
         class="p-2"
       >
-        Sportzalen
+        {{ $t('rooms.gyms') }}
       </button>
       <button
         @click="typeSelector = 1"
@@ -233,7 +233,7 @@ export default defineComponent({
         }"
         class="p-2"
       >
-        WerkRuimtes
+        {{ $t('rooms.workRooms') }}
       </button>
       <button
         @click="typeSelector = 2"
@@ -243,7 +243,7 @@ export default defineComponent({
         }"
         class="p-2"
       >
-        Kleedkamers
+        {{ $t('rooms.dressingRooms') }}
       </button>
       <button
         @click="typeSelector = 3"
@@ -253,7 +253,7 @@ export default defineComponent({
         }"
         class="p-2"
       >
-        Zwembaden
+        {{ $t('rooms.swimmingPools') }}
       </button>
       <button
         @click="typeSelector = 4"
@@ -263,12 +263,12 @@ export default defineComponent({
         }"
         class="p-2"
       >
-        Duikputten
+        {{ $t('rooms.divingWells') }}
       </button>
     </div>
     <div class="flex flex-col gap-20">
       <div v-if="typeSelector == 0">
-        <h3 class="mb-2 text-3xl font-bold">Sportzalen</h3>
+        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.gyms') }}</h3>
         <ul class="mx-auto grid grid-cols-3 gap-6">
           <li v-for="gym in resultGyms?.GetAllGyms" :key="gym.id">
             <button
@@ -290,7 +290,9 @@ export default defineComponent({
                   </li>
                 </ul>
                 <div class="flex items-center gap-1">
-                  <p class="text-lg font-semibold">Price per hour:</p>
+                  <p class="text-lg font-semibold">
+                    {{ $t('rooms.pricePerHour') }}:
+                  </p>
                   <p>€{{ gym.pricePerHour }}</p>
                 </div>
               </div>
@@ -311,7 +313,7 @@ export default defineComponent({
         </ul>
       </div>
       <div v-if="typeSelector == 1">
-        <h3 class="mb-2 text-3xl font-bold">WerkRuimtes</h3>
+        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.workRooms') }}</h3>
         <ul class="mx-auto grid grid-cols-3 gap-6">
           <li
             v-for="workRoom in resultWorkRooms?.GetAllWorkRooms"
@@ -341,7 +343,7 @@ export default defineComponent({
         </ul>
       </div>
       <div v-if="typeSelector == 2">
-        <h3 class="mb-2 text-3xl font-bold">Kleedkamers</h3>
+        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.dressingRooms') }}</h3>
         <ul class="mx-auto grid grid-cols-3 gap-6">
           <li
             v-for="changingRoom in resultChangingRooms?.GetAllChangingRooms"
@@ -375,7 +377,7 @@ export default defineComponent({
         </ul>
       </div>
       <div v-if="typeSelector == 3">
-        <h3 class="mb-2 text-3xl font-bold">Zwembaden</h3>
+        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.swimmingPools') }}</h3>
         <ul class="mx-auto grid grid-cols-3 gap-6">
           <li
             v-for="pool in resultSwimmingPools?.GetAllSwimmingPools"
@@ -421,7 +423,7 @@ export default defineComponent({
         </ul>
       </div>
       <div v-if="typeSelector == 4">
-        <h3 class="mb-2 text-3xl font-bold">Duikputten</h3>
+        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.divingWells') }}</h3>
         <ul class="mx-auto grid grid-cols-3 gap-6">
           <li
             v-for="divePool in resultDivePools?.GetAllDivePools"
