@@ -28,19 +28,22 @@ export default defineComponent({
       console.log(wantedRoom.value)
     }
     const check = async () => {
+      return new Promise<void>(resolve => {
       const { onResult } = useQuery<any>(GET_AVAILABLE_ROOMS, {
         date: reservation.value.date,
         startTime: reservation.value.beginTime,
         endTime: reservation.value.endTime,
       })
       onResult(result => {
-        console.log(result.data.getAvailableRooms)
         availableRooms.value = result.data.getAvailableRooms
+        wantedRoom.value = []
+        price.value = 0
         availableRooms.value.forEach(room => {
           checkboxStatus.value[room.name] = false
         })
-        console.log({test:checkboxStatus.value})
+        resolve()
       })
+    })
     }
     const checkEndTime = () => {
       if (
@@ -61,27 +64,29 @@ export default defineComponent({
       diff -= hours * 1000 * 60 * 60
       let minutes = Math.floor(diff / 1000 / 60)
       reservation.value.timeDivrent = (hours * 60 + minutes) / 60
+      check()
     }
     const checkStartTime = () => {
       if (
         parseInt(reservation.value.beginTime.substring(0, 2)) < 8 ||
         parseInt(reservation.value.beginTime.substring(0, 2)) > 18
-      ) {
-        reservation.value.beginTime = '08:00'
-      } else if (reservation.value.endTime < reservation.value.beginTime) {
-        reservation.value.beginTime = reservation.value.endTime
+        ) {
+          reservation.value.beginTime = '08:00'
+        } else if (reservation.value.endTime < reservation.value.beginTime) {
+          reservation.value.beginTime = reservation.value.endTime
+        }
+        //time difrentce
+        let begin = reservation.value.beginTime.split(':')
+        let end = reservation.value.endTime.split(':')
+        let beginTime = new Date(0, 0, 0, parseInt(begin[0]), parseInt(begin[1]), 0)
+        let endTime = new Date(0, 0, 0, parseInt(end[0]), parseInt(end[1]), 0)
+        let diff = endTime.getTime() - beginTime.getTime()
+        let hours = Math.floor(diff / 1000 / 60 / 60)
+        diff -= hours * 1000 * 60 * 60
+        let minutes = Math.floor(diff / 1000 / 60)
+        reservation.value.timeDivrent = (hours * 60 + minutes) / 60
+        check()
       }
-      //time difrentce
-      let begin = reservation.value.beginTime.split(':')
-      let end = reservation.value.endTime.split(':')
-      let beginTime = new Date(0, 0, 0, parseInt(begin[0]), parseInt(begin[1]), 0)
-      let endTime = new Date(0, 0, 0, parseInt(end[0]), parseInt(end[1]), 0)
-      let diff = endTime.getTime() - beginTime.getTime()
-      let hours = Math.floor(diff / 1000 / 60 / 60)
-      diff -= hours * 1000 * 60 * 60
-      let minutes = Math.floor(diff / 1000 / 60)
-      reservation.value.timeDivrent = (hours * 60 + minutes) / 60
-    }
     const checkDate = () => {
       if (reservation.value.date < new Date().toISOString().substr(0, 10)) {
         reservation.value.date = new Date().toISOString().substr(0, 10)
