@@ -233,11 +233,12 @@ export class SeedService {
           Math.floor(Math.random() * loanableMaterials.length)
         ]
       const material = new Materials()
-      const sportsMatreaal: string[] = []
+      let sports:Sport[]= []
       for (let sportId of loanableMaterial.SportId) {
         const s = this.sportService.findOneById(sportId)
         s.then(sport => {
-          sports.push(sport.name)
+          console.log(sport)
+          sports.push(sport)
         })
       }
       material.id = loanableMaterial.id
@@ -245,10 +246,10 @@ export class SeedService {
       material.totalAmount = loanableMaterial.totalAmount
       material.wantedAmount = loanableMaterial.wantedAmount
       material.price = loanableMaterial.price
-      material.sports = sportsMatreaal
+      material.sports = sports
       material.isComplete = loanableMaterial.isComplete
       material.description = loanableMaterial.description
-      material.amountReserved = Math.random() * 10
+      material.amountReserved = Math.round(Math.random() * 10)
       const materialList: [Materials] = [material]
       r.reservedMaterials = materialList
       //@ts-ignore
@@ -257,11 +258,10 @@ export class SeedService {
       room.id = renroom.id
       room.name = renroom.name
       room.pricePerHour = renroom.pricePerHour
-      const sports: string[] = []
       for (let sportId of renroom.SportId) {
         const s = this.sportService.findOneById(sportId)
         s.then(sport => {
-          sports.push(sport.name)
+          sports.push(sport)
         })
       }
       room.sports = sports
@@ -334,11 +334,11 @@ export class SeedService {
         const r = new Rooms()
         r.name = room.name
         r.pricePerHour = room.pricePerHour
-        const sports: string[] = []
+        const sports: Sport[] = []
         for (let sportId of room.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
-            sports.push(sport.name)
+            sports.push(sport)
           })
         }
         r.sports = sports
@@ -353,11 +353,11 @@ export class SeedService {
             Math.floor(Math.random() * loanableMaterials.length)
           ]
         const material = new Materials()
-        const sports: string[] = []
+        const sports: Sport[] = []
         for (let sportId of loanableMaterial.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
-            sports.push(sport.name)
+            sports.push(sport)
           })
         }
         material.name = loanableMaterial.name

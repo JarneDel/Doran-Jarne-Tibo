@@ -26,7 +26,7 @@ export class Materials {
 
   @Column()
   @Field(() => [String], { nullable: true })
-  sports: string[]
+  sports: Sport[]
 
   @Column()
   @Field({nullable:true})
