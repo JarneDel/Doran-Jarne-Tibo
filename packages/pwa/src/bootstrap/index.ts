@@ -105,19 +105,14 @@ router.beforeEach((to, _, next) => {
   const { customUser, userLogout } = useUser()
   // @ts-ignore
   const allowedRoles: string[] = to.meta.allowedRoles || []
-  // console.log(to.meta.allowedRoles, customUser.value.userByUid.role)
-  // console.log(to.meta.allowedRoles.includes(customUser.value.userByUid.role))
   // when user is not logged in and route requires authentication redirect to login
   if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
     next('/login?redirect=' + to.path)
-    console.log('1')
   } else if (to.meta.avoidAuth && firebaseUser.value) {
     // when user is logged in and route should be avoided redirect to home
-    console.log('2')
     next('/')
   } else if (to.path === '/logout') {
     // logout user
-    console.log('3')
     logout().then(() => {
       userLogout()
       next('/login')
@@ -128,17 +123,14 @@ router.beforeEach((to, _, next) => {
         customUser.value?.userByUid.role,
         )
         ) {
-          console.log('admin')
           next('/admin')
         } else {
-      console.log('4')
       next('/reservation')
     }
   } else if (
     customUser.value &&
     !allowedRoles.includes(customUser.value?.userByUid.role)
   ) {
-    console.log('5')
     next('/profile')
   } else {
     next()

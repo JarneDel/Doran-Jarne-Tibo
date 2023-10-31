@@ -44,7 +44,6 @@ export class StaffResolver {
   @UseGuards(FirebaseGuard)
   @Query(() => Staff, { name: 'StaffByUid' })
   findOneByUid(@FirebaseUser() user: UserRecord): Promise<Staff> {
-    console.log(user.uid)
     return this.staffService.findOneByUid(user.uid)
   }
 }

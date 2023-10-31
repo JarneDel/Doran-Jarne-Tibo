@@ -46,7 +46,7 @@ export class RoomService {
 
   findOneById(id: string): Promise<Room> {
     const obj = new ObjectId(id)
-    console.log(obj)
+    // console.log(obj)
     // @ts-ignore
     return this.roomRepository.findOne({ _id: new ObjectId(id) })
   }
@@ -101,20 +101,17 @@ export class RoomService {
     const end = new Date(date + ' ' + endTime)
     for (const room of rooms) {
       let isAvailable = true
-      // console.log(room.name)
       for (const reservation of reservations) {
         for (const resroom of reservation.rooms) {
-          // console.log(room.id, resroom.id)
-          // console.log(room.id.toString() === resroom.id.toString())
           if (room.id.toString() === resroom.id.toString()) {
             let reservationStart = new Date(date + ' ' + reservation.startTime)
             let reservationEnd = new Date(date + ' ' + reservation.endTime)
             if (
               (start < reservationStart && end > reservationStart) ||
-              (start < reservationEnd && end > reservationEnd)
+              (start < reservationEnd && end > reservationEnd) ||
+              (reservationStart < start && reservationStart<end && reservationEnd>end )
             ) {
               isAvailable = false
-              console.log('Room not available: ' + room.name)
             }
           }
         }
@@ -123,6 +120,36 @@ export class RoomService {
         availableRooms.push(room)
       }
     }
+      //sort whit first Sporthal second Zwembad third Duikput last Kleedkamer than alfabetecly
+      availableRooms.sort((a, b) => {
+        if (a.type === b.type) {
+          return a.name > b.name ? 1 : -1
+        }
+        if (a.type === 'Sportzaal') {
+          return -1
+        }
+        if (b.type === 'Sportzaal') {
+          return 1
+        }
+        if (a.type === 'Zwembad') {
+          return -1
+        }
+        if (b.type === 'Zwembad') {
+          return 1
+        }
+        if (a.type === 'Duikput') {
+          return -1
+        }
+        if (b.type === 'Duikput') {
+          return 1
+        }
+        if (a.type === 'Kleedkamer') {
+          return -1
+        }
+        if (b.type === 'Kleedkamer') {
+          return 1
+        }
+      })
 
     return availableRooms
   }

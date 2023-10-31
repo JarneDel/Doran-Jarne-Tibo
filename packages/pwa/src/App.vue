@@ -15,12 +15,10 @@ export default defineComponent({
     const { apolloClient } = useGraphql()
     provide(DefaultApolloClient, apolloClient)
     const { setLocale } = useLanguage()
-    const { locale } = useLanguage()
     const { customUser } = useCustomUser()
     if (customUser.value) {
       if (customUser.value) setLocale(customUser.value?.userByUid.locale)
     } else setLocale(Object.keys(SUPPORTED_LOCALES)[1])
-    console.log(locale)
     return {}
   },
 })
