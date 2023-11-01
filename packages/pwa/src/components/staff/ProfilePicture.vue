@@ -1,36 +1,93 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import useFirebase from '@/composables/useFirebase.ts'
+import { Upload, User } from 'lucide-vue-next'
 
 export default defineComponent({
   name: 'ProfilePicture',
+  components: { User, Upload },
+  props: {
+    size: {
+      type: Number,
+      default: 96,
+    },
+    editable: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    sizePx() {
+      return `${this.size}px`
+    },
+  },
   setup() {
     const { uploadProfilePicture, getProfilePictureUrl } = useFirebase()
+    const pfpUrl = ref<string | null>()
+    const isHovering = ref<boolean>(false)
     const uploadPicture = (e: Event) => {
       console.log('upload picture')
       const target = e.target as HTMLInputElement
       if (!target.files) return
-      uploadProfilePicture(target.files[0])
+      uploadProfilePicture(target.files[0]).then(url => {
+        pfpUrl.value = url
+      })
     }
-    const pfpUrl = ref<string | null>()
     getProfilePictureUrl().then(url => {
+      console.log(url)
       pfpUrl.value = url
     })
 
-    return { uploadPicture, pfpUrl }
+    // set random id for label and input
+    const id = ref(Math.random().toString())
+    return { uploadPicture, pfpUrl, id, isHovering }
   },
 })
 </script>
 
 <template>
-  <div v-if="!pfpUrl">LucideProfile</div>
-
+  <label :for="id" class="grid grid-cols-1 grid-rows-1">
+    <User v-if="!pfpUrl" :size="size" class="col-start-1 row-start-1" />
+    <img
+      v-else
+      :src="pfpUrl"
+      alt="your profile"
+      class="size col-start-1 row-start-1 rounded-full object-cover"
+    />
+    <div
+      v-if="editable"
+      class="hover:bg-neutral-6/60 size col-start-1 row-start-1 grid place-content-center rounded-full transition-colors"
+      @mouseenter="isHovering = true"
+      @mouseleave="isHovering = false"
+    >
+      <Transition appear name="fade">
+        <Upload v-if="isHovering" :size="size / 2" class="c-white"></Upload>
+      </Transition>
+    </div>
+  </label>
   <input
+    v-if="editable"
+    :id="id"
     accept="image/jpeg, image/png"
-    class="flex flex-col items-center justify-center"
+    class="hidden"
     type="file"
     @change="uploadPicture"
   />
 </template>
 
-<style scoped></style>
+<style scoped>
+.size {
+  width: v-bind(sizePx);
+  height: v-bind(sizePx);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s linear;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

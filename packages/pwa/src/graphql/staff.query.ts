@@ -11,9 +11,15 @@ export const STAFF_BY_UID = gql`
       lastName
       holidayDates
       holidaysLeft
+      workingHours {
+        day
+        endTime
+        startTime
+      }
     }
   }
 `
+
 export interface StaffMemberQuery {
   staffByUid: StaffMember
 }
@@ -28,4 +34,9 @@ export interface StaffMember {
   id: string
   lastName: string
   phone: string
+  workingHours: {
+    day: number
+    endTime: string
+    startTime: string
+  }[]
 }

@@ -32,17 +32,4 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
-@media (min-width: 576px) {
-  .custom-grid {
-    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-  }
-}
-
-@media (max-width: 576px) {
-  .custom-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: max-content;
-  }
-}
-</style>
+<style scoped></style>
