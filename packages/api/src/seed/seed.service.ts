@@ -37,6 +37,7 @@ import { ReservationService } from 'src/reservation/reservation.service'
 import { Materials } from 'src/reservation/entities/material.entity'
 import { Rooms } from 'src/reservation/entities/room.entity'
 import { RepairRequest } from 'src/repair-request/entities/repair-request.entity'
+import { WorkingHoursEntity } from '../staff/entities/workingHours.entity'
 
 @Injectable()
 export class SeedService {
@@ -188,6 +189,8 @@ export class SeedService {
       }
       s.UID = staffMember.UID
       s.locale = staffMember.locale
+      s.workingHours =
+        staffMember.workingHours as unknown as WorkingHoursEntity[]
 
       outStaff.push(s)
     }
