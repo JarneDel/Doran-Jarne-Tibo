@@ -22,6 +22,7 @@ export class VacationRequestService {
     v.staffUId = staffUId
     v.startDate = createVacationRequestInput.startDate
     v.endDate = createVacationRequestInput.endDate
+    console.log(v.startDate, v.endDate)
     return this.vacationRequestRepository.save(v)
   }
 
@@ -54,5 +55,9 @@ export class VacationRequestService {
 
   remove(id: number) {
     throw new NotImplementedException()
+  }
+
+  truncate() {
+    return this.vacationRequestRepository.clear()
   }
 }
