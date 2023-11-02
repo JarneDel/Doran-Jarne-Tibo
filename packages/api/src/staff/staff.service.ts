@@ -6,6 +6,7 @@ import { Staff } from './entities/staff.entity'
 import { Repository } from 'typeorm'
 import { ObjectId } from 'mongodb'
 import { Role } from 'src/users/entities/user.entity'
+import { GraphQLError } from 'graphql/error'
 
 @Injectable()
 export class StaffService {
@@ -86,5 +87,24 @@ export class StaffService {
     console.log(uid)
     //@ts-ignore
     return await this.staffRepository.findOneByOrFail({ UID: uid })
+  }
+
+  async updateProfilePictureUrl(uid: string, profilePictureUrl: string) {
+    try {
+      const url = new URL(profilePictureUrl)
+      url.protocol = 'https'
+      profilePictureUrl = url.toString()
+
+      const user = await this.staffRepository.findOneByOrFail({ UID: uid })
+      console.log('updateProfilePictureUrl', uid, profilePictureUrl)
+      return this.staffRepository.merge(user, { profilePictureUrl })
+    } catch (e) {
+      console.log(e)
+      if (e instanceof TypeError) {
+        throw new GraphQLError('Invalid URL')
+      }
+      throw e
+    }
+    // return user
   }
 }

@@ -179,6 +179,7 @@ export class SeedService {
       s.phone = staffMember.phone
       s.holidaysLeft = staffMember.holidaysleft
       s.holidayDates = staffMember.holidayDates.map(date => new Date(date))
+      s.holidaysTotal = staffMember.holidaysTotal
       const role = staffMember.role
       if (role === 'ADMIN') {
         s.role = Role.ADMIN
@@ -191,7 +192,6 @@ export class SeedService {
       s.locale = staffMember.locale
       s.workingHours =
         staffMember.workingHours as unknown as WorkingHoursEntity[]
-
       outStaff.push(s)
     }
 

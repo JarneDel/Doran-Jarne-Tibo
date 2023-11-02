@@ -1,4 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  NavigationGuardNext,
+  RouteLocationNormalized,
+} from 'vue-router'
 import useFirebase from '@/composables/useFirebase.ts'
 import useLastRoute from '@/composables/useLastRoute.ts'
 import useUser from '@/composables/useUser'
@@ -104,48 +109,73 @@ export const router = createRouter({
   ],
 })
 
+const redirectToLogin = (
+  to: RouteLocationNormalized,
+  next: NavigationGuardNext,
+) => {
+  next('/login?redirect=' + to.path)
+}
+const redirectToHome = (next: NavigationGuardNext) => {
+  const { customUser } = useUser()
+  if (!customUser.value) {
+    next('/login')
+    return
+  }
+  if (['ADMIN', 'SUPER_ADMIN'].includes(customUser.value.userByUid.role)) {
+    next('/admin')
+    return
+  }
+  if (customUser.value.userByUid.role === 'STAFF') {
+    next('/staff')
+    return
+  }
+  // Todo: redirect to group page
+  next('/profile')
+}
+const unauthorized = (next: NavigationGuardNext) => {
+  next('/403')
+}
+
+const logoutUser = (next: NavigationGuardNext) => {
+  const { userLogout } = useUser()
+  logout().then(() => {
+    userLogout()
+    next('/login')
+  })
+}
+
+const isRoleAllowed = (role: string, allowedRoles: string[]) => {
+  if (allowedRoles.length === 0) return true
+  return allowedRoles.includes(role)
+}
+
+
 router.beforeEach((to, _, next) => {
   // get user from database
-  const { customUser, userLogout } = useUser()
+  const { customUser } = useUser()
   // @ts-ignore
   const allowedRoles: string[] = to.meta.allowedRoles || []
-  // console.log(to.meta.allowedRoles, customUser.value.userByUid.role)
-  // console.log(to.meta.allowedRoles.includes(customUser.value.userByUid.role))
+
   // when user is not logged in and route requires authentication redirect to login
-  if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
-    next('/login?redirect=' + to.path)
-    console.log('1')
-  } else if (to.meta.avoidAuth && firebaseUser.value) {
+  switch (true) {
+    case to.meta.shouldBeAuthenticated && !firebaseUser.value:
+      redirectToLogin(to, next)
+      break
     // when user is logged in and route should be avoided redirect to home
-    console.log('2')
-    next('/')
-  } else if (to.path === '/logout') {
+    case to.meta.avoidAuth && firebaseUser.value:
+      redirectToHome(next)
+      break
     // logout user
-    console.log('3')
-    logout().then(() => {
-      userLogout()
-      next('/login')
-    })
-  } else if (to.path === '/' && firebaseUser.value && customUser.value) {
-    console.log('4')
-    if (
-      ['ADMIN', 'SUPER_ADMIN', 'STAFF'].includes(
-        customUser.value?.userByUid.role,
-      )
-    ) {
-      console.log('admin')
-      next('/admin')
-    } else {
-      next('/profile')
-    }
-  } else if (
-    customUser.value &&
-    !allowedRoles.includes(customUser.value?.userByUid.role)
-  ) {
-    console.log('5')
-    next('/profile')
-  } else {
-    next()
+    case to.path === '/logout':
+      logoutUser(next)
+      break
+    // when route is not allowed for user role redirect to 403
+    case customUser.value &&
+      !isRoleAllowed(customUser.value.userByUid.role, allowedRoles):
+      unauthorized(next)
+      break
+    default:
+      next()
   }
 })
 

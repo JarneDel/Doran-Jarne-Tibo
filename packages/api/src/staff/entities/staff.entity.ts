@@ -26,6 +26,10 @@ export class Staff extends User {
   @Column()
   holidaysLeft: number
 
+  @Field()
+  @Column()
+  holidaysTotal: number
+
   @Field(() => [Date], { nullable: true })
   @Column()
   holidayDates: Date[]

@@ -20,9 +20,8 @@ export default defineComponent({
       date.setMinutes(parseInt(minutes))
       return date
     },
-  },
-  computed: {
-    isWorking() {
+
+    isWorkingFromSchedule() {
       const day = new Date().getDay()
       const workingHoursToday = this.data.workingHours.find((wh: any) => {
         return wh.day === day
@@ -36,6 +35,23 @@ export default defineComponent({
       return now >= start && now <= end
     },
   },
+  computed: {
+    isWorking() {
+      return this.isWorkingFromSchedule() && !this.isOnVacation
+    },
+    isOnVacation(): boolean {
+      const vacations = this.data.holidayDates
+      const now = new Date()
+      return vacations.some((vacation: Date) => {
+        // if same day, return true
+        return (
+          now.getFullYear() === vacation.getFullYear() &&
+          now.getMonth() === vacation.getMonth() &&
+          now.getDate() === vacation.getDate()
+        )
+      })
+    },
+  },
 })
 </script>
 
@@ -46,6 +62,7 @@ export default defineComponent({
     <div>{{ isWorking }}</div>
     <div>{{ data.email }}</div>
     <div>{{ data.phone }}</div>
+    <div v-if='isOnVacation'>🎉{{ $t('staff.vacation') }}</div>
     <ProfilePicture editable />
   </div>
 </template>

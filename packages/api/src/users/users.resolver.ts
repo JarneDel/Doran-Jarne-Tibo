@@ -24,10 +24,11 @@ export const GrSt1 = createUnionType({
 
 @Resolver(() => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService,
+  constructor(
+    private readonly usersService: UsersService,
     private readonly groupservice: GroupsService,
     private readonly StaffService: StaffService,
-    ) {}
+  ) {}
 
   @UseGuards(FirebaseGuard)
   @Mutation(() => User)
@@ -60,17 +61,15 @@ export class UsersResolver {
     return this.usersService.remove(id)
   }
 
-
-  @Query(() =>GrSt1 ,{name:'userByUid'})
+  @Query(() => GrSt1, { name: 'userByUid' })
   @UseGuards(FirebaseGuard)
-  async userByUid(@FirebaseUser() user: UserRecord){
+  async userByUid(@FirebaseUser() user: UserRecord) {
     let returnUser
-    console.log("useraanvraag")
+    console.log('useraanvraag')
     try {
-      returnUser=await this.StaffService.findOneByUid(user.uid)
+      returnUser = await this.StaffService.findOneByUid(user.uid)
     } catch (error) {
-      
-      returnUser =await this.groupservice.findOneByUid(user.uid)
+      returnUser = await this.groupservice.findOneByUid(user.uid)
     }
     return returnUser
   }
