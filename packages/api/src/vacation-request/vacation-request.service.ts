@@ -1,26 +1,58 @@
-import { Injectable } from '@nestjs/common';
-import { CreateVacationRequestInput } from './dto/create-vacation-request.input';
-import { UpdateVacationRequestInput } from './dto/update-vacation-request.input';
+import { Injectable, NotImplementedException } from '@nestjs/common'
+import { CreateVacationRequestInput } from './dto/create-vacation-request.input'
+import { UpdateVacationRequestInput } from './dto/update-vacation-request.input'
+import { VacationRequest } from './entities/vacation-request.entity'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { ObjectId } from 'mongodb'
+import { ApproveVacationRequestInput } from './dto/approve-vacation-request.input'
 
 @Injectable()
 export class VacationRequestService {
-  create(createVacationRequestInput: CreateVacationRequestInput) {
-    return 'This action adds a new vacationRequest';
+  constructor(
+    @InjectRepository(VacationRequest)
+    private readonly vacationRequestRepository: Repository<VacationRequest>,
+  ) {}
+
+  create(
+    createVacationRequestInput: CreateVacationRequestInput,
+    staffUId: string,
+  ) {
+    const v = new VacationRequest()
+    v.staffUId = staffUId
+    v.startDate = createVacationRequestInput.startDate
+    v.endDate = createVacationRequestInput.endDate
+    return this.vacationRequestRepository.save(v)
+  }
+
+  approve(approveVacationRequestInput: ApproveVacationRequestInput) {
+    const oId = new ObjectId(approveVacationRequestInput.id)
+    return this.vacationRequestRepository.update(
+      //@ts-ignore
+      { _id: oId },
+      approveVacationRequestInput,
+    )
   }
 
   findAll() {
-    return `This action returns all vacationRequest`;
+    return this.vacationRequestRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vacationRequest`;
+  findOne(id: string) {
+    const oId = new ObjectId(id)
+    //@ts-ignore
+    return this.vacationRequestRepository.findOneByOrFail({ _id: oId })
+  }
+
+  findByStaffUId(staffId: string): Promise<VacationRequest[]> {
+    return this.vacationRequestRepository.findBy({ staffUId: staffId })
   }
 
   update(id: number, updateVacationRequestInput: UpdateVacationRequestInput) {
-    return `This action updates a #${id} vacationRequest`;
+    throw new NotImplementedException()
   }
 
   remove(id: number) {
-    return `This action removes a #${id} vacationRequest`;
+    throw new NotImplementedException()
   }
 }

@@ -19,7 +19,7 @@ export class VacationRequest {
   staff: Staff
 
   @Column()
-  staffId: string
+  staffUId: string
 
   @CreateDateColumn({ type: 'timestamp', nullable: false })
   @Field({ nullable: false })
@@ -34,15 +34,15 @@ export class VacationRequest {
   createdAt: Date
 
   @Column()
-  @Field()
+  @Field({ defaultValue: false })
   isApproved: boolean
 
   @Column()
-  @Field()
+  @Field({ defaultValue: false })
   isRejected: boolean
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   rejectReason: string
 
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
