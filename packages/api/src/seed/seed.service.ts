@@ -10,6 +10,14 @@ import { Room } from 'src/room/entities/room.entity'
 import { Sport } from 'src/sport/entities/sport.entity'
 import { Staff } from '../staff/entities/staff.entity'
 import { Service } from '../service/entities/service.entity'
+import { Role } from 'src/users/entities/user.entity'
+import { Reservation } from 'src/reservation/entities/reservation.entity'
+import { ReservationService } from 'src/reservation/reservation.service'
+import { Materials } from 'src/reservation/entities/material.entity'
+import { Rooms } from 'src/reservation/entities/room.entity'
+import { RepairRequest } from 'src/repair-request/entities/repair-request.entity'
+import { WorkingHoursEntity } from '../staff/entities/workingHours.entity'
+import { VacationRequest } from '../vacation-request/entities/vacation-request.entity'
 
 // json: set  "resolveJsonModule": true in tsconfig.json
 import * as stock from './data/stock.json'
@@ -31,13 +39,7 @@ import { SportService } from 'src/sport/sport.service'
 import { StaffService } from 'src/staff/staff.service'
 import { ServiceService } from '../service/service.service'
 import { RepairRequestService } from '../repair-request/repair-request.service'
-import { Role } from 'src/users/entities/user.entity'
-import { Reservation } from 'src/reservation/entities/reservation.entity'
-import { ReservationService } from 'src/reservation/reservation.service'
-import { Materials } from 'src/reservation/entities/material.entity'
-import { Rooms } from 'src/reservation/entities/room.entity'
-import { RepairRequest } from 'src/repair-request/entities/repair-request.entity'
-import { WorkingHoursEntity } from '../staff/entities/workingHours.entity'
+import { VacationRequestService } from '../vacation-request/vacation-request.service'
 
 @Injectable()
 export class SeedService {
@@ -51,6 +53,7 @@ export class SeedService {
     private serviceService: ServiceService,
     private reservationService: ReservationService,
     private RepairRequestService: RepairRequestService,
+    private vacationRequestService: VacationRequestService,
   ) {}
 
   async addStockFromJson(): Promise<Stock[]> {
@@ -368,4 +371,30 @@ export class SeedService {
   async deleteAllRepairRequests(): Promise<void> {
     return this.RepairRequestService.truncate()
   }
+
+  // region vacation-request
+  /**
+   * Add vacation requests to the database
+   * @returns the amount of vacation requests added
+   */
+  async addVacationRequests(): Promise<number> {
+    const staff = await this.staffService.findAll()
+    if (staff.length === 0) {
+      throw new Error('No staff found, please seed staff first')
+    }
+    for (let staffMember of staff) {
+      const v = new VacationRequest()
+      v.staffUId = staffMember.UID
+      v.startDate = new Date('2024-01-01')
+      v.endDate = new Date('2024-01-02')
+      await this.vacationRequestService.create(v, staffMember.UID)
+    }
+    return Promise.resolve(staff.length)
+  }
+
+  async deleteAllVacationRequests(): Promise<void> {
+    return this.vacationRequestService.truncate()
+  }
+
+  // endregion
 }

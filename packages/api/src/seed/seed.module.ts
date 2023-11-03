@@ -15,6 +15,7 @@ import { SportModule } from 'src/sport/sport.module'
 import { RoomModule } from 'src/room/room.module'
 import { ReservationModule } from 'src/reservation/reservation.module'
 import { RepairRequestModule } from 'src/repair-request/repair-request.module'
+import { VacationRequestModule } from '../vacation-request/vacation-request.module'
 
 
 
@@ -30,7 +31,8 @@ import { RepairRequestModule } from 'src/repair-request/repair-request.module'
     SeedModule,
     RoomModule,
     ReservationModule,
-    RepairRequestModule
+    RepairRequestModule,
+    VacationRequestModule,
   ],
   providers: [DatabaseSeedCommand, SeedService],
 })

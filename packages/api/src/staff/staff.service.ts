@@ -107,4 +107,20 @@ export class StaffService {
     }
     // return user
   }
+
+  async withdrawVacationDays(
+    uid: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<Staff> {
+    const staff = await this.findOneByUid(uid)
+    const days = Math.ceil(
+      (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24),
+    )
+    if (days > staff.holidaysLeft) {
+      throw new GraphQLError('Not enough holidays left')
+    }
+    staff.holidaysLeft -= days
+    return this.staffRepository.save(staff)
+  }
 }
