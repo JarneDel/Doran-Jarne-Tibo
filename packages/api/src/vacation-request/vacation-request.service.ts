@@ -7,27 +7,38 @@ import { Repository } from 'typeorm'
 import { ObjectId } from 'mongodb'
 import { ApproveVacationRequestInput } from './dto/approve-vacation-request.input'
 import { GraphQLError } from 'graphql/error'
+import { StaffService } from '../staff/staff.service'
 
 @Injectable()
 export class VacationRequestService {
   constructor(
     @InjectRepository(VacationRequest)
     private readonly vacationRequestRepository: Repository<VacationRequest>,
+    private readonly staffService: StaffService,
   ) {}
 
-  create(
+  async create(
     createVacationRequestInput: CreateVacationRequestInput,
     staffUId: string,
   ) {
+    const staff = await this.staffService.findOneByUid(staffUId)
+    const vacationDays = staff.holidaysLeft
+    const startDate = new Date(createVacationRequestInput.startDate)
+    const endDate = new Date(createVacationRequestInput.endDate)
+    const daysRequested = Math.ceil(
+      (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24),
+    )
+    if (daysRequested > vacationDays) {
+      throw new GraphQLError('Not enough vacation days left')
+    }
     const v = new VacationRequest()
     v.staffUId = staffUId
-    v.startDate = new Date(createVacationRequestInput.startDate)
-    v.endDate = new Date(createVacationRequestInput.endDate)
+    v.startDate = startDate
+    v.endDate = endDate
     return this.vacationRequestRepository.save(v)
   }
 
-  approve(approveVacationRequestInput: ApproveVacationRequestInput) {
-
+  async approve(approveVacationRequestInput: ApproveVacationRequestInput) {
     if (
       approveVacationRequestInput.isApproved &&
       approveVacationRequestInput.isRejected
@@ -47,9 +58,32 @@ export class VacationRequestService {
       throw new GraphQLError('Must provide a reason for rejection')
     }
 
+    const vacationRequest = await this.findOne(approveVacationRequestInput.id)
+    if (vacationRequest.isApproved || vacationRequest.isRejected) {
+      throw new GraphQLError('Vacation request has already been processed')
+    }
 
-
-
+    if (approveVacationRequestInput.isApproved) {
+      try {
+        await this.staffService.withdrawVacationDays(
+          vacationRequest.staffUId,
+          vacationRequest.startDate,
+          vacationRequest.endDate,
+        )
+      } catch (e) {
+        if (e instanceof GraphQLError) {
+          if (e.message === 'Not enough holidays left') {
+            console.log('Not enough vacation days left, denying request')
+            approveVacationRequestInput.isApproved = false
+            approveVacationRequestInput.isRejected = true
+            approveVacationRequestInput.rejectReason =
+              'Not enough vacation days left'
+          } else {
+            throw e
+          }
+        }
+      }
+    }
 
     const oId = new ObjectId(approveVacationRequestInput.id)
     return this.vacationRequestRepository.update(
