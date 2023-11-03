@@ -31,7 +31,7 @@ const authLink = setContext(async (_, { headers }) => ({
 }))
 
 const errorLink = onError(error => {
-  if (import.meta.env.DEV) logErrorMessages(error)
+  if (import.meta.env.DEV) logErrorMessages(error, false)
 })
 const apolloClient = new ApolloClient({
   link: from([authLink, errorLink, httpLink]),

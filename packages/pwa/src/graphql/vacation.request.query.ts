@@ -16,8 +16,10 @@ export const CREATE_VACATION_REQUEST = gql`
 `
 
 export interface CreateVacationRequestInput {
-  startDate: Date
-  endDate: Date
+  input: {
+    startDate: Date
+    endDate: Date
+  }
 }
 
 export interface CreateVacationRequest {
@@ -81,20 +83,40 @@ export interface VacationRequestQueryAdmin {
   vacationRequestByStaff: VacationRequest[]
 }
 
-// export const GET_VACATION_REQUESTS_ADMIN_ALL = gql`
-//     query GetVacationRequestsAdminAll {
-//         vacationRequest() {
-//             id
-//             isApproved
-//             isRejected
-//             rejectReason
-//             createdAt
-//             updatedAt
-//             startDate
-//             endDate
-//         }
-//     }
-// `
+export const GET_VACATION_REQUESTS_ADMIN_ALL = gql`
+  query GetVacationRequestsAdminAll {
+    vacationRequests {
+      id
+      isApproved
+      isRejected
+      rejectReason
+      createdAt
+      updatedAt
+      startDate
+      endDate
+    }
+  }
+`
+
+export interface VacationRequestQueryAdminAll {
+  vacationRequests: VacationRequest[]
+}
+
+export const CANCEL_VACATION_REQUEST = gql`
+  mutation CancelVacationRequest($id: String!) {
+    cancelVacationRequest(id: $id) {
+      id
+      isApproved
+      isRejected
+      rejectReason
+      createdAt
+      updatedAt
+      startDate
+      endDate
+    }
+  }
+`
+
 
 export interface VacationRequest {
   id: string

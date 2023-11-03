@@ -1,16 +1,14 @@
 import {
-  Resolver,
-  Query,
-  Mutation,
   Args,
-  Int,
-  ResolveField,
+  Mutation,
   Parent,
+  Query,
+  ResolveField,
+  Resolver,
 } from '@nestjs/graphql'
 import { VacationRequestService } from './vacation-request.service'
 import { VacationRequest } from './entities/vacation-request.entity'
 import { CreateVacationRequestInput } from './dto/create-vacation-request.input'
-import { UpdateVacationRequestInput } from './dto/update-vacation-request.input'
 import { Staff } from '../staff/entities/staff.entity'
 import { StaffService } from '../staff/staff.service'
 import { UseGuards } from '@nestjs/common'
@@ -21,7 +19,6 @@ import { Role } from '../users/entities/user.entity'
 import { FirebaseUser } from '../authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
 import { ApproveVacationRequestInput } from './dto/approve-vacation-request.input'
-
 
 @UseGuards(FirebaseGuard, RolesGuard)
 @AllowedRoles(Role.STAFF, Role.ADMIN, Role.SUPER_ADMIN)
@@ -46,7 +43,7 @@ export class VacationRequestResolver {
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
-  @Query(() => [VacationRequest], { name: 'vacationRequest' })
+  @Query(() => [VacationRequest], { name: 'vacationRequests' })
   findAll() {
     return this.vacationRequestService.findAll()
   }
