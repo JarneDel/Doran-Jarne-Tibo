@@ -88,16 +88,10 @@ export class VacationRequestService {
     }
 
     console.log('saving', approveVacationRequestInput)
-    const oId = new ObjectId(approveVacationRequestInput.id)
-    const res = await this.vacationRequestRepository.update(
-      //@ts-ignore
-      { _id: oId },
-      approveVacationRequestInput,
-    )
-    if (res.affected === 0) {
-      throw new GraphQLError('Vacation request not found')
-    }
-    return this.findOne(approveVacationRequestInput.id)
+    vacationRequest.isApproved = approveVacationRequestInput.isApproved
+    vacationRequest.isRejected = approveVacationRequestInput.isRejected
+    vacationRequest.rejectReason = approveVacationRequestInput.rejectReason
+    return this.vacationRequestRepository.save(vacationRequest)
 
   }
 
