@@ -14,7 +14,6 @@ export class ApproveVacationRequestInput {
   @IsBoolean()
   isRejected: boolean
 
-  @IsBoolean()
   @Field({ nullable: true })
   rejectReason: string
 }

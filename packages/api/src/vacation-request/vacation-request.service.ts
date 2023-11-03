@@ -39,6 +39,7 @@ export class VacationRequestService {
   }
 
   async approve(approveVacationRequestInput: ApproveVacationRequestInput) {
+    console.log(approveVacationRequestInput)
     if (
       approveVacationRequestInput.isApproved &&
       approveVacationRequestInput.isRejected
@@ -64,8 +65,9 @@ export class VacationRequestService {
     }
 
     if (approveVacationRequestInput.isApproved) {
+      console.log('approved')
       try {
-        await this.staffService.withdrawVacationDays(
+        await this.staffService.saveVacation(
           vacationRequest.staffUId,
           vacationRequest.startDate,
           vacationRequest.endDate,
@@ -85,12 +87,18 @@ export class VacationRequestService {
       }
     }
 
+    console.log('saving', approveVacationRequestInput)
     const oId = new ObjectId(approveVacationRequestInput.id)
-    return this.vacationRequestRepository.update(
+    const res = await this.vacationRequestRepository.update(
       //@ts-ignore
       { _id: oId },
       approveVacationRequestInput,
     )
+    if (res.affected === 0) {
+      throw new GraphQLError('Vacation request not found')
+    }
+    return this.findOne(approveVacationRequestInput.id)
+
   }
 
   findAll() {
