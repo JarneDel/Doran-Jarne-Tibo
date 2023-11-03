@@ -63,17 +63,6 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.findOneById(id)
   }
 
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF, Role.GROUP)
-  @UseGuards(FirebaseGuard, RolesGuard)
-  @Query(() => [LoanableMaterial], {
-    name: 'GetAvailableloanableMaterials',
-  })
-  findAvailable(@Args('date', { type: () => String }) date: string,
-    @Args('startTime', { type: () => String }) startTime: string,
-    @Args('endTime', { type: () => String }) endTime: string,
-    @Args('sportId', { type: () => [String] }) sportId: string[],) {
-    return this.loanableMaterialsService.getAvailableMaterail(date, startTime, endTime, sportId)
-  }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseGuards(FirebaseGuard, RolesGuard)

@@ -233,7 +233,7 @@ export class SeedService {
           Math.floor(Math.random() * loanableMaterials.length)
         ]
       const material = new Materials()
-      let sports:Sport[]= []
+      let sports:[Sport]
       for (let sportId of loanableMaterial.SportId) {
         const s = this.sportService.findOneById(sportId)
         s.then(sport => {
@@ -334,7 +334,7 @@ export class SeedService {
         const r = new Rooms()
         r.name = room.name
         r.pricePerHour = room.pricePerHour
-        const sports: Sport[] = []
+        let sports: [Sport]
         for (let sportId of room.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
@@ -353,7 +353,7 @@ export class SeedService {
             Math.floor(Math.random() * loanableMaterials.length)
           ]
         const material = new Materials()
-        const sports: Sport[] = []
+        let sports: [Sport] 
         for (let sportId of loanableMaterial.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {

@@ -10,14 +10,12 @@ import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 // Entities
 import { Room } from './entities/room.entity'
-import { ReservationService } from 'src/reservation/reservation.service'
 
 @Injectable()
 export class RoomService {
   constructor(
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
-    private readonly reservationService: ReservationService,
   ) {}
 
   create(createRoomInput: CreateRoomInput): Promise<Room> {
@@ -80,77 +78,5 @@ export class RoomService {
   truncate(): Promise<void> {
     return this.roomRepository.clear()
   }
-  async getAvailableRooms(
-    date: string,
-    startTime: string,
-    endTime: string,
-  ): Promise<Room[]> {
-    const rooms = (await this.findAll()).filter(
-      room =>
-        room.type === 'Sportzaal' ||
-        room.type === 'Kleedkamer' ||
-        room.type === 'Zwembad' ||
-        room.type === 'Duikput',
-    )
-
-    const availableRooms: Room[] = []
-    const resurveDate = new Date(date)
-    const reservations = await this.reservationService.findByDate(resurveDate)
-    //remove :
-    const start = new Date(date + ' ' + startTime)
-    const end = new Date(date + ' ' + endTime)
-    for (const room of rooms) {
-      let isAvailable = true
-      for (const reservation of reservations) {
-        for (const resroom of reservation.rooms) {
-          if (room.id.toString() === resroom.id.toString()) {
-            let reservationStart = new Date(date + ' ' + reservation.startTime)
-            let reservationEnd = new Date(date + ' ' + reservation.endTime)
-            if (
-              (start < reservationStart && end > reservationStart) ||
-              (start < reservationEnd && end > reservationEnd) ||
-              (reservationStart < start && reservationStart<end && reservationEnd>end )
-            ) {
-              isAvailable = false
-            }
-          }
-        }
-      }
-      if (isAvailable) {
-        availableRooms.push(room)
-      }
-    }
-      //sort whit first Sporthal second Zwembad third Duikput last Kleedkamer than alfabetecly
-      availableRooms.sort((a, b) => {
-        if (a.type === b.type) {
-          return a.name > b.name ? 1 : -1
-        }
-        if (a.type === 'Sportzaal') {
-          return -1
-        }
-        if (b.type === 'Sportzaal') {
-          return 1
-        }
-        if (a.type === 'Zwembad') {
-          return -1
-        }
-        if (b.type === 'Zwembad') {
-          return 1
-        }
-        if (a.type === 'Duikput') {
-          return -1
-        }
-        if (b.type === 'Duikput') {
-          return 1
-        }
-        if (a.type === 'Kleedkamer') {
-          return -1
-        }
-        if (b.type === 'Kleedkamer') {
-          return 1
-        }
-      })
-
-    return availableRooms
-  }
+  
 }

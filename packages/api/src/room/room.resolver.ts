@@ -32,7 +32,6 @@ export class RoomResolver {
   constructor(
     private readonly roomService: RoomService,
     private readonly sportService: SportService,
-    private readonly reservationService: ReservationService,
   ) {}
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
@@ -91,20 +90,7 @@ export class RoomResolver {
       })
   }
 
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
-  @UseGuards(FirebaseGuard, RolesGuard)
-  @Query(() => [Room], {
-    name: 'getAvailableRooms',
-    nullable: true,
-  })
-  getAvailableRooms(
-    @Args('date', { type: () => String }) date: string,
-    @Args('startTime', { type: () => String }) startTime: string,
-    @Args('endTime', { type: () => String }) endTime: string,
-  ) {
-    return this.roomService.getAvailableRooms(date, startTime, endTime)
-  }
-
+  
   @ResolveField() // "sports" must be the same as the field in the room entity
   async sports(@Parent() room: Room): Promise<Sport[]> {
     const { SportId } = room

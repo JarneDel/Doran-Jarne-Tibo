@@ -20,6 +20,7 @@ import { RepairRequestModule } from 'src/repair-request/repair-request.module'
 
 @Module({
   imports: [
+    ReservationModule,
     CommandModule,
     GroupsModule,
     LoanableMaterialsModule,
@@ -27,9 +28,7 @@ import { RepairRequestModule } from 'src/repair-request/repair-request.module'
     StaffModule,
     ServiceModule,
     SportModule,
-    SeedModule,
     RoomModule,
-    ReservationModule,
     RepairRequestModule
   ],
   providers: [DatabaseSeedCommand, SeedService],

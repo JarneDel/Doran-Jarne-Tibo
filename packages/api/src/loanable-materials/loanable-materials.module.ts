@@ -9,10 +9,9 @@ import { LoanableMaterial } from "./entities/loanable-material.entity";
 // Typeorm
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { SportModule } from "src/sport/sport.module";
-import { ReservationModule } from "src/reservation/reservation.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([LoanableMaterial]),SportModule, ReservationModule],
+  imports: [TypeOrmModule.forFeature([LoanableMaterial]),SportModule],
   providers: [LoanableMaterialsResolver, LoanableMaterialsService],
   exports: [LoanableMaterialsService],
 })

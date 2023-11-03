@@ -1,12 +1,16 @@
-import { Module } from '@nestjs/common'
+import { Module, forwardRef } from '@nestjs/common'
 import { ReservationService } from './reservation.service'
 import { ReservationResolver } from './reservation.resolver'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Reservation } from './entities/reservation.entity'
-import { SportModule } from 'src/sport/sport.module'
+import { RoomModule } from 'src/room/room.module'
+import { LoanableMaterialsModule } from 'src/loanable-materials/loanable-materials.module'
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Reservation],),SportModule, 
+    TypeOrmModule.forFeature(
+      [Reservation],),
+      RoomModule,
+      LoanableMaterialsModule,
   ],
   providers: [ReservationResolver, ReservationService],
   exports: [ReservationService],
