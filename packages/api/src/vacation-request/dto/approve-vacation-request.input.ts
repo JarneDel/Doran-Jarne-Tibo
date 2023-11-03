@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql'
+import { IsBoolean, isBoolean } from 'class-validator'
 
 @InputType()
 export class ApproveVacationRequestInput {
@@ -6,11 +7,14 @@ export class ApproveVacationRequestInput {
   id: string
 
   @Field({ nullable: false, defaultValue: false })
+  @IsBoolean()
   isApproved: boolean
 
   @Field({ nullable: false, defaultValue: false })
+  @IsBoolean()
   isRejected: boolean
 
+  @IsBoolean()
   @Field({ nullable: true })
   rejectReason: string
 }

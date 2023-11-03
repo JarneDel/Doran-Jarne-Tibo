@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { ObjectId } from 'mongodb'
 import { ApproveVacationRequestInput } from './dto/approve-vacation-request.input'
+import { GraphQLError } from 'graphql/error'
 
 @Injectable()
 export class VacationRequestService {
@@ -20,13 +21,36 @@ export class VacationRequestService {
   ) {
     const v = new VacationRequest()
     v.staffUId = staffUId
-    v.startDate = createVacationRequestInput.startDate
-    v.endDate = createVacationRequestInput.endDate
-    console.log(v.startDate, v.endDate)
+    v.startDate = new Date(createVacationRequestInput.startDate)
+    v.endDate = new Date(createVacationRequestInput.endDate)
     return this.vacationRequestRepository.save(v)
   }
 
   approve(approveVacationRequestInput: ApproveVacationRequestInput) {
+
+    if (
+      approveVacationRequestInput.isApproved &&
+      approveVacationRequestInput.isRejected
+    ) {
+      throw new GraphQLError('Cannot approve and reject at the same time')
+    }
+    if (
+      !approveVacationRequestInput.isApproved &&
+      !approveVacationRequestInput.isRejected
+    ) {
+      throw new GraphQLError('Must approve or reject')
+    }
+    if (
+      approveVacationRequestInput.isRejected &&
+      !approveVacationRequestInput.rejectReason
+    ) {
+      throw new GraphQLError('Must provide a reason for rejection')
+    }
+
+
+
+
+
     const oId = new ObjectId(approveVacationRequestInput.id)
     return this.vacationRequestRepository.update(
       //@ts-ignore
