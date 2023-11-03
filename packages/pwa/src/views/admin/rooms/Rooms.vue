@@ -44,12 +44,13 @@ import {
   ALL_DIVE_POOLS,
   UPDATE_ROOM,
 } from '../../../graphql/room.query';
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import UseFirebase from '../../../composables/useFirebase';
 import { PlusCircle } from 'lucide-vue-next';
 import Modal from '@/components/Modal.vue';
 import { useRouter } from 'vue-router';
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
+import useLastRoute from '@/composables/useLastRoute';
 
 // Export default
 export default defineComponent({
@@ -78,6 +79,7 @@ export default defineComponent({
       loading: loadingGyms,
       result: resultGyms,
       error: errorGyms,
+      refetch: refetchGyms,
     } = useQuery<IRooms>(
       ALL_GYMS,
       {},
@@ -89,6 +91,7 @@ export default defineComponent({
       loading: loadingWorkRooms,
       result: resultWorkRooms,
       error: errorWorkRooms,
+      refetch: refetchWorkRooms,
     } = useQuery<IRooms>(
       ALL_WORK_ROOMS,
       {},
@@ -100,6 +103,7 @@ export default defineComponent({
       loading: loadingChangingRooms,
       result: resultChangingRooms,
       error: errorChangingRooms,
+      refetch: refetchChangingRooms,
     } = useQuery<IRooms>(
       ALL_CHANGING_ROOMS,
       {},
@@ -111,6 +115,7 @@ export default defineComponent({
       loading: loadingSwimmingPools,
       result: resultSwimmingPools,
       error: errorSwimmingPools,
+      refetch: refetchSwimmingPools,
     } = useQuery<IRooms>(
       ALL_SWIMMING_POOLS,
       {},
@@ -122,6 +127,7 @@ export default defineComponent({
       loading: loadingDivePools,
       result: resultDivePools,
       error: errorDivePools,
+      refetch: refetchDivePools,
     } = useQuery<IRooms>(
       ALL_DIVE_POOLS,
       {},
@@ -139,6 +145,35 @@ export default defineComponent({
     const type = computed(() => currentRoute.value.params.type);
     if (type.value !== undefined) typeSelector.value = Number(type.value);
     else push('/admin/rooms/type/0');
+
+    const { lastRoute } = useLastRoute();
+
+    watch(
+      lastRoute,
+      (value) => {
+        console.log(value);
+        if (value.startsWith('/admin/rooms/id/')) {
+          fetchWithFilters();
+        }
+      },
+      { immediate: true }
+    );
+
+    const fetchWithFilters = () => {
+      console.log('fetchWithFilters');
+      console.log(typeSelector.value);
+      if (typeSelector.value == 0) {
+        refetchGyms();
+      } else if (typeSelector.value == 1) {
+        refetchWorkRooms();
+      } else if (typeSelector.value == 2) {
+        refetchChangingRooms();
+      } else if (typeSelector.value == 3) {
+        refetchSwimmingPools();
+      } else if (typeSelector.value == 4) {
+        refetchDivePools();
+      }
+    };
 
     // Modal
     const isOpen = ref(false);
