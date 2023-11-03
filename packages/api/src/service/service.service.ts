@@ -37,6 +37,13 @@ export class ServiceService {
     })
   }
 
+  findByStaffUId(staffId: string): Promise<Service[]> {
+    return this.serviceRepository.find({
+      //@ts-ignore
+      staffUID: { $elemMatch: { $eq: staffId } },
+    })
+  }
+
   update(id: string, updateServiceInput: UpdateServiceInput) {
     //@ts-ignore
     return this.serviceRepository.findOneByOrFail({ _id: new ObjectId(id) })

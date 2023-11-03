@@ -6,6 +6,7 @@ import { Staff } from './entities/staff.entity'
 import { Repository } from 'typeorm'
 import { ObjectId } from 'mongodb'
 import { Role } from 'src/users/entities/user.entity'
+import { GraphQLError } from 'graphql/error'
 
 @Injectable()
 export class StaffService {
@@ -39,6 +40,13 @@ export class StaffService {
     })
   }
 
+  findByUIDs(uIds: string[]): Promise<Staff[]> {
+    return this.staffRepository.find({
+      //@ts-ignore
+      UID: { $in: uIds },
+    })
+  }
+
   find(ids: string[]): Promise<Staff[]> {
     return this.staffRepository.find({
       //@ts-ignore
@@ -47,20 +55,20 @@ export class StaffService {
   }
 
   async update(id: string, updateStaffInput: UpdateStaffInput) {
-    const s =await this.findOne(id)
+    const s = await this.findOne(id)
     if (s) {
       s.firstName = updateStaffInput.firstName
       s.lastName = updateStaffInput.lastName
       s.email = updateStaffInput.email
       s.phone = updateStaffInput.phone
       if (updateStaffInput.holidaysLeft)
-      s.holidaysLeft = updateStaffInput.holidaysLeft
+        s.holidaysLeft = updateStaffInput.holidaysLeft
       if (updateStaffInput.holidayDates)
-      s.holidayDates = updateStaffInput.holidayDates
+        s.holidayDates = updateStaffInput.holidayDates
       s.locale = updateStaffInput.locale
     }
     console.log(s)
-    return this.staffRepository.save( s)
+    return this.staffRepository.save(s)
   }
 
   remove(id: string) {
@@ -79,5 +87,44 @@ export class StaffService {
     console.log(uid)
     //@ts-ignore
     return await this.staffRepository.findOneByOrFail({ UID: uid })
+  }
+
+  async updateProfilePictureUrl(uid: string, profilePictureUrl: string) {
+    try {
+      const url = new URL(profilePictureUrl)
+      url.protocol = 'https'
+      profilePictureUrl = url.toString()
+
+      const user = await this.staffRepository.findOneByOrFail({ UID: uid })
+      console.log('updateProfilePictureUrl', uid, profilePictureUrl)
+      return this.staffRepository.merge(user, { profilePictureUrl })
+    } catch (e) {
+      console.log(e)
+      if (e instanceof TypeError) {
+        throw new GraphQLError('Invalid URL')
+      }
+      throw e
+    }
+    // return user
+  }
+
+  async saveVacation(uid: string, startDate: Date, endDate: Date) {
+    const staff = await this.findOneByUid(uid)
+    const days = Math.ceil(
+      (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24),
+    )
+    if (days > staff.holidaysLeft) {
+      throw new GraphQLError('Not enough holidays left')
+    }
+    staff.holidaysLeft -= days
+    for (let i = 0; i < days; i++) {
+      if (staff.holidayDates.includes(startDate)) {
+        throw new GraphQLError('Already on holiday')
+      }
+      staff.holidayDates.push(startDate)
+      startDate = new Date(startDate.getTime() + 1000 * 3600 * 24)
+    }
+
+    return this.staffRepository.save(staff)
   }
 }
