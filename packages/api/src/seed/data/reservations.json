@@ -56,10 +56,10 @@
         "type": "Sportzaal"
       },
       {
-        "name": "Kleedkamer 3",
+        "name": "Kleedruimte 3",
         "sports": null,
         "pricePerHour": 15,
-        "type": "Kleedkamer"
+        "type": "Kleedruimte"
       }
     ],
     "price": 12,

@@ -35,6 +35,46 @@ export class RoomService {
     return this.roomRepository.find()
   }
 
+  findAllGyms() {
+    const AllRooms = this.roomRepository.find()
+    const Gyms = AllRooms.then((rooms) => {
+      return rooms.filter((room) => room.type === 'Sportzaal')
+    })
+    return Gyms
+  }
+
+  findAllChangingRooms() {
+    const AllRooms = this.roomRepository.find()
+    const ChangingRooms = AllRooms.then((rooms) => {
+      return rooms.filter((room) => room.type === 'Kleedruimte')
+    })
+    return ChangingRooms
+  }
+
+  findAllWorkRooms() {
+    const AllRooms = this.roomRepository.find()
+    const WorkRooms = AllRooms.then((rooms) => {
+      return rooms.filter((room) => room.type === 'Werkruimte')
+    })
+    return WorkRooms
+  }
+
+  findAllSwimmingPools() {
+    const AllRooms = this.roomRepository.find()
+    const SwimmingPools = AllRooms.then((rooms) => {
+      return rooms.filter((room) => room.type === 'Zwembad')
+    })
+    return SwimmingPools
+  }
+
+  findAllDivePools() {
+    const AllRooms = this.roomRepository.find()
+    const DivePools = AllRooms.then((rooms) => {
+      return rooms.filter((room) => room.type === 'Duikput')
+    })
+    return DivePools
+  }
+
   findByIds(ids: string[]): Promise<Room[]> {
     return this.roomRepository.find({
       // @ts-ignore
