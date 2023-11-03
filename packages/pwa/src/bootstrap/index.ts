@@ -65,6 +65,10 @@ export const router = createRouter({
           path: '',
           component: () => import('@/views/staff/StaffOverview.vue'),
         },
+        {
+          path: 'request-vacation',
+          component: () => import('@/views/staff/RequestVacation.vue'),
+        },
       ],
     },
     {

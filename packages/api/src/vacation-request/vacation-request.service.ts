@@ -92,7 +92,6 @@ export class VacationRequestService {
     vacationRequest.isRejected = approveVacationRequestInput.isRejected
     vacationRequest.rejectReason = approveVacationRequestInput.rejectReason
     return this.vacationRequestRepository.save(vacationRequest)
-
   }
 
   findAll() {
@@ -107,6 +106,25 @@ export class VacationRequestService {
 
   findByStaffUId(staffId: string): Promise<VacationRequest[]> {
     return this.vacationRequestRepository.findBy({ staffUId: staffId })
+  }
+
+  cancel(id: string, staffUId: string) {
+    const oId = new ObjectId(id)
+    return (
+      this.vacationRequestRepository
+        // @ts-ignore
+        .findOneByOrFail({ _id: oId, staffUId: staffUId })
+        .then(v => {
+          if (v.isApproved) {
+            // add back vacation days
+          }
+
+          v.isApproved = false
+          v.isRejected = true
+          v.rejectReason = 'Cancelled by staff member'
+          return this.vacationRequestRepository.save(v)
+        })
+    )
   }
 
   update(id: number, updateVacationRequestInput: UpdateVacationRequestInput) {

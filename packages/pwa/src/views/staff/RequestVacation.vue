@@ -1,8 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+// import { useMutation } from '@vue/apollo-composable'
 
 export default defineComponent({
-  name: 'vacation',
+  name: 'RequestVacation',
+  setup() {
+    //const {} = useMutation()
+
+    return {}
+  },
 })
 </script>
 

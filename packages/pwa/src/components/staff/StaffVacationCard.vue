@@ -27,8 +27,10 @@ export default defineComponent({
     </div>
     <!--    Todo: add request in review and approved requests-->
     <!-- Todo: show upcoming vacations-->
-
-    <styled-button button-type="secondary" type="button"
+    <styled-button
+      button-type="secondary"
+      type="button"
+      @click="$router.push('/staff/request-vacation')"
       >{{ $t('staff.requestVacation') }}
     </styled-button>
   </div>

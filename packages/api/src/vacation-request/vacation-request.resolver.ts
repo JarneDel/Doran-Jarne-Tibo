@@ -32,6 +32,7 @@ export class VacationRequestResolver {
     private readonly staffService: StaffService,
   ) {}
 
+  @AllowedRoles(Role.STAFF)
   @Mutation(() => VacationRequest)
   createVacationRequest(
     @Args('createVacationRequestInput')
@@ -44,26 +45,30 @@ export class VacationRequestResolver {
     )
   }
 
-  // @Query(() => [VacationRequest], { name: 'vacationRequest' })
-  // findAll() {
-  //   return this.vacationRequestService.findAll()
-  // }
-  //
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Query(() => [VacationRequest], { name: 'vacationRequest' })
+  findAll() {
+    return this.vacationRequestService.findAll()
+  }
+
   @Query(() => VacationRequest, { name: 'vacationRequest' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.vacationRequestService.findOne(id)
   }
 
+  @AllowedRoles(Role.STAFF)
   @Query(() => [VacationRequest], { name: 'vacationRequestLoggedIn' })
   findByFirebaseUser(@FirebaseUser() user: UserRecord) {
     return this.vacationRequestService.findByStaffUId(user.uid)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
   @Query(() => [VacationRequest], { name: 'vacationRequestByStaff' })
   findByStaffId(@Args('staffId', { type: () => String }) staffId: string) {
     return this.vacationRequestService.findByStaffUId(staffId)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
   @Mutation(() => VacationRequest)
   approveVacationRequest(
     @Args('approveVacationRequestInput')
@@ -72,21 +77,14 @@ export class VacationRequestResolver {
     return this.vacationRequestService.approve(approveVacationRequestInput)
   }
 
-  // @Mutation(() => VacationRequest)
-  // updateVacationRequest(
-  //   @Args('updateVacationRequestInput')
-  //   updateVacationRequestInput: UpdateVacationRequestInput,
-  // ) {
-  //   return this.vacationRequestService.update(
-  //     updateVacationRequestInput.id,
-  //     updateVacationRequestInput,
-  //   )
-  // }
-  //
-  // @Mutation(() => VacationRequest)
-  // removeVacationRequest(@Args('id', { type: () => Int }) id: number) {
-  //   return this.vacationRequestService.remove(id)
-  // }
+  @AllowedRoles(Role.STAFF)
+  @Mutation(() => VacationRequest)
+  cancelVacationRequest(
+    @Args('id', { type: () => String }) id: string,
+    @FirebaseUser() user: UserRecord,
+  ) {
+    return this.vacationRequestService.cancel(id, user.uid)
+  }
 
   @ResolveField()
   staff(@Parent() vacationRequest: VacationRequest): Promise<Staff> {
