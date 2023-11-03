@@ -44,7 +44,7 @@ import {
   ALL_DIVE_POOLS,
   UPDATE_ROOM,
 } from '../../../graphql/room.query';
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import UseFirebase from '../../../composables/useFirebase';
 import { PlusCircle } from 'lucide-vue-next';
 import Modal from '@/components/Modal.vue';
@@ -60,7 +60,7 @@ export default defineComponent({
   },
   setup() {
     // Router
-    const { push, currentRoute } = useRouter();
+    const { push, replace, currentRoute } = useRouter();
     // Firebase
     const { firebaseUser } = UseFirebase();
     const idToken = ref();
@@ -134,7 +134,11 @@ export default defineComponent({
     const { mutate } = useMutation(UPDATE_ROOM);
 
     // Selector type of room
-    const typeSelector = ref(0);
+    let typeSelector = ref(0);
+
+    const type = computed(() => currentRoute.value.params.type);
+    if (type.value !== undefined) typeSelector.value = Number(type.value);
+    else push('/admin/rooms/type/0');
 
     // Modal
     const isOpen = ref(false);
@@ -176,7 +180,7 @@ export default defineComponent({
     };
 
     const handleRoomDetail = (room: any) => {
-      push(`/admin/rooms/${room.id}`);
+      push(`/admin/rooms/id/${room.id}`);
     };
 
     return {
@@ -205,6 +209,7 @@ export default defineComponent({
       handleRoomDetail,
       handleCloseModal,
       push,
+      replace,
       currentRoute,
       mutate,
     };
@@ -216,7 +221,10 @@ export default defineComponent({
   <div class="m-8">
     <div class="flex items-center justify-center">
       <button
-        @click="typeSelector = 0"
+        @click="
+          replace('/admin/rooms/type/0');
+          typeSelector = 0;
+        "
         :class="{
           'bg-secondary ': typeSelector === 0,
           'bg-primary-light': typeSelector !== 0,
@@ -226,7 +234,10 @@ export default defineComponent({
         {{ $t('rooms.gyms') }}
       </button>
       <button
-        @click="typeSelector = 1"
+        @click="
+          replace('/admin/rooms/type/1');
+          typeSelector = 1;
+        "
         :class="{
           'bg-secondary ': typeSelector === 1,
           'bg-primary-light': typeSelector !== 1,
@@ -236,7 +247,10 @@ export default defineComponent({
         {{ $t('rooms.workRooms') }}
       </button>
       <button
-        @click="typeSelector = 2"
+        @click="
+          replace('/admin/rooms/type/2');
+          typeSelector = 2;
+        "
         :class="{
           'bg-secondary ': typeSelector === 2,
           'bg-primary-light': typeSelector !== 2,
@@ -246,7 +260,10 @@ export default defineComponent({
         {{ $t('rooms.dressingRooms') }}
       </button>
       <button
-        @click="typeSelector = 3"
+        @click="
+          replace('/admin/rooms/type/3');
+          typeSelector = 3;
+        "
         :class="{
           'bg-secondary ': typeSelector === 3,
           'bg-primary-light': typeSelector !== 3,
@@ -256,7 +273,10 @@ export default defineComponent({
         {{ $t('rooms.swimmingPools') }}
       </button>
       <button
-        @click="typeSelector = 4"
+        @click="
+          replace('/admin/rooms/type/4');
+          typeSelector = 4;
+        "
         :class="{
           'bg-secondary ': typeSelector === 4,
           'bg-primary-light': typeSelector !== 4,
@@ -300,7 +320,7 @@ export default defineComponent({
           </li>
           <li>
             <RouterLink
-              to="/admin/rooms/create"
+              to="/admin/rooms/create/type/0"
               class="flex h-full w-full items-center justify-center rounded-lg bg-white p-4 shadow-md"
             >
               <PlusCircle
@@ -330,7 +350,7 @@ export default defineComponent({
           </li>
           <li>
             <RouterLink
-              to="/admin/rooms/create"
+              to="/admin/rooms/create/type/1"
               class="flex h-full w-full items-center justify-center rounded-lg bg-white p-4 shadow-md"
             >
               <PlusCircle
@@ -364,7 +384,7 @@ export default defineComponent({
           </li>
           <li>
             <RouterLink
-              to="/admin/rooms/create"
+              to="/admin/rooms/create/type/2"
               class="flex h-full w-full items-center justify-center rounded-lg bg-white p-4 shadow-md"
             >
               <PlusCircle
@@ -410,7 +430,7 @@ export default defineComponent({
           </li>
           <li>
             <RouterLink
-              to="/admin/rooms/create"
+              to="/admin/rooms/create/type/3"
               class="flex h-full w-full items-center justify-center rounded-lg bg-white p-4 shadow-md"
             >
               <PlusCircle
@@ -456,7 +476,7 @@ export default defineComponent({
           </li>
           <li>
             <RouterLink
-              to="/admin/rooms/create"
+              to="/admin/rooms/create/type/4"
               class="flex h-full w-full items-center justify-center rounded-lg bg-white p-4 shadow-md"
             >
               <PlusCircle

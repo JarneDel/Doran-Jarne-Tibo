@@ -20,7 +20,7 @@ import {
   createRoomInput,
   ICreateRoom,
 } from '@/graphql/room.query';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import StyledInputText from '@/components/generic/StyledInputText.vue';
 import UseFirebase from '../../../composables/useFirebase';
 
@@ -38,19 +38,27 @@ export default defineComponent({
       idToken.value = await firebaseUser.value?.getIdToken();
     };
     getIdToken();
-    const { push } = useRouter();
+    const { push, currentRoute } = useRouter();
+
+    // Room type from url
+    const type = computed(() => currentRoute.value.params.type);
 
     // All sports
     const { loading, result, error } = useQuery<Sports>(ALL_SPORTS);
     // CREATE ROOM
     const { mutate } = useMutation<ICreateRoom>(CREATE_ROOM);
-    const typeSelector = ref(-1);
+    let typeSelector = ref(-1);
+    if (type.value == '0') typeSelector.value = 0;
+    else if (type.value == '1') typeSelector.value = 1;
+    else if (type.value == '2') typeSelector.value = 2;
+    else if (type.value == '3') typeSelector.value = 3;
+    else if (type.value == '4') typeSelector.value = 4;
 
     const typeSelectorChange = (e: Event) => {
       const target = e.target as HTMLSelectElement;
       const value = Number(target.value);
+      push(`/admin/rooms/create/type/${value}`);
       typeSelector.value = value;
-      console.log(typeSelector.value);
     };
 
     const handleSubmit = async (e: Event) => {
@@ -99,9 +107,20 @@ export default defineComponent({
       });
       console.info(res);
 
-      //redirect to the room page
+      //redirect to the room page based on created room type
       if (res?.data?.createRoom.id) {
-        await push('/admin/rooms/');
+        // await push('/admin/rooms/');
+        if (res?.data.createRoom.type == 'Sportzaal') {
+          await push('/admin/rooms/type/0/');
+        } else if (res?.data.createRoom.type == 'Werkruimte') {
+          await push('/admin/rooms/type/1');
+        } else if (res?.data.createRoom.type == 'Kleedruimte') {
+          await push('/admin/rooms/type/2');
+        } else if (res?.data.createRoom.type == 'Zwembad') {
+          await push('/admin/rooms/type/3');
+        } else if (res?.data.createRoom.type == 'Duikput') {
+          await push('/admin/rooms/type/4');
+        }
       }
       console.log('submit');
     };
@@ -130,6 +149,7 @@ export default defineComponent({
           id="roomType"
           class="bg-primary-surface b-2 border-neutral-200 px-4"
           name="service"
+          v-model="typeSelector"
           @change="typeSelectorChange"
         >
           <option value="-1" disabled selected>Selecteer een type</option>

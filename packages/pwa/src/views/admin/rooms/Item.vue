@@ -87,7 +87,7 @@ export default defineComponent({
         <button
           v-if="result?.GetRoomById"
           class="bg-primary-surface hover:bg-primary-surface/80 active:bg-primary-surface/60 mr-2 self-end rounded-full p-2"
-          @click="push('/admin/rooms/' + result?.GetRoomById.id + '/edit')"
+          @click="push('/admin/rooms/id/' + result?.GetRoomById.id + '/edit')"
         >
           <Edit2 :size="20" />
         </button>

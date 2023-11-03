@@ -59,11 +59,12 @@ export const router = createRouter({
           component: () => import('@/views/admin/rooms/Rooms.vue'),
           children: [
             {
-              path: ':id',
+              path: 'id/:id',
               component: () => import('@/views/admin/rooms/Item.vue'),
+              props: true,
             },
             {
-              path: ':id/edit',
+              path: 'id/:id/edit',
               component: () => import('@/views/admin/rooms/Edit.vue'),
             },
           ],
@@ -72,8 +73,24 @@ export const router = createRouter({
           },
         },
         {
+          path: 'rooms/type/:type',
+          component: () => import('@/views/admin/rooms/Rooms.vue'),
+          props: true,
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
           path: 'rooms/create',
           component: () => import('@/views/admin/rooms/Create.vue'),
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'rooms/create/type/:type',
+          component: () => import('@/views/admin/rooms/Create.vue'),
+          props: true,
           meta: {
             shouldBeAuthenticated: true,
           },
