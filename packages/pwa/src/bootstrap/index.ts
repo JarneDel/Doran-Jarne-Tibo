@@ -85,6 +85,21 @@ export const router = createRouter({
             shouldBeAuthenticated: true,
           },
         },
+        {
+          path: 'reservations',
+          component: () => import('@/views/admin/reservations/Reservations.vue'),
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'reservations/type/:type',
+          component: () => import('@/views/admin/reservations/Reservations.vue'),
+          props: true,
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        }
       ],
     },
     {

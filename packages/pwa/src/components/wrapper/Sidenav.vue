@@ -7,6 +7,7 @@ import {
   PanelRightClose,
   Users,
   Warehouse,
+  CalendarClock,
 } from 'lucide-vue-next';
 import { useLocalStorage } from '@vueuse/core';
 import { useRouter } from 'vue-router';
@@ -14,7 +15,15 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'Sidenav',
-  components: { Logo, Users, Box, Warehouse, PanelLeftClose, PanelRightClose },
+  components: {
+    Logo,
+    Users,
+    Box,
+    Warehouse,
+    PanelLeftClose,
+    PanelRightClose,
+    CalendarClock,
+  },
   setup() {
     const isClosed = useLocalStorage('isClosed', false);
     const { currentRoute } = useRouter();
@@ -39,6 +48,12 @@ export default defineComponent({
           icon: Warehouse,
           content: t('nav.rooms'),
           route: '/admin/rooms',
+        },
+        {
+          name: 'reservations',
+          icon: CalendarClock,
+          content: t('nav.reservations'),
+          route: '/admin/reservations',
         },
       ];
     });
