@@ -5,12 +5,17 @@ import { useRouter } from 'vue-router'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledLink from '@/components/generic/StyledLink.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
+import { useMutation } from '@vue/apollo-composable'
+import { CREATE_GROUP } from '@/graphql/usser.query'
+import useUser from '@/composables/useUser'
+import useLanguage from '@/composables/useLanguage'
 
 export default defineComponent({
   components: { StyledInputText, StyledButton, StyledLink },
   setup() {
     // data
     const form = reactive({
+      btwNummer: '',
       email: '',
       password: '',
       displayName: '',
@@ -18,15 +23,32 @@ export default defineComponent({
     })
 
     // composables
-    const { push } = useRouter()
+    const { replace } = useRouter()
     const { register } = useFirebase()
+    const { restoreCustomUser } = useUser()
+    const { mutate } = useMutation(CREATE_GROUP)
+    const { locale} = useLanguage()
     const { currentRoute } = useRouter()
 
     // methods
     const submitForm = () => {
       register(form.email, form.password)
-        .then(() => {
-          push((currentRoute.value.query.redirect as string) || '/')
+        .then(async () => {
+          if (form.btwNummer == '') {
+            await mutate({
+              name: form.displayName,
+              btwNumber: null,
+              locale:locale,
+            })
+          } else {
+            await mutate({
+              name: form.displayName,
+              btwNumber: form.btwNummer,
+              locale: locale,
+            })
+          }
+          await restoreCustomUser()
+          replace('/')
         })
         .catch(error => {
           console.info({ error })
@@ -52,20 +74,26 @@ export default defineComponent({
     <form @submit.prevent="register">
       <h2 class="font-600 text-xl">{{ $t('auth.register') }}</h2>
       <StyledInputText
-        v-model="form.email"
-        :label="$t('auth.email')"
-        autocomplete="email"
-        class="w-full"
-        required
-        type="email"
-      />
-      <StyledInputText
         v-model="form.displayName"
         :label="$t('auth.displayName')"
         autocomplete="username"
         class="w-full"
         required
         type="text"
+      />
+      <StyledInputText
+        v-model="form.btwNummer"
+        :label="$t('profile.btw')"
+        class="w-full"
+        type="text"
+      />
+      <StyledInputText
+        v-model="form.email"
+        :label="$t('auth.email')"
+        autocomplete="email"
+        class="w-full"
+        required
+        type="email"
       />
 
       <StyledInputText

@@ -7,10 +7,12 @@ import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import StyledLink from '@/components/generic/StyledLink.vue'
 import { useRouter } from 'vue-router'
+import useUser from '@/composables/useUser'
 
 export default defineComponent({
   components: { StyledLink, StyledInputText, StyledButton },
   setup() {
+    const { restoreCustomUser, customUser } = useUser()
     const error = ref<AuthError | null>(null)
 
     const { replace } = useRouter()
@@ -25,7 +27,14 @@ export default defineComponent({
       login(credentials.value.email, credentials.value.password)
         .then(() => {
           console.log('logged in')
-          replace((currentRoute.value.query.redirect as string) || '/')
+        })
+        .then(() => {
+          restoreCustomUser().then(() => {
+            console.log(firebaseUser.value?.email)
+            console.log(customUser.value?.userByUid)
+            console.log('restored user')
+            replace('/')
+          })
         })
         .catch((err: AuthError) => {
           error.value = err
