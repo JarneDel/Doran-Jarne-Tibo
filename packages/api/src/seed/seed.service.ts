@@ -148,6 +148,7 @@ export class SeedService {
       r.pricePerHour = room.pricePerHour
       r.SportId = SportIds
       r.type = room.type
+      r.canBeUsed = room.canBeUsed
       Rooms.push(r)
     }
 

@@ -31,7 +31,6 @@ export class CreateRoomInput {
 
   @Min(0)
   @Max(1000)
-  @IsPositive()
   @Field({ defaultValue: 0 }) // Graphql
   pricePerHour: number
 
