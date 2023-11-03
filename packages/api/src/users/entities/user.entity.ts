@@ -2,6 +2,7 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql'
 // Typeorm
 import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm'
+import { IsUrl } from 'class-validator'
 
 export enum Role {
   SUPER_ADMIN = 'SUPER_ADMIN',
@@ -38,4 +39,8 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
   updatedAt: Date
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  profilePictureUrl?: string
 }

@@ -1,6 +1,7 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql'
+import { Field, ObjectType } from '@nestjs/graphql'
 import { User } from 'src/users/entities/user.entity'
-import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm'
+import { WorkingHoursEntity } from './workingHours.entity'
 
 @Entity()
 @ObjectType()
@@ -25,6 +26,10 @@ export class Staff extends User {
   @Column()
   holidaysLeft: number
 
+  @Field()
+  @Column()
+  holidaysTotal: number
+
   @Field(() => [Date], { nullable: true })
   @Column()
   holidayDates: Date[]
@@ -36,4 +41,8 @@ export class Staff extends User {
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
   updatedAt: Date
+
+  @Field(() => [WorkingHoursEntity], { nullable: true })
+  @Column('jsonb', { nullable: true })
+  workingHours: WorkingHoursEntity[]
 }

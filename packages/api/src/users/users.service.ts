@@ -1,16 +1,17 @@
-import {  Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { CreateUserInput } from './dto/create-user.input'
 import { UpdateUserInput } from './dto/update-user.input'
-import { read } from 'fs'
 import { Repository } from 'typeorm'
 import { Role, User } from './entities/user.entity'
 import { InjectRepository } from '@nestjs/typeorm'
+import { Staff } from '../staff/entities/staff.entity'
+import { Group } from '../groups/entities/group.entity'
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
   ) {}
 
   create(uid: string, createUserInput: CreateUserInput) {
@@ -40,6 +41,4 @@ export class UsersService {
   remove(id: string) {
     return new Error(`This action removes a #${id} user`)
   }
-
 }
-  
