@@ -256,8 +256,8 @@ export default defineComponent({
     <p class="ml-4 text-lg">
       {{ $t('reservation.subtitle') }}
     </p>
-    <div class="flex justify-between">
-      <div class="m-4 flex items-end gap-2">
+    <div class=" lg:flex justify-between">
+      <div class="m-4 md:flex items-end gap-2">
         <styled-input-text
           v-model="reservation.date"
           :label="$t('reservation.date')"
@@ -282,11 +282,11 @@ export default defineComponent({
           type="time"
           @change="checkEndTime"
         />
-        <StyledButton type="button" class="h-fit" @click="check">
+        <StyledButton type="button" class="mt-2 h-fit" @click="check">
           {{ $t('reservation.check') }}
         </StyledButton>
       </div>
-      <div class="flex items-center gap-2">
+      <div class="ml-4 lg:mr-0 flex items-center gap-2">
         <p class="text-xl">€ {{ price }}</p>
         <StyledButton type="button" class="h-fit" @click="AddReservation()">
           {{ $t('reservation.reserve') }}
@@ -295,7 +295,7 @@ export default defineComponent({
     </div>
     <div class="mx-4" v-if="availableRooms.length > 0">
       <p class="text-lg">beschikbare ruimtes</p>
-      <div class="grid auto-rows-fr grid-cols-4 gap-4">
+      <div class="grid auto-rows-fr lg:grid-cols-3 2xl:grid-cols-4 gap-4">
         <label class="h-full" v-for="room in availableRooms">
           <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
           <input
@@ -328,7 +328,7 @@ export default defineComponent({
     </div>
     <div class="mx-4" v-if="availableMaterials.length > 0">
       <p class="text-lg">beschikbare materialen</p>
-      <div class="grid grid-cols-4 grid-rows-[repeat(4,1fr)] gap-4">
+      <div class="grid lg:grid-cols-3 2xl:grid-cols-4 grid-rows-[repeat(4,1fr)] gap-4">
         <label class="h-full" v-for="material in availableMaterials">
           <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
           <div
