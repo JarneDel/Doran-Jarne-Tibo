@@ -53,7 +53,6 @@ export class ReservationService {
         if (room.id.toString() == id.toString()) {
           roomisAvailable = true
         }
-        // console.log(room.id, id, room.id.toString() == id.toString())
       })
 
       if (roomisAvailable==false) {
@@ -63,7 +62,6 @@ export class ReservationService {
     const date = createReservationInput.date
     //get date of today at 00:00:00
     const today = new Date( new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
-    console.log(date, today,date>=today)
     //check if the material is available
     const reservedMaterials = createReservationInput.reservedMaterials
     const reservedMaterialsId = reservedMaterials.map(material => material.id)
@@ -86,11 +84,8 @@ export class ReservationService {
     const begintime = createReservationInput.startTime.split(':')
     const endtime = createReservationInput.endTime.split(':')
     const begintimeNumber = Number(begintime[0]) + Number(begintime[1]) / 60
-    console.log(begintimeNumber)
     const endtimeNumber = Number(endtime[0]) + Number(endtime[1]) / 60
-    console.log(endtimeNumber)
     const timediff = endtimeNumber - begintimeNumber
-    console.log(timediff)
     let totalPrice = 0
     createReservationInput.rooms.map(room => {
       totalPrice += room.pricePerHour * timediff
