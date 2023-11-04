@@ -17,6 +17,7 @@ import { SportModule } from './sport/sport.module';
 import { UsersModule } from './users/users.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { RepairRequestModule } from './repair-request/repair-request.module';
+import { VacationRequestModule } from './vacation-request/vacation-request.module';
 
 
 @Module({
@@ -50,6 +51,7 @@ import { RepairRequestModule } from './repair-request/repair-request.module';
     UsersModule,
     ReservationModule,
     RepairRequestModule,
+    VacationRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

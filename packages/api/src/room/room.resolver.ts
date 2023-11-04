@@ -55,6 +55,51 @@ export class RoomResolver {
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
   @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllGyms',
+  })
+  findAllGyms() {
+    return this.roomService.findAllGyms()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllChangingRooms',
+  })
+  findAllChangingRooms() {
+    return this.roomService.findAllChangingRooms()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllWorkRooms',
+  })
+  findAllWorkRooms() {
+    return this.roomService.findAllWorkRooms()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllSwimmingPools',
+  })
+  findAllSwimmingPools() {
+    return this.roomService.findAllSwimmingPools()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllDivePools',
+  })
+  findAllDivePools() {
+    return this.roomService.findAllDivePools()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => Room, {
     name: 'GetRoomById',
     nullable: true,

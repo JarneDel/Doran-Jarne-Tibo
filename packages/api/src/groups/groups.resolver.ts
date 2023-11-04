@@ -8,7 +8,7 @@ import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
 import { AllowedRoles } from 'src/authentication/decorators/role.decorator'
-import { Role } from 'src/users/entities/user.entity'
+import { Role, User } from 'src/users/entities/user.entity'
 import { RolesGuard } from 'src/authentication/guards/roles.guard'
 
 @Resolver(() => Group)
@@ -66,5 +66,19 @@ export class GroupsResolver {
   @Mutation(() => Group)
   removeGroup(@Args('id', { type: () => Int }) id: number) {
     return this.groupsService.remove(id)
+  }
+
+  @Mutation(() => User)
+  @UseGuards(FirebaseGuard)
+  async updateGroupProfilePictureUrl(
+    @Args('profilePictureUrl', { type: () => String })
+    profilePictureUrl: string,
+    @FirebaseUser() user: UserRecord,
+  ) {
+    console.log('updateProfilePictureUrl', profilePictureUrl)
+    return this.groupsService.updateProfilePictureUrl(
+      user.uid,
+      profilePictureUrl,
+    )
   }
 }

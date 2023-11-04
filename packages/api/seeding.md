@@ -100,7 +100,12 @@ clear loanableMaterials container
 npx nestjs-command seed:reset:loanableMaterials    
 ```
 
+clear vacation requests
 
+```bash
+npx nestjs-command seed:reset:vacationRequest
+```
 
-
-
+```shell
+npx nestjs-command seed:database:vacationRequest
+```
