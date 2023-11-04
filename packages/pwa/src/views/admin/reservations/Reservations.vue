@@ -281,14 +281,15 @@ export default defineComponent({
 
     // Selector type of room
     let typeSelector = ref(0);
-
     const type = computed(() => currentRoute.value.params.type);
     if (type.value !== undefined) typeSelector.value = Number(type.value);
     else push('/admin/reservations/type/0');
 
+    // Reservation width
+    // Day start and end hour
     const dayStartHour = 8;
     const dayEndHour = 20;
-
+    // Calculate reservation width
     const calculateReservationWidth = (reservation: any) => {
       const totalMinutesInDay = (dayEndHour - dayStartHour) * 60;
 
@@ -307,6 +308,30 @@ export default defineComponent({
 
       return `width: ${widthPercentage}%; left: ${leftPercentage}%;`;
     };
+
+    // Date
+    const today = new Date();
+    const date = ref(today.toISOString().substr(0, 10));
+    const redLinePosition = ref(0);
+
+    const calculateRedLinePosition = () => {
+      const totalMinutesInDay = (dayEndHour - dayStartHour) * 60;
+      const currentTime = new Date();
+      const currentHour = currentTime.getHours();
+      const currentMinute = currentTime.getMinutes();
+      const currentTimeInMinutes = currentHour * 60 + currentMinute;
+      const leftPercentage =
+        ((currentTimeInMinutes - dayStartHour * 60) / totalMinutesInDay) * 100;
+      if (leftPercentage > 100) redLinePosition.value = 100;
+      else if (leftPercentage < 0) redLinePosition.value = 0;
+      else redLinePosition.value = leftPercentage;
+      //Call back this function every minute
+      setTimeout(() => {
+        calculateRedLinePosition();
+      }, 60000);
+    };
+    // Call calculateRedLinePosition on load
+    calculateRedLinePosition();
 
     return {
       idToken,
@@ -335,8 +360,11 @@ export default defineComponent({
       fetchWithFilters,
       hardCodedReservations,
       calculateReservationWidth,
+      calculateRedLinePosition,
+      redLinePosition,
       dayStartHour,
       dayEndHour,
+      date,
     };
   },
 });
@@ -411,6 +439,16 @@ export default defineComponent({
         {{ $t('rooms.divingWells') }}
       </button>
     </div>
+    <div class="flex gap-2">
+      <label for="start">Filter date:</label>
+
+      <input
+        class="border-2 border-primary-light text-primary-text rounded-sm focus:outline-primary-dark"
+        type="date"
+        id="start"
+        :value="date"
+      />
+    </div>
     <div class="flex flex-col gap-20">
       <div>
         <h2 class="text-primary-text font-bold text-xl">Zaal 1</h2>
@@ -418,13 +456,22 @@ export default defineComponent({
           <h3>{{ dayStartHour }}u</h3>
           <h3>{{ dayEndHour }}u</h3>
         </div>
-        <div class="relative w-full h-24 bg-white p-2 rounded-sm">
+        <div class="relative w-full h-24 bg-white p-2 rounded-md">
           <div
-            class="absolute bg-red h-20 overflow-hidden"
+            class="absolute bg-primary-medium text-white h-20 overflow-hidden rounded-sm p-1.5"
             v-for="reservation in hardCodedReservations"
             :style="calculateReservationWidth(reservation)"
           >
             <div>{{ reservation.startTime }} - {{ reservation.endTime }}</div>
+          </div>
+          <div class="absolute" :style="`left: ${redLinePosition}%`">
+            <div
+              class="relative bg-transparent border-b-3 border-r-3 rotate-45 border-red w-2 h-2 -ml-0.5 -mt-4"
+            ></div>
+            <div class="relative bg-red w-1 h-24"></div>
+            <div
+              class="relative bg-transparent border-t-3 border-l-3 rotate-45 border-red w-2 h-2 -ml-0.5 -mb-2"
+            ></div>
           </div>
         </div>
       </div>
