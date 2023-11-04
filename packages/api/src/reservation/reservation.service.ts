@@ -60,7 +60,10 @@ export class ReservationService {
         isRoomAvailable = false
       }
     })
-    console.log(isRoomAvailable)
+    const date = createReservationInput.date
+    //get date of today at 00:00:00
+    const today = new Date( new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+    console.log(date, today,date>=today)
     //check if the material is available
     const reservedMaterials = createReservationInput.reservedMaterials
     const reservedMaterialsId = reservedMaterials.map(material => material.id)
