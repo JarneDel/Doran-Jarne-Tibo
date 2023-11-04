@@ -1,12 +1,13 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useMutation } from '@vue/apollo-composable'
+import { defineComponent, ref } from 'vue'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   CREATE_VACATION_REQUEST,
   CreateVacationRequest,
   CreateVacationRequestInput,
 } from '@/graphql/vacation.request.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
+import { STAFF, Staff } from '@/graphql/staff.query.ts'
 // import { useMutation } from '@vue/apollo-composable'
 
 export default defineComponent({
@@ -69,7 +70,31 @@ export default defineComponent({
       CreateVacationRequestInput
     >(CREATE_VACATION_REQUEST)
 
-    return { error, mutate }
+    const vacationDaysLeft = ref<number>(0)
+    const originalVacationDaysLeft = ref<number>(0)
+    const {
+      result: staff,
+      loading: loadingStaff,
+      refetch: reFetchStaff,
+      onResult,
+    } = useQuery<Staff>(STAFF)
+
+    onResult(result => {
+      if (result.data) {
+        vacationDaysLeft.value = result.data.staffByUid.holidaysLeft
+        vacationDaysLeft.value = result.data.staffByUid.holidaysLeft
+      }
+    })
+
+    return {
+      vacationDaysLeft,
+      originalVacationDaysLeft,
+      error,
+      mutate,
+      staff,
+      loadingStaff,
+      reFetchStaff,
+    }
   },
 })
 </script>
@@ -77,8 +102,18 @@ export default defineComponent({
 <template>
   <div>
     <h2>Request Vacation</h2>
-    <div class="test-danger" v-for="error of errorMessages">
+    <div v-for="error of errorMessages" class="test-danger">
       {{ error }}
+    </div>
+
+    <div>
+      <p v-if="vacationDaysLeft === originalVacationDaysLeft">
+        You have {{ vacationDaysLeft }} vacation days left
+      </p>
+      <p v-else>
+        You can plan {{ vacationDaysLeft }} more vacation days. You had
+        {{ originalVacationDaysLeft }} before.
+      </p>
     </div>
 
     <form @submit.prevent="submit">
@@ -93,7 +128,7 @@ export default defineComponent({
       <label for="endDate">End Date</label>
       <input id="endDate" v-model="endDate" class="form-control" type="date" />
 
-      <styled-button type="submit" :disabled="disabled"
+      <styled-button :disabled="disabled" type="submit"
         >Request Vacation
       </styled-button>
     </form>
