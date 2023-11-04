@@ -100,21 +100,20 @@ export class ReservationService {
     })
     createReservationInput.price = totalPrice
 
-    if (isRoomAvailable && isMaterialAvailable) {
-    const r = new Reservation()
-    r.date = createReservationInput.date
-    r.startTime = createReservationInput.startTime
-    r.endTime = createReservationInput.endTime
-    r.groupId = createReservationInput.groupId
-    r.price = createReservationInput.price
-    r.rooms = createReservationInput.rooms
-    r.reservedMaterials = createReservationInput.reservedMaterials
-    r.isCancelled = false
+    if (isRoomAvailable && isMaterialAvailable && date >= today) {
+      const r = new Reservation()
+      r.date = createReservationInput.date
+      r.startTime = createReservationInput.startTime
+      r.endTime = createReservationInput.endTime
+      r.groupId = createReservationInput.groupId
+      r.price = createReservationInput.price
+      r.rooms = createReservationInput.rooms
+      r.reservedMaterials = createReservationInput.reservedMaterials
+      r.isCancelled = false
 
-    return this.reservationRepository.save(r)
-    }
-    else{
-      throw new Error('Room or material is not available')
+      return this.reservationRepository.save(r)
+    } else {
+      throw new Error('Room or material is not available or date is not correct')
     }
   }
 
