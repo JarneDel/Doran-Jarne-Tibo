@@ -67,8 +67,7 @@ export class StaffService {
         s.holidayDates = updateStaffInput.holidayDates
       s.locale = updateStaffInput.locale
     }
-    console.log(s)
-    return this.staffRepository.save(s)
+    return this.staffRepository.save( s)
   }
 
   remove(id: string) {
@@ -84,7 +83,6 @@ export class StaffService {
   }
 
   async findOneByUid(uid: string) {
-    console.log(uid)
     //@ts-ignore
     return await this.staffRepository.findOneByOrFail({ UID: uid })
   }

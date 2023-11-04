@@ -25,6 +25,7 @@ import { GraphQLError } from 'graphql/error'
 // Guards
 import { FirebaseGuard } from '../authentication/guards/firebase.guard'
 import { RolesGuard } from 'src/authentication/guards/roles.guard'
+import { ReservationService } from 'src/reservation/reservation.service'
 
 @Resolver(() => Room)
 export class RoomResolver {
@@ -134,6 +135,7 @@ export class RoomResolver {
       })
   }
 
+  
   @ResolveField() // "sports" must be the same as the field in the room entity
   async sports(@Parent() room: Room): Promise<Sport[]> {
     const { SportId } = room

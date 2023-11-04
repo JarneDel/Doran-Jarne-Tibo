@@ -5,7 +5,6 @@ export default () => {
 
   const loadMessages = async (locale: string) => {
     return await import(`../locales/${locale}.json`).then(m => {
-      console.log(m.default[locale])
       return m.default[locale]
     })
   }

@@ -63,6 +63,7 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.findOneById(id)
   }
 
+
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => LoanableMaterial)

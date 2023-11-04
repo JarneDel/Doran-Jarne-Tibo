@@ -136,6 +136,7 @@ export const router = createRouter({
       component: () => import('@/views/Profile.vue'),
       meta: {
         shouldBeAuthenticated: true,
+        allowedRoles: ['GROUP', 'ADMIN', 'SUPER_ADMIN', 'STAFF'],
       },
     },
     {
@@ -143,6 +144,15 @@ export const router = createRouter({
       component: () => import('@/views/Account.vue'),
       meta: {
         shouldBeAuthenticated: true,
+        allowedRoles: ['GROUP', 'ADMIN', 'SUPER_ADMIN', 'STAFF'],
+      },
+    },
+    {
+      path: '/reservation',
+      component: () => import('@/views/Reservation.vue'),
+      meta: {
+        shouldBeAuthenticated: true,
+        allowedRoles: ['GROUP'],
       },
     },
     {
@@ -198,7 +208,6 @@ router.beforeEach((to, _, next) => {
   const { customUser } = useUser()
   // @ts-ignore
   const allowedRoles: string[] = to.meta.allowedRoles || []
-
   // when user is not logged in and route requires authentication redirect to login
   switch (true) {
     case to.meta.shouldBeAuthenticated && !firebaseUser.value:

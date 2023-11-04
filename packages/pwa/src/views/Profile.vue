@@ -13,7 +13,6 @@ export default defineComponent({
     const { mutate:mutadeStaff } = useMutation(UPDATE_STAFF)
     const { setLocale } = useLanguage()
     const saveGroup = () => {
-      console.log(customUser.value?.userByUid.locale)
       if (customUser.value?.userByUid.locale)
       
       mutadeGroup({
@@ -24,7 +23,6 @@ export default defineComponent({
       })
     }
     const SaveStaff = () => {
-      console.log("🌈🌈🌈🌈🌈🌈🌈🌈🌈")
       mutadeStaff({
         id: customUser.value?.userByUid.id,
         firstName: customUser.value?.userByUid.firstName,
