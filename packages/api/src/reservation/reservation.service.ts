@@ -280,6 +280,22 @@ export class ReservationService {
     return availableRooms
   }
 
+  async getReservationsByRoomAndDay(
+    date: string,
+    roomId: string,
+  ): Promise<Reservation[]> {
+    const reservations = await this.findByDate(new Date(date))
+    const roomReservations: Reservation[] = []
+    reservations.forEach(reservation => {
+      reservation.rooms.forEach(room => {
+        if (room.id.toString() === roomId) {
+          roomReservations.push(reservation)
+        }
+      })
+    })
+    return roomReservations
+  }
+
   // remove(id: string) {
   //   return `This action removes a #${id} reservation`;
   // }

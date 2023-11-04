@@ -109,6 +109,18 @@ export class ReservationResolver {
     return this.reservationService.getAvailableRooms(date, startTime, endTime)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Reservation], {
+    name: 'GetReservationsByRoomAndDay'
+  })
+  getReservationsByRoomAndDay(
+    @Args('date', { type: () => String }) date: string,
+    @Args('roomId', { type: () => String }) roomId: string,
+  ) {
+    return this.reservationService.getReservationsByRoomAndDay(date, roomId)
+  }
+
   @ResolveField()
   async group(@Parent() reservation: Reservation): Promise<Group> {
     const { groupId } = reservation
