@@ -18,6 +18,8 @@ import { Role } from 'src/users/entities/user.entity'
 import { UseGuards } from '@nestjs/common'
 import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { RolesGuard } from 'src/authentication/guards/roles.guard'
+import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
+import { Room } from 'src/room/entities/room.entity'
 
 @Resolver(() => Reservation)
 export class ReservationResolver {
@@ -72,6 +74,39 @@ export class ReservationResolver {
   @Mutation(() => Reservation, { name: 'DeleteReservation' })
   deleteReservation(@Args('id', { type: () => String }) id: string) {
     return this.reservationService.delete(id)
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [LoanableMaterial], {
+    name: 'GetAvailableloanableMaterials',
+  })
+  findAvailable(
+    @Args('date', { type: () => String }) date: string,
+    @Args('startTime', { type: () => String }) startTime: string,
+    @Args('endTime', { type: () => String }) endTime: string,
+    @Args('sportId', { type: () => [String] }) sportId: string[],
+  ) {
+    return this.reservationService.getAvailableMaterail(
+      date,
+      startTime,
+      endTime,
+      sportId,
+    )
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'getAvailableRooms',
+    nullable: true,
+  })
+  getAvailableRooms(
+    @Args('date', { type: () => String }) date: string,
+    @Args('startTime', { type: () => String }) startTime: string,
+    @Args('endTime', { type: () => String }) endTime: string,
+  ) {
+    return this.reservationService.getAvailableRooms(date, startTime, endTime)
   }
 
   @ResolveField()

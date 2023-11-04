@@ -5,12 +5,13 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { LoanableMaterial } from './entities/loanable-material.entity'
 import { DeleteResult, Repository, UpdateResult } from 'typeorm'
 import { ObjectId } from 'mongodb'
+import { ReservationService } from 'src/reservation/reservation.service'
 
 @Injectable()
 export class LoanableMaterialsService {
   constructor(
     @InjectRepository(LoanableMaterial)
-    private readonly LoanableMaterialRepository: Repository<LoanableMaterial>
+    private readonly LoanableMaterialRepository: Repository<LoanableMaterial>,
   ) {}
 
   findAll() {
@@ -19,7 +20,7 @@ export class LoanableMaterialsService {
   }
 
   create(
-    CreateLoanableMaterialInput: CreateLoanableMaterialInput
+    CreateLoanableMaterialInput: CreateLoanableMaterialInput,
   ): Promise<LoanableMaterial> {
     const LM = new LoanableMaterial()
     LM.name = CreateLoanableMaterialInput.name
@@ -44,7 +45,7 @@ export class LoanableMaterialsService {
 
   async update(
     id: string,
-    updateLoanableMaterialInput: UpdateLoanableMaterialInput
+    updateLoanableMaterialInput: UpdateLoanableMaterialInput,
   ) {
     const lm = await this.findOneById(id)
     lm.name = updateLoanableMaterialInput.name
@@ -63,10 +64,10 @@ export class LoanableMaterialsService {
 
   remove(id: string): Promise<String> {
     return this.LoanableMaterialRepository.delete(id)
-      .then((res) => {
+      .then(res => {
         return res
       })
-      .catch((err) => {
+      .catch(err => {
         return err
       })
   }
@@ -74,4 +75,6 @@ export class LoanableMaterialsService {
   truncate(): Promise<void> {
     return this.LoanableMaterialRepository.clear()
   }
+
+  
 }

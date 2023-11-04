@@ -20,7 +20,6 @@ export default defineComponent({
     getIdToken()
     const { mutate } = useMutation(UPDATE_SCORE)
     const { loading, result, error } = useQuery<Group>(ALL_GROUPS)
-    console.log(result.value)
     const getScore = (score: number) => {
       let s: number = 0
       if (score != 0) {
