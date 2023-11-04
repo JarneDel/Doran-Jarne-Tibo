@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   CREATE_VACATION_REQUEST,
@@ -8,70 +8,28 @@ import {
 } from '@/graphql/vacation.request.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { STAFF, Staff } from '@/graphql/staff.query.ts'
-// import { useMutation } from '@vue/apollo-composable'
+import useVacation from '@/composables/useVacation.ts'
 
 export default defineComponent({
   name: 'RequestVacation',
   components: { StyledButton },
-  data() {
-    return {
-      startDate: '',
-      endDate: '',
-      errorMessages: [] as string[],
-    }
-  },
-  methods: {
-    submit() {
-      console.log('submitting')
-      this.createRequest(this.startDate, this.endDate)
-    },
-    createRequest(startDate: string, endDate: string) {
-      const startDateAsDate = new Date(startDate)
-      const endDateAsDate = new Date(endDate)
-      this.mutate({
-        input: {
-          startDate: startDateAsDate,
-          endDate: endDateAsDate,
-        },
-      })
-    },
-  },
-  computed: {
-    disabled() {
-      return !this.startDate || !this.endDate
-    },
-  },
-  watch: {
-    error() {
-      if (!this.error) return ''
-      this.errorMessages = []
-      const error = this.error
-      if (error.message === 'Bad Request Exception') {
-        try {
-          const original = error.graphQLErrors[0].extensions
-            .originalError as any
-          if (!original || !original.message) return console.log('no message')
-          const originalError = original.message as string[]
-          originalError.forEach((message: string) => {
-            this.errorMessages.push(message)
-          })
-        } catch (e) {
-          this.errorMessages.push('Unknown error')
-        }
-      } else {
-        this.errorMessages.push(this.error.message || 'Unknown error')
-      }
-    },
-  },
 
   setup() {
+    const connectedVacations = ref<Date[][]>([])
+    const startDate = ref<string>('')
+    const endDate = ref<string>('')
+    const errorMessages = ref<string[]>([])
+    const vacationDaysLeft = ref<number>(0)
+    const originalVacationDaysLeft = ref<number>(0)
+
+    const disabled = computed(() => {
+      return !startDate.value || !endDate.value
+    })
+
     const { mutate, error } = useMutation<
       CreateVacationRequest,
       CreateVacationRequestInput
     >(CREATE_VACATION_REQUEST)
-
-    const vacationDaysLeft = ref<number>(0)
-    const originalVacationDaysLeft = ref<number>(0)
     const {
       result: staff,
       loading: loadingStaff,
@@ -79,21 +37,84 @@ export default defineComponent({
       onResult,
     } = useQuery<Staff>(STAFF)
 
+    const { getConnectedVacationDays } = useVacation()
+
+    function createRequest(startDate: string, endDate: string) {
+      const startDateAsDate = new Date(startDate)
+      const endDateAsDate = new Date(endDate)
+      mutate({
+        input: {
+          startDate: startDateAsDate,
+          endDate: endDateAsDate,
+        },
+      })
+    }
+
+    function calculateVacationDays() {
+      const startDateAsDate = new Date(startDate.value)
+      const endDateAsDate = new Date(endDate.value)
+      const days =
+        (endDateAsDate.getTime() - startDateAsDate.getTime()) /
+        (1000 * 3600 * 24)
+      vacationDaysLeft.value = originalVacationDaysLeft.value - days
+    }
+
+    function submit() {
+      console.log('submitting')
+      createRequest(startDate.value, endDate.value)
+    }
+
     onResult(result => {
       if (result.data) {
         vacationDaysLeft.value = result.data.staffByUid.holidaysLeft
-        vacationDaysLeft.value = result.data.staffByUid.holidaysLeft
+        originalVacationDaysLeft.value = result.data.staffByUid.holidaysLeft
+        getConnectedVacationDays(result.data.staffByUid.holidayDates)
       }
     })
 
+    watch(error, () => {
+      if (!error) return ''
+      const err = error.value as any
+      errorMessages.value = []
+      if (err.message === 'Bad Request Exception') {
+        try {
+          const original = err.graphQLErrors[0].extensions.originalError as any
+          if (!original || !original.message) return console.log('no message')
+          const originalError = original.message as string[]
+          originalError.forEach((message: string) => {
+            errorMessages.value.push(message)
+          })
+        } catch (e) {
+          errorMessages.value.push('Unknown error')
+        }
+      } else {
+        errorMessages.value.push(err.message || 'Unknown error')
+      }
+    })
+
+    watch(startDate, () => {
+      if (!startDate.value || !endDate.value) return
+      calculateVacationDays()
+    })
+    watch(endDate, () => {
+      if (!startDate.value || !endDate.value) return
+      calculateVacationDays()
+    })
+
     return {
+      connectedVacations,
       vacationDaysLeft,
       originalVacationDaysLeft,
       error,
       mutate,
       staff,
       loadingStaff,
+      disabled,
+      errorMessages,
+      startDate,
+      endDate,
       reFetchStaff,
+      submit,
     }
   },
 })
@@ -114,6 +135,17 @@ export default defineComponent({
         You can plan {{ vacationDaysLeft }} more vacation days. You had
         {{ originalVacationDaysLeft }} before.
       </p>
+    </div>
+
+    <div>
+      <div v-for="dates of connectedVacations">
+        <div v-if="dates.length > 1">
+          {{ dates[0] }} - {{ dates[dates.length - 1] }}
+        </div>
+        <div v-else>
+          {{ dates[0] }}
+        </div>
+      </div>
     </div>
 
     <form @submit.prevent="submit">

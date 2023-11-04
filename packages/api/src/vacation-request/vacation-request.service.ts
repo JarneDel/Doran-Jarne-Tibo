@@ -16,40 +16,6 @@ export class VacationRequestService {
     private readonly staffService: StaffService,
   ) {}
 
-  private checkVacationDays(
-    createVacationRequestInput: CreateVacationRequestInput,
-    staffUId: string,
-  ) {
-    return this.vacationRequestRepository.find({
-      where: {
-        $and: [
-          {
-            $or: [
-              {
-                startDate: {
-                  $gte: new Date(createVacationRequestInput.startDate),
-                  $lte: new Date(createVacationRequestInput.endDate),
-                },
-              },
-              {
-                endDate: {
-                  $gte: new Date(createVacationRequestInput.startDate),
-                  $lte: new Date(createVacationRequestInput.endDate),
-                },
-              },
-            ],
-          },
-          {
-            $or: [{ isRejected: false }, { isRejected: null }],
-          },
-          {
-            staffUId: staffUId,
-          },
-        ],
-      },
-    })
-  }
-
   async create(
     createVacationRequestInput: CreateVacationRequestInput,
     staffUId: string,
@@ -137,7 +103,9 @@ export class VacationRequestService {
     vacationRequest.isApproved = approveVacationRequestInput.isApproved
     vacationRequest.isRejected = approveVacationRequestInput.isRejected
     vacationRequest.rejectReason = approveVacationRequestInput.rejectReason
-    return this.vacationRequestRepository.save(vacationRequest)
+    const res = await this.vacationRequestRepository.save(vacationRequest)
+    console.log(res)
+    return res
   }
 
   findAll() {
@@ -172,5 +140,39 @@ export class VacationRequestService {
 
   truncate() {
     return this.vacationRequestRepository.clear()
+  }
+
+  private checkVacationDays(
+    createVacationRequestInput: CreateVacationRequestInput,
+    staffUId: string,
+  ) {
+    return this.vacationRequestRepository.find({
+      where: {
+        $and: [
+          {
+            $or: [
+              {
+                startDate: {
+                  $gte: new Date(createVacationRequestInput.startDate),
+                  $lte: new Date(createVacationRequestInput.endDate),
+                },
+              },
+              {
+                endDate: {
+                  $gte: new Date(createVacationRequestInput.startDate),
+                  $lte: new Date(createVacationRequestInput.endDate),
+                },
+              },
+            ],
+          },
+          {
+            $or: [{ isRejected: false }, { isRejected: null }],
+          },
+          {
+            staffUId: staffUId,
+          },
+        ],
+      },
+    })
   }
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { StaffMember } from '@/graphql/staff.query.ts'
 import ProfilePicture from '@/components/staff/ProfilePicture.vue'
 
@@ -62,7 +62,7 @@ export default defineComponent({
     <div>{{ isWorking }}</div>
     <div>{{ data.email }}</div>
     <div>{{ data.phone }}</div>
-    <div v-if='isOnVacation'>🎉{{ $t('staff.vacation') }}</div>
+    <div v-if="isOnVacation">🎉{{ $t('staff.vacation') }}</div>
     <ProfilePicture editable />
   </div>
 </template>
