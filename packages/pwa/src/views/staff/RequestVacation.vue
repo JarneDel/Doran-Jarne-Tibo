@@ -15,7 +15,7 @@ export default defineComponent({
   components: { StyledButton },
 
   setup() {
-    const connectedVacations = ref<Date[][]>([])
+    const connectedVacations = ref<string[][]>([])
     const startDate = ref<string>('')
     const endDate = ref<string>('')
     const errorMessages = ref<string[]>([])
@@ -37,7 +37,7 @@ export default defineComponent({
       onResult,
     } = useQuery<Staff>(STAFF)
 
-    const { getConnectedVacationDays } = useVacation()
+    const { getConnectedVacationDays, parseVacationDays } = useVacation()
 
     function createRequest(startDate: string, endDate: string) {
       const startDateAsDate = new Date(startDate)
@@ -68,7 +68,16 @@ export default defineComponent({
       if (result.data) {
         vacationDaysLeft.value = result.data.staffByUid.holidaysLeft
         originalVacationDaysLeft.value = result.data.staffByUid.holidaysLeft
-        getConnectedVacationDays(result.data.staffByUid.holidayDates)
+        const connectedVacationsDate = getConnectedVacationDays(
+          result.data.staffByUid.holidayDates,
+        )
+        console.log(connectedVacationsDate, 'date')
+        const connectedVacationsString = parseVacationDays(
+          connectedVacationsDate,
+        )
+        console.log(connectedVacationsString, 'string')
+
+        connectedVacations.value = connectedVacationsString
       }
     })
 
@@ -138,13 +147,19 @@ export default defineComponent({
     </div>
 
     <div>
+      <div>Your upcoming vacations</div>
       <div v-for="dates of connectedVacations">
         <div v-if="dates.length > 1">
-          {{ dates[0] }} - {{ dates[dates.length - 1] }}
+          <span> {{ dates.length }} days </span>
+          <span>
+            {{ dates[0] }}
+          </span>
+          <span>to</span>
+          <span>
+            {{ dates[dates.length - 1] }}
+          </span>
         </div>
-        <div v-else>
-          {{ dates[0] }}
-        </div>
+        <div v-else>{{ dates[0] }}</div>
       </div>
     </div>
 

@@ -52,6 +52,13 @@ export class VacationRequestService {
 
   async approve(approveVacationRequestInput: ApproveVacationRequestInput) {
     console.log(approveVacationRequestInput)
+    /// verify id
+    try {
+      new ObjectId(approveVacationRequestInput.id)
+    } catch (e) {
+      throw new GraphQLError('Invalid id')
+    }
+
     if (
       approveVacationRequestInput.isApproved &&
       approveVacationRequestInput.isRejected
@@ -103,9 +110,7 @@ export class VacationRequestService {
     vacationRequest.isApproved = approveVacationRequestInput.isApproved
     vacationRequest.isRejected = approveVacationRequestInput.isRejected
     vacationRequest.rejectReason = approveVacationRequestInput.rejectReason
-    const res = await this.vacationRequestRepository.save(vacationRequest)
-    console.log(res)
-    return res
+    return await this.vacationRequestRepository.save(vacationRequest)
   }
 
   findAll() {
