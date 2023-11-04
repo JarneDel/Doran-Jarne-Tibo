@@ -117,3 +117,52 @@ export const CREATERESEVATION = gql`
     }
   }
 `
+
+export const GET_RESERVATIONS_BY_ROOM_AND_DATE = gql`
+query
+  GetReservationsByRoomAndDay(
+    $date: String!
+    $roomId: String!
+  ) {
+    GetReservationsByRoomAndDay(date: $date, roomId: $roomId) {
+    id
+    date
+    startTime
+    endTime
+    group{
+      id
+      UID
+      locale
+      role
+    }
+    reservedMaterials{
+      id
+      name
+      totalAmount
+      wantedAmount
+      price
+      sports{
+        id
+        name
+      }
+      isComplete
+      description
+      amountReserved
+    }
+    rooms{
+      id
+      name
+      sports{
+        id
+        name
+      }
+      pricePerHour
+      type
+    }
+    price
+    isCancelled
+    createdAt
+    updatedAt
+  }
+}
+`

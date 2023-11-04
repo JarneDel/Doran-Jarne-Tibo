@@ -6,10 +6,11 @@ interface Room {
   sports: Sport[];
   pricePerHour: number;
   type: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 interface IRooms {
+  GetAllRooms: [Room];
   GetAllGyms: [Room];
   GetAllWorkRooms: [Room];
   GetAllChangingRooms: [Room];
@@ -22,17 +23,55 @@ interface Sport {
   name: string;
 }
 
+interface IReservations {
+  GetReservationsByRoomAndDay: [Reservation];
+}
+
+interface group {
+  id: string;
+  UID: string;
+  locale: string;
+  role: string;
+}
+
+interface reserved_materials {
+  id: string;
+  name: string;
+  totalAmount: number;
+  wantedAmount: number;
+  price: number;
+  sports: Sport[];
+  isComplete: boolean;
+  description: string;
+  amountReserved: number;
+}
+
+interface Reservation {
+  id: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  group: group;
+  reserved_materials: reserved_materials[];
+  rooms: Room[];
+  price: number;
+  isCancelled: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Imports
 import { useQuery } from '@vue/apollo-composable';
 import {
+  ALL_ROOMS,
   ALL_GYMS,
   ALL_WORK_ROOMS,
   ALL_CHANGING_ROOMS,
   ALL_SWIMMING_POOLS,
   ALL_DIVE_POOLS,
 } from '../../../graphql/room.query';
-import { ALL_RESERVATIONS } from '../../../graphql/reservation.query';
-import { computed, defineComponent, ref } from 'vue';
+import { GET_RESERVATIONS_BY_ROOM_AND_DATE } from '../../../graphql/reservations.query';
+import { computed, defineComponent, ref, watch } from 'vue';
 import UseFirebase from '../../../composables/useFirebase';
 import Modal from '@/components/Modal.vue';
 import { useRouter } from 'vue-router';
@@ -54,19 +93,74 @@ export default defineComponent({
       idToken.value = await firebaseUser.value?.getIdToken();
     };
     getIdToken();
-    // All reservations
+
+    //All rooms
     const {
-      loading: loadingReservations,
-      result: resultReservations,
-      error: errorReservations,
+      loading: loadingRooms,
+      result: resultRooms,
+      error: errorRooms,
     } = useQuery<IRooms>(
-      ALL_RESERVATIONS,
+      ALL_ROOMS,
       {},
       {
         fetchPolicy: 'no-cache',
       }
     );
-    // ALL ROOMS
+
+    const fetchReservationsByRoomAndDate = async (
+      roomId: string,
+      date: string
+    ) => {
+      const { loading, result, error } = useQuery<IReservations>(
+        GET_RESERVATIONS_BY_ROOM_AND_DATE,
+        {
+          roomId,
+          date,
+        },
+        {
+          fetchPolicy: 'no-cache',
+        }
+      );
+
+      return {
+        loading,
+        result,
+        error,
+      };
+    };
+
+    // Define an array to store reservations for each room
+    const roomReservations = ref<any>([]);
+
+    // Loop through each room and fetch reservations
+    const fetchReservations = async () => {
+      if (resultRooms.value === undefined) return;
+      for (const room of resultRooms.value.GetAllRooms) {
+        const roomRes = await fetchReservationsByRoomAndDate(
+          room.id,
+          '2024-01-01T00:00:00.000+00:00'
+        );
+        roomReservations.value.push({ room, reservations: roomRes.result });
+      }
+
+      console.log(roomReservations.value);
+    };
+
+    // All reservations by room and date
+    const {
+      loading: loadingReservations,
+      result: resultReservations,
+      error: errorReservations,
+    } = useQuery<IReservations>(
+      GET_RESERVATIONS_BY_ROOM_AND_DATE,
+      {
+        roomId: '6546ae005d025709fbf1d827',
+        date: '2024-01-01T00:00:00.000+00:00',
+      },
+      {
+        fetchPolicy: 'no-cache',
+      }
+    );
     const {
       loading: loadingGyms,
       result: resultGyms,
@@ -126,6 +220,16 @@ export default defineComponent({
       {
         fetchPolicy: 'no-cache',
       }
+    );
+
+    watch(
+      resultRooms,
+      (value) => {
+        console.log('resultRooms changed');
+        console.log(value);
+        if (value !== undefined) fetchReservations();
+      },
+      { immediate: true }
     );
 
     const fetchWithFilters = () => {
@@ -281,9 +385,22 @@ export default defineComponent({
 
     // Selector type of room
     let typeSelector = ref(0);
+    let typeSelectorName = ref('Sportzaal');
     const type = computed(() => currentRoute.value.params.type);
     if (type.value !== undefined) typeSelector.value = Number(type.value);
     else push('/admin/reservations/type/0');
+    watch(
+      typeSelector,
+      (value) => {
+        if (typeSelector.value == 0) typeSelectorName.value = 'Sportzaal';
+        else if (typeSelector.value == 1) typeSelectorName.value = 'Werkruimte';
+        else if (typeSelector.value == 2)
+          typeSelectorName.value = 'Kleedruimte';
+        else if (typeSelector.value == 3) typeSelectorName.value = 'Zwembad';
+        else if (typeSelector.value == 4) typeSelectorName.value = 'Duikput';
+      },
+      { immediate: true }
+    );
 
     // Reservation width
     // Day start and end hour
@@ -338,6 +455,9 @@ export default defineComponent({
       resultReservations,
       loadingReservations,
       errorReservations,
+      resultRooms,
+      loadingRooms,
+      errorRooms,
       resultGyms,
       loadingGyms,
       errorGyms,
@@ -354,6 +474,7 @@ export default defineComponent({
       loadingDivePools,
       errorDivePools,
       typeSelector,
+      typeSelectorName,
       push,
       replace,
       currentRoute,
@@ -365,6 +486,7 @@ export default defineComponent({
       dayStartHour,
       dayEndHour,
       date,
+      roomReservations,
     };
   },
 });
@@ -451,15 +573,44 @@ export default defineComponent({
     </div>
     <div class="flex flex-col gap-20">
       <div>
-        <h2 class="text-primary-text font-bold text-xl">Zaal 1</h2>
-        <div class="flex justify-between text-primary-text font-medium text-xl">
-          <h3>{{ dayStartHour }}u</h3>
-          <h3>{{ dayEndHour }}u</h3>
+        <div v-for="roomAndReservation in roomReservations">
+          <div v-if="roomAndReservation.room.type == typeSelectorName">
+            <h2 class="text-primary-text font-bold text-xl">
+              {{ roomAndReservation.room.name }}
+            </h2>
+            <div
+              class="flex justify-between text-primary-text font-medium text-xl"
+            >
+              <h3>{{ dayStartHour }}u</h3>
+              <h3>{{ dayEndHour }}u</h3>
+            </div>
+            <div class="relative w-full h-24 bg-white p-2 rounded-md">
+              <div
+                class="absolute bg-primary-medium text-white h-20 overflow-hidden rounded-sm p-1.5"
+                v-for="reservation in roomAndReservation.reservations
+                  ?.GetReservationsByRoomAndDay"
+                :style="calculateReservationWidth(reservation)"
+              >
+                <div>
+                  {{ reservation.startTime }} - {{ reservation.endTime }}
+                </div>
+              </div>
+              <div class="absolute" :style="`left: ${redLinePosition}%`">
+                <div
+                  class="relative bg-transparent border-b-3 border-r-3 rotate-45 border-red w-2 h-2 -ml-0.5 -mt-4"
+                ></div>
+                <div class="relative bg-red w-1 h-24"></div>
+                <div
+                  class="relative bg-transparent border-t-3 border-l-3 rotate-45 border-red w-2 h-2 -ml-0.5 -mb-2"
+                ></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="relative w-full h-24 bg-white p-2 rounded-md">
+        <!-- <div class="relative w-full h-24 bg-white p-2 rounded-md">
           <div
             class="absolute bg-primary-medium text-white h-20 overflow-hidden rounded-sm p-1.5"
-            v-for="reservation in hardCodedReservations"
+            v-for="reservation in resultReservations?.GetReservationsByRoomAndDay"
             :style="calculateReservationWidth(reservation)"
           >
             <div>{{ reservation.startTime }} - {{ reservation.endTime }}</div>
@@ -473,7 +624,7 @@ export default defineComponent({
               class="relative bg-transparent border-t-3 border-l-3 rotate-45 border-red w-2 h-2 -ml-0.5 -mb-2"
             ></div>
           </div>
-        </div>
+        </div> -->
       </div>
       <RouterView />
     </div>
