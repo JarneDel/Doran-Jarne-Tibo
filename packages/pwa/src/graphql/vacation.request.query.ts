@@ -117,7 +117,6 @@ export const CANCEL_VACATION_REQUEST = gql`
   }
 `
 
-
 export interface VacationRequest {
   id: string
   isApproved: boolean

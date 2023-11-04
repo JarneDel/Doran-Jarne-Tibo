@@ -5,63 +5,149 @@ import {
   CREATE_VACATION_REQUEST,
   CreateVacationRequest,
   CreateVacationRequestInput,
+  GET_VACATION_REQUESTS,
+  VacationRequestQuery,
 } from '@/graphql/vacation.request.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { STAFF, Staff } from '@/graphql/staff.query.ts'
 import useVacation from '@/composables/useVacation.ts'
+import Modal from '@/components/Modal.vue'
+import StyledInputText from '@/components/generic/StyledInputText.vue'
+import OptionsModal from '@/components/modal/OptionsModal.vue'
+import { useDates } from '@/composables/useDates.ts'
 
 export default defineComponent({
   name: 'RequestVacation',
-  components: { StyledButton },
+  components: { OptionsModal, StyledInputText, Modal, StyledButton },
 
   setup() {
-    const connectedVacations = ref<string[][]>([])
-    const startDate = ref<string>('')
-    const endDate = ref<string>('')
+    // composables
+    const { getDates } = useDates()
+    const {
+      getConnectedVacationDays,
+      parseVacationDays,
+      validateCreateVacationRequestInput,
+      getRequestedDates,
+      parseOpenRequests,
+    } = useVacation()
+
+    // input
+    const inputStartDate = ref<string>('')
+    const inputEndDate = ref<string>('')
+
+    // errors
     const errorMessages = ref<string[]>([])
+
+    // amount of vacation days left after calculations
     const vacationDaysLeft = ref<number>(0)
+    // amount of vacation days left in database
     const originalVacationDaysLeft = ref<number>(0)
 
-    const disabled = computed(() => {
-      return !startDate.value || !endDate.value
+    const connectedVacations = ref<string[][]>([])
+
+    /**
+     *    set after form is submitted && request is successful
+     */
+    const isSaved = ref<boolean>(false)
+
+    /**
+     * state of submit button
+     */
+    const submitDisabled = computed(() => {
+      if (!inputStartDate.value || !inputEndDate.value) return true
+      const validationResult = validate(
+        inputStartDate.value,
+        inputEndDate.value,
+      )
+      return !validationResult
     })
 
-    const { mutate, error } = useMutation<
+    // create vacation request mutation
+    const { mutate, error, loading } = useMutation<
       CreateVacationRequest,
       CreateVacationRequestInput
     >(CREATE_VACATION_REQUEST)
+
+    // your user query
     const {
       result: staff,
       loading: loadingStaff,
       refetch: reFetchStaff,
       onResult,
-    } = useQuery<Staff>(STAFF)
+    } = useQuery<Staff>(
+      STAFF,
+      {},
+      {
+        fetchPolicy: 'cache-and-network',
+      },
+    )
 
-    const { getConnectedVacationDays, parseVacationDays } = useVacation()
+    // your vacation requests query
+    const { result: requests } = useQuery<VacationRequestQuery>(
+      GET_VACATION_REQUESTS,
+      {},
+      {
+        fetchPolicy: 'cache-and-network',
+      },
+    )
 
-    function createRequest(startDate: string, endDate: string) {
+    //
+    const openRequests = computed(() => {
+      if (!requests.value) return
+      return parseOpenRequests(requests.value.vacationRequestLoggedIn)
+    })
+
+    // returns ALL vacation dates, not in ranges
+    const rawOpenRequests = computed(() => {
+      if (!requests.value) return
+      return getRequestedDates(requests.value.vacationRequestLoggedIn)
+    })
+
+    function validate(startDate: string, endDate: string) {
+      errorMessages.value = []
+
+      if (!staff.value || !rawOpenRequests.value) return false
+      const validationResult = validateCreateVacationRequestInput(
+        new Date(startDate),
+        new Date(endDate),
+        staff.value.staffByUid.holidayDates,
+        rawOpenRequests.value,
+        originalVacationDaysLeft.value,
+      )
+
+      if (validationResult === true) return true
+      errorMessages.value = [validationResult]
+      return false
+    }
+
+    function submitRequest(startDate: string, endDate: string) {
       const startDateAsDate = new Date(startDate)
       const endDateAsDate = new Date(endDate)
-      mutate({
-        input: {
-          startDate: startDateAsDate,
-          endDate: endDateAsDate,
-        },
-      })
+      const res = validate(startDate, endDate)
+      if (res) {
+        return mutate({
+          input: {
+            startDate: startDateAsDate,
+            endDate: endDateAsDate,
+          },
+        })
+      }
+
+      return Promise.reject('validation failed')
     }
 
     function calculateVacationDays() {
-      const startDateAsDate = new Date(startDate.value)
-      const endDateAsDate = new Date(endDate.value)
-      const days =
-        (endDateAsDate.getTime() - startDateAsDate.getTime()) /
-        (1000 * 3600 * 24)
+      const startDateAsDate = new Date(inputStartDate.value)
+      const endDateAsDate = new Date(inputEndDate.value)
+      const days = getDates(startDateAsDate, endDateAsDate)
       vacationDaysLeft.value = originalVacationDaysLeft.value - days
     }
 
     function submit() {
       console.log('submitting')
-      createRequest(startDate.value, endDate.value)
+      submitRequest(inputStartDate.value, inputEndDate.value).then(() => {
+        isSaved.value = true
+      })
     }
 
     onResult(result => {
@@ -71,13 +157,7 @@ export default defineComponent({
         const connectedVacationsDate = getConnectedVacationDays(
           result.data.staffByUid.holidayDates,
         )
-        console.log(connectedVacationsDate, 'date')
-        const connectedVacationsString = parseVacationDays(
-          connectedVacationsDate,
-        )
-        console.log(connectedVacationsString, 'string')
-
-        connectedVacations.value = connectedVacationsString
+        connectedVacations.value = parseVacationDays(connectedVacationsDate)
       }
     })
 
@@ -101,85 +181,129 @@ export default defineComponent({
       }
     })
 
-    watch(startDate, () => {
-      if (!startDate.value || !endDate.value) return
+    watch(inputStartDate, () => {
+      if (!inputStartDate.value || !inputEndDate.value) return
       calculateVacationDays()
     })
-    watch(endDate, () => {
-      if (!startDate.value || !endDate.value) return
+    watch(inputEndDate, () => {
+      if (!inputStartDate.value || !inputEndDate.value) return
       calculateVacationDays()
     })
 
     return {
       connectedVacations,
-      vacationDaysLeft,
-      originalVacationDaysLeft,
+      disabled: submitDisabled,
+      endDate: inputEndDate,
       error,
-      mutate,
-      staff,
-      loadingStaff,
-      disabled,
       errorMessages,
-      startDate,
-      endDate,
+      isSaved,
+      loading,
+      loadingStaff,
+      mutate,
+      openRequests,
+      originalVacationDaysLeft,
       reFetchStaff,
+      staff,
+      startDate: inputStartDate,
       submit,
+      vacationDaysLeft,
+      rawOpenRequests,
+      openRequestDayCount: computed(() => {
+        return rawOpenRequests.value?.length
+      }),
     }
   },
 })
 </script>
 
 <template>
-  <div>
-    <h2>Request Vacation</h2>
-    <div v-for="error of errorMessages" class="test-danger">
-      {{ error }}
-    </div>
+  <OptionsModal
+    v-if="isSaved"
+    :button2="{ text: 'ok', type: 'secondary' }"
+    :show-modal="isSaved"
+    title="Your vacation has been requested"
+    @button2-click="$router.push('/staff')"
+  >
+  </OptionsModal>
 
-    <div>
-      <p v-if="vacationDaysLeft === originalVacationDaysLeft">
-        You have {{ vacationDaysLeft }} vacation days left
-      </p>
-      <p v-else>
-        You can plan {{ vacationDaysLeft }} more vacation days. You had
-        {{ originalVacationDaysLeft }} before.
-      </p>
-    </div>
-
-    <div>
-      <div>Your upcoming vacations</div>
-      <div v-for="dates of connectedVacations">
-        <div v-if="dates.length > 1">
-          <span> {{ dates.length }} days </span>
-          <span>
-            {{ dates[0] }}
-          </span>
-          <span>to</span>
-          <span>
-            {{ dates[dates.length - 1] }}
-          </span>
-        </div>
-        <div v-else>{{ dates[0] }}</div>
+  <Modal v-if="!isSaved" min-width="min-w-md">
+    <template v-slot:title>
+      <h2>Request Vacation</h2>
+    </template>
+    <template v-slot:default>
+      <div v-for="error of errorMessages" class="test-danger">
+        {{ error }}
       </div>
-    </div>
 
-    <form @submit.prevent="submit">
-      <label for="startDate">Start Date</label>
-      <input
-        id="startDate"
-        v-model="startDate"
-        class="form-control"
-        type="date"
-      />
+      <div>
+        <p v-if="vacationDaysLeft === originalVacationDaysLeft">
+          You have {{ vacationDaysLeft }} vacation days left
+        </p>
+        <p v-else>
+          You can plan {{ vacationDaysLeft }} more vacation days. You had
+          {{ originalVacationDaysLeft }} before.
+        </p>
+      </div>
+      <div v-if="openRequestDayCount && vacationDaysLeft">
+        If all your requests are approved, you will have
+        {{ originalVacationDaysLeft - openRequestDayCount }} days left
+      </div>
 
-      <label for="endDate">End Date</label>
-      <input id="endDate" v-model="endDate" class="form-control" type="date" />
+      <div>Your pending vacation requests</div>
+      <ul v-if="openRequests">
+        <li v-for="a of openRequests">
+          <span>{{ a.startDate }}</span>
+          <span> to </span>
+          <span>{{ a.endDate }}</span>
+          <span> - </span>
+          {{ a.dayCount }} day{{ a.dayCount > 1 ? 's' : '' }}
+        </li>
+      </ul>
 
-      <styled-button :disabled="disabled" type="submit"
-        >Request Vacation
-      </styled-button>
-    </form>
-  </div>
+      <div>
+        <div>Your upcoming vacations</div>
+        <ul class="pl4 list-disc">
+          <li v-for="dates of connectedVacations" class="">
+            <div v-if="dates.length > 1">
+              <span> {{ dates.length }} days </span>
+              <span>
+                {{ dates[0] }}
+              </span>
+              <span>to</span>
+              <span>
+                {{ dates[dates.length - 1] }}
+              </span>
+            </div>
+            <div v-else>{{ dates[0] }}</div>
+          </li>
+        </ul>
+      </div>
+
+      <form @submit.prevent="submit">
+        <StyledInputText
+          id="startDate"
+          v-model="startDate"
+          :label="'startDate'"
+          class="my-2"
+          type="date"
+        />
+
+        <StyledInputText
+          id="endDate"
+          v-model="endDate"
+          :label="'End date'"
+          class="my-2"
+          type="date"
+        />
+
+        <div class="mt-4 flex justify-end gap-4">
+          <styled-button :disabled="disabled" type="submit"
+            >Request Vacation
+          </styled-button>
+        </div>
+      </form>
+    </template>
+  </Modal>
 </template>
 
 <style scoped></style>

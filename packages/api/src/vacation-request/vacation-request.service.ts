@@ -124,7 +124,7 @@ export class VacationRequestService {
   }
 
   findByStaffUId(staffId: string): Promise<VacationRequest[]> {
-    return this.vacationRequestRepository.findBy({ staffUId: staffId })
+    return this.vacationRequestRepository.find({ where: { staffUId: staffId } })
   }
 
   async cancel(id: string, staffUId: string) {
