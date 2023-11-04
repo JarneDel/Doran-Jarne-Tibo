@@ -30,9 +30,11 @@ export class ReservationService {
     )
     const sportid: string[] = []
     availableRooms.forEach(room => {
-      if (!sportid.includes(room.SportId.toString())) {
-        sportid.push(room.SportId.toString())
-      }
+      room.SportId.forEach(sport => {
+        if (!sportid.includes(sport.toString())) {
+          sportid.push(sport.toString())
+        }
+      })
     })
     const availableMaterials = await this.getAvailableMaterail(
       createReservationInput.date.toDateString(),
@@ -44,17 +46,38 @@ export class ReservationService {
     const reservedRooms = createReservationInput.rooms
     const reservedRoomsId = reservedRooms.map(room => room.id)
     const availableRoomsId = availableRooms.map(room => room.id)
-    const isRoomAvailable = reservedRoomsId.every(id =>
-      availableRoomsId.includes(id),
-    )
+    let isRoomAvailable = true
+    reservedRooms.map(room => {
+      let roomisAvailable = false
+      availableRoomsId.map(id => {
+        if (room.id.toString() == id.toString()) {
+          roomisAvailable = true
+        }
+        // console.log(room.id, id, room.id.toString() == id.toString())
+      })
 
+      if (roomisAvailable==false) {
+        isRoomAvailable = false
+      }
+    })
+    console.log(isRoomAvailable)
     //check if the material is available
     const reservedMaterials = createReservationInput.reservedMaterials
     const reservedMaterialsId = reservedMaterials.map(material => material.id)
     const availableMaterialsId = availableMaterials.map(material => material.id)
-    const isMaterialAvailable = reservedMaterialsId.every(id =>
-      availableMaterialsId.includes(id),
-    )
+    const isMaterialAvailable = true
+    reservedMaterials.map(material => {
+      let materialisAvailable = false
+      availableMaterialsId.map(id => {
+        if (material.id.toString() == id.toString()&&material.amountReserved<=material.totalAmount) {
+          materialisAvailable = true
+        }
+      })
+      if (materialisAvailable==false) {
+        isRoomAvailable = false
+      }
+    })
+
     //check if the price is correct
     //time difference string to number
     const begintime = createReservationInput.startTime.split(':')
@@ -62,11 +85,19 @@ export class ReservationService {
     const begintimeNumber = Number(begintime[0]) + Number(begintime[1]) / 60
     console.log(begintimeNumber)
     const endtimeNumber = Number(endtime[0]) + Number(endtime[1]) / 60
-    // const timediff = createReservationInput.endTime - createReservationInput.startTime
+    console.log(endtimeNumber)
+    const timediff = endtimeNumber - begintimeNumber
+    console.log(timediff)
     let totalPrice = 0
-    availableRooms.forEach(room => {
-      totalPrice += room.pricePerHour
+    createReservationInput.rooms.map(room => {
+      totalPrice += room.pricePerHour * timediff
     })
+    createReservationInput.reservedMaterials.map(material => {
+      totalPrice += material.price * timediff
+    })
+    createReservationInput.price = totalPrice
+
+    if (isRoomAvailable && isMaterialAvailable) {
     const r = new Reservation()
     r.date = createReservationInput.date
     r.startTime = createReservationInput.startTime
@@ -78,6 +109,10 @@ export class ReservationService {
     r.isCancelled = false
 
     return this.reservationRepository.save(r)
+    }
+    else{
+      throw new Error('Room or material is not available')
+    }
   }
 
   findAll() {
@@ -155,7 +190,6 @@ export class ReservationService {
                 reservationStart < end &&
                 reservationEnd > end)
             ) {
-              console.log('🌈🌈')
               overMaterial = overMaterial - resMat.amountReserved
               if (overMaterial < 0) {
                 isAvailable = false
@@ -165,10 +199,7 @@ export class ReservationService {
         }
       }
       if (isAvailable) {
-        console.log(material.totalAmount)
         material.totalAmount = overMaterial
-        console.log(overMaterial)
-        console.log(material.totalAmount)
         availableRooms.push(material)
       }
     }
