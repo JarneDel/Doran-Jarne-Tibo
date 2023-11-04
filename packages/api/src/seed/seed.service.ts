@@ -40,6 +40,7 @@ import { StaffService } from 'src/staff/staff.service'
 import { ServiceService } from '../service/service.service'
 import { RepairRequestService } from '../repair-request/repair-request.service'
 import { VacationRequestService } from '../vacation-request/vacation-request.service'
+import { Sports } from 'src/reservation/entities/sport.entity'
 
 @Injectable()
 export class SeedService {
@@ -240,7 +241,7 @@ export class SeedService {
           Math.floor(Math.random() * loanableMaterials.length)
         ]
       const material = new Materials()
-      let sports:[Sport]
+      let sports:Sports[] = []
       for (let sportId of loanableMaterial.SportId) {
         const s = this.sportService.findOneById(sportId)
         s.then(sport => {

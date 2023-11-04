@@ -149,7 +149,17 @@ export const router = createRouter({
     },
     {
       path: '/reservation',
-      component: () => import('@/views/Reservation.vue'),
+      component: () => import('@/components/wrapper/reservationWrapper.vue'),
+      children: [
+        {
+          path: '',
+          component: () => import('@/views/reservations/Reservation.vue'),
+        },
+        {
+          path: 'add',
+          component: () => import('@/views/reservations/AddReservation.vue'),
+        },
+      ],
       meta: {
         shouldBeAuthenticated: true,
         allowedRoles: ['GROUP'],

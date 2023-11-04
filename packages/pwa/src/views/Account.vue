@@ -29,7 +29,9 @@ export default defineComponent({
     const { setLocale: setLanguage } = UseLanguage()
 
     const getIdToken = async () => {
-      idToken.value = await firebaseUser.value?.getIdToken()
+      idToken.value = `{
+      "Authorization": "Bearer `+await firebaseUser.value?.getIdToken()+`"
+    }`
     }
     const setLocale = (event: Event) => {
       const target = event.target as HTMLSelectElement

@@ -20,6 +20,9 @@ import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { RolesGuard } from 'src/authentication/guards/roles.guard'
 import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
 import { Room } from 'src/room/entities/room.entity'
+import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
+import { UserRecord } from 'firebase-admin/auth'
+import { use } from 'passport'
 
 @Resolver(() => Reservation)
 export class ReservationResolver {
@@ -107,6 +110,17 @@ export class ReservationResolver {
     @Args('endTime', { type: () => String }) endTime: string,
   ) {
     return this.reservationService.getAvailableRooms(date, startTime, endTime)
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'getReservationsByUser',
+    nullable: true,
+  })
+  async getReservationsByUser(@FirebaseUser() user: UserRecord) {
+    const group=await this.groupService.findOneByUid(user.uid)
+    return this.reservationService.getReservationsByUser(group.id)
   }
 
   @ResolveField()

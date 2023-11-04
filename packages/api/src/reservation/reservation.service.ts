@@ -280,6 +280,12 @@ export class ReservationService {
     return availableRooms
   }
 
+  async getReservationsByUser(userId: string) {
+    return (await this.reservationRepository.find({
+      where: { groupId: userId },
+    })).filter(reservation => reservation.date >= new Date())
+  }
+
   // remove(id: string) {
   //   return `This action removes a #${id} reservation`;
   // }
