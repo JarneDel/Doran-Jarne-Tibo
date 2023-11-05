@@ -93,6 +93,17 @@ export const router = createRouter({
         {
           path: 'reservations',
           component: () => import('@/views/admin/reservations/Reservations.vue'),
+          children: [
+            {
+              path: 'id/:id',
+              component: () => import('@/views/admin/reservations/Item.vue'),
+              props: true,
+            },
+            // {
+            //   path: 'id/:id/edit',
+            //   component: () => import('@/views/admin/reservations/Edit.vue'),
+            // },
+          ],
           meta: {
             shouldBeAuthenticated: true,
           },

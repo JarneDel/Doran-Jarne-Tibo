@@ -76,6 +76,7 @@ import UseFirebase from '../../../composables/useFirebase';
 import Modal from '@/components/Modal.vue';
 import { useRouter } from 'vue-router';
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
+import useLastRoute from '@/composables/useLastRoute';
 
 // Export default
 export default defineComponent({
@@ -229,6 +230,19 @@ export default defineComponent({
       { immediate: true }
     );
 
+    const { lastRoute } = useLastRoute();
+
+    watch(
+      lastRoute,
+      (value) => {
+        if (value.startsWith('/admin/reservations/id/')) {
+          console.log('lastRoute changed');
+          fetchReservations();
+        }
+      },
+      { immediate: true }
+    );
+
     const fetchWithFilters = () => {
       if (typeSelector.value == 0) {
         refetchGyms();
@@ -284,6 +298,10 @@ export default defineComponent({
         ((startTimeInMinutes - dayStartHour * 60) / totalMinutesInDay) * 100;
 
       return `width: ${widthPercentage}%; left: ${leftPercentage}%;`;
+    };
+
+    const handleReservationDetail = (reservation: any) => {
+      push(`/admin/reservations/id/${reservation.id}`);
     };
 
     // Date
@@ -353,6 +371,7 @@ export default defineComponent({
       date,
       roomReservations,
       handleDateChange,
+      handleReservationDetail,
     };
   },
 });
@@ -452,16 +471,17 @@ export default defineComponent({
               <h3>{{ dayEndHour }}u</h3>
             </div>
             <div class="relative w-full h-24 bg-white p-2 rounded-md">
-              <div
+              <button
                 class="absolute bg-primary-medium text-white h-20 overflow-hidden rounded-sm p-1.5"
                 v-for="reservation in roomAndReservation.reservations
                   ?.GetReservationsByRoomAndDay"
                 :style="calculateReservationWidth(reservation)"
+                @click="handleReservationDetail(reservation)"
               >
                 <div>
                   {{ reservation.startTime }} - {{ reservation.endTime }}
                 </div>
-              </div>
+              </button>
               <div class="absolute" :style="`left: ${redLinePosition}%`">
                 <div
                   class="relative bg-transparent border-b-3 border-r-3 rotate-45 border-red w-2 h-2 -ml-0.5 -mt-4"

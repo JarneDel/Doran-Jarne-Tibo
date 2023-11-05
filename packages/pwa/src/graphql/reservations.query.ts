@@ -166,3 +166,57 @@ query
   }
 }
 `
+
+export const GET_ONE_RESERVATION = gql`
+query GetReservatiounById($id: String!) {
+  GetReservatiounById(id: $id) {
+    id
+    date
+    startTime
+    endTime
+    group{
+      id
+      UID
+      locale
+      role
+      profilePictureUrl
+      name
+      btwNumber
+      score
+    }
+    reservedMaterials{
+      id
+      name
+      totalAmount
+      wantedAmount
+      price
+      sports{
+        id
+        name
+      }
+      isComplete
+      description
+      amountReserved
+    }
+    rooms{
+      id
+      name
+      sports{
+        id
+        name
+      }
+      pricePerHour
+    }
+    price
+    isCancelled
+    createdAt
+    updatedAt
+  }
+}
+`
+
+export const DELETE_RESERVATION = gql`
+mutation DeleteReservation($id: String!){
+  DeleteReservation(id: $id){id}
+}
+`
