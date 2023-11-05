@@ -40,16 +40,18 @@ export default defineComponent({
 <template>
   <button
     :class="{
-      rounded: !isOpen,
+      'mb-2 rounded': !isOpen,
       'rounded-t': isOpen,
     }"
-    class="b-2 b-primary-light hover:border-primary flex w-full items-center justify-between bg-white px-4 py-1.5 outline-none transition-colors focus-visible:border-black"
+    class="b-2 b-secondary-dark bg-secondary-100/40 mt-2 flex w-full items-center justify-between px-4 py-1.5 outline-none transition-colors hover:border-black focus-visible:border-black"
     @click="isOpen = !isOpen"
+    :disabled="data.length === 0"
   >
-    <div>
+    <span>
       {{ title }}
-    </div>
+    </span>
     <ChevronDown
+      v-if="data.length > 0"
       :class="{
         'rotate-180': isOpen,
       }"
@@ -66,7 +68,7 @@ export default defineComponent({
         :class="{
           height: setHeight,
         }"
-        class="b-primary-light overflow-scroll rounded-b border-2"
+        class="b-secondary-dark bg-secondary-100/40 overflow-scroll rounded-b border-2"
       >
         <div class="py0.5 px2 grid grid-cols-3">
           <div>from</div>

@@ -235,22 +235,37 @@ export default defineComponent({
 
   <Modal v-if="!isSaved" min-width="min-w-md" @close="$router.push('/staff')">
     <template v-slot:title>
-      <h2 class="text-xl font-bold">Request Vacation</h2>
+      <h2 class="text-xl font-bold">{{ $t('staff.requestVacation') }}</h2>
     </template>
     <template v-slot:default>
-      <div v-for="error of errorMessages" class="test-danger">
-        {{ error }}
-      </div>
+      <h3 class="text-lg font-medium">{{ $t('vacationRequest.current') }}</h3>
 
-      <h3 class="text-lg font-medium">Your current vacations</h3>
-
-      <div>
+      <div
+        :title="
+          openRequestDayCount
+            ? $t('vacationRequest.openRequestCount', {
+                count: originalVacationDaysLeft - openRequestDayCount,
+              })
+            : ''
+        "
+      >
         <p v-if="vacationDaysLeft === originalVacationDaysLeft">
-          You have {{ vacationDaysLeft }} vacation days left
+          {{ $t('vacationRequest.daysLeft', { days: vacationDaysLeft }) }}
+        </p>
+        <p v-else-if="vacationDaysLeft < 0">
+          {{
+            $t('vacationRequest.negativeDays', {
+              count: -vacationDaysLeft,
+            })
+          }}
         </p>
         <p v-else>
-          You can plan {{ vacationDaysLeft }} more vacation days. You had
-          {{ originalVacationDaysLeft }} before.
+          {{
+            $t('vacationRequest.daysLeftAfter', {
+              days: vacationDaysLeft,
+              originalDays: originalVacationDaysLeft,
+            })
+          }}
         </p>
       </div>
 
@@ -259,14 +274,6 @@ export default defineComponent({
         :data="openRequests"
         v-if="openRequests"
       />
-      <div
-        v-if="openRequestDayCount && vacationDaysLeft"
-        class="mb-2 text-sm text-neutral-800"
-      >
-        If all your requests are approved, you will have
-        {{ originalVacationDaysLeft - openRequestDayCount }} days left
-      </div>
-
       <expand-pending-requests
         :title="connectedVacations.length + ' upcoming vacations'"
         :data="
@@ -287,21 +294,26 @@ export default defineComponent({
         "
       ></expand-pending-requests>
 
-      <h3 class="mb-1 mt-4 text-lg font-medium">Plan a new vacation</h3>
+      <h3 class="mb-1 mt-4 text-lg font-medium">
+        {{ $t('vacationRequest.plan') }}
+      </h3>
 
       <form @submit.prevent="submit">
+        <div v-for="error of errorMessages" class="text-danger">
+          {{ error }}
+        </div>
         <StyledInputText
-          id="startDate"
+          :label="$t('common.from')"
           v-model="startDate"
-          :label="'startDate'"
+          :id="'startDate'"
           class="my-2"
           type="date"
         />
 
         <StyledInputText
-          id="endDate"
+          :label="$t('common.until')"
           v-model="endDate"
-          :label="'End date'"
+          :id="'End date'"
           class="my-2"
           type="date"
         />

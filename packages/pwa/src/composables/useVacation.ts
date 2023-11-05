@@ -58,13 +58,10 @@ function validateCreateVacationRequestInput(
     return 'End date must be in the future'
   }
   if (vacationDaysLeft < 0) {
-    return 'You have no more vacation days left'
+    return 'Not enough vacation days left'
   }
   if (vacationDaysLeft === originalVacationDaysLeft) {
     return 'You have to request at least one day'
-  }
-  if (vacationDaysLeft < 0) {
-    return 'You have no more vacation days left'
   }
 
   const startDateDuplicate = new Date(startDate)
