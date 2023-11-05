@@ -134,16 +134,15 @@ export default defineComponent({
 
     // Loop through each room and fetch reservations
     const fetchReservations = async () => {
+      roomReservations.value = [];
       if (resultRooms.value === undefined) return;
       for (const room of resultRooms.value.GetAllRooms) {
         const roomRes = await fetchReservationsByRoomAndDate(
           room.id,
-          '2024-01-01T00:00:00.000+00:00'
+          date.value
         );
         roomReservations.value.push({ room, reservations: roomRes.result });
       }
-
-      console.log(roomReservations.value);
     };
 
     // All reservations by room and date
@@ -225,16 +224,12 @@ export default defineComponent({
     watch(
       resultRooms,
       (value) => {
-        console.log('resultRooms changed');
-        console.log(value);
         if (value !== undefined) fetchReservations();
       },
       { immediate: true }
     );
 
     const fetchWithFilters = () => {
-      console.log('fetchWithFilters');
-      console.log(typeSelector.value);
       if (typeSelector.value == 0) {
         refetchGyms();
       } else if (typeSelector.value == 1) {
@@ -247,141 +242,6 @@ export default defineComponent({
         refetchDivePools();
       }
     };
-
-    const hardCodedReservations = [
-      {
-        _id: {
-          $oid: '6544fa16cf65c1a98d6b0700',
-        },
-        date: {
-          $date: '1996-03-15T00:00:00.000Z',
-        },
-        startTime: '10:00',
-        endTime: '13:00',
-        groupId: {
-          $oid: '6544fa15cf65c1a98d6b06c0',
-        },
-        reserved_materials: [
-          {
-            name: 'Voetbal',
-            totalAmount: 5,
-            wantedAmount: 2,
-            price: 4,
-            sports: ['Voetbal'],
-            isComplete: true,
-            description: 'Een bal om mee te voetballen',
-          },
-        ],
-        rooms: [
-          {
-            name: 'Sportzaal 1',
-            pricePerHour: 35,
-            sports: ['Voetbal', 'Handbal', 'Basketbal'],
-            type: 'Sportzaal',
-          },
-          {
-            name: 'Sportzaal 2',
-            pricePerHour: 30,
-            sports: ['Voetbal', 'Handbal'],
-            type: 'Sportzaal',
-          },
-        ],
-        price: 10,
-        isCancelled: true,
-        createdAt: {
-          $date: '2023-11-03T13:48:06.380Z',
-        },
-        updatedAt: {
-          $date: '2023-11-03T13:48:06.380Z',
-        },
-      },
-      {
-        _id: {
-          $oid: '6544fa16cf65c1a98d6b0701',
-        },
-        date: {
-          $date: '1996-04-20T00:00:00.000Z',
-        },
-        startTime: '14:30',
-        endTime: '15:00',
-        groupId: {
-          $oid: '6544fa15cf65c1a98d6b06c1',
-        },
-        reserved_materials: [
-          {
-            name: 'Basketbal',
-            totalAmount: 8,
-            wantedAmount: 3,
-            price: 5,
-            sports: ['Basketbal'],
-            isComplete: false,
-            description: 'Een basketbal om mee te spelen',
-          },
-        ],
-        rooms: [
-          {
-            name: 'Sportzaal 3',
-            pricePerHour: 40,
-            sports: ['Basketbal', 'Volleybal'],
-            type: 'Sportzaal',
-          },
-          {
-            name: 'Kleedruimte 3',
-            pricePerHour: 15,
-            sports: null,
-            type: 'Kleedruimte',
-          },
-        ],
-        price: 12,
-        isCancelled: false,
-        createdAt: {
-          $date: '2023-11-03T13:48:06.421Z',
-        },
-        updatedAt: {
-          $date: '2023-11-03T13:48:06.421Z',
-        },
-      },
-      {
-        _id: {
-          $oid: '6544fa16cf65c1a98d6b0702',
-        },
-        date: {
-          $date: '1996-05-10T00:00:00.000Z',
-        },
-        startTime: '09:00',
-        endTime: '09:45',
-        groupId: {
-          $oid: '6544fa15cf65c1a98d6b06bf',
-        },
-        reserved_materials: [
-          {
-            name: 'Basketbal',
-            totalAmount: 8,
-            wantedAmount: 3,
-            price: 5,
-            sports: ['Basketbal'],
-            isComplete: false,
-            description: 'Een basketbal om mee te spelen',
-          },
-        ],
-        rooms: [
-          {
-            name: 'Sportzaal 4',
-            pricePerHour: 25,
-            sports: ['Yoga', 'Pilates'],
-            type: 'Zaal',
-          },
-        ],
-        price: 8,
-        isCancelled: true,
-        createdAt: {
-          $date: '2023-11-03T13:48:06.422Z',
-        },
-        updatedAt: {
-          $date: '2023-11-03T13:48:06.422Z',
-        },
-      },
-    ];
 
     // Selector type of room
     let typeSelector = ref(0);
@@ -427,7 +287,13 @@ export default defineComponent({
     };
 
     // Date
-    const today = new Date();
+    let today = new Date();
+
+    const handleDateChange = (event: any) => {
+      date.value = event.target.value;
+      fetchReservations();
+    };
+
     const date = ref(today.toISOString().substr(0, 10));
     const redLinePosition = ref(0);
 
@@ -479,7 +345,6 @@ export default defineComponent({
       replace,
       currentRoute,
       fetchWithFilters,
-      hardCodedReservations,
       calculateReservationWidth,
       calculateRedLinePosition,
       redLinePosition,
@@ -487,6 +352,7 @@ export default defineComponent({
       dayEndHour,
       date,
       roomReservations,
+      handleDateChange,
     };
   },
 });
@@ -569,6 +435,7 @@ export default defineComponent({
         type="date"
         id="start"
         :value="date"
+        @change="handleDateChange"
       />
     </div>
     <div class="flex flex-col gap-20">
