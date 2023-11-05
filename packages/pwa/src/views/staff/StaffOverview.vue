@@ -28,6 +28,7 @@ export default defineComponent({
 </script>
 
 <template>
+  <RouterView />
   <div v-if="!staffAndServices || loading">...</div>
   <div v-else class="mxa max-w-5xl">
     <h2>Welcome, {{ staffAndServices.staffByUid.firstName }}</h2>

@@ -15,10 +15,17 @@ import Modal from '@/components/Modal.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import OptionsModal from '@/components/modal/OptionsModal.vue'
 import { useDates } from '@/composables/useDates.ts'
+import ExpandPendingRequests from '@/components/staff/ExpandPendingRequests.vue'
 
 export default defineComponent({
   name: 'RequestVacation',
-  components: { OptionsModal, StyledInputText, Modal, StyledButton },
+  components: {
+    ExpandPendingRequests,
+    OptionsModal,
+    StyledInputText,
+    Modal,
+    StyledButton,
+  },
 
   setup() {
     // composables
@@ -226,14 +233,16 @@ export default defineComponent({
   >
   </OptionsModal>
 
-  <Modal v-if="!isSaved" min-width="min-w-md">
+  <Modal v-if="!isSaved" min-width="min-w-md" @close="$router.push('/staff')">
     <template v-slot:title>
-      <h2>Request Vacation</h2>
+      <h2 class="text-xl font-bold">Request Vacation</h2>
     </template>
     <template v-slot:default>
       <div v-for="error of errorMessages" class="test-danger">
         {{ error }}
       </div>
+
+      <h3 class="text-lg font-medium">Your current vacations</h3>
 
       <div>
         <p v-if="vacationDaysLeft === originalVacationDaysLeft">
@@ -244,40 +253,41 @@ export default defineComponent({
           {{ originalVacationDaysLeft }} before.
         </p>
       </div>
-      <div v-if="openRequestDayCount && vacationDaysLeft">
+
+      <ExpandPendingRequests
+        :title="openRequests.length + ' pending vacation requests'"
+        :data="openRequests"
+        v-if="openRequests"
+      />
+      <div
+        v-if="openRequestDayCount && vacationDaysLeft"
+        class="mb-2 text-sm text-neutral-800"
+      >
         If all your requests are approved, you will have
         {{ originalVacationDaysLeft - openRequestDayCount }} days left
       </div>
 
-      <div>Your pending vacation requests</div>
-      <ul v-if="openRequests">
-        <li v-for="a of openRequests">
-          <span>{{ a.startDate }}</span>
-          <span> to </span>
-          <span>{{ a.endDate }}</span>
-          <span> - </span>
-          {{ a.dayCount }} day{{ a.dayCount > 1 ? 's' : '' }}
-        </li>
-      </ul>
+      <expand-pending-requests
+        :title="connectedVacations.length + ' upcoming vacations'"
+        :data="
+          connectedVacations.map(dates => {
+            if (dates.length > 1) {
+              return {
+                startDate: dates[0],
+                endDate: dates[dates.length - 1],
+                dayCount: dates.length,
+              }
+            }
+            return {
+              startDate: dates[0],
+              endDate: dates[0],
+              dayCount: 1,
+            }
+          })
+        "
+      ></expand-pending-requests>
 
-      <div>
-        <div>Your upcoming vacations</div>
-        <ul class="pl4 list-disc">
-          <li v-for="dates of connectedVacations" class="">
-            <div v-if="dates.length > 1">
-              <span> {{ dates.length }} days </span>
-              <span>
-                {{ dates[0] }}
-              </span>
-              <span>to</span>
-              <span>
-                {{ dates[dates.length - 1] }}
-              </span>
-            </div>
-            <div v-else>{{ dates[0] }}</div>
-          </li>
-        </ul>
-      </div>
+      <h3 class="mb-1 mt-4 text-lg font-medium">Plan a new vacation</h3>
 
       <form @submit.prevent="submit">
         <StyledInputText
