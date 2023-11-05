@@ -1,9 +1,8 @@
-import { Injectable, NotImplementedException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { CreateVacationRequestInput } from './dto/create-vacation-request.input'
-import { UpdateVacationRequestInput } from './dto/update-vacation-request.input'
 import { VacationRequest } from './entities/vacation-request.entity'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { MongoRepository } from 'typeorm'
 import { ObjectId } from 'mongodb'
 import { ApproveVacationRequestInput } from './dto/approve-vacation-request.input'
 import { GraphQLError } from 'graphql/error'
@@ -13,7 +12,7 @@ import { StaffService } from '../staff/staff.service'
 export class VacationRequestService {
   constructor(
     @InjectRepository(VacationRequest)
-    private readonly vacationRequestRepository: Repository<VacationRequest>,
+    private readonly vacationRequestRepository: MongoRepository<VacationRequest>,
     private readonly staffService: StaffService,
   ) {}
 
@@ -21,7 +20,20 @@ export class VacationRequestService {
     createVacationRequestInput: CreateVacationRequestInput,
     staffUId: string,
   ) {
-    const staff = await this.staffService.findOneByUid(staffUId)
+    // check if a vacation request already exists for this time period that is not rejected
+    const [existingVacationRequests, staff] = await Promise.all([
+      this.checkVacationDays(createVacationRequestInput, staffUId),
+      this.staffService.findOneByUid(staffUId),
+    ])
+
+    if (existingVacationRequests.length > 0) {
+      throw new GraphQLError(
+        'Vacation request already exists for this time period',
+      )
+    }
+
+    console.log({ existingVacationRequests })
+
     const vacationDays = staff.holidaysLeft
     const startDate = new Date(createVacationRequestInput.startDate)
     const endDate = new Date(createVacationRequestInput.endDate)
@@ -40,6 +52,13 @@ export class VacationRequestService {
 
   async approve(approveVacationRequestInput: ApproveVacationRequestInput) {
     console.log(approveVacationRequestInput)
+    /// verify id
+    try {
+      new ObjectId(approveVacationRequestInput.id)
+    } catch (e) {
+      throw new GraphQLError('Invalid id')
+    }
+
     if (
       approveVacationRequestInput.isApproved &&
       approveVacationRequestInput.isRejected
@@ -91,8 +110,7 @@ export class VacationRequestService {
     vacationRequest.isApproved = approveVacationRequestInput.isApproved
     vacationRequest.isRejected = approveVacationRequestInput.isRejected
     vacationRequest.rejectReason = approveVacationRequestInput.rejectReason
-    return this.vacationRequestRepository.save(vacationRequest)
-
+    return await this.vacationRequestRepository.save(vacationRequest)
   }
 
   findAll() {
@@ -106,18 +124,63 @@ export class VacationRequestService {
   }
 
   findByStaffUId(staffId: string): Promise<VacationRequest[]> {
-    return this.vacationRequestRepository.findBy({ staffUId: staffId })
+    return this.vacationRequestRepository.find({
+      staffUId: staffId,
+      endDate: { $gte: new Date() },
+    })
   }
 
-  update(id: number, updateVacationRequestInput: UpdateVacationRequestInput) {
-    throw new NotImplementedException()
-  }
+  async cancel(id: string, staffUId: string) {
+    const oId = new ObjectId(id)
+    const v = await this.vacationRequestRepository
+      // @ts-ignore
+      .findOneByOrFail({ _id: oId, staffUId: staffUId })
 
-  remove(id: number) {
-    throw new NotImplementedException()
+    if (v.isApproved) {
+      // add back vacation days
+      await this.staffService.removeVacation(staffUId, v.startDate, v.endDate)
+    }
+    v.isApproved = false
+    v.isRejected = true
+    v.rejectReason = 'Cancelled by staff member'
+    return this.vacationRequestRepository.save(v)
   }
 
   truncate() {
     return this.vacationRequestRepository.clear()
+  }
+
+  private checkVacationDays(
+    createVacationRequestInput: CreateVacationRequestInput,
+    staffUId: string,
+  ) {
+    return this.vacationRequestRepository.find({
+      where: {
+        $and: [
+          {
+            $or: [
+              {
+                startDate: {
+                  $gte: new Date(createVacationRequestInput.startDate),
+                  $lte: new Date(createVacationRequestInput.endDate),
+                },
+              },
+              {
+                endDate: {
+                  $gte: new Date(createVacationRequestInput.startDate),
+                  $lte: new Date(createVacationRequestInput.endDate),
+                },
+              },
+            ],
+          },
+          {
+            $or: [{ isRejected: false }, { isRejected: null }],
+          },
+          {
+            staffUId: staffUId,
+          },
+        ],
+      },
+    })
   }
 }

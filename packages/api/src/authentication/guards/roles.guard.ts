@@ -43,8 +43,6 @@ export class RolesGuard implements CanActivate {
     if (role === undefined) {
       role = (await this.groupservice.findOneByUid(user.uid)).role
     }
-    console.log(role)
-
     return requiredRoles.includes(role)
   }
 }
