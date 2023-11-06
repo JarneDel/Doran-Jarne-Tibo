@@ -7,7 +7,7 @@ import {
   PanelRightClose,
   Users,
   Warehouse,
-  Contact2,,
+  Contact2,
 } from 'lucide-vue-next'
 import { useLocalStorage } from '@vueuse/core'
 import { useRouter } from 'vue-router'
