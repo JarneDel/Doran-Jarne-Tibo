@@ -17,6 +17,11 @@ export default defineComponent({
     const { getDates } = useDates()
     return { getDates }
   },
+  methods: {
+    cancelRequest() {
+      alert('not implemented')
+    },
+  },
 
   computed: {
     vacationLength() {
@@ -47,7 +52,7 @@ export default defineComponent({
       <BadgeCheck :size="24" v-else-if="data.isApproved" />
       <CircleDashed :size="24" v-else></CircleDashed>
 
-      <button>
+      <button @click="cancelRequest">
         <Delete :size="24"></Delete>
       </button>
     </div>

@@ -25,9 +25,7 @@ export default defineComponent({
     }
   },
   setup() {
-    const { result, loading, error } = useQuery<VacationRequestQuery>(
-      GET_VACATION_REQUESTS,
-    )
+    const { result } = useQuery<VacationRequestQuery>(GET_VACATION_REQUESTS)
 
     return { result }
   },
@@ -58,7 +56,7 @@ export default defineComponent({
 
 <template>
   <div class="m2 relative">
-    <h2>Vacations</h2>
+    <h2 class="text-2xl font-medium">Vacations</h2>
     <styled-button
       class="absolute right-2 top-2"
       button-type="secondary"
@@ -75,16 +73,19 @@ export default defineComponent({
       }}
     </div>
 
-    <div v-if="result?.vacationRequestLoggedIn" class="p2 rounded bg-white">
+    <div
+      v-if="result?.vacationRequestLoggedIn"
+      class="p2 mt-4 rounded bg-white"
+    >
       <div class="my-2 flex flex-row gap-4">
         <button
           @click="filter = 'notApproved'"
-          class="flex flex-row"
+          class="flex flex-row items-center"
           :class="{
             'text-gray': filter !== 'notApproved',
           }"
         >
-          <Badge></Badge>
+          <Badge class="mr-2"></Badge>
           <span>
             {{ result.vacationRequestLoggedIn.length - (approvedCount ?? 0) }}
             pending / denied
@@ -92,16 +93,16 @@ export default defineComponent({
         </button>
         <button
           @click="filter = 'approved'"
-          class="flex flex-row"
+          class="flex flex-row items-center"
           :class="{
             'text-gray': filter !== 'approved',
           }"
         >
-          <BadgeCheck />
-          <span> {{ approvedCount }}approved </span>
+          <BadgeCheck class="mr2" />
+          <span> {{ approvedCount }} approved </span>
         </button>
       </div>
-      <div v-for="request of resultFiltered">
+      <div v-for="request of resultFiltered" class="py.5">
         <VacationRow :data="request"></VacationRow>
       </div>
     </div>
