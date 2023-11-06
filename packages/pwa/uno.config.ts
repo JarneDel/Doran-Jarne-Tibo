@@ -35,7 +35,7 @@ export default defineConfig({
         200: '#e6e6e6',
       },
       danger: {
-        DEFAULT: '#c7525c',
+        DEFAULT: '#EF4444',
         active: '#e65e69',
         surface: '#ffd9da',
         light: '#ffb3b5',
