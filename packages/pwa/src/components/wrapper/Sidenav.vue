@@ -8,6 +8,7 @@ import {
   Users,
   Warehouse,
   Contact2,
+  Palmtree,
 } from 'lucide-vue-next'
 import { useLocalStorage } from '@vueuse/core'
 import { useRouter } from 'vue-router'
@@ -23,6 +24,7 @@ export default defineComponent({
     PanelLeftClose,
     PanelRightClose,
     Contact2,
+    Palmtree,
   },
   setup() {
     const isClosed = useLocalStorage('isClosed', false)
@@ -54,6 +56,12 @@ export default defineComponent({
           icon: Contact2,
           content: t('nav.staff'),
           route: '/admin/staff',
+        },
+        {
+          name: 'vacation',
+          icon: Palmtree,
+          content: t('nav.vacation'),
+          route: '/admin/vacation',
         },
       ]
     })
