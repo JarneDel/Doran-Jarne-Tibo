@@ -1,25 +1,34 @@
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import Logo from '@/components/generic/Logo.vue';
+import { computed, defineComponent } from 'vue'
+import Logo from '@/components/generic/Logo.vue'
 import {
   Box,
   PanelLeftClose,
   PanelRightClose,
   Users,
   Warehouse,
-} from 'lucide-vue-next';
-import { useLocalStorage } from '@vueuse/core';
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
+  Contact2,,
+} from 'lucide-vue-next'
+import { useLocalStorage } from '@vueuse/core'
+import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'Sidenav',
-  components: { Logo, Users, Box, Warehouse, PanelLeftClose, PanelRightClose },
+  components: {
+    Logo,
+    Users,
+    Box,
+    Warehouse,
+    PanelLeftClose,
+    PanelRightClose,
+    Contact2,
+  },
   setup() {
-    const isClosed = useLocalStorage('isClosed', false);
-    const { currentRoute } = useRouter();
-    const { t } = useI18n();
-    const section = computed(() => currentRoute.value.path.split('/')[2]);
+    const isClosed = useLocalStorage('isClosed', false)
+    const { currentRoute } = useRouter()
+    const { t } = useI18n()
+    const section = computed(() => currentRoute.value.path.split('/')[2])
     const pages = computed(() => {
       return [
         {
@@ -40,12 +49,18 @@ export default defineComponent({
           content: t('nav.rooms'),
           route: '/admin/rooms',
         },
-      ];
-    });
+        {
+          name: 'staff',
+          icon: Contact2,
+          content: t('nav.staff'),
+          route: '/admin/staff',
+        },
+      ]
+    })
 
-    return { isClosed, section, pages };
+    return { isClosed, section, pages }
   },
-});
+})
 </script>
 
 <template>
