@@ -30,7 +30,6 @@ export const router = createRouter({
           path: 'inventory/new',
           component: () => import('@/views/admin/inventory/New.vue'),
         },
-
         {
           path: 'inventory',
           component: () => import('@/views/admin/inventory/Overview.vue'),
@@ -44,12 +43,52 @@ export const router = createRouter({
               path: ':id',
               component: () => import('@/views/admin/inventory/Item.vue'),
             },
-
             {
               path: ':id/edit',
               component: () => import('@/views/admin/inventory/Edit.vue'),
             },
           ],
+        },
+        {
+          path: 'rooms',
+          component: () => import('@/views/admin/rooms/Rooms.vue'),
+          children: [
+            {
+              path: 'id/:id',
+              component: () => import('@/views/admin/rooms/Item.vue'),
+              props: true,
+            },
+            {
+              path: 'id/:id/edit',
+              component: () => import('@/views/admin/rooms/Edit.vue'),
+            },
+          ],
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'rooms/type/:type',
+          component: () => import('@/views/admin/rooms/Rooms.vue'),
+          props: true,
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'rooms/create',
+          component: () => import('@/views/admin/rooms/Create.vue'),
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'rooms/create/type/:type',
+          component: () => import('@/views/admin/rooms/Create.vue'),
+          props: true,
+          meta: {
+            shouldBeAuthenticated: true,
+          },
         },
       ],
     },
@@ -99,6 +138,7 @@ export const router = createRouter({
       component: () => import('@/views/Profile.vue'),
       meta: {
         shouldBeAuthenticated: true,
+        allowedRoles: ['GROUP', 'ADMIN', 'SUPER_ADMIN', 'STAFF'],
       },
     },
     {
@@ -106,6 +146,15 @@ export const router = createRouter({
       component: () => import('@/views/Account.vue'),
       meta: {
         shouldBeAuthenticated: true,
+        allowedRoles: ['GROUP', 'ADMIN', 'SUPER_ADMIN', 'STAFF'],
+      },
+    },
+    {
+      path: '/reservation',
+      component: () => import('@/views/Reservation.vue'),
+      meta: {
+        shouldBeAuthenticated: true,
+        allowedRoles: ['GROUP'],
       },
     },
     {
@@ -161,7 +210,6 @@ router.beforeEach((to, _, next) => {
   const { customUser } = useUser()
   // @ts-ignore
   const allowedRoles: string[] = to.meta.allowedRoles || []
-
   // when user is not logged in and route requires authentication redirect to login
   switch (true) {
     case to.meta.shouldBeAuthenticated && !firebaseUser.value:

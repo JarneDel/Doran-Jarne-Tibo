@@ -3,7 +3,6 @@ import { User } from "../interface/userInterface";
 import useGraphql from './useGraphql'
 import { provideApolloClient, useQuery } from '@vue/apollo-composable'
 import { USER_BY_UID } from '@/graphql/usser.query'
-import firebase from './useFirebase'
 
 const customUser = ref<User | null>()
 
@@ -14,8 +13,6 @@ provideApolloClient(apolloClient)
 
 const restoreCustomUser = async () => {
   return new Promise<void>(resolve => {
-    const {firebaseUser} = firebase()
-    console.log(firebaseUser.value?.email)
     const { onResult } = useQuery(USER_BY_UID,{}, {
       fetchPolicy: 'no-cache',
     })

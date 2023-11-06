@@ -21,6 +21,7 @@ import { VacationRequestModule } from '../vacation-request/vacation-request.modu
 
 @Module({
   imports: [
+    ReservationModule,
     CommandModule,
     GroupsModule,
     LoanableMaterialsModule,
@@ -28,7 +29,6 @@ import { VacationRequestModule } from '../vacation-request/vacation-request.modu
     StaffModule,
     ServiceModule,
     SportModule,
-    SeedModule,
     RoomModule,
     ReservationModule,
     RepairRequestModule,

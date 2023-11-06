@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RepairRequestResolver } from './repair-request.resolver';
+
 import { RepairRequestService } from './repair-request.service';
+// Gebruik maken van de gemockte service
+jest.mock('./repair-request.service');
 
 describe('RepairRequestResolver', () => {
   let resolver: RepairRequestResolver;

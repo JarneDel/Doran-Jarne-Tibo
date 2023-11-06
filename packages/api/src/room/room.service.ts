@@ -15,7 +15,7 @@ import { Room } from './entities/room.entity'
 export class RoomService {
   constructor(
     @InjectRepository(Room)
-    private readonly roomRepository: Repository<Room>
+    private readonly roomRepository: Repository<Room>,
   ) {}
 
   create(createRoomInput: CreateRoomInput): Promise<Room> {
@@ -25,9 +25,9 @@ export class RoomService {
     r.SportId = createRoomInput.SportId
     r.type = createRoomInput.type
     r.canBeUsed = createRoomInput.canBeUsed
-    
+
     console.log('Created: ' + r.name)
-    
+
     return this.roomRepository.save(r)
   }
 
@@ -35,16 +35,56 @@ export class RoomService {
     return this.roomRepository.find()
   }
 
+  findAllGyms() {
+    const AllRooms = this.roomRepository.find()
+    const Gyms = AllRooms.then((rooms) => {
+      return rooms.filter((room) => room.type === 'Sportzaal')
+    })
+    return Gyms
+  }
+
+  findAllChangingRooms() {
+    const AllRooms = this.roomRepository.find()
+    const ChangingRooms = AllRooms.then((rooms) => {
+      return rooms.filter((room) => room.type === 'Kleedruimte')
+    })
+    return ChangingRooms
+  }
+
+  findAllWorkRooms() {
+    const AllRooms = this.roomRepository.find()
+    const WorkRooms = AllRooms.then((rooms) => {
+      return rooms.filter((room) => room.type === 'Werkruimte')
+    })
+    return WorkRooms
+  }
+
+  findAllSwimmingPools() {
+    const AllRooms = this.roomRepository.find()
+    const SwimmingPools = AllRooms.then((rooms) => {
+      return rooms.filter((room) => room.type === 'Zwembad')
+    })
+    return SwimmingPools
+  }
+
+  findAllDivePools() {
+    const AllRooms = this.roomRepository.find()
+    const DivePools = AllRooms.then((rooms) => {
+      return rooms.filter((room) => room.type === 'Duikput')
+    })
+    return DivePools
+  }
+
   findByIds(ids: string[]): Promise<Room[]> {
     return this.roomRepository.find({
       // @ts-ignore
-      _id: { $in: ids.map((id) => new ObjectId(id)) },
+      _id: { $in: ids.map(id => new ObjectId(id)) },
     })
   }
 
   findOneById(id: string): Promise<Room> {
     const obj = new ObjectId(id)
-    console.log(obj)
+    // console.log(obj)
     // @ts-ignore
     return this.roomRepository.findOne({ _id: new ObjectId(id) })
   }
@@ -62,10 +102,10 @@ export class RoomService {
   remove(id: string): Promise<string> {
     return this.roomRepository
       .delete(id)
-      .then((res) => {
+      .then(res => {
         return res
       })
-      .catch((err) => {
+      .catch(err => {
         return err
       })
   }
@@ -78,4 +118,5 @@ export class RoomService {
   truncate(): Promise<void> {
     return this.roomRepository.clear()
   }
+  
 }

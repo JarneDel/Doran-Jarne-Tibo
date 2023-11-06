@@ -25,6 +25,7 @@ import { GraphQLError } from 'graphql/error'
 // Guards
 import { FirebaseGuard } from '../authentication/guards/firebase.guard'
 import { RolesGuard } from 'src/authentication/guards/roles.guard'
+import { ReservationService } from 'src/reservation/reservation.service'
 
 @Resolver(() => Room)
 export class RoomResolver {
@@ -50,6 +51,51 @@ export class RoomResolver {
   })
   findAll() {
     return this.roomService.findAll()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllGyms',
+  })
+  findAllGyms() {
+    return this.roomService.findAllGyms()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllChangingRooms',
+  })
+  findAllChangingRooms() {
+    return this.roomService.findAllChangingRooms()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllWorkRooms',
+  })
+  findAllWorkRooms() {
+    return this.roomService.findAllWorkRooms()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllSwimmingPools',
+  })
+  findAllSwimmingPools() {
+    return this.roomService.findAllSwimmingPools()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllDivePools',
+  })
+  findAllDivePools() {
+    return this.roomService.findAllDivePools()
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
@@ -89,6 +135,7 @@ export class RoomResolver {
       })
   }
 
+  
   @ResolveField() // "sports" must be the same as the field in the room entity
   async sports(@Parent() room: Room): Promise<Sport[]> {
     const { SportId } = room

@@ -147,6 +147,7 @@ export class SeedService {
       r.pricePerHour = room.pricePerHour
       r.SportId = SportIds
       r.type = room.type
+      r.canBeUsed = room.canBeUsed
       Rooms.push(r)
     }
 
@@ -210,7 +211,13 @@ export class SeedService {
     if (groups.length === 0) {
       throw new Error('No groups found, please seed groups first')
     }
-    const rooms = await this.roomService.findAll()
+    const rooms = (await this.roomService.findAll()).filter(
+      room =>
+        room.type === 'Sportzaal' ||
+        room.type === 'Kleedkamer' ||
+        room.type === 'Zwembad' ||
+        room.type === 'Duikput',
+    )
     if (rooms.length === 0) {
       throw new Error('No rooms found, please seed rooms first')
     }
@@ -228,31 +235,46 @@ export class SeedService {
       r.startTime = reservation.start_time
       r.endTime = reservation.end_time
       r.groupId = groups[Math.floor(Math.random() * groups.length)].id
-      const materials: Materials[] = []
-      for (let material of reservation.reserved_materials) {
-        const m = new Materials()
-        m.name = material.name
-        m.totalAmount = material.totalAmount
-        m.wantedAmount = material.wantedAmount
-        m.price = material.price
-        m.sports = material.sports
-        m.isComplete = material.isComplete
-        m.description = material.description
-        materials.push(m)
+      const loanableMaterial =
+        await loanableMaterials[
+          Math.floor(Math.random() * loanableMaterials.length)
+        ]
+      const material = new Materials()
+      let sports:[Sport]
+      for (let sportId of loanableMaterial.SportId) {
+        const s = this.sportService.findOneById(sportId)
+        s.then(sport => {
+          console.log(sport)
+          sports.push(sport)
+        })
       }
-      const rooms: Rooms[] = []
-      for (let room of reservation.rooms) {
-        const r = new Rooms()
-        r.name = room.name
-        r.pricePerHour = room.pricePerHour
-        r.sports = room.sports
-        r.type = room.type
-        rooms.push(r)
+      material.id = loanableMaterial.id
+      material.name = loanableMaterial.name
+      material.totalAmount = loanableMaterial.totalAmount
+      material.wantedAmount = loanableMaterial.wantedAmount
+      material.price = loanableMaterial.price
+      material.sports = sports
+      material.isComplete = loanableMaterial.isComplete
+      material.description = loanableMaterial.description
+      material.amountReserved = Math.round(Math.random() * 10)
+      const materialList: [Materials] = [material]
+      r.reservedMaterials = materialList
+      //@ts-ignore
+      const renroom = await rooms[Math.floor(Math.random() * rooms.length)]
+      const room = new Rooms()
+      room.id = renroom.id
+      room.name = renroom.name
+      room.pricePerHour = renroom.pricePerHour
+      for (let sportId of renroom.SportId) {
+        const s = this.sportService.findOneById(sportId)
+        s.then(sport => {
+          sports.push(sport)
+        })
       }
-      //@ts-ignore
-      r.reserved_materials = materials
-      //@ts-ignore
-      r.rooms = rooms
+      room.sports = sports
+      room.type = renroom.type
+      const roomList: [Rooms] = [room]
+      r.rooms = roomList
       r.price = reservation.price
       r.isCancelled = reservation.isCancelled
       outReservations.push(r)
@@ -315,11 +337,11 @@ export class SeedService {
         const r = new Rooms()
         r.name = room.name
         r.pricePerHour = room.pricePerHour
-        const sports: string[] = []
+        let sports: [Sport]
         for (let sportId of room.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
-            sports.push(sport.name)
+            sports.push(sport)
           })
         }
         r.sports = sports
@@ -334,11 +356,11 @@ export class SeedService {
             Math.floor(Math.random() * loanableMaterials.length)
           ]
         const material = new Materials()
-        const sports: string[] = []
+        let sports: [Sport] 
         for (let sportId of loanableMaterial.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
-            sports.push(sport.name)
+            sports.push(sport)
           })
         }
         material.name = loanableMaterial.name

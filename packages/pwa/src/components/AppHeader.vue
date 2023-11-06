@@ -24,7 +24,6 @@ export default defineComponent({
         options.value = false
       })
     }
-    console.log(firebaseUser.value?.email)
     return { options, toggleOptions, customUser, logoutbutton, firebaseUser,setLocale, locale }
   },
   components: { StyledButton, ChevronDown, logo, OnClickOutside },

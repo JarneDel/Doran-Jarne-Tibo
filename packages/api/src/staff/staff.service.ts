@@ -67,8 +67,7 @@ export class StaffService {
         s.holidayDates = updateStaffInput.holidayDates
       s.locale = updateStaffInput.locale
     }
-    console.log(s)
-    return this.staffRepository.save(s)
+    return this.staffRepository.save( s)
   }
 
   remove(id: string) {
