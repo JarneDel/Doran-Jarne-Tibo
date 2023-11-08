@@ -1,5 +1,60 @@
 import gql from 'graphql-tag'
 
+export const GET_RESERVATIONS = gql`
+  query {
+    getReservationsByUser {
+      id
+      date
+      startTime
+      endTime
+      group {
+        id
+        UID
+        locale
+        role
+        createdAt
+        updatedAt
+        profilePictureUrl
+        name
+        btwNumber
+        score
+      }
+      reservedMaterials {
+        id
+        name
+        totalAmount
+        wantedAmount
+        price
+        sports {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        isComplete
+        description
+        amountReserved
+      }
+      rooms {
+        id
+        name
+        sports {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        pricePerHour
+        type
+      }
+      price
+      isCancelled
+      createdAt
+      createdAt
+      updatedAt
+    }
+  }
+`
 export const AVAILABLEMATERAILS = gql`
   query GetAvailableloanableMaterials(
     $date: String!

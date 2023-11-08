@@ -283,7 +283,26 @@ export class ReservationService {
   async getReservationsByUser(userId: string) {
     return (await this.reservationRepository.find({
       where: { groupId: userId },
-    })).filter(reservation => reservation.date >= new Date())
+    })).filter(reservation => reservation.date >= new Date()).sort((a, b) => {
+      //sort by date
+      const timeA = new Date(a.date + ' ' + a.startTime)
+      const timeB = new Date(b.date + ' ' + b.startTime)
+      if (a.date > b.date) {
+        return 1
+      }
+      if (a.date < b.date) {
+        return -1
+      }
+      //sort by start time
+      if (timeA > timeB) {
+        return 1
+      }
+      if (timeA < timeB) {
+        return -1
+      }
+      return 0})
+
+
   }
 
   // remove(id: string) {

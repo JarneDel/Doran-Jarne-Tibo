@@ -2,20 +2,23 @@
 import { defineComponent, ref } from 'vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { AVAILABLEMATERAILS, GET_AVAILABLE_ROOMS, CREATERESEVATION } from '@/graphql/reservations.query'
+import {
+  AVAILABLEMATERAILS,
+  GET_AVAILABLE_ROOMS,
+  CREATERESEVATION,
+} from '@/graphql/reservations.query'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { Room } from '@/interface/roomInterface'
 import { material } from '@/interface/materialInterface'
 import { Plus, Minus } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 
-
 export default defineComponent({
   setup() {
-    const { customUser} = useUser()
+    const { customUser } = useUser()
     const checkboxStatus = ref<any>({})
     const checkboxStatusMaterials = ref<any>({})
-    const { mutate:addReservarion } = useMutation(CREATERESEVATION)
+    const { mutate: addReservarion } = useMutation(CREATERESEVATION)
     const reservation = ref({
       date: new Date().toISOString().substr(0, 10),
       beginTime: '08:00',
@@ -27,61 +30,71 @@ export default defineComponent({
     const wantedRoom = ref<Room[]>([])
     const wantedMaterials = ref<material[]>([])
     const price = ref(0)
-    const AddReservation=()=>{
-      let materials:material[]=[]
-      wantedMaterials.value.forEach(material=>{
-        let sportsist:any=[]
-        material.sports.forEach(sportt=>{
-          let sport:any={id:"",name:"",createdAt:new Date(),updatedAt:new Date()}
-          sport.id=sportt.id
-          sport.name=sportt.name
-          sport.createdAt=sportt.createdAt
-          sport.updatedAt=sportt.updatedAt
+    const AddReservation = () => {
+      let materials: material[] = []
+      wantedMaterials.value.forEach(material => {
+        let sportsist: any = []
+        material.sports.forEach(sportt => {
+          let sport: any = {
+            id: '',
+            name: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }
+          sport.id = sportt.id
+          sport.name = sportt.name
+          sport.createdAt = sportt.createdAt
+          sport.updatedAt = sportt.updatedAt
           sportsist.push(sport)
         })
-        let listedmaterial:material={
-          id:material.id,
-          name:material.name,
-          price:material.price,
-          sports:sportsist,
-          totalAmount:material.totalAmount,
-          amountReserved:checkboxStatusMaterials.value[material.name].amount,
-          wantedAmount:material.wantedAmount,
-          isComplete:material.isComplete,
-          description:material.description
+        let listedmaterial: material = {
+          id: material.id,
+          name: material.name,
+          price: material.price,
+          sports: sportsist,
+          totalAmount: material.totalAmount,
+          amountReserved: checkboxStatusMaterials.value[material.name].amount,
+          wantedAmount: material.wantedAmount,
+          isComplete: material.isComplete,
+          description: material.description,
         }
         materials.push(listedmaterial)
       })
-      let roomlist:Room[]=[]
-      wantedRoom.value.forEach(room=>{
-        let sportsist:any=[]
-        room.sports.forEach(sportt=>{
-          let sport:any={id:"",name:"",createdAt:new Date(),updatedAt:new Date()}
+      let roomlist: Room[] = []
+      wantedRoom.value.forEach(room => {
+        let sportsist: any = []
+        room.sports.forEach(sportt => {
+          let sport: any = {
+            id: '',
+            name: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }
           console.log(sportt)
-          sport.id=sportt.id
-          sport.name=sportt.name
-          sport.createdAt=sportt.createdAt
-          sport.updatedAt=sportt.updatedAt
+          sport.id = sportt.id
+          sport.name = sportt.name
+          sport.createdAt = sportt.createdAt
+          sport.updatedAt = sportt.updatedAt
           sportsist.push(sport)
         })
         // @ts-ignore
-        let listedroom:Room={
-          id:room.id,
-          name:room.name,
-          pricePerHour:room.pricePerHour,
-          sports:sportsist,
-          type:room.type,
+        let listedroom: Room = {
+          id: room.id,
+          name: room.name,
+          pricePerHour: room.pricePerHour,
+          sports: sportsist,
+          type: room.type,
         }
         roomlist.push(listedroom)
       })
       addReservarion({
-        date:reservation.value.date,
-        startTime:reservation.value.beginTime,
-        endTime:reservation.value.endTime,
-        groupId:customUser.value?.userByUid.id,
-        price:price.value,
-        material:materials,
-        rooms:roomlist
+        date: reservation.value.date,
+        startTime: reservation.value.beginTime,
+        endTime: reservation.value.endTime,
+        groupId: customUser.value?.userByUid.id,
+        price: price.value,
+        material: materials,
+        rooms: roomlist,
       })
     }
     const Material = (material: material, plus: boolean) => {
@@ -99,21 +112,16 @@ export default defineComponent({
           )
         checkboxStatusMaterials.value[material.name].amount++
         wantedMaterials.value.push(material)
-        price.value +=
-          material.price *
-          reservation.value.timeDivrent
-
+        price.value += material.price * reservation.value.timeDivrent
       } else {
         if (checkboxStatusMaterials.value[material.name].amount == 0) return
         //remove material
         checkboxStatusMaterials.value[material.name].amount--
         wantedMaterials.value.splice(wantedMaterials.value.indexOf(material), 1)
         if (checkboxStatusMaterials.value[material.name].amount != 0)
-        wantedMaterials.value.push(material)
-      price.value -=
-        material.price *
-        reservation.value.timeDivrent
-    }
+          wantedMaterials.value.push(material)
+        price.value -= material.price * reservation.value.timeDivrent
+      }
     }
     const checkMaterials = () => {
       return new Promise<void>(resolve => {
@@ -243,7 +251,7 @@ export default defineComponent({
       availableMaterials,
       checkboxStatusMaterials,
       Material,
-      AddReservation
+      AddReservation,
     }
   },
   components: { StyledInputText, StyledButton, Plus, Minus },
@@ -256,8 +264,8 @@ export default defineComponent({
     <p class="ml-4 text-lg">
       {{ $t('reservation.subtitle') }}
     </p>
-    <div class=" lg:flex justify-between">
-      <div class="m-4 md:flex items-end gap-2">
+    <div class="justify-between lg:flex">
+      <div class="m-4 items-end gap-2 md:flex">
         <styled-input-text
           v-model="reservation.date"
           :label="$t('reservation.date')"
@@ -286,7 +294,7 @@ export default defineComponent({
           {{ $t('reservation.check') }}
         </StyledButton>
       </div>
-      <div class="ml-4 lg:mr-0 flex items-center gap-2">
+      <div class="ml-4 flex items-center gap-2 lg:mr-0">
         <p class="text-xl">€ {{ price }}</p>
         <StyledButton type="button" class="h-fit" @click="AddReservation()">
           {{ $t('reservation.reserve') }}
@@ -295,7 +303,7 @@ export default defineComponent({
     </div>
     <div class="mx-4" v-if="availableRooms.length > 0">
       <p class="text-lg">beschikbare ruimtes</p>
-      <div class="grid auto-rows-fr lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+      <div class="grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4">
         <label class="h-full" v-for="room in availableRooms">
           <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
           <input
@@ -328,11 +336,13 @@ export default defineComponent({
     </div>
     <div class="mx-4" v-if="availableMaterials.length > 0">
       <p class="text-lg">beschikbare materialen</p>
-      <div class="grid lg:grid-cols-3 2xl:grid-cols-4 grid-rows-[repeat(4,1fr)] gap-4">
+      <div
+        class="grid grid-rows-[repeat(4,1fr)] gap-4 lg:grid-cols-3 2xl:grid-cols-4"
+      >
         <label class="h-full" v-for="material in availableMaterials">
           <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
           <div
-            class=" flex h-full items-center justify-between rounded-md border bg-white p-4 shadow-sm "
+            class="flex h-full items-center justify-between rounded-md border bg-white p-4 shadow-sm"
           >
             <div class="flex h-full flex-col justify-between gap-2">
               <p class="text-lg font-medium">{{ material.name }}</p>
@@ -350,17 +360,17 @@ export default defineComponent({
               <p class="font-bold">€ {{ material.price }}/h</p>
             </div>
             <div class="flex">
-              <StyledButton
-                ><Minus @click="Material(material, false)"
-              /></StyledButton>
+              <StyledButton>
+                <Minus @click="Material(material, false)" />
+              </StyledButton>
               <p>
                 {{ checkboxStatusMaterials[material.name].amount }}/{{
                   material.totalAmount
                 }}
               </p>
               <StyledButton>
-                <Plus @click="Material(material, true)"
-              /></StyledButton>
+                <Plus @click="Material(material, true)" />
+              </StyledButton>
             </div>
           </div>
         </label>

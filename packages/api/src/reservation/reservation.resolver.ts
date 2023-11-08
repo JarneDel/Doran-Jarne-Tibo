@@ -114,7 +114,7 @@ export class ReservationResolver {
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
   @UseGuards(FirebaseGuard, RolesGuard)
-  @Query(() => [Room], {
+  @Query(() => [Reservation], {
     name: 'getReservationsByUser',
     nullable: true,
   })
