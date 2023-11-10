@@ -235,17 +235,17 @@ export class SeedService {
       r.date = new Date(reservation.date)
       r.startTime = reservation.start_time
       r.endTime = reservation.end_time
-      r.groupId = groups[Math.floor(Math.random() * groups.length)].id
+      r.groupId = groups[Math.floor(Math.random() * groups.length)].id.toString()
+      console.log({'🌈':r.groupId})
       const loanableMaterial =
         await loanableMaterials[
           Math.floor(Math.random() * loanableMaterials.length)
         ]
       const material = new Materials()
-      let sports:Sports[] = []
+      let sports: Sports[] = []
       for (let sportId of loanableMaterial.SportId) {
         const s = this.sportService.findOneById(sportId)
         s.then(sport => {
-          console.log(sport)
           sports.push(sport)
         })
       }
@@ -357,7 +357,7 @@ export class SeedService {
             Math.floor(Math.random() * loanableMaterials.length)
           ]
         const material = new Materials()
-        let sports: [Sport] 
+        let sports: [Sport]
         for (let sportId of loanableMaterial.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
