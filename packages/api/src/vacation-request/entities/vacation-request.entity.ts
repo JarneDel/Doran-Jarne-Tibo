@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql'
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 import {
   Column,
   CreateDateColumn,
@@ -15,7 +15,7 @@ export class VacationRequest {
   @Field(() => ID)
   id: string
 
-  @Field(() => [Staff])
+  @Field(() => Staff)
   staff: Staff
 
   @Column()

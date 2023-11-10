@@ -57,7 +57,7 @@ export default defineComponent({
 }
 
 .danger {
-  @apply bg-danger active:bg-danger-active;
+  @apply bg-danger active:bg-danger-active c-white;
 }
 
 .gray {
