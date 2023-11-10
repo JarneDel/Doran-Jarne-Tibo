@@ -55,13 +55,17 @@ export class ReservationService {
         }
       })
 
-      if (roomisAvailable==false) {
+      if (roomisAvailable == false) {
         isRoomAvailable = false
       }
     })
     const date = createReservationInput.date
     //get date of today at 00:00:00
-    const today = new Date( new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+    const today = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+    )
     //check if the material is available
     const reservedMaterials = createReservationInput.reservedMaterials
     const reservedMaterialsId = reservedMaterials.map(material => material.id)
@@ -70,11 +74,14 @@ export class ReservationService {
     reservedMaterials.map(material => {
       let materialisAvailable = false
       availableMaterialsId.map(id => {
-        if (material.id.toString() == id.toString()&&material.amountReserved<=material.totalAmount) {
+        if (
+          material.id.toString() == id.toString() &&
+          material.amountReserved <= material.totalAmount
+        ) {
           materialisAvailable = true
         }
       })
-      if (materialisAvailable==false) {
+      if (materialisAvailable == false) {
         isRoomAvailable = false
       }
     })
@@ -110,7 +117,9 @@ export class ReservationService {
 
       return this.reservationRepository.save(r)
     } else {
-      throw new Error('Room or material is not available or date is not correct')
+      throw new Error(
+        'Room or material is not available or date is not correct',
+      )
     }
   }
 
@@ -125,6 +134,13 @@ export class ReservationService {
 
   findByDate(date: Date) {
     return this.reservationRepository.find({ where: { date: date } })
+  }
+  findByDateAndUser(date: Date, userId: string) {
+    console.log(userId.toString(),"🌈")
+    const id = userId.toString()
+    return this.reservationRepository.find({
+      where: { date: date, groupId: id },
+    })
   }
 
   async update(id: string, updateReservationInput: UpdateReservationInput) {
@@ -143,6 +159,7 @@ export class ReservationService {
   }
 
   saveAll(services: Reservation[]): Promise<Reservation[]> {
+    
     return this.reservationRepository.save(services)
   }
 
@@ -285,28 +302,31 @@ export class ReservationService {
   async getReservationsByUser(userId: string) {
     console.log(userId.toString())
     const id = userId.toString()
-    return (await this.reservationRepository.find({
-      where: { groupId: id },
-    })).filter(reservation => reservation.date >= new Date()).sort((a, b) => {
-      //sort by date
-      const timeA = new Date(a.date + ' ' + a.startTime)
-      const timeB = new Date(b.date + ' ' + b.startTime)
-      if (a.date > b.date) {
-        return 1
-      }
-      if (a.date < b.date) {
-        return -1
-      }
-      //sort by start time
-      if (timeA > timeB) {
-        return 1
-      }
-      if (timeA < timeB) {
-        return -1
-      }
-      return 0})
-
-
+    return (
+      await this.reservationRepository.find({
+        where: { groupId: id },
+      })
+    )
+      .filter(reservation => reservation.date >= new Date())
+      .sort((a, b) => {
+        //sort by date
+        const timeA = new Date(a.date + ' ' + a.startTime)
+        const timeB = new Date(b.date + ' ' + b.startTime)
+        if (a.date > b.date) {
+          return 1
+        }
+        if (a.date < b.date) {
+          return -1
+        }
+        //sort by start time
+        if (timeA > timeB) {
+          return 1
+        }
+        if (timeA < timeB) {
+          return -1
+        }
+        return 0
+      })
   }
 
   // remove(id: string) {

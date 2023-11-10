@@ -58,6 +58,16 @@ export class ReservationResolver {
   findByDate(@Args('date', { type: () => Date }) date: Date) {
     return this.reservationService.findByDate(date)
   }
+  @AllowedRoles(Role.GROUP, Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Reservation], { name: 'GetReservationsByDateAndUser' })
+  async findByDateAndUser(
+    @Args('date', { type: () => Date }) date: Date,
+    @FirebaseUser() user: UserRecord,
+  ) {
+    const group = await this.groupService.findOneByUid(user.uid)
+    return this.reservationService.findByDateAndUser(date, group.id)
+  }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF, Role.GROUP)
   @UseGuards(FirebaseGuard, RolesGuard)
@@ -119,7 +129,7 @@ export class ReservationResolver {
     nullable: true,
   })
   async getReservationsByUser(@FirebaseUser() user: UserRecord) {
-    const group=await this.groupService.findOneByUid(user.uid)
+    const group = await this.groupService.findOneByUid(user.uid)
     return this.reservationService.getReservationsByUser(group.id)
   }
 
