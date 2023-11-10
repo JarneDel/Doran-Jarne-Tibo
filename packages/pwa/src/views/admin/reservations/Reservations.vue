@@ -379,7 +379,7 @@ export default defineComponent({
 
 <template>
   <div class="m-8">
-    <div class="flex items-center justify-center">
+    <div class="flex flex-col md:flex-row items-center justify-center">
       <button
         @click="
           replace('/admin/reservations/type/0');
@@ -389,7 +389,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 0,
           'bg-primary-light': typeSelector !== 0,
         }"
-        class="p-2"
+        class="p-2 w-30 hover:text-white"
       >
         {{ $t('rooms.gyms') }}
       </button>
@@ -402,7 +402,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 1,
           'bg-primary-light': typeSelector !== 1,
         }"
-        class="p-2"
+        class="p-2 w-30 hover:text-white"
       >
         {{ $t('rooms.workRooms') }}
       </button>
@@ -415,7 +415,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 2,
           'bg-primary-light': typeSelector !== 2,
         }"
-        class="p-2"
+        class="p-2 w-30 hover:text-white"
       >
         {{ $t('rooms.dressingRooms') }}
       </button>
@@ -428,7 +428,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 3,
           'bg-primary-light': typeSelector !== 3,
         }"
-        class="p-2"
+        class="p-2 w-30 hover:text-white"
       >
         {{ $t('rooms.swimmingPools') }}
       </button>
@@ -441,12 +441,12 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 4,
           'bg-primary-light': typeSelector !== 4,
         }"
-        class="p-2"
+        class="p-2 w-30 hover:text-white"
       >
         {{ $t('rooms.divingWells') }}
       </button>
     </div>
-    <div class="flex gap-2">
+    <div class="flex gap-2 py-4 md:py-8">
       <label for="start">Filter date:</label>
 
       <input
