@@ -13,10 +13,12 @@ import StyledButton from '@/components/generic/StyledButton.vue'
 import { Badge, BadgeAlert, BadgeCheck } from 'lucide-vue-next'
 import Modal from '@/components/Modal.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
+import OptionsModal from '@/components/modal/OptionsModal.vue'
 
 export default defineComponent({
   name: 'VacationOverview',
   components: {
+    OptionsModal,
     StyledInputText,
     Modal,
     StyledButton,
@@ -35,23 +37,43 @@ export default defineComponent({
     >(APPROVE_VACATION_REQUEST)
 
     const rejectVacation = async () => {
-      if (reject.value) {
-        await mutate({
-          approveVacationRequestInput: {
-            id: reject.value.id,
-            rejectReason: rejectMessage.value,
-            isRejected: true,
-            isApproved: false,
-          },
-        })
-        reject.value = undefined
-        rejectMessage.value = ''
-      }
+      if (!reject.value) return
+      await mutate({
+        approveVacationRequestInput: {
+          id: reject.value.id,
+          rejectReason: rejectMessage.value,
+          isRejected: true,
+          isApproved: false,
+        },
+      })
+      reject.value = undefined
+      rejectMessage.value = ''
+    }
+
+    const approveVacation = () => {
+      if (!approve.value) return
+      mutate({
+        approveVacationRequestInput: {
+          id: approve.value.id,
+          rejectReason: '',
+          isRejected: false,
+          isApproved: true,
+        },
+      })
+      approve.value = undefined
     }
 
     const reject = ref<VacationRequestWithStaff>()
+    const approve = ref<VacationRequestWithStaff>()
     const rejectMessage = ref<string>('')
-    return { result, reject, rejectMessage, rejectVacation }
+    return {
+      result,
+      reject,
+      rejectMessage,
+      rejectVacation,
+      approve,
+      approveVacation,
+    }
   },
 })
 </script>
@@ -72,10 +94,29 @@ export default defineComponent({
         Reject
       </StyledButton>
       <StyledButton button-type="gray" @click="reject = undefined"
-        >Cancel</StyledButton
-      >
+        >Cancel
+      </StyledButton>
     </template>
   </Modal>
+  <OptionsModal
+    v-if="approve"
+    :button1="{
+      text: 'Cancel',
+      type: 'gray',
+    }"
+    :button2="{
+      text: 'Approve',
+      type: 'secondary',
+    }"
+    :description="`Are you sure you want to approve the vacation request from
+      ${approve.staff.firstName} ${approve.staff.lastName}?`"
+    :show-modal="!!approve"
+    :title="'Approve vacation'"
+    @update:show-modal="approve = undefined"
+    @button1-click="approve = undefined"
+    @button2-click="approveVacation"
+  />
+
   <div class="container mx-auto px-4 py-6">
     <div class="overflow-x-auto">
       <div class="w-full overflow-auto">
@@ -103,7 +144,7 @@ export default defineComponent({
           </thead>
           <tbody>
             <tr
-              v-for="(vacationRequest, index) in result?.vacationRequests"
+              v-for="vacationRequest in result?.vacationRequests"
               class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
             >
               <td class="p-4 align-middle">
@@ -132,7 +173,12 @@ export default defineComponent({
                   "
                   class="flex space-x-2"
                 >
-                  <StyledButton button-type="secondary"> Approve </StyledButton>
+                  <StyledButton
+                    button-type="secondary"
+                    @click="approve = vacationRequest"
+                  >
+                    Approve
+                  </StyledButton>
                   <StyledButton
                     button-type="danger"
                     @click="reject = vacationRequest"
