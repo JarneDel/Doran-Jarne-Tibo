@@ -254,7 +254,7 @@ export default defineComponent({
 
 <template>
   <div class="m-8">
-    <div class="flex items-center justify-center">
+    <div class="flex flex-col md:flex-row items-center justify-center">
       <button
         @click="
           replace('/admin/rooms/type/0');
@@ -264,7 +264,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 0,
           'bg-primary-light': typeSelector !== 0,
         }"
-        class="p-2"
+        class="p-2 w-30"
       >
         {{ $t('rooms.gyms') }}
       </button>
@@ -277,7 +277,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 1,
           'bg-primary-light': typeSelector !== 1,
         }"
-        class="p-2"
+        class="p-2 w-30"
       >
         {{ $t('rooms.workRooms') }}
       </button>
@@ -290,7 +290,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 2,
           'bg-primary-light': typeSelector !== 2,
         }"
-        class="p-2"
+        class="p-2 w-30"
       >
         {{ $t('rooms.dressingRooms') }}
       </button>
@@ -303,7 +303,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 3,
           'bg-primary-light': typeSelector !== 3,
         }"
-        class="p-2"
+        class="p-2 w-30"
       >
         {{ $t('rooms.swimmingPools') }}
       </button>
@@ -316,34 +316,44 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 4,
           'bg-primary-light': typeSelector !== 4,
         }"
-        class="p-2"
+        class="p-2 w-30"
       >
         {{ $t('rooms.divingWells') }}
       </button>
     </div>
     <div class="flex flex-col gap-20">
       <div v-if="typeSelector == 0">
-        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.gyms') }}</h3>
-        <ul class="mx-auto grid grid-cols-3 gap-6">
-          <li v-for="gym in resultGyms?.GetAllGyms" :key="gym.id">
+        <h3
+          class="mb-2 text-3xl py-4 md:py-8 text-center md:text-left font-bold"
+        >
+          {{ $t('rooms.gyms') }}
+        </h3>
+        <ul class="mx-auto grid w-fit md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <li
+            class="w-fit md:w-55 xl:w-70 2xl:w-90"
+            v-for="gym in resultGyms?.GetAllGyms"
+            :key="gym.id"
+          >
             <button
-              class="h-full w-full text-left"
+              class="flex justify-center items-center p-6 h-full w-full text-left rounded-lg bg-white shadow-md"
               @click="handleRoomDetail(gym)"
             >
-              <div class="h-full rounded-lg bg-white p-4 shadow-md">
-                <h3 class="mb-2 text-2xl font-bold">{{ gym.name }}</h3>
-                <p class="text-lg font-semibold">Sports:</p>
-                <ul>
-                  <li
-                    class="ml-4 list-disc"
-                    v-for="sport in resultGyms?.GetAllGyms[
-                      resultGyms?.GetAllGyms.indexOf(gym)
-                    ].sports.sort((a, b) => a.name.localeCompare(b.name))"
-                    :key="sport.name"
-                  >
-                    <p>{{ sport.name }}</p>
-                  </li>
-                </ul>
+              <div class="flex flex-col justify-between h-full">
+                <div>
+                  <h3 class="mb-2 text-2xl font-bold">{{ gym.name }}</h3>
+                  <p class="text-lg font-semibold">Sports:</p>
+                  <ul>
+                    <li
+                      class="ml-4 list-disc"
+                      v-for="sport in resultGyms?.GetAllGyms[
+                        resultGyms?.GetAllGyms.indexOf(gym)
+                      ].sports.sort((a, b) => a.name.localeCompare(b.name))"
+                      :key="sport.name"
+                    >
+                      <p>{{ sport.name }}</p>
+                    </li>
+                  </ul>
+                </div>
                 <div class="flex items-center gap-1">
                   <p class="text-lg font-semibold">
                     {{ $t('rooms.pricePerHour') }}:
@@ -368,9 +378,14 @@ export default defineComponent({
         </ul>
       </div>
       <div v-if="typeSelector == 1">
-        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.workRooms') }}</h3>
-        <ul class="mx-auto grid grid-cols-3 gap-6">
+        <h3
+          class="mb-2 text-3xl py-4 md:py-8 text-center md:text-left font-bold"
+        >
+          {{ $t('rooms.workRooms') }}
+        </h3>
+        <ul class="mx-auto grid w-fit md:grid-cols-2 lg:grid-cols-3 gap-6">
           <li
+            class="w-fit md:w-55 xl:w-70 2xl:w-90"
             v-for="workRoom in resultWorkRooms?.GetAllWorkRooms"
             :key="workRoom.id"
           >
@@ -398,9 +413,14 @@ export default defineComponent({
         </ul>
       </div>
       <div v-if="typeSelector == 2">
-        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.dressingRooms') }}</h3>
-        <ul class="mx-auto grid grid-cols-3 gap-6">
+        <h3
+          class="mb-2 text-3xl py-4 md:py-8 text-center md:text-left font-bold"
+        >
+          {{ $t('rooms.dressingRooms') }}
+        </h3>
+        <ul class="mx-auto grid w-fit md:grid-cols-2 lg:grid-cols-3 gap-6">
           <li
+            class="w-fit md:w-55 xl:w-70 2xl:w-90"
             v-for="changingRoom in resultChangingRooms?.GetAllChangingRooms"
             :key="changingRoom.id"
           >
@@ -432,9 +452,14 @@ export default defineComponent({
         </ul>
       </div>
       <div v-if="typeSelector == 3">
-        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.swimmingPools') }}</h3>
-        <ul class="mx-auto grid grid-cols-3 gap-6">
+        <h3
+          class="mb-2 text-3xl py-4 md:py-8 text-center md:text-left font-bold"
+        >
+          {{ $t('rooms.swimmingPools') }}
+        </h3>
+        <ul class="mx-auto grid w-fit md:grid-cols-2 lg:grid-cols-3 gap-6">
           <li
+            class="w-fit md:w-55 xl:w-70 2xl:w-90"
             v-for="pool in resultSwimmingPools?.GetAllSwimmingPools"
             :key="pool.id"
           >
@@ -478,9 +503,14 @@ export default defineComponent({
         </ul>
       </div>
       <div v-if="typeSelector == 4">
-        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.divingWells') }}</h3>
-        <ul class="mx-auto grid grid-cols-3 gap-6">
+        <h3
+          class="mb-2 text-3xl py-4 md:py-8 text-center md:text-left font-bold"
+        >
+          {{ $t('rooms.divingWells') }}
+        </h3>
+        <ul class="mx-auto grid w-fit md:grid-cols-2 lg:grid-cols-3 gap-6">
           <li
+            class="w-fit md:w-55 xl:w-70 2xl:w-90"
             v-for="divePool in resultDivePools?.GetAllDivePools"
             :key="divePool.id"
           >
