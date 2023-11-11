@@ -20,7 +20,26 @@ export const createRepairRequestInputStub = (): CreateRepairRequestInput => {
   l.price = 100
   l.wantedAmount = 5
   l.totalAmount = 3
-  // l.sports = ['Voetbal', 'Tennis', 'Basketbal']
+  l.sports = [
+    {
+      id: '65390cd4eaf47eda6fd47bc3',
+      name: 'Voetbal',
+      createdAt: new Date('2023-10-25T12:40:52.538Z'),
+      updatedAt: new Date('2023-10-25T12:40:52.538Z'),
+    },
+    {
+      id: '65390cd4eaf47eda6fd47bc4',
+      name: 'Tennis',
+      createdAt: new Date('2023-10-25T12:40:52.563Z'),
+      updatedAt: new Date('2023-10-25T12:40:52.563Z'),
+    },
+    {
+      id: '65390cd4eaf47eda6fd47bc5',
+      name: 'Basketbal',
+      createdAt: new Date('2023-10-25T12:40:52.563Z'),
+      updatedAt: new Date('2023-10-25T12:40:52.563Z'),
+    },
+  ]
 
   //RepairRequest
   const rr = new CreateRepairRequestInput()
