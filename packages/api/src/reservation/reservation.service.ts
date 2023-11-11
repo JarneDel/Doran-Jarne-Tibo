@@ -55,7 +55,7 @@ export class ReservationService {
         }
       })
 
-      if (roomisAvailable == false) {
+      if (roomisAvailable != false) {
         isRoomAvailable = false
       }
     })
@@ -81,7 +81,7 @@ export class ReservationService {
           materialisAvailable = true
         }
       })
-      if (materialisAvailable == false) {
+      if (materialisAvailable != false) {
         isRoomAvailable = false
       }
     })
@@ -101,7 +101,6 @@ export class ReservationService {
       totalPrice += material.price * timediff
     })
     createReservationInput.price = totalPrice
-
     if (isRoomAvailable && isMaterialAvailable && date >= today) {
       const r = new Reservation()
       const id = new ObjectId(createReservationInput.groupId)
@@ -137,7 +136,7 @@ export class ReservationService {
   findByDateAndUser(date: Date, userId: string) {
     const id = userId.toString()
     return this.reservationRepository.find({
-      where: { date: date, groupId: id },
+      where: { date: date, groupId: id, isCancelled: false },
     })
   }
 
@@ -157,7 +156,6 @@ export class ReservationService {
   }
 
   saveAll(services: Reservation[]): Promise<Reservation[]> {
-    
     return this.reservationRepository.save(services)
   }
 
@@ -301,7 +299,7 @@ export class ReservationService {
     const id = userId.toString()
     return (
       await this.reservationRepository.find({
-        where: { groupId: id },
+        where: { groupId: id, isCancelled: false },
       })
     )
       .filter(reservation => reservation.date >= new Date())
@@ -324,6 +322,12 @@ export class ReservationService {
         }
         return 0
       })
+  }
+
+  async cancelReservation(id: string) {
+    const reservation = await this.findOne(id)
+    reservation.isCancelled = true
+    return this.reservationRepository.save(reservation)
   }
 
   // remove(id: string) {

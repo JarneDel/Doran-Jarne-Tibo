@@ -229,3 +229,11 @@ export const CREATERESEVATION = gql`
     }
   }
 `
+
+export const CANCEL_RESERVATION = gql`
+  mutation cancelReservation($id: String!) {
+    cancelReservation(id: $id) {
+      id
+    }
+  }
+`
