@@ -237,6 +237,7 @@ export default defineComponent({
       if (reservation.value.date < new Date().toISOString().substr(0, 10)) {
         reservation.value.date = new Date().toISOString().substr(0, 10)
       }
+      check()
     }
     return {
       reservation,
