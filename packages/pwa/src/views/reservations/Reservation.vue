@@ -2,11 +2,11 @@
 import { defineComponent } from 'vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
-import { useQuery } from '@vue/apollo-composable'
+import { useQuery, useMutation } from '@vue/apollo-composable'
 import { ref } from '@vue/reactivity'
 import {
   GET_RESERVATIONS,
-  GET_RESERVATIONS_BY_DATE_AND_USER,
+  GET_RESERVATIONS_BY_DATE_AND_USER,CANCEL_RESERVATION
 } from '@/graphql/reservations.query'
 import { Reservation } from '@/interface/reservation'
 
@@ -14,6 +14,7 @@ export default defineComponent({
   components: { StyledButton, StyledInputText },
   computed: {},
   setup() {
+    const { mutate: cancelReservation } = useMutation(CANCEL_RESERVATION)
     const reservations = ref<Reservation[]>([])
     const reservationSeach = ref<Boolean>(false)
     const reservationDate = ref<string>(new Date().toISOString().substr(0, 10))
@@ -50,8 +51,15 @@ export default defineComponent({
         })
       })
     }
+    
+    const cancelReservationById=async (id:string)=>{
+      const result = await cancelReservation({id:id})
+      console.log(result)
+      //delete reservation from list
+      reservations.value = reservations.value.filter(reservation => reservation.id !== id)
+    }
 
-    return { reservations, reservationDate, onDateChange, reservationSeach, getAllReservations }
+    return { reservations, reservationDate, onDateChange, reservationSeach, getAllReservations,cancelReservationById }
   },
 })
 </script>
@@ -82,7 +90,7 @@ export default defineComponent({
       >
     </div>
     <div
-      class="grid grid-rows-[repeat(4,1fr)] gap-4 lg:grid-cols-3 2xl:grid-cols-4"
+      class="grid gap-4 lg:grid-cols-3 2xl:grid-cols-4"
     >
       <div v-for="reservation in reservations">
         <div
@@ -119,7 +127,7 @@ export default defineComponent({
             <p class="text-lg font-bold">
               € {{ reservation.price.toFixed(2) }}
             </p>
-            <StyledButton>{{ $t('reservation.cansle') }}</StyledButton>
+            <StyledButton @click="cancelReservationById(reservation.id)">{{ $t('reservation.cansle') }}</StyledButton>
           </div>
         </div>
       </div>
