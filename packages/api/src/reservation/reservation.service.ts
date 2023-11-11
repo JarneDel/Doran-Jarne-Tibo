@@ -105,7 +105,6 @@ export class ReservationService {
     if (isRoomAvailable && isMaterialAvailable && date >= today) {
       const r = new Reservation()
       const id = new ObjectId(createReservationInput.groupId)
-      console.log(id)
       r.date = createReservationInput.date
       r.startTime = createReservationInput.startTime
       r.endTime = createReservationInput.endTime
@@ -136,7 +135,6 @@ export class ReservationService {
     return this.reservationRepository.find({ where: { date: date } })
   }
   findByDateAndUser(date: Date, userId: string) {
-    console.log(userId.toString(),"🌈")
     const id = userId.toString()
     return this.reservationRepository.find({
       where: { date: date, groupId: id },
@@ -300,7 +298,6 @@ export class ReservationService {
   }
 
   async getReservationsByUser(userId: string) {
-    console.log(userId.toString())
     const id = userId.toString()
     return (
       await this.reservationRepository.find({
