@@ -184,6 +184,10 @@ export const router = createRouter({
       },
     },
     {
+      path: '/403',
+      component: () => import('@/views/403.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       component: () => import('@/views/NotFound.vue'),
     },
