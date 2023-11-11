@@ -24,7 +24,7 @@ export class ReservationService {
   ) {}
   async create(createReservationInput: CreateReservationInput) {
     const availableRooms = await this.getAvailableRooms(
-      createReservationInput.date.toDateString(),
+      createReservationInput.date.toISOString().substr(0, 10),
       createReservationInput.startTime,
       createReservationInput.endTime,
     )
@@ -37,7 +37,7 @@ export class ReservationService {
       })
     })
     const availableMaterials = await this.getAvailableMaterail(
-      createReservationInput.date.toDateString(),
+      createReservationInput.date.toISOString(),
       createReservationInput.startTime,
       createReservationInput.endTime,
       sportid,
@@ -76,7 +76,7 @@ export class ReservationService {
       availableMaterialsId.map(id => {
         if (
           material.id.toString() == id.toString() &&
-          material.amountReserved <= material.totalAmount
+          material.amountReserved < material.totalAmount
         ) {
           materialisAvailable = true
         }
@@ -101,7 +101,6 @@ export class ReservationService {
       totalPrice += material.price * timediff
     })
     createReservationInput.price = totalPrice
-
     if (isRoomAvailable && isMaterialAvailable && date >= today) {
       const r = new Reservation()
       const id = new ObjectId(createReservationInput.groupId)
@@ -137,7 +136,7 @@ export class ReservationService {
   findByDateAndUser(date: Date, userId: string) {
     const id = userId.toString()
     return this.reservationRepository.find({
-      where: { date: date, groupId: id },
+      where: { date: date, groupId: id, isCancelled: false },
     })
   }
 
@@ -157,7 +156,6 @@ export class ReservationService {
   }
 
   saveAll(services: Reservation[]): Promise<Reservation[]> {
-    
     return this.reservationRepository.save(services)
   }
 
@@ -233,7 +231,6 @@ export class ReservationService {
         room.type === 'Zwembad' ||
         room.type === 'Duikput',
     )
-
     const availableRooms: Room[] = []
     const resurveDate = new Date(date)
     const reservations = await this.findByDate(resurveDate)
@@ -247,12 +244,13 @@ export class ReservationService {
           if (room.id.toString() === resroom.id.toString()) {
             let reservationStart = new Date(date + ' ' + reservation.startTime)
             let reservationEnd = new Date(date + ' ' + reservation.endTime)
+            
             if (
-              (start < reservationStart && end > reservationStart) ||
-              (start < reservationEnd && end > reservationEnd) ||
-              (reservationStart < start &&
-                reservationStart < end &&
-                reservationEnd > end)
+              (start <= reservationStart && end >= reservationStart) ||
+              (start <= reservationEnd && end >= reservationEnd) ||
+              (reservationStart <= start &&
+                reservationStart <= end &&
+                reservationEnd >= end)
             ) {
               isAvailable = false
             }
@@ -298,13 +296,16 @@ export class ReservationService {
   }
 
   async getReservationsByUser(userId: string) {
+    let timedate = new Date().toISOString().substr(0, 10)
+    const date = new Date(timedate + 'T00:00:00.000Z')
     const id = userId.toString()
     return (
       await this.reservationRepository.find({
-        where: { groupId: id },
+        where: { groupId: id, isCancelled: false },
       })
     )
-      .filter(reservation => reservation.date >= new Date())
+      .filter(reservation => 
+          reservation.date >= date)
       .sort((a, b) => {
         //sort by date
         const timeA = new Date(a.date + ' ' + a.startTime)
@@ -324,6 +325,12 @@ export class ReservationService {
         }
         return 0
       })
+  }
+
+  async cancelReservation(id: string) {
+    const reservation = await this.findOne(id)
+    reservation.isCancelled = true
+    return this.reservationRepository.save(reservation)
   }
 
   // remove(id: string) {

@@ -133,6 +133,13 @@ export class ReservationResolver {
     return this.reservationService.getReservationsByUser(group.id)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Mutation(() => Reservation, { name: 'cancelReservation' })
+  canselReservation(@Args('id', { type: () => String }) id: string) {
+    return this.reservationService.cancelReservation(id)
+  }
+
   @ResolveField()
   async group(@Parent() reservation: Reservation): Promise<Group> {
     const { groupId } = reservation
