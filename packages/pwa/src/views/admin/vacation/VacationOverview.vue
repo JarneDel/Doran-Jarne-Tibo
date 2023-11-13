@@ -7,16 +7,19 @@ import {
   ApproveVacationRequestResult,
   GET_VACATION_REQUESTS_ADMIN_ALL,
   VacationRequestQueryAdminAll,
+  VacationRequestQueryAdminAllVariables,
   VacationRequestWithStaff,
 } from '@/graphql/vacation.request.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { Badge, BadgeAlert, BadgeCheck } from 'lucide-vue-next'
 import Modal from '@/components/Modal.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
+import FilterOptions from '@/components/generic/FilterOptions.vue'
 
 export default defineComponent({
   name: 'VacationOverview',
   components: {
+    FilterOptions,
     StyledInputText,
     Modal,
     StyledButton,
@@ -25,9 +28,13 @@ export default defineComponent({
     BadgeAlert,
   },
   setup() {
-    const { result } = useQuery<VacationRequestQueryAdminAll>(
-      GET_VACATION_REQUESTS_ADMIN_ALL,
-    )
+    const { result } = useQuery<
+      VacationRequestQueryAdminAll,
+      VacationRequestQueryAdminAllVariables
+    >(GET_VACATION_REQUESTS_ADMIN_ALL, {
+      isExpired: false,
+      isOpen: true,
+    })
 
     const { mutate } = useMutation<
       ApproveVacationRequestResult,
@@ -79,7 +86,11 @@ export default defineComponent({
   <div class="container mx-auto px-4 py-6">
     <div class="overflow-x-auto">
       <div class="w-full overflow-auto">
-        <table v-if="result?.vacationRequests" class="w-full text-sm">
+        <!-- Filters-->
+        <div>
+          <FilterOptions :options="['open', 'expired', 'closed']" />
+        </div>
+        <table v-if="result?.vacationRequestsBy" class="w-full text-sm">
           <thead>
             <tr class="border-b transition-colors">
               <th class="h-12 px-4 text-left align-middle font-medium">
@@ -103,7 +114,7 @@ export default defineComponent({
           </thead>
           <tbody>
             <tr
-              v-for="(vacationRequest, index) in result?.vacationRequests"
+              v-for="(vacationRequest, index) in result?.vacationRequestsBy"
               class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
             >
               <td class="p-4 align-middle">
