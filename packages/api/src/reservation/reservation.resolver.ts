@@ -125,6 +125,21 @@ export class ReservationResolver {
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [Reservation], {
+    name: 'GetReservationsByRoomAndDay',
+    nullable: true,
+  })
+  GetReservationsByRoomAndDay(
+    @Args('date', { type: () => String }) date: string,
+    @Args('roomId', { type: () => String }) roomId: string,
+  ) {
+    return this.reservationService.getReservationsByRoomAndDay(date, roomId)
+  }
+
+
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Reservation], {
     name: 'getReservationsByUser',
     nullable: true,
   })

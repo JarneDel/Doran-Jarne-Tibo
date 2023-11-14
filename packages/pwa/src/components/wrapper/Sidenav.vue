@@ -7,12 +7,13 @@ import {
   PanelRightClose,
   Users,
   Warehouse,
-  Contact2,
+  CalendarClock,
+    Contact2,
   Palmtree,
-} from 'lucide-vue-next'
-import { useLocalStorage } from '@vueuse/core'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+} from 'lucide-vue-next';
+import { useLocalStorage } from '@vueuse/core';
+import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'Sidenav',
@@ -23,6 +24,7 @@ export default defineComponent({
     Warehouse,
     PanelLeftClose,
     PanelRightClose,
+    CalendarClock,
     Contact2,
     Palmtree,
   },
@@ -52,6 +54,12 @@ export default defineComponent({
           route: '/admin/rooms',
         },
         {
+          name: 'reservations',
+          icon: CalendarClock,
+          content: t('nav.reservations'),
+          route: '/admin/reservations',
+        },
+        {
           name: 'staff',
           icon: Contact2,
           content: t('nav.staff'),
@@ -74,7 +82,7 @@ export default defineComponent({
 <template>
   <div
     :class="{
-      'w-1/6': !isClosed,
+      'w-1/6 min-w-48': !isClosed,
       'w-16': isClosed,
     }"
     class="min-h-full overflow-hidden bg-white transition-all duration-200"

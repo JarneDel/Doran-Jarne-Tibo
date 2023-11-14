@@ -1,33 +1,41 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
-import StyledButton from '@/components/generic/StyledButton.vue'
-import { ref } from 'vue'
-import { ChevronDown } from 'lucide-vue-next'
-import useUser from '@/composables/useUser'
-import firebase from '@/composables/useFirebase'
-import logo from '@/components/generic/Logo.vue'
-import { OnClickOutside } from '@vueuse/components'
-import useLanguage from '@/composables/useLanguage'
+import { defineComponent } from 'vue';
+import StyledButton from '@/components/generic/StyledButton.vue';
+import { ref } from 'vue';
+import { ChevronDown } from 'lucide-vue-next';
+import useUser from '@/composables/useUser';
+import firebase from '@/composables/useFirebase';
+import logo from '@/components/generic/Logo.vue';
+import { OnClickOutside } from '@vueuse/components';
+import useLanguage from '@/composables/useLanguage';
 export default defineComponent({
   setup() {
-    const { logout } = firebase()
-    const { firebaseUser } = firebase()
-    const { setLocale, locale } = useLanguage()
-    let options = ref(false)
+    const { logout } = firebase();
+    const { firebaseUser } = firebase();
+    const { setLocale, locale } = useLanguage();
+    let options = ref(false);
     const toggleOptions = () => {
-      options.value = !options.value
-    }
-    const { customUser, userLogout } = useUser()
+      options.value = !options.value;
+    };
+    const { customUser, userLogout } = useUser();
     const logoutbutton = () => {
       logout().then(() => {
-        userLogout()
-        options.value = false
-      })
-    }
-    return { options, toggleOptions, customUser, logoutbutton, firebaseUser,setLocale, locale }
+        userLogout();
+        options.value = false;
+      });
+    };
+    return {
+      options,
+      toggleOptions,
+      customUser,
+      logoutbutton,
+      firebaseUser,
+      setLocale,
+      locale,
+    };
   },
   components: { StyledButton, ChevronDown, logo, OnClickOutside },
-})
+});
 </script>
 
 <template>
@@ -37,16 +45,16 @@ export default defineComponent({
     <router-link to="/" class="flex items-center justify-center gap-2">
       <logo class="h-10" />
 
-      <h1 class="text-primary-text text-xl font-bold">
+      <h1 class="hidden sm:flex text-primary-text text-xl font-bold">
         {{ $t('navigation.title') }}
       </h1>
     </router-link>
-    <div class="flex items-center justify-center gap-8">
+    <div class="flex items-center justify-center md:gap-8">
       <div class="flex justify-center gap-4" v-if="customUser">
         <div
           v-if="
             ['SUPER_ADMIN', 'ADMIN', 'STAFF'].includes(
-              customUser?.userByUid.role,
+              customUser?.userByUid.role
             )
           "
           class="hover:font-bold"

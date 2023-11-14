@@ -295,6 +295,22 @@ export class ReservationService {
     return availableRooms
   }
 
+  async getReservationsByRoomAndDay(
+    date: string,
+    roomId: string,
+  ): Promise<Reservation[]> {
+    const reservations = await this.findByDate(new Date(date))
+    const roomReservations: Reservation[] = []
+    reservations.forEach(reservation => {
+      reservation.rooms.forEach(room => {
+        if (room.id.toString() === roomId) {
+          roomReservations.push(reservation)
+        }
+      })
+    })
+    return roomReservations
+  }
+
   async getReservationsByUser(userId: string) {
     let timedate = new Date().toISOString().substr(0, 10)
     const date = new Date(timedate + 'T00:00:00.000Z')
@@ -324,7 +340,8 @@ export class ReservationService {
           return -1
         }
         return 0
-      })
+    })
+
   }
 
   async cancelReservation(id: string) {

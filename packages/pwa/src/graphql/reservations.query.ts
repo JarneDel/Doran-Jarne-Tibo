@@ -230,6 +230,109 @@ export const CREATERESEVATION = gql`
   }
 `
 
+export const GET_RESERVATIONS_BY_ROOM_AND_DATE = gql`
+query
+  GetReservationsByRoomAndDay(
+    $date: String!
+    $roomId: String!
+  ) {
+    GetReservationsByRoomAndDay(date: $date, roomId: $roomId) {
+    id
+    date
+    startTime
+    endTime
+    group{
+      id
+      UID
+      locale
+      role
+    }
+    reservedMaterials{
+      id
+      name
+      totalAmount
+      wantedAmount
+      price
+      sports{
+        id
+        name
+      }
+      isComplete
+      description
+      amountReserved
+    }
+    rooms{
+      id
+      name
+      sports{
+        id
+        name
+      }
+      pricePerHour
+      type
+    }
+    price
+    isCancelled
+    createdAt
+    updatedAt
+  }
+}
+`
+
+export const GET_ONE_RESERVATION = gql`
+query GetReservatiounById($id: String!) {
+  GetReservatiounById(id: $id) {
+    id
+    date
+    startTime
+    endTime
+    group{
+      id
+      UID
+      locale
+      role
+      profilePictureUrl
+      name
+      btwNumber
+      score
+    }
+    reservedMaterials{
+      id
+      name
+      totalAmount
+      wantedAmount
+      price
+      sports{
+        id
+        name
+      }
+      isComplete
+      description
+      amountReserved
+    }
+    rooms{
+      id
+      name
+      sports{
+        id
+        name
+      }
+      pricePerHour
+    }
+    price
+    isCancelled
+    createdAt
+    updatedAt
+  }
+}
+`
+
+export const DELETE_RESERVATION = gql`
+mutation DeleteReservation($id: String!){
+  DeleteReservation(id: $id){id}
+}
+`
+
 export const CANCEL_RESERVATION = gql`
   mutation cancelReservation($id: String!) {
     cancelReservation(id: $id) {
