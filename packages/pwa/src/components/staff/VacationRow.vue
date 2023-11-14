@@ -1,69 +1,94 @@
-<script lang="ts">
-import { defineComponent, PropType } from 'vue'
-import { VacationRequest } from '@/graphql/vacation.request.query.ts'
+<script setup lang="ts">
+import { computed, defineComponent, PropType, ref } from 'vue'
+import {
+  CANCEL_VACATION_REQUEST,
+  CancelVacationRequestInput,
+  VacationRequest,
+} from '@/graphql/vacation.request.query.ts'
 import { BadgeAlert, BadgeCheck, CircleDashed, Trash2 } from 'lucide-vue-next'
 import { useDates } from '@/composables/useDates.ts'
+import { useMutation } from '@vue/apollo-composable'
+import OptionsModal from '@/components/modal/OptionsModal.vue'
 
-export default defineComponent({
-  name: 'VacationRow',
-  components: { Delete: Trash2, BadgeAlert, BadgeCheck, CircleDashed },
-  props: {
-    data: {
-      type: Object as PropType<VacationRequest>,
-      required: true,
-    },
-  },
-  setup() {
-    const { getDates } = useDates()
-    return { getDates }
-  },
-  methods: {
-    cancelRequest() {
-      alert('not implemented')
-    },
-  },
-
-  computed: {
-    vacationLength() {
-      return this.getDates(this.data.startDate, this.data.endDate)
-    },
+const props = defineProps({
+  data: {
+    type: Object as PropType<VacationRequest>,
+    required: true,
   },
 })
+
+const vacationLength = computed(() => {
+  return getDates(props.data.startDate, props.data.endDate)
+})
+
+const { getDates } = useDates()
+const isCancelling = ref<boolean>(false)
+const { mutate } = useMutation<VacationRequest, CancelVacationRequestInput>(
+  CANCEL_VACATION_REQUEST,
+)
+
+const cancelRequest = () => {
+  mutate({
+    id: props.data.id,
+  }).then(() => {
+    isCancelling.value = false
+  })
+}
 </script>
 
 <template>
-  <div class="b-gray p1 flex flex-row justify-between rounded border">
-    <div>
-      <div>
-        {{ data.startDate.toLocaleDateString() }} -
-        {{ data.endDate.toLocaleDateString() }}
+  <OptionsModal
+    :title="$t('vacationRequest.cancel.title')"
+    :show-modal="isCancelling"
+    :button1="{
+      text: $t('vacationRequest.cancel.keep'),
+      type: 'secondary',
+    }"
+    :button2="{
+      text: $t('vacationRequest.cancel.cancel'),
+      type: 'danger',
+    }"
+    @button1-click="isCancelling = false"
+    @button2-click="cancelRequest"
+    @update:show-modal="isCancelling = false"
+  />
+
+  <div class="min-w-xs p1 max-w-m">
+    <div class="flex flex-col justify-between">
+      <div class="gap4 flex flex-row justify-between">
+        <div>
+          <div>
+            {{ data.startDate.toLocaleDateString() }} -
+            {{ data.endDate.toLocaleDateString() }}
+          </div>
+          <div class="font-300 text-sm">{{ vacationLength }} days</div>
+        </div>
+        <div class="py2 pr2 flex h-full flex-row justify-center gap-2">
+          <BadgeAlert
+            v-if="data.isRejected"
+            :size="24"
+            class="rounded-full bg-red-500 text-white"
+          />
+          <BadgeCheck
+            v-else-if="data.isApproved"
+            :size="24"
+            class="rounded-full bg-green-500 text-white"
+          />
+          <CircleDashed
+            v-else
+            :size="24"
+            class="bg-primary-light rounded-full"
+          ></CircleDashed>
+
+          <button @click="isCancelling = true" v-if="!data.isRejected">
+            <Trash2 :size="24"></Trash2>
+          </button>
+        </div>
       </div>
-      <div class="font-300 text-sm">{{ vacationLength }}days</div>
-    </div>
-    <div v-if="data.isRejected && data.rejectReason">
-      {{ data.rejectReason }}
-    </div>
 
-    <div class="py2 pr2 flex h-full flex-row justify-center gap-2">
-      <BadgeAlert
-        v-if="data.isRejected"
-        :size="24"
-        class="rounded-full bg-red-500 text-white"
-      />
-      <BadgeCheck
-        v-else-if="data.isApproved"
-        :size="24"
-        class="rounded-full bg-green-500 text-white"
-      />
-      <CircleDashed
-        v-else
-        :size="24"
-        class="bg-primary-light rounded-full"
-      ></CircleDashed>
-
-      <button @click="cancelRequest">
-        <Delete :size="24"></Delete>
-      </button>
+      <div v-if="data.isRejected && data.rejectReason" class="text-sm">
+        {{ data.rejectReason }}
+      </div>
     </div>
   </div>
 </template>

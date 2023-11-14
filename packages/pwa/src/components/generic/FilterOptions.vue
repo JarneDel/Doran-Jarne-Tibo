@@ -20,7 +20,11 @@ export default defineComponent({
       default: Math.random().toString(),
     },
     icons: {
-      type: Object as PropType<Component[]>,
+      type: Array as PropType<Component[]>,
+      required: false,
+    },
+    itemCount: {
+      type: Array as PropType<number[]>,
       required: false,
     },
   },
@@ -40,6 +44,7 @@ export default defineComponent({
       class="btn p2 focus-visible-outline-none transition-color flex w-min items-center border-2 border-transparent hover:border-black focus:outline-none focus-visible:border-black focus-visible:border-black"
     >
       <component :is="icons[index]" v-if="icons" :size="20" class="mr-2" />
+      <span v-if="itemCount">{{ itemCount[index] }}&nbsp; </span>
       {{ $t('filter.' + option + '.label') }}
 
       <input

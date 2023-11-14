@@ -165,6 +165,9 @@ export class VacationRequestService {
       // add back vacation days
       await this.staffService.removeVacation(staffUId, v.startDate, v.endDate)
     }
+    if (v.isRejected) {
+      throw new GraphQLError('Vacation request has already been processed')
+    }
     v.isApproved = false
     v.isRejected = true
     v.rejectReason = 'Cancelled by staff member'

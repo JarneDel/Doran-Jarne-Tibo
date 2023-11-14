@@ -24,6 +24,7 @@ export default defineComponent({
 
     isWorkingFromSchedule() {
       const day = new Date().getDay()
+      if (this.data.workingHours.length === 0) return false
       const workingHoursToday = this.data.workingHours.find((wh: any) => {
         return wh.day === day
       })
@@ -40,8 +41,9 @@ export default defineComponent({
     isWorking() {
       return this.isWorkingFromSchedule() && !this.isOnVacation
     },
-    isOnVacation(): boolean {
+    isOnVacation() {
       const vacations = this.data.holidayDates
+      if (!vacations) return false
       const now = new Date()
       return vacations.some((vacation: Date) => {
         // if same day, return true
