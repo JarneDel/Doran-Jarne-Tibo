@@ -331,7 +331,7 @@ export const DELETE_RESERVATION = gql`
 mutation DeleteReservation($id: String!){
   DeleteReservation(id: $id){id}
 }
-
+`
 
 export const CANCEL_RESERVATION = gql`
   mutation cancelReservation($id: String!) {

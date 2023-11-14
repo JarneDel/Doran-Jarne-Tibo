@@ -115,7 +115,8 @@ export const router = createRouter({
           meta: {
             shouldBeAuthenticated: true,
           },
-        }
+        },
+        {
           path: 'staff',
           component: () => import('@/views/admin/staff/Staff.vue'),
         },
