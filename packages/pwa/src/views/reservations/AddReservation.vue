@@ -169,6 +169,7 @@ export default defineComponent({
         onResult(result => {
           availableRooms.value = result.data.getAvailableRooms
           wantedRoom.value = []
+          wantedMaterials.value = []
           price.value = 0
           availableRooms.value.forEach(room => {
             checkboxStatus.value[room.name] = false
