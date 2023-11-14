@@ -18,6 +18,7 @@ import { UsersModule } from './users/users.module'
 import { ReservationModule } from './reservation/reservation.module'
 import { RepairRequestModule } from './repair-request/repair-request.module'
 import { VacationRequestModule } from './vacation-request/vacation-request.module'
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { VacationRequestModule } from './vacation-request/vacation-request.modul
     ReservationModule,
     RepairRequestModule,
     VacationRequestModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
