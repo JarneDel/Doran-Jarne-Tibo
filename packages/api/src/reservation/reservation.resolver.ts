@@ -46,11 +46,21 @@ export class ReservationResolver {
   findAll() {
     return this.reservationService.findAll()
   }
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
+  @AllowedRoles(Role.GROUP, Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => Reservation, { name: 'GetReservatiounById' })
-  findOne(@Args('id', { type: () => String }) id: string) {
-    return this.reservationService.findOne(id)
+  async findOne(
+    @Args('id', { type: () => String }) id: string,
+    @FirebaseUser() user: UserRecord,
+  ) {
+    if (Role.GROUP) {
+      const group = await this.groupService.findOneByUid(user.uid)
+      const reservation = await this.reservationService.findOne(id)
+      // console.log(group.id, reservation.groupId)
+      if (group.id.toString() !== reservation.groupId)
+        throw new GraphQLError('Not authorized')
+      return reservation
+    } else return this.reservationService.findOne(id)
   }
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)
@@ -134,8 +144,6 @@ export class ReservationResolver {
   ) {
     return this.reservationService.getReservationsByRoomAndDay(date, roomId)
   }
-
-
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
   @UseGuards(FirebaseGuard, RolesGuard)

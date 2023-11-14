@@ -6,6 +6,7 @@ import {
   AVAILABLEMATERAILS,
   GET_AVAILABLE_ROOMS,
   CREATERESEVATION,
+GET_ONE_RESERVATION,
 } from '@/graphql/reservations.query'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { Room } from '@/interface/roomInterface'
@@ -13,16 +14,29 @@ import { material } from '@/interface/materialInterface'
 import { Plus, Minus } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import { useRouter } from 'vue-router'
+import { Reservation } from '@/interface/reservation'
 
 export default defineComponent({
   setup() {
+    const reservations = ref<Reservation>()
+     new Promise<void>(resolve => {
+      const { onResult } = useQuery<any>(GET_ONE_RESERVATION)
+      onResult(result => {
+        if (result.loading) return
+        reservations.value = result.data.getReservationsByUser
+        // console.log(reservations.value)
+        resolve()
+      })
+    })
     const { push } = useRouter()
     const { customUser } = useUser()
     const checkboxStatus = ref<any>({})
     const checkboxStatusMaterials = ref<any>({})
     const { mutate: addReservarion } = useMutation(CREATERESEVATION)
+    console.log(reservations.value?.date)
+    const date = new Date()
     const reservation = ref({
-      date: new Date().toISOString().substr(0, 10),
+      date:date.toISOString().substr(0, 10),
       beginTime: '08:00',
       endTime: '18:00',
       timeDivrent: 10,
