@@ -240,7 +240,7 @@ export class SeedService {
           Math.floor(Math.random() * loanableMaterials.length)
         ]
       const material = new Materials()
-      let sports:[Sport]
+      let sports: [Sport]
       for (let sportId of loanableMaterial.SportId) {
         const s = this.sportService.findOneById(sportId)
         s.then(sport => {
@@ -332,12 +332,12 @@ export class SeedService {
       if (randNumb1 === 0) {
         //Room
         rr.loanableMaterial = null // Set to null because it's a room
-        const room = await rooms[Math.floor(Math.random() * rooms.length)]
+        const room = rooms[Math.floor(Math.random() * rooms.length)]
         const roomList: Rooms[] = []
         const r = new Rooms()
         r.name = room.name
         r.pricePerHour = room.pricePerHour
-        let sports: [Sport]
+        let sports: Sport[] = []
         for (let sportId of room.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
@@ -356,7 +356,7 @@ export class SeedService {
             Math.floor(Math.random() * loanableMaterials.length)
           ]
         const material = new Materials()
-        let sports: [Sport] 
+        let sports: Sport[] = []
         for (let sportId of loanableMaterial.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
@@ -404,6 +404,7 @@ export class SeedService {
     if (staff.length === 0) {
       throw new Error('No staff found, please seed staff first')
     }
+    console.log('staff found, seeding vacation requests', staff.length)
     for (let staffMember of staff) {
       const v = new VacationRequest()
       v.staffUId = staffMember.UID

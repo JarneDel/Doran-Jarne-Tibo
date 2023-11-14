@@ -1,6 +1,6 @@
-import { ObjectType, Field, Int, ID, InputType } from "@nestjs/graphql";
+import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { Sports } from 'src/reservation/entities/sport.entity'
-import { Column, Entity, ObjectIdColumn } from "typeorm";
+import { Column, ObjectIdColumn } from 'typeorm'
 
 @InputType('MaterialsInput')
 @ObjectType()
@@ -9,27 +9,27 @@ export class Materials {
   @Field(() => ID)
   id: string
   @Column()
-  @Field({nullable:true})
+  @Field({ nullable: true })
   name: string
 
   @Column()
-  @Field({nullable:true})
+  @Field({ nullable: true })
   totalAmount: number
 
   @Column()
-  @Field({nullable:true})
+  @Field({ nullable: true })
   wantedAmount: number
 
   @Column()
-  @Field({nullable:true})
+  @Field({ nullable: true })
   price: number
 
   @Column()
   @Field(() => [Sports], { nullable: true })
-  sports: [Sports]
+  sports: Sports[]
 
   @Column()
-  @Field({nullable:true})
+  @Field({ nullable: true })
   isComplete: boolean
 
   @Column()
