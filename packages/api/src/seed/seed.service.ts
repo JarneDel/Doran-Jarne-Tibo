@@ -242,13 +242,23 @@ export class SeedService {
           Math.floor(Math.random() * loanableMaterials.length)
         ]
       const material = new Materials()
-      let sports: Sports[] = []
+      // give the sport a fake first sport so that the push function works
+      let sports:[Sport] = [
+        {
+          id: '',
+          name: '',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ]
       for (let sportId of loanableMaterial.SportId) {
         const s = this.sportService.findOneById(sportId)
         s.then(sport => {
           sports.push(sport)
         })
       }
+      // remove the fake sport
+      sports.shift()
       material.id = loanableMaterial.id
       material.name = loanableMaterial.name
       material.totalAmount = loanableMaterial.totalAmount
@@ -338,13 +348,23 @@ export class SeedService {
         const r = new Rooms()
         r.name = room.name
         r.pricePerHour = room.pricePerHour
-        let sports: [Sport]
+        // give the sport a fake first sport so that the push function works
+        let sports: [Sport] = [
+          {
+            id: '',
+            name: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ]
         for (let sportId of room.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
             sports.push(sport)
           })
         }
+        // remove the fake sport
+        sports.shift()
         r.sports = sports
         r.type = room.type
         roomList.push(r)
@@ -357,18 +377,29 @@ export class SeedService {
             Math.floor(Math.random() * loanableMaterials.length)
           ]
         const material = new Materials()
-        let sports: [Sport]
+        // give the sport a fake first sport so that the push function works
+        let sports: [Sport] = [
+          {
+            id: '',
+            name: '',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ]
         for (let sportId of loanableMaterial.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
             sports.push(sport)
           })
         }
+        // remove the fake sport
+        sports.shift()
+        material.sports = sports
         material.name = loanableMaterial.name
         material.totalAmount = loanableMaterial.totalAmount
         material.wantedAmount = loanableMaterial.wantedAmount
         material.price = loanableMaterial.price
-        material.sports = sports
+        // material.sports = sports
         material.isComplete = loanableMaterial.isComplete
         material.description = loanableMaterial.description
         const materialList: Materials[] = []
