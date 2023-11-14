@@ -97,8 +97,8 @@ export interface VacationRequestQueryAdmin {
 }
 
 export const GET_VACATION_REQUESTS_ADMIN_ALL = gql`
-  query GetVacationRequestsAdminAll {
-    vacationRequests {
+  query GetVacationRequestsAdminAll($isExpired: Boolean, $isOpen: Boolean) {
+    vacationRequestsBy(isExpired: $isExpired, isOpen: $isOpen) {
       id
       isApproved
       isRejected
@@ -118,7 +118,12 @@ export const GET_VACATION_REQUESTS_ADMIN_ALL = gql`
 `
 
 export interface VacationRequestQueryAdminAll {
-  vacationRequests: VacationRequestWithStaff[]
+  vacationRequestsBy: VacationRequestWithStaff[]
+}
+
+export interface VacationRequestQueryAdminAllVariables {
+  isExpired?: boolean
+  isOpen?: boolean
 }
 
 export const CANCEL_VACATION_REQUEST = gql`
