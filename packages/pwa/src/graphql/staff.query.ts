@@ -34,6 +34,30 @@ export const STAFF_AND_SERVICES_BY_UID = gql`
     }
   }
 `
+export const STAFF = gql`
+  query {
+    staffByUid {
+      UID
+      id
+      email
+      phone
+      firstName
+      lastName
+      holidayDates
+      holidaysLeft
+      holidaysTotal
+      workingHours {
+        day
+        endTime
+        startTime
+      }
+    }
+  }
+`
+
+export interface Staff {
+  staffByUid: StaffMember
+}
 
 export const UPDATE_PROFILE_PICTURE_STAFF = gql`
   mutation updateProfilePictureStaff($profilePictureUrl: String!) {
@@ -50,7 +74,6 @@ export interface UpdateProfilePictureStaff {
     id: string
   }
 }
-
 
 export interface StaffMemberQuery {
   staffByUid: StaffMember
@@ -71,8 +94,6 @@ export interface Service {
     id: string
   }[]
 }
-
-
 
 export interface StaffMember {
   UID: string

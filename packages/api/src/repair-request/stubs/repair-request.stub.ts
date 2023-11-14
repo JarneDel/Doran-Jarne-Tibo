@@ -20,6 +20,7 @@ export const createRepairRequestInputStub = (): CreateRepairRequestInput => {
   l.price = 100
   l.wantedAmount = 5
   l.totalAmount = 3
+  
   // l.sports = ['Voetbal', 'Tennis', 'Basketbal']
   l.sports = [
     {

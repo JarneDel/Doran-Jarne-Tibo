@@ -16,8 +16,10 @@ export const CREATE_VACATION_REQUEST = gql`
 `
 
 export interface CreateVacationRequestInput {
-  startDate: Date
-  endDate: Date
+  input: {
+    startDate: Date
+    endDate: Date
+  }
 }
 
 export interface CreateVacationRequest {
@@ -25,8 +27,12 @@ export interface CreateVacationRequest {
 }
 
 export const APPROVE_VACATION_REQUEST = gql`
-  mutation ApproveVacationRequest($input: ApproveVacationRequestInput!) {
-    approveVacationRequest(approveVacationRequestInput: $input) {
+  mutation ApproveVacationRequest(
+    $approveVacationRequestInput: ApproveVacationRequestInput!
+  ) {
+    approveVacationRequest(
+      approveVacationRequestInput: $approveVacationRequestInput
+    ) {
       id
       isApproved
       isRejected
@@ -40,7 +46,16 @@ export const APPROVE_VACATION_REQUEST = gql`
 `
 
 export interface ApproveVacationRequestInput {
-  approveVacationRequestInput: VacationRequest
+  approveVacationRequestInput: {
+    id: string
+    isApproved: boolean
+    isRejected: boolean
+    rejectReason: string
+  }
+}
+
+export interface ApproveVacationRequestResult {
+  approveVacationRequest: VacationRequest
 }
 
 export const GET_VACATION_REQUESTS = gql`
@@ -81,20 +96,45 @@ export interface VacationRequestQueryAdmin {
   vacationRequestByStaff: VacationRequest[]
 }
 
-// export const GET_VACATION_REQUESTS_ADMIN_ALL = gql`
-//     query GetVacationRequestsAdminAll {
-//         vacationRequest() {
-//             id
-//             isApproved
-//             isRejected
-//             rejectReason
-//             createdAt
-//             updatedAt
-//             startDate
-//             endDate
-//         }
-//     }
-// `
+export const GET_VACATION_REQUESTS_ADMIN_ALL = gql`
+  query GetVacationRequestsAdminAll {
+    vacationRequests {
+      id
+      isApproved
+      isRejected
+      rejectReason
+      createdAt
+      updatedAt
+      startDate
+      endDate
+      staff {
+        id
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+`
+
+export interface VacationRequestQueryAdminAll {
+  vacationRequests: VacationRequestWithStaff[]
+}
+
+export const CANCEL_VACATION_REQUEST = gql`
+  mutation CancelVacationRequest($id: String!) {
+    cancelVacationRequest(id: $id) {
+      id
+      isApproved
+      isRejected
+      rejectReason
+      createdAt
+      updatedAt
+      startDate
+      endDate
+    }
+  }
+`
 
 export interface VacationRequest {
   id: string
@@ -105,4 +145,13 @@ export interface VacationRequest {
   updatedAt: Date
   startDate: Date
   endDate: Date
+}
+
+export interface VacationRequestWithStaff extends VacationRequest {
+  staff: {
+    id: string
+    firstName: string
+    lastName: string
+    email: string
+  }
 }

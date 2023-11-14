@@ -40,6 +40,7 @@ import { StaffService } from 'src/staff/staff.service'
 import { ServiceService } from '../service/service.service'
 import { RepairRequestService } from '../repair-request/repair-request.service'
 import { VacationRequestService } from '../vacation-request/vacation-request.service'
+import { Sports } from 'src/reservation/entities/sport.entity'
 
 @Injectable()
 export class SeedService {
@@ -234,7 +235,8 @@ export class SeedService {
       r.date = new Date(reservation.date)
       r.startTime = reservation.start_time
       r.endTime = reservation.end_time
-      r.groupId = groups[Math.floor(Math.random() * groups.length)].id
+      r.groupId = groups[Math.floor(Math.random() * groups.length)].id.toString()
+      console.log({'🌈':r.groupId})
       const loanableMaterial =
         await loanableMaterials[
           Math.floor(Math.random() * loanableMaterials.length)

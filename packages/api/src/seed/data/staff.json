@@ -7,7 +7,7 @@
     "lastName": "staff",
     "email": "staff@test.test",
     "phone": "+32490123456",
-    "holidaysleft": 0,
+    "holidaysleft": 12,
     "holidaysTotal": 12,
     "holidayDates": [],
     "workingHours": [
@@ -47,7 +47,7 @@
     "email": "admin@test.test",
     "phone": "+32490123456",
     "holidaysTotal": 12,
-    "holidaysleft": 0,
+    "holidaysleft": 12,
     "holidayDates": []
   },
   {
@@ -58,7 +58,7 @@
     "lastName": "superadmin",
     "email": "superadmin@test.test",
     "phone": "+32490123456",
-    "holidaysleft": 0,
+    "holidaysleft": 12,
     "holidaysTotal": 12,
     "holidayDates": []
   }

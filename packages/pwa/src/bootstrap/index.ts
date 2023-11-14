@@ -116,6 +116,21 @@ export const router = createRouter({
             shouldBeAuthenticated: true,
           },
         }
+          path: 'staff',
+          component: () => import('@/views/admin/staff/Staff.vue'),
+        },
+        {
+          path: 'vacation',
+          component: () =>
+            import('@/views/admin/vacation/VacationOverview.vue'),
+          meta: {
+            allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
+          },
+        },
+        {
+          path: ':pathMatch(.*)*',
+          component: () => import('@/views/NotFound.vue'),
+        },
       ],
     },
     {
@@ -129,10 +144,12 @@ export const router = createRouter({
         {
           path: '',
           component: () => import('@/views/staff/StaffOverview.vue'),
-        },
-        {
-          path: 'request-vacation',
-          component: () => import('@/views/staff/RequestVacation.vue'),
+          children: [
+            {
+              path: 'request-vacation',
+              component: () => import('@/views/staff/RequestVacation.vue'),
+            },
+          ],
         },
       ],
     },
@@ -175,11 +192,25 @@ export const router = createRouter({
     },
     {
       path: '/reservation',
-      component: () => import('@/views/Reservation.vue'),
+      component: () => import('@/components/wrapper/reservationWrapper.vue'),
+      children: [
+        {
+          path: '',
+          component: () => import('@/views/reservations/Reservation.vue'),
+        },
+        {
+          path: 'add',
+          component: () => import('@/views/reservations/AddReservation.vue'),
+        },
+      ],
       meta: {
         shouldBeAuthenticated: true,
         allowedRoles: ['GROUP'],
       },
+    },
+    {
+      path: '/403',
+      component: () => import('@/views/403.vue'),
     },
     {
       path: '/:pathMatch(.*)*',

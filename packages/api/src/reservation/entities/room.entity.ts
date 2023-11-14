@@ -14,7 +14,7 @@ export class Rooms {
 
   @Column() // Database link - Typeorm
   @Field(() => [Sports], { nullable: true }) // Graphql
-  sports: [Sports]
+  sports: Sports[]
 
   @Column() // Database link - Typeorm
   @Field({ nullable: true }) // Graphql

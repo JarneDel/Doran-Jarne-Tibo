@@ -125,4 +125,24 @@ export class StaffService {
 
     return this.staffRepository.save(staff)
   }
+
+  async removeVacation(uid: string, startDate: Date, endDate: Date) {
+    const staff = await this.findOneByUid(uid)
+    const days = Math.ceil(
+      (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24),
+    )
+    staff.holidaysLeft += days
+    for (let i = 0; i < days; i++) {
+      const index = staff.holidayDates.findIndex(date => {
+        return date.getTime() === startDate.getTime()
+      })
+      if (index === -1) {
+        throw new GraphQLError('Not on holiday')
+      }
+      staff.holidayDates.splice(index, 1)
+      startDate = new Date(startDate.getTime() + 1000 * 3600 * 24)
+    }
+
+    return this.staffRepository.save(staff)
+  }
 }

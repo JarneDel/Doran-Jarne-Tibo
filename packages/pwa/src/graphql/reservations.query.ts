@@ -1,5 +1,117 @@
 import gql from 'graphql-tag'
 
+export const GET_RESERVATIONS = gql`
+  query {
+    getReservationsByUser {
+      id
+      date
+      startTime
+      endTime
+      group {
+        id
+        UID
+        locale
+        role
+        createdAt
+        updatedAt
+        profilePictureUrl
+        name
+        btwNumber
+        score
+      }
+      reservedMaterials {
+        id
+        name
+        totalAmount
+        wantedAmount
+        price
+        sports {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        isComplete
+        description
+        amountReserved
+      }
+      rooms {
+        id
+        name
+        sports {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        pricePerHour
+        type
+      }
+      price
+      isCancelled
+      createdAt
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+export const GET_RESERVATIONS_BY_DATE_AND_USER = gql`
+  query GetReservationsByDateAndUser($date: DateTime!) {
+    GetReservationsByDateAndUser(date: $date) {
+      id
+      date
+      startTime
+      endTime
+      group {
+        id
+        UID
+        locale
+        role
+        createdAt
+        updatedAt
+        profilePictureUrl
+        name
+        btwNumber
+        score
+      }
+      reservedMaterials {
+        id
+        name
+        totalAmount
+        wantedAmount
+        price
+        sports {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        isComplete
+        description
+        amountReserved
+      }
+      rooms {
+        id
+        name
+        sports {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        pricePerHour
+        type
+      }
+      price
+      isCancelled
+      createdAt
+      createdAt
+      updatedAt
+    }
+  }
+`
+
 export const AVAILABLEMATERAILS = gql`
   query GetAvailableloanableMaterials(
     $date: String!
@@ -219,4 +331,12 @@ export const DELETE_RESERVATION = gql`
 mutation DeleteReservation($id: String!){
   DeleteReservation(id: $id){id}
 }
+
+
+export const CANCEL_RESERVATION = gql`
+  mutation cancelReservation($id: String!) {
+    cancelReservation(id: $id) {
+      id
+    }
+  }
 `

@@ -33,6 +33,10 @@ export default defineComponent({
       type: Number,
       default: 1,
     },
+    description: {
+      type: String,
+      required: false,
+    },
   },
   setup: (props, ctx) => {
     onKeyStroke('Escape', () => {
@@ -80,6 +84,9 @@ export default defineComponent({
               <button @click="$emit('update:showModal', false)">
                 <LucideX :size="20" />
               </button>
+            </div>
+            <div v-if="description" class="mb-4 text-sm text-gray-500">
+              {{ description }}
             </div>
             <div class="flex flex-row items-center justify-between gap-4">
               <StyledButton
