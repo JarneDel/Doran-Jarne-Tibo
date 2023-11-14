@@ -122,8 +122,8 @@ export interface VacationRequestQueryAdminAll {
 }
 
 export interface VacationRequestQueryAdminAllVariables {
-  isExpired?: boolean
-  isOpen?: boolean
+  isExpired: boolean | null
+  isOpen: boolean | null
 }
 
 export const CANCEL_VACATION_REQUEST = gql`

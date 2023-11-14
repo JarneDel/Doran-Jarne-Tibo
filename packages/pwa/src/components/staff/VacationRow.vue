@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { VacationRequest } from '@/graphql/vacation.request.query.ts'
-import { Trash2, BadgeAlert, BadgeCheck, CircleDashed } from 'lucide-vue-next'
+import { BadgeAlert, BadgeCheck, CircleDashed, Trash2 } from 'lucide-vue-next'
 import { useDates } from '@/composables/useDates.ts'
 
 export default defineComponent({
@@ -32,10 +32,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    class="flex flex-row justify-between rounded border"
-    :class="data.isRejected ? 'border-danger' : 'border-gray-300'"
-  >
+  <div class="b-gray p1 flex flex-row justify-between rounded border">
     <div>
       <div>
         {{ data.startDate.toLocaleDateString() }} -
@@ -48,9 +45,21 @@ export default defineComponent({
     </div>
 
     <div class="py2 pr2 flex h-full flex-row justify-center gap-2">
-      <BadgeAlert :size="24" v-if="data.isRejected" />
-      <BadgeCheck :size="24" v-else-if="data.isApproved" />
-      <CircleDashed :size="24" v-else></CircleDashed>
+      <BadgeAlert
+        v-if="data.isRejected"
+        :size="24"
+        class="rounded-full bg-red-500 text-white"
+      />
+      <BadgeCheck
+        v-else-if="data.isApproved"
+        :size="24"
+        class="rounded-full bg-green-500 text-white"
+      />
+      <CircleDashed
+        v-else
+        :size="24"
+        class="bg-primary-light rounded-full"
+      ></CircleDashed>
 
       <button @click="cancelRequest">
         <Delete :size="24"></Delete>

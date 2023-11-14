@@ -58,8 +58,8 @@ export default defineComponent({
   <div class="m2 relative">
     <h2 class="text-2xl font-medium">Vacations</h2>
     <styled-button
-      class="absolute right-2 top-2"
       button-type="secondary"
+      class="absolute right-2 top-2"
       type="button"
       @click="$router.push('/staff/request-vacation')"
       >{{ $t('staff.requestVacation') }}
@@ -73,17 +73,14 @@ export default defineComponent({
       }}
     </div>
 
-    <div
-      v-if="result?.vacationRequestLoggedIn"
-      class="p2 mt-4 rounded bg-white"
-    >
+    <div v-if="result?.vacationRequestLoggedIn" class="p2 mt-4 rounded">
       <div class="my-2 flex flex-row gap-4">
         <button
-          @click="filter = 'notApproved'"
-          class="flex flex-row items-center"
           :class="{
             'text-gray': filter !== 'notApproved',
           }"
+          class="flex flex-row items-center"
+          @click="filter = 'notApproved'"
         >
           <Badge class="mr-2"></Badge>
           <span>
@@ -92,11 +89,11 @@ export default defineComponent({
           </span>
         </button>
         <button
-          @click="filter = 'approved'"
-          class="flex flex-row items-center"
           :class="{
             'text-gray': filter !== 'approved',
           }"
+          class="flex flex-row items-center"
+          @click="filter = 'approved'"
         >
           <BadgeCheck class="mr2" />
           <span> {{ approvedCount }} approved </span>

@@ -7,7 +7,7 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    console.log('controller getHello')
+    // used for health check
     return this.appService.getHello()
   }
 }

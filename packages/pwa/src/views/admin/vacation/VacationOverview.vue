@@ -11,7 +11,18 @@ import {
   VacationRequestWithStaff,
 } from '@/graphql/vacation.request.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { Badge, BadgeAlert, BadgeCheck } from 'lucide-vue-next'
+import {
+  AlarmCheck,
+  AlarmCheckIcon,
+  Badge,
+  BadgeAlert,
+  BadgeCheck,
+  Check,
+  CheckIcon,
+  CircleDot,
+  Grid2x2,
+  Grid2x2Icon,
+} from 'lucide-vue-next'
 import Modal from '@/components/Modal.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import OptionsModal from '@/components/modal/OptionsModal.vue'
@@ -19,6 +30,7 @@ import FilterOptions from '@/components/generic/FilterOptions.vue'
 
 export default defineComponent({
   name: 'VacationOverview',
+  methods: { Grid2x2Icon, CheckIcon, AlarmCheckIcon, CircleDot },
   components: {
     OptionsModal,
     FilterOptions,
@@ -28,14 +40,25 @@ export default defineComponent({
     Badge,
     BadgeCheck,
     BadgeAlert,
+    CircleDot,
+    Check,
+    AlarmCheck,
+    Grid2x2,
   },
   setup() {
-    const { result } = useQuery<
+    const filter = ref<string>('open')
+
+    const { result, refetch, loading } = useQuery<
       VacationRequestQueryAdminAll,
       VacationRequestQueryAdminAllVariables
     >(GET_VACATION_REQUESTS_ADMIN_ALL, {
-      isExpired: false,
-      isOpen: true,
+      isExpired: filter.value === 'expired',
+      isOpen:
+        filter.value === 'open'
+          ? true
+          : filter.value === 'closed'
+          ? false
+          : null,
     })
 
     const { mutate } = useMutation<
@@ -70,16 +93,27 @@ export default defineComponent({
       approve.value = undefined
     }
 
+    const filterVacationRequests = (filter: string) => {
+      refetch({
+        isExpired: filter === 'expired',
+        isOpen: filter === 'open' ? true : filter === 'closed' ? false : null,
+      })
+    }
+
     const reject = ref<VacationRequestWithStaff>()
     const approve = ref<VacationRequestWithStaff>()
     const rejectMessage = ref<string>('')
+
     return {
-      result,
+      approve,
+      approveVacation,
+      filter,
+      filterVacationRequests,
+      loading,
       reject,
       rejectMessage,
       rejectVacation,
-      approve,
-      approveVacation,
+      result,
     }
   },
 })
@@ -128,10 +162,21 @@ export default defineComponent({
     <div class="overflow-x-auto">
       <div class="w-full overflow-auto">
         <!-- Filters-->
-        <div>
-          <FilterOptions :options="['open', 'expired', 'closed']" />
+        <div class="my-4">
+          <FilterOptions
+            v-model="filter"
+            :icons="[CircleDot, CheckIcon, AlarmCheckIcon, Grid2x2Icon]"
+            :options="['open', 'closed', 'expired', 'all']"
+            name="vacation-request-filter"
+            @update:model-value="filterVacationRequests"
+          />
         </div>
-        <table v-if="result?.vacationRequestsBy" class="w-full text-sm">
+        <table
+          v-if="
+            result?.vacationRequestsBy && result.vacationRequestsBy.length > 0
+          "
+          class="w-full text-sm"
+        >
           <thead>
             <tr class="border-b transition-colors">
               <th class="h-12 px-4 text-left align-middle font-medium">
@@ -201,6 +246,8 @@ export default defineComponent({
             </tr>
           </tbody>
         </table>
+        <div v-else-if="loading">Loading</div>
+        <div v-else>No vacation requests found</div>
       </div>
     </div>
   </div>
