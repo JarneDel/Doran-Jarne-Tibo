@@ -20,8 +20,11 @@ export default defineComponent({
     const reservationDate = ref<string>(new Date().toISOString().substr(0, 10))
     new Promise<void>(resolve => {
       reservationSeach.value = false
-      const { onResult } = useQuery<any>(GET_RESERVATIONS)
+      const { onResult } = useQuery<any>(GET_RESERVATIONS,{},{
+          fetchPolicy: 'no-cache',
+        })
       onResult(result => {
+        if (result.loading) return
         reservations.value = result.data.getReservationsByUser
         // console.log(reservations.value)
         resolve()
@@ -34,6 +37,7 @@ export default defineComponent({
           date: reservationDate.value,
         })
         onResult(result => {
+          if (result.loading) return
           reservations.value = result.data.GetReservationsByDateAndUser
           console.log(reservations.value)
           resolve()
@@ -45,6 +49,7 @@ export default defineComponent({
         reservationSeach.value = false
         const { onResult } = useQuery<any>(GET_RESERVATIONS)
         onResult(result => {
+          if (result.loading) return
           reservations.value = result.data.getReservationsByUser
           // console.log(reservations.value)
           resolve()
