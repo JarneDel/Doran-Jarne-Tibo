@@ -117,6 +117,31 @@ export class VacationRequestService {
     return this.vacationRequestRepository.find()
   }
 
+  findByIsOpen(isOpen: boolean) {
+    if (isOpen) {
+      return this.vacationRequestRepository.find({
+        $and: [
+          { startDate: { $gte: new Date() } },
+          { $or: [{ isRejected: null }, { isRejected: false }] },
+          { $or: [{ isApproved: null }, { isApproved: false }] },
+        ],
+      })
+    }
+    return this.vacationRequestRepository.find({
+      $and: [{ $or: [{ isRejected: true }, { isApproved: true }] }],
+    })
+  }
+
+  findExpired() {
+    return this.vacationRequestRepository.find({
+      $and: [
+        { startDate: { $lte: new Date() } },
+        { $or: [{ isRejected: null }, { isRejected: false }] },
+        { $or: [{ isApproved: null }, { isApproved: false }] },
+      ],
+    })
+  }
+
   findOne(id: string) {
     const oId = new ObjectId(id)
     //@ts-ignore
@@ -139,6 +164,9 @@ export class VacationRequestService {
     if (v.isApproved) {
       // add back vacation days
       await this.staffService.removeVacation(staffUId, v.startDate, v.endDate)
+    }
+    if (v.isRejected) {
+      throw new GraphQLError('Vacation request has already been processed')
     }
     v.isApproved = false
     v.isRejected = true

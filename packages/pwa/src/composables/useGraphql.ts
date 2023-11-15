@@ -48,6 +48,14 @@ const apolloClient = new ApolloClient({
           updatedAt: { read },
         },
       },
+      vacationRequestsBy: {
+        fields: {
+          createdAt: { read },
+          endDate: { read },
+          startDate: { read },
+          updatedAt: { read },
+        },
+      },
       Staff: {
         fields: {
           createdAt: { read },

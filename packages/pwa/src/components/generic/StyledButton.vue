@@ -49,7 +49,7 @@ export default defineComponent({
 
 <style scoped>
 .primary {
-  @apply bg-primary active:bg-secondary-400;
+  @apply bg-primary active:bg-primary-400 c-white;
 }
 
 .secondary {
@@ -57,7 +57,7 @@ export default defineComponent({
 }
 
 .danger {
-  @apply bg-danger active:bg-danger-active;
+  @apply bg-danger active:bg-danger-active c-white;
 }
 
 .gray {

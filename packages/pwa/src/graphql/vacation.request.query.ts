@@ -27,8 +27,12 @@ export interface CreateVacationRequest {
 }
 
 export const APPROVE_VACATION_REQUEST = gql`
-  mutation ApproveVacationRequest($input: ApproveVacationRequestInput!) {
-    approveVacationRequest(approveVacationRequestInput: $input) {
+  mutation ApproveVacationRequest(
+    $approveVacationRequestInput: ApproveVacationRequestInput!
+  ) {
+    approveVacationRequest(
+      approveVacationRequestInput: $approveVacationRequestInput
+    ) {
       id
       isApproved
       isRejected
@@ -42,7 +46,16 @@ export const APPROVE_VACATION_REQUEST = gql`
 `
 
 export interface ApproveVacationRequestInput {
-  approveVacationRequestInput: VacationRequest
+  approveVacationRequestInput: {
+    id: string
+    isApproved: boolean
+    isRejected: boolean
+    rejectReason: string
+  }
+}
+
+export interface ApproveVacationRequestResult {
+  approveVacationRequest: VacationRequest
 }
 
 export const GET_VACATION_REQUESTS = gql`
@@ -84,8 +97,8 @@ export interface VacationRequestQueryAdmin {
 }
 
 export const GET_VACATION_REQUESTS_ADMIN_ALL = gql`
-  query GetVacationRequestsAdminAll {
-    vacationRequests {
+  query GetVacationRequestsAdminAll($isExpired: Boolean, $isOpen: Boolean) {
+    vacationRequestsBy(isExpired: $isExpired, isOpen: $isOpen) {
       id
       isApproved
       isRejected
@@ -94,12 +107,23 @@ export const GET_VACATION_REQUESTS_ADMIN_ALL = gql`
       updatedAt
       startDate
       endDate
+      staff {
+        id
+        firstName
+        lastName
+        email
+      }
     }
   }
 `
 
 export interface VacationRequestQueryAdminAll {
-  vacationRequests: VacationRequest[]
+  vacationRequestsBy: VacationRequestWithStaff[]
+}
+
+export interface VacationRequestQueryAdminAllVariables {
+  isExpired: boolean | null
+  isOpen: boolean | null
 }
 
 export const CANCEL_VACATION_REQUEST = gql`
@@ -117,6 +141,11 @@ export const CANCEL_VACATION_REQUEST = gql`
   }
 `
 
+export interface CancelVacationRequestInput {
+  id: string
+}
+
+
 export interface VacationRequest {
   id: string
   isApproved: boolean
@@ -126,4 +155,13 @@ export interface VacationRequest {
   updatedAt: Date
   startDate: Date
   endDate: Date
+}
+
+export interface VacationRequestWithStaff extends VacationRequest {
+  staff: {
+    id: string
+    firstName: string
+    lastName: string
+    email: string
+  }
 }
