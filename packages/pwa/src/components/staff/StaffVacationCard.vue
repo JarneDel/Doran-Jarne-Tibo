@@ -68,7 +68,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="m2 relative">
+  <div class="m2 relative w-full">
     <h2 class="text-2xl font-medium">Vacations</h2>
     <styled-button
       button-type="secondary"
@@ -87,42 +87,17 @@ export default defineComponent({
     </div>
 
     <div v-if="result?.vacationRequestLoggedIn" class="p2 mt-4 rounded">
-      <!--      <div class="my-2 flex flex-row gap-4">-->
-      <!--        <button-->
-      <!--          :class="{-->
-      <!--            'text-gray': filter !== 'notApproved',-->
-      <!--          }"-->
-      <!--          class="flex flex-row items-center"-->
-      <!--          @click="filter = 'notApproved'"-->
-      <!--        >-->
-      <!--          <Badge class="mr-2"></Badge>-->
-      <!--          <span>-->
-      <!--            {{ result.vacationRequestLoggedIn.length - (approvedCount ?? 0) }}-->
-      <!--            pending / denied-->
-      <!--          </span>-->
-      <!--        </button>-->
-      <!--        <button-->
-      <!--          :class="{-->
-      <!--            'text-gray': filter !== 'approved',-->
-      <!--          }"-->
-      <!--          class="flex flex-row items-center"-->
-      <!--          @click="filter = 'approved'"-->
-      <!--        >-->
-      <!--          <BadgeCheck class="mr2" />-->
-      <!--          <span> {{ approvedCount }} approved </span>-->
-      <!--        </button>-->
-      <!--      </div>-->
       <FilterOptions
-        class="mb-4"
-        :options="['open', 'closed', 'expired']"
-        :item-count="[openCount, closedCount, expiredCount]"
         v-model="filter"
+        :item-count="[openCount, closedCount, expiredCount]"
+        :options="['open', 'closed', 'expired']"
+        class="mb-4"
       />
 
       <div class="gap4 flex flex-row flex-row flex-wrap">
         <div
           v-for="request of resultFiltered"
-          class="py.5 p1 b-gray rounded border"
+          class="py.5 p1 rounded bg-white shadow-md"
         >
           <VacationRow :data="request"></VacationRow>
         </div>

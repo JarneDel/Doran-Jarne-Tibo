@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue'
+<script lang="ts" setup>
+import { computed, PropType, ref } from 'vue'
 import {
   CANCEL_VACATION_REQUEST,
   CancelVacationRequestInput,
@@ -38,8 +38,6 @@ const cancelRequest = () => {
 
 <template>
   <OptionsModal
-    :title="$t('vacationRequest.cancel.title')"
-    :show-modal="isCancelling"
     :button1="{
       text: $t('vacationRequest.cancel.keep'),
       type: 'secondary',
@@ -48,12 +46,14 @@ const cancelRequest = () => {
       text: $t('vacationRequest.cancel.cancel'),
       type: 'danger',
     }"
+    :show-modal="isCancelling"
+    :title="$t('vacationRequest.cancel.title')"
     @button1-click="isCancelling = false"
     @button2-click="cancelRequest"
     @update:show-modal="isCancelling = false"
   />
 
-  <div class="min-w-xs p1 max-w-m">
+  <div class="min-w-xs p1">
     <div class="flex flex-col justify-between">
       <div class="gap4 flex flex-row justify-between">
         <div>
@@ -80,7 +80,7 @@ const cancelRequest = () => {
             class="bg-primary-light rounded-full"
           ></CircleDashed>
 
-          <button @click="isCancelling = true" v-if="!data.isRejected">
+          <button v-if="!data.isRejected" @click="isCancelling = true">
             <Trash2 :size="24"></Trash2>
           </button>
         </div>

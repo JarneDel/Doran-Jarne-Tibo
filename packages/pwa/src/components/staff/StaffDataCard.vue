@@ -70,8 +70,7 @@ export default defineComponent({
   <!--  </div>-->
 
   <div
-    class="text-card-foreground mx-auto max-w-sm overflow-hidden rounded-xl border bg-white shadow-md dark:bg-gray-800"
-    data-v0-t="card"
+    class="h-min w-full overflow-hidden rounded-xl border bg-white shadow-md dark:bg-gray-800"
   >
     <div class="flex items-center justify-between space-x-4 p-6">
       <div class="flex items-center space-x-4">
