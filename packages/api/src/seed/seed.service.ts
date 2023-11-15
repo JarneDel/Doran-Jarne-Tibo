@@ -243,22 +243,13 @@ export class SeedService {
         ]
       const material = new Materials()
       // give the sport a fake first sport so that the push function works
-      let sports:[Sport] = [
-        {
-          id: '',
-          name: '',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ]
+      let sports:Sport[] = []
       for (let sportId of loanableMaterial.SportId) {
         const s = this.sportService.findOneById(sportId)
         s.then(sport => {
           sports.push(sport)
         })
       }
-      // remove the fake sport
-      sports.shift()
       material.id = loanableMaterial.id
       material.name = loanableMaterial.name
       material.totalAmount = loanableMaterial.totalAmount
@@ -343,28 +334,18 @@ export class SeedService {
       if (randNumb1 === 0) {
         //Room
         rr.loanableMaterial = null // Set to null because it's a room
-        const room = await rooms[Math.floor(Math.random() * rooms.length)]
+        const room = rooms[Math.floor(Math.random() * rooms.length)]
         const roomList: Rooms[] = []
         const r = new Rooms()
         r.name = room.name
         r.pricePerHour = room.pricePerHour
-        // give the sport a fake first sport so that the push function works
-        let sports: [Sport] = [
-          {
-            id: '',
-            name: '',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ]
+        let sports: Sport[] = []
         for (let sportId of room.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
             sports.push(sport)
           })
         }
-        // remove the fake sport
-        sports.shift()
         r.sports = sports
         r.type = room.type
         roomList.push(r)
@@ -377,29 +358,18 @@ export class SeedService {
             Math.floor(Math.random() * loanableMaterials.length)
           ]
         const material = new Materials()
-        // give the sport a fake first sport so that the push function works
-        let sports: [Sport] = [
-          {
-            id: '',
-            name: '',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ]
+        let sports: Sport[] = []
         for (let sportId of loanableMaterial.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
             sports.push(sport)
           })
         }
-        // remove the fake sport
-        sports.shift()
-        material.sports = sports
         material.name = loanableMaterial.name
         material.totalAmount = loanableMaterial.totalAmount
         material.wantedAmount = loanableMaterial.wantedAmount
         material.price = loanableMaterial.price
-        // material.sports = sports
+        material.sports = sports
         material.isComplete = loanableMaterial.isComplete
         material.description = loanableMaterial.description
         const materialList: Materials[] = []
@@ -436,6 +406,7 @@ export class SeedService {
     if (staff.length === 0) {
       throw new Error('No staff found, please seed staff first')
     }
+    console.log('staff found, seeding vacation requests', staff.length)
     for (let staffMember of staff) {
       const v = new VacationRequest()
       v.staffUId = staffMember.UID

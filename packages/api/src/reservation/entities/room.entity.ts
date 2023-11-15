@@ -1,6 +1,6 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { Sports } from './sport.entity'
-import { Column, Entity, ObjectIdColumn } from 'typeorm'
+import { Column, ObjectIdColumn } from 'typeorm'
 
 @InputType('RoomsInput') // Database link - Typeorm
 @ObjectType()
