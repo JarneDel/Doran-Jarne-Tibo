@@ -7,6 +7,10 @@ export default defineConfig({
   safelist: [...Array.from({ length: 100 }, (_, i) => `left-[${i + 1}%]`)],
   transformers: [transformerDirectives()],
   theme: {
+    maxWidth: {
+      '3xs': '12rem',
+      '2xs': '16rem',
+    },
     colors: {
       secondary: {
         DEFAULT: '#F5CB5C',

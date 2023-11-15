@@ -1,14 +1,67 @@
 <script lang="ts">
+// Vue
 import { ref } from 'vue'
+// Firebase
 import { type AuthError } from 'firebase/auth'
-
+// Composables
 import useFirebase from '@/composables/useFirebase'
 
+// Components
+import OpeningsHoursCard from '@/components/OpeningsHoursCard.vue'
+
+interface Day {
+  name: string;
+  hours: string;
+  EnglishName?: string;
+}
+
 export default {
+  components: {
+    OpeningsHoursCard,
+  },
   setup() {
     const { logout } = useFirebase()
 
     const error = ref<AuthError | null>(null)
+
+    const openingsHoursCafitaria = <Day[]>[
+      {
+        name:  `{{ $t('rooms.gyms') }}`,
+        hours: '9:00 - 22:00',
+        EnglishName: 'Monday',
+      },
+      {
+        name: 'Tuesday',
+        hours: '9:00 - 22:00',
+        EnglishName: 'Tuesday',
+      },
+      {
+        name: 'Wednesday',
+        hours: '9:00 - 22:00',
+        EnglishName: 'Wednesday',
+      },
+      {
+        name: 'Thursday',
+        hours: '9:00 - 22:00',
+        EnglishName: 'Thursday',
+      },
+      {
+        name: 'Friday',
+        hours: '9:00 - 22:00',
+        EnglishName: 'Friday',
+      },
+      {
+        name: 'Saturday',
+        hours: '9:00 - 22:00',
+        EnglishName: 'Saturday',
+      },
+      {
+        name: 'Sunday',
+        hours: '9:00 - 22:00',
+        EnglishName: 'Sunday',
+      },
+    ]
+
     const handleLogout = () => {
       logout()
         .then(() => {
@@ -18,9 +71,11 @@ export default {
           error.value = err
         })
     }
+
     return {
       error,
       handleLogout,
+      openingsHoursCafitaria,
     }
   },
 }
@@ -36,14 +91,135 @@ export default {
       />
     </div>
     <div
-      class="m-8 flex flex-col items-center justify-center gap-2 md:flex-row"
+      style="
+        background-image: url('public/backgroundPattern.webp');
+        background-repeat: repeat;
+      "
+      class="p-4 md:p-8 flex flex-col items-center justify-center gap-4 md:gap-6 lg:gap-8 xl:gap-10 2xl:gap-20 lg:flex-row xl:p-12 2xl:p-20"
     >
-      <div class="w-full bg-green-600">1</div>
-      <div class="w-full bg-green-600">2</div>
-      <div class="w-full bg-green-600">3</div>
+      <OpeningsHoursCard
+        :title="$t('home.cafetaria')"
+        :openingHours="[
+          {
+            name: $t('day.monday'),
+            hours: '08:00 - 22:00',
+            EnglishName: 'Monday',
+          },
+          {
+            name: $t('day.tuesday'),
+            hours: '08:00 - 22:00',
+            EnglishName: 'Tuesday',
+          },
+          {
+            name: $t('day.wednesday'),
+            hours: '08:00 - 22:00',
+            EnglishName: 'Wednesday',
+          },
+          {
+            name: $t('day.thursday'),
+            hours: '08:00 - 22:00',
+            EnglishName: 'Thursday',
+          },
+          {
+            name: $t('day.friday'),
+            hours: '08:00 - 24:00',
+            EnglishName: 'Friday',
+          },
+          {
+            name: $t('day.saturday'),
+            hours: '10:00 - 24:00',
+            EnglishName: 'Saturday',
+          },
+          {
+            name: $t('day.sunday'),
+            hours: '09:00 - 24:00',
+            EnglishName: 'Sunday',
+          },
+        ]"
+      />
+      <OpeningsHoursCard
+        :title="$t('home.publicSwimming')"
+        openingText="Open nu: sluit om 22:00"
+        :openingHours="[
+          {
+            name: $t('day.monday'),
+            hours: '18:00 - 21:00',
+            EnglishName: 'Monday',
+          },
+          {
+            name: $t('day.tuesday'),
+            hours: '18:00 - 21:00',
+            EnglishName: 'Tuesday',
+          },
+          {
+            name: $t('day.wednesday'),
+            hours: '12:00 - 21:00',
+            EnglishName: 'Wednesday',
+          },
+          {
+            name: $t('day.thursday'),
+            hours: '18:00 - 21:00',
+            EnglishName: 'Thursday',
+          },
+          {
+            name: $t('day.friday'),
+            hours: '18:00 - 21:00',
+            EnglishName: 'Friday',
+          },
+          {
+            name: $t('day.saturday'),
+            hours: '09:00 - 22:00',
+            EnglishName: 'Saturday',
+          },
+          {
+            name: $t('day.sunday'),
+            hours: '09:00 - 22:00',
+            EnglishName: 'Sunday',
+          },
+        ]"
+      />
+      <OpeningsHoursCard
+        :title="$t('home.swimmingLaps')"
+        openingText="Open nu: sluit om 22:00"
+        :openingHours="[
+          {
+            name: $t('day.monday'),
+            hours: '18:00 - 21:00',
+            EnglishName: 'Monday',
+          },
+          {
+            name: $t('day.tuesday'),
+            hours: '18:00 - 21:00',
+            EnglishName: 'Tuesday',
+          },
+          {
+            name: $t('day.wednesday'),
+            hours: '12:00 - 21:00',
+            EnglishName: 'Wednesday',
+          },
+          {
+            name: $t('day.thursday'),
+            hours: '18:00 - 21:00',
+            EnglishName: 'Thursday',
+          },
+          {
+            name: $t('day.friday'),
+            hours: '18:00 - 21:00',
+            EnglishName: 'Friday',
+          },
+          {
+            name: $t('day.saturday'),
+            hours: '09:00 - 22:00',
+            EnglishName: 'Saturday',
+          },
+          {
+            name: $t('day.sunday'),
+            hours: '09:00 - 22:00',
+            EnglishName: 'Sunday',
+          },
+        ]"
+      />
     </div>
-    <div>Sluitings dagen</div>
   </div>
-  <button @click="handleLogout">logout</button>
 </template>
 <style scoped></style>
