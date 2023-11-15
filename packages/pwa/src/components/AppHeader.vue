@@ -45,7 +45,7 @@ export default defineComponent({
     <router-link to="/" class="flex items-center justify-center gap-2">
       <logo class="h-10" />
 
-      <h1 class="hidden sm:flex text-primary-text text-xl font-bold">
+      <h1 class="sr-only sm:not-sr-only text-primary-text text-xl font-bold">
         {{ $t('navigation.title') }}
       </h1>
     </router-link>

@@ -15,6 +15,10 @@ export const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
+      path: '/',
+      component: () => import('@/views/Home.vue'),
+    },
+    {
       path: '/admin',
       component: () => import('@/components/wrapper/adminWrapper.vue'),
       meta: {
@@ -92,7 +96,8 @@ export const router = createRouter({
         },
         {
           path: 'reservations',
-          component: () => import('@/views/admin/reservations/Reservations.vue'),
+          component: () =>
+            import('@/views/admin/reservations/Reservations.vue'),
           children: [
             {
               path: 'id/:id',
@@ -110,7 +115,8 @@ export const router = createRouter({
         },
         {
           path: 'reservations/type/:type',
-          component: () => import('@/views/admin/reservations/Reservations.vue'),
+          component: () =>
+            import('@/views/admin/reservations/Reservations.vue'),
           props: true,
           meta: {
             shouldBeAuthenticated: true,
@@ -222,7 +228,7 @@ export const router = createRouter({
 
 const redirectToLogin = (
   to: RouteLocationNormalized,
-  next: NavigationGuardNext,
+  next: NavigationGuardNext
 ) => {
   next('/login?redirect=' + to.path)
 }
@@ -259,7 +265,6 @@ const isRoleAllowed = (role: string, allowedRoles: string[]) => {
   if (allowedRoles.length === 0) return true
   return allowedRoles.includes(role)
 }
-
 
 router.beforeEach((to, _, next) => {
   // get user from database
