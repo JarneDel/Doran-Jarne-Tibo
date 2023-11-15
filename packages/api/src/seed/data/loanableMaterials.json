@@ -1,0 +1,102 @@
+[
+    {
+      "name": "Voetbal",
+      "totalAmount": 5,
+      "wantedAmount": 2,
+      "price": 4,
+      "sports": ["Voetbal"],
+      "isComplete": true,
+      "description": "Een bal om mee te voetballen"
+    },
+    {
+      "name": "Handbal",
+      "totalAmount": 3,
+      "wantedAmount": 1,
+      "price": 6,
+      "sports": ["Handbal"],
+      "isComplete": true,
+      "description": "Een bal voor handbalwedstrijden"
+    },
+    {
+      "name": "Tennis racket",
+      "totalAmount": 8,
+      "wantedAmount": 2,
+      "price": 7,
+      "sports": ["Tennis"],
+      "isComplete": true,
+      "description": "Een racket voor tenniswedstrijden"
+    },
+    {
+      "name": "Basketbal",
+      "totalAmount": 6,
+      "wantedAmount": 2,
+      "price": 5,
+      "sports": ["Basketbal"],
+      "isComplete": true,
+      "description": "Een bal voor basketbalwedstrijden"
+    },
+    {
+      "name": "Volleybal",
+      "totalAmount": 5,
+      "wantedAmount": 2,
+      "price": 4,
+      "sports": ["Volleybal"],
+      "isComplete": true,
+      "description": "Een volleybal voor wedstrijden"
+    },
+    {
+      "name": "Hockey stick",
+      "totalAmount": 7,
+      "wantedAmount": 2,
+      "price": 8,
+      "sports": ["Hockey"],
+      "isComplete": true,
+      "description": "Een hockeystick voor hockeywedstrijden"
+    },
+    {
+        "name": "Hockey puck",
+        "totalAmount": 5,
+        "wantedAmount": 12,
+        "price": 8,
+        "sports": ["Hockey"],
+        "isComplete": false,
+        "description": "Een hockeypuck voor hockeywedstrijden"
+    },
+    {
+      "name": "Strandbal",
+      "totalAmount": 5,
+      "wantedAmount": 8,
+      "price": 3,
+      "sports": ["Zwemmen"],
+      "isComplete": false,
+      "description": "Strandbal zwemactiviteiten"
+    },
+    {
+      "name": "Mat",
+      "totalAmount": 4,
+      "wantedAmount": 1,
+      "price": 9,
+      "sports": ["Pilates","Yoga"],
+      "isComplete": true,
+      "description": "Een mat voor pilatesoefeningen"
+    },
+    {
+      "name": "Zuurstoffles",
+      "totalAmount": 3,
+      "wantedAmount": 1,
+      "price": 15,
+      "sports": ["Duiken"],
+      "isComplete": true,
+      "description": "Duikuitrusting voor onderwaterverkenning"
+    },
+    {
+      "name": "zwemvliezen",
+      "totalAmount": 3,
+      "wantedAmount": 1,
+      "price": 15,
+      "sports": ["Zwemmen","Duiken"],
+      "isComplete": true,
+      "description": "zwemvliezen voor zwemmen en duiken"
+    }
+  ]
+  

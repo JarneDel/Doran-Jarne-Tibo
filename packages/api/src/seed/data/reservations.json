@@ -1,0 +1,26 @@
+[
+  {
+    "date": "2024-01-01T00:00:00.000Z",
+    "start_time": "10:00",
+    "end_time": "10:30",
+    "groupId": "6526b87005382b4c7441a810",
+    "price": 10,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-01T00:00:00.000Z",
+    "start_time": "14:30",
+    "end_time": "15:00",
+    "groupId": "6526b87005382b4c7441a811",
+    "price": 12,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-01T00:00:00.000Z",
+    "start_time": "09:00",
+    "end_time": "09:45",
+    "groupId": "6526b87005382b4c7441a812",
+    "price": 8,
+    "isCancelled": true
+  }
+]

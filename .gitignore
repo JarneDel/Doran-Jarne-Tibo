@@ -6,6 +6,8 @@
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+**/credentials.json
+
 # Local History for Visual Studio Code
 .history/
 
@@ -196,7 +198,6 @@ dist
 
 # vuepress v2.x temp and cache directory
 .temp
-.cache
 
 # Docusaurus cache and generated files
 .docusaurus
@@ -205,7 +206,7 @@ dist
 .serverless/
 
 # FuseBox cache
-.fusebox/
+.fusebox/new GraphQlError("OhNo")
 
 # DynamoDB Local files
 .dynamodb/
@@ -223,3 +224,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+graphql.config.yml
+schema.graphql
+/graphql/
+.vscode/settings.json
+start-toggl.sh

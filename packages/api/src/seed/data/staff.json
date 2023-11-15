@@ -1,0 +1,65 @@
+[
+  {
+    "UID": "Yk098gcTiwdFNRQaaZAkZpbhASx2",
+    "locale": "en",
+    "role": "STAFF",
+    "firstName": "staff",
+    "lastName": "staff",
+    "email": "staff@test.test",
+    "phone": "+32490123456",
+    "holidaysleft": 12,
+    "holidaysTotal": 12,
+    "holidayDates": [],
+    "workingHours": [
+      {
+        "day": 0,
+        "startTime": "09:00",
+        "endTime": "17:00"
+      },
+      {
+        "day": 1,
+        "startTime": "09:00",
+        "endTime": "17:00"
+      },
+      {
+        "day": 2,
+        "startTime": "09:00",
+        "endTime": "17:00"
+      },
+      {
+        "day": 3,
+        "startTime": "09:00",
+        "endTime": "17:00"
+      },
+      {
+        "day": 4,
+        "startTime": "09:00",
+        "endTime": "17:00"
+      }
+    ]
+  },
+  {
+    "UID": "nmf9VfViiqSQuPVfJR0W2tiOu6M2",
+    "locale": "nl",
+    "role": "ADMIN",
+    "firstName": "admin",
+    "lastName": "admin",
+    "email": "admin@test.test",
+    "phone": "+32490123456",
+    "holidaysTotal": 12,
+    "holidaysleft": 12,
+    "holidayDates": []
+  },
+  {
+    "UID": "291gtX2Lb2QQdJWcLNKNpFW5O7z1",
+    "locale": "nl",
+    "role": "SUPER_ADMIN",
+    "firstName": "superadmin",
+    "lastName": "superadmin",
+    "email": "superadmin@test.test",
+    "phone": "+32490123456",
+    "holidaysleft": 12,
+    "holidaysTotal": 12,
+    "holidayDates": []
+  }
+]
