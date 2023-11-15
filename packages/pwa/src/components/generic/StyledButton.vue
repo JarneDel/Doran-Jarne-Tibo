@@ -49,7 +49,7 @@ export default defineComponent({
 
 <style scoped>
 .primary {
-  @apply bg-primary active:bg-secondary-400;
+  @apply bg-primary active:bg-primary-400 c-white;
 }
 
 .secondary {

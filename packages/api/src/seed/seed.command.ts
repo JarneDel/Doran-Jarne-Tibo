@@ -106,6 +106,9 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting repair requests')
     await this.seedService.deleteAllRepairRequests()
     console.info('Removed all repair requests')
+    console.info('Deleting vacation requests')
+    await this.seedService.deleteAllVacationRequests()
+    console.info('Deleted all vacation requests')
   }
 
   //Stocks

@@ -3,7 +3,7 @@
 ###################
 
 # FROM node:18-alpine as development ### werkt niet voor python, dus hier de full version
-FROM node:18 as development
+FROM node:21 as development
 
 WORKDIR /usr/src/app
 
@@ -21,7 +21,7 @@ USER node
 ###################
 # BUILD FOR PRODUCTION
 ###################
-FROM node:18-alpine as build
+FROM node:21-alpine as build
 
 WORKDIR /usr/src/app
 
@@ -46,7 +46,7 @@ USER node
 # PRODUCTION
 ###################
 
-FROM node:18-alpine As production
+FROM node:21-alpine As production
 WORKDIR /usr/src/app
 # install curl for health check
 RUN apk add --no-cache curl
