@@ -91,6 +91,32 @@ export const router = createRouter({
           },
         },
         {
+          path: 'reservations',
+          component: () => import('@/views/admin/reservations/Reservations.vue'),
+          children: [
+            {
+              path: 'id/:id',
+              component: () => import('@/views/admin/reservations/Item.vue'),
+              props: true,
+            },
+            // {
+            //   path: 'id/:id/edit',
+            //   component: () => import('@/views/admin/reservations/Edit.vue'),
+            // },
+          ],
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'reservations/type/:type',
+          component: () => import('@/views/admin/reservations/Reservations.vue'),
+          props: true,
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
           path: 'staff',
           component: () => import('@/views/admin/staff/Staff.vue'),
         },
@@ -167,11 +193,25 @@ export const router = createRouter({
     },
     {
       path: '/reservation',
-      component: () => import('@/views/Reservation.vue'),
+      component: () => import('@/components/wrapper/reservationWrapper.vue'),
+      children: [
+        {
+          path: '',
+          component: () => import('@/views/reservations/Reservation.vue'),
+        },
+        {
+          path: 'add',
+          component: () => import('@/views/reservations/AddReservation.vue'),
+        },
+      ],
       meta: {
         shouldBeAuthenticated: true,
         allowedRoles: ['GROUP'],
       },
+    },
+    {
+      path: '/403',
+      component: () => import('@/views/403.vue'),
     },
     {
       path: '/:pathMatch(.*)*',

@@ -20,6 +20,9 @@ import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { RolesGuard } from 'src/authentication/guards/roles.guard'
 import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
 import { Room } from 'src/room/entities/room.entity'
+import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
+import { UserRecord } from 'firebase-admin/auth'
+import { use } from 'passport'
 
 @Resolver(() => Reservation)
 export class ReservationResolver {
@@ -54,6 +57,16 @@ export class ReservationResolver {
   @Query(() => [Reservation], { name: 'GetReservationsByDate' })
   findByDate(@Args('date', { type: () => Date }) date: Date) {
     return this.reservationService.findByDate(date)
+  }
+  @AllowedRoles(Role.GROUP, Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Reservation], { name: 'GetReservationsByDateAndUser' })
+  async findByDateAndUser(
+    @Args('date', { type: () => Date }) date: Date,
+    @FirebaseUser() user: UserRecord,
+  ) {
+    const group = await this.groupService.findOneByUid(user.uid)
+    return this.reservationService.findByDateAndUser(date, group.id)
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF, Role.GROUP)
@@ -107,6 +120,39 @@ export class ReservationResolver {
     @Args('endTime', { type: () => String }) endTime: string,
   ) {
     return this.reservationService.getAvailableRooms(date, startTime, endTime)
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Reservation], {
+    name: 'GetReservationsByRoomAndDay',
+    nullable: true,
+  })
+  GetReservationsByRoomAndDay(
+    @Args('date', { type: () => String }) date: string,
+    @Args('roomId', { type: () => String }) roomId: string,
+  ) {
+    return this.reservationService.getReservationsByRoomAndDay(date, roomId)
+  }
+
+
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Reservation], {
+    name: 'getReservationsByUser',
+    nullable: true,
+  })
+  async getReservationsByUser(@FirebaseUser() user: UserRecord) {
+    const group = await this.groupService.findOneByUid(user.uid)
+    return this.reservationService.getReservationsByUser(group.id)
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Mutation(() => Reservation, { name: 'cancelReservation' })
+  canselReservation(@Args('id', { type: () => String }) id: string) {
+    return this.reservationService.cancelReservation(id)
   }
 
   @ResolveField()
