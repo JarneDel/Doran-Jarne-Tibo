@@ -37,5 +37,8 @@
   },
   "devDependencies": {
     "prettier": "^3.0.3"
+  },
+  "dependencies": {
+    "maplibre-gl": "^3.6.1"
   }
 }

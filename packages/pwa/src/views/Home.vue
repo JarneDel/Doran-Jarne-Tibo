@@ -8,6 +8,7 @@ import useFirebase from '@/composables/useFirebase'
 
 // Components
 import OpeningsHoursCard from '@/components/OpeningsHoursCard.vue'
+import GoogleMaps from '@/components/GoogleMaps.vue'
 
 interface Day {
   name: string;
@@ -18,7 +19,8 @@ interface Day {
 export default {
   components: {
     OpeningsHoursCard,
-  },
+    GoogleMaps,
+},
   setup() {
     const { logout } = useFirebase()
 
@@ -72,6 +74,7 @@ export default {
         })
     }
 
+
     return {
       error,
       handleLogout,
@@ -89,6 +92,15 @@ export default {
         src="../assets/sportcomplex.webp"
         alt="Afbeelding van het sportcomplex"
       />
+      <div
+        class="w-full flex items-end justify-end pr-12 -mt-104 pb-4 xl:pr-20 xl:-mt-120 xl:pb-20 2xl:-mt-140"
+      >
+        <div
+          class="hidden lg:flex bg-white w-100 h-100 2xl:h-120 2xl:w-120 rounded-full text-center items-center justify-center overflow-hidden shadow-2xl"
+        >
+          <GoogleMaps />
+        </div>
+      </div>
     </div>
     <div
       style="
