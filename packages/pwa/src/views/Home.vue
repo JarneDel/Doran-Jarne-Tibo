@@ -93,7 +93,7 @@ export default {
         alt="Afbeelding van het sportcomplex"
       />
       <div
-        class="w-full flex items-end justify-end pr-12 -mt-104 pb-4 xl:pr-20 xl:-mt-120 xl:pb-20 2xl:-mt-140"
+        class="hidden w-full lg:flex items-end justify-end pr-12 -mt-104 pb-4 xl:pr-20 xl:-mt-120 xl:pb-20 2xl:-mt-140"
       >
         <div
           class="hidden lg:flex bg-white w-100 h-100 2xl:h-120 2xl:w-120 rounded-full text-center items-center justify-center overflow-hidden shadow-2xl"
