@@ -1,6 +1,6 @@
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
-import Logo from '@/components/generic/Logo.vue'
+import { computed, defineComponent } from 'vue';
+import Logo from '@/components/generic/Logo.vue';
 import {
   Box,
   PanelLeftClose,
@@ -8,8 +8,9 @@ import {
   Users,
   Warehouse,
   CalendarClock,
-    Contact2,
+  Contact2,
   Palmtree,
+  Wrench,
 } from 'lucide-vue-next';
 import { useLocalStorage } from '@vueuse/core';
 import { useRouter } from 'vue-router';
@@ -27,12 +28,13 @@ export default defineComponent({
     CalendarClock,
     Contact2,
     Palmtree,
+    Wrench,
   },
   setup() {
-    const isClosed = useLocalStorage('isClosed', false)
-    const { currentRoute } = useRouter()
-    const { t } = useI18n()
-    const section = computed(() => currentRoute.value.path.split('/')[2])
+    const isClosed = useLocalStorage('isClosed', false);
+    const { currentRoute } = useRouter();
+    const { t } = useI18n();
+    const section = computed(() => currentRoute.value.path.split('/')[2]);
     const pages = computed(() => {
       return [
         {
@@ -60,6 +62,12 @@ export default defineComponent({
           route: '/admin/reservations',
         },
         {
+          name: 'repairRequests',
+          icon: Wrench,
+          content: t('nav.repairRequests'),
+          route: '/admin/repair-requests',
+        },
+        {
           name: 'staff',
           icon: Contact2,
           content: t('nav.staff'),
@@ -71,12 +79,12 @@ export default defineComponent({
           content: t('nav.vacation'),
           route: '/admin/vacation',
         },
-      ]
-    })
+      ];
+    });
 
-    return { isClosed, section, pages }
+    return { isClosed, section, pages };
   },
-})
+});
 </script>
 
 <template>
