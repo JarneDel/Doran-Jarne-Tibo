@@ -329,8 +329,14 @@ export class SeedService {
       const rr = new RepairRequest()
       rr.title = repairRequest.title
       rr.description = repairRequest.description
-      rr.urgency = 1
-      rr.isRepaired = false
+      rr.urgency = Math.floor(Math.random() * 3) + 1
+      const randNumb = Math.floor(Math.random() * 2)
+      if(randNumb === 0){
+        rr.isRepaired = false
+      }
+      else{
+        rr.isRepaired = true
+      }
 
       const randNumb1 = Math.floor(Math.random() * 3)
       if (randNumb1 === 0) {

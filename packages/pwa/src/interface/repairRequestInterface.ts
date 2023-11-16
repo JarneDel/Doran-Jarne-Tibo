@@ -15,9 +15,13 @@ export interface material {
 
 export interface RepairRequest {
     id: string;
+    title: string;
     requestUser: RequestUser;
     description: string;
+    urgency: number;
     room: Room;
     loanableMaterial: material;
     isRepaired: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }

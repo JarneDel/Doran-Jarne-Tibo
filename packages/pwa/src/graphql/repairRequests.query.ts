@@ -4,6 +4,7 @@ export const ALL_REPAIR_REQUESTS = gql`
 query {
     GetAllRepairRequests {
       id
+      title
       requestUser{
         ...on Group{
           id
@@ -19,7 +20,7 @@ query {
         ...on Staff{
           id
           UID
-                  locale
+          locale
           role
           createdAt
           updatedAt
@@ -32,6 +33,7 @@ query {
         }
       }
       description
+      urgency
       room{
         name
         sports{
