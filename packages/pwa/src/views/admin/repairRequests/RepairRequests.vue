@@ -1,7 +1,7 @@
 <script lang="ts">
 // Interfaces
 interface IRepairRequest {
-  GetAllRepairRequests: [RepairRequest];
+  GetAllRepairRequests: RepairRequest[];
 }
 
 // Imports
@@ -10,7 +10,7 @@ import { defineComponent, ref, watch } from 'vue';
 import { useQuery } from '@vue/apollo-composable';
 import { ALL_REPAIR_REQUESTS } from '@/graphql/repairRequests.query';
 import UseFirebase from '../../../composables/useFirebase';
-import { PlusCircle } from 'lucide-vue-next';
+import { Warehouse, Box } from 'lucide-vue-next';
 import Modal from '@/components/Modal.vue';
 import { useRouter } from 'vue-router';
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
@@ -19,7 +19,8 @@ import useLastRoute from '@/composables/useLastRoute';
 // Export default
 export default defineComponent({
   components: {
-    PlusCircle,
+    Warehouse,
+    Box,
     Modal,
     DoubleClickEdit,
   },
@@ -74,8 +75,48 @@ export default defineComponent({
 
 <template>
   <div class="m-8">
-    <div v-for="repairRequest in resultRepairRequests">
-      {{ repairRequest }}
+    <div class="flex flex-col">
+      <div>
+        <h1 class="text-3xl font-bold mb-6">Repair Requests</h1>
+        <ul class="flex flex-col w-full h-200 overflow-auto gap-2">
+          <li
+            :key="repairRequest.id"
+            v-for="repairRequest in resultRepairRequests?.GetAllRepairRequests"
+          >
+            <Button class="flex p-2 rounded-md shadow-md bg-white w-full">
+              <div>
+                <div class="flex flex-col">
+                  <div class="flex items-center">
+                    <Box
+                      class="w-8 h-8 mr-2 opacity-10"
+                      :class="{ 'opacity-100': repairRequest.loanableMaterial }"
+                    />
+                    <ul class="overflow-auto">
+                      <li
+                        v-for="loanableMaterial in repairRequest.loanableMaterial"
+                      >
+                        {{ loanableMaterial.name }}
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="flex items-center">
+                    <Warehouse
+                      class="w-8 h-8 mr-2 opacity-10"
+                      :class="{ 'opacity-100': repairRequest.room }"
+                    />
+                    <ul>
+                      <li v-for="room in repairRequest.room">
+                        {{ room.name }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div>2</div>
+            </Button>
+          </li>
+        </ul>
+      </div>
     </div>
     <RouterView />
   </div>

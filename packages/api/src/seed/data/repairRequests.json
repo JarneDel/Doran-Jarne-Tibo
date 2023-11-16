@@ -1,32 +1,42 @@
 [
     {
-        "description": "RepairRequest 1"
+        "title": "RepairRequest 1",
+        "description": "Description RepairRequest 1"
     },
     {
-        "description": "RepairRequest 2"
+        "title": "RepairRequest 2",
+        "description": "Description RepairRequest 2"
     },
     {
-        "description": "RepairRequest 3"
+        "title": "RepairRequest 3",
+        "description": "Description RepairRequest 3"
     },
     {
-        "description": "RepairRequest 4"
+        "title": "RepairRequest 4",
+        "description": "Description RepairRequest 4"
     },
     {
-        "description": "RepairRequest 5"
+        "title": "RepairRequest 5",
+        "description": "Description RepairRequest 5"
     },
     {
-        "description": "RepairRequest 6"
+        "title": "RepairRequest 6",
+        "description": "Description RepairRequest 6"
     },
     {
-        "description": "RepairRequest 7"
+        "title": "RepairRequest 7",
+        "description": "Description RepairRequest 7"
     },
     {
-        "description": "RepairRequest 8"
+        "title": "RepairRequest 8",
+        "description": "Description RepairRequest 8"
     },
     {
-        "description": "RepairRequest 9"
+        "title": "RepairRequest 9",
+        "description": "Description RepairRequest 9"
     },
     {
-        "description": "RepairRequest 10"
+        "title": "RepairRequest 10",
+        "description": "Description RepairRequest 10"
     }
 ]
