@@ -6,11 +6,11 @@ interface IRepairRequest {
 
 // Imports
 import { RepairRequest } from '@/interface/repairRequestInterface';
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 import { useQuery } from '@vue/apollo-composable';
 import { ALL_REPAIR_REQUESTS } from '@/graphql/repairRequests.query';
 import UseFirebase from '../../../composables/useFirebase';
-import { Warehouse, Box, ShieldAlert } from 'lucide-vue-next';
+import { Warehouse, Box, ShieldAlert, BadgeCheck } from 'lucide-vue-next';
 import Modal from '@/components/Modal.vue';
 import { useRouter } from 'vue-router';
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
@@ -22,6 +22,7 @@ export default defineComponent({
     Warehouse,
     Box,
     ShieldAlert,
+    BadgeCheck,
     Modal,
     DoubleClickEdit,
   },
@@ -97,7 +98,7 @@ export default defineComponent({
             break;
           case 'urgency':
             newArray.sort((a, b) => {
-              return a.urgency - b.urgency;
+              return b.urgency - a.urgency;
             });
             break;
           case 'repaired':
@@ -118,7 +119,7 @@ export default defineComponent({
             break;
           case 'urgency':
             newArray.sort((a, b) => {
-              return b.urgency - a.urgency;
+              return a.urgency - b.urgency;
             });
             break;
           case 'repaired':
@@ -150,37 +151,41 @@ export default defineComponent({
 
 <template>
   <div class="m-8">
-    <div class="flex flex-col">
+    <div class="flex flex-col max-w-4xl m-auto">
       <div>
         <div class="flex flex-col lg:flex-row lg:justify-between">
-          <h1 class="text-3xl font-bold mb-6">Repair Requests</h1>
+          <h1 class="text-3xl font-bold mb-6 text-primary-text">
+            {{ $t('repairRequest.repairRequests') }}
+          </h1>
           <div class="flex flex-wrap gap-2 mb-2 lg:my-2 xl:my-4 2xl:my-6">
             <div class="flex items-center">
-              <ShieldAlert class="w-8 h-8 text-green-600" />
-              <p>Not urgent</p>
+              <BadgeCheck class="w-8 h-8 text-green-600" />
+              <p>{{ $t('repairRequest.repaired') }}</p>
             </div>
             <div class="flex items-center">
-              <ShieldAlert class="w-8 h-8 text-yellow-400" />
-              <p>
-                Mildly urgent
-              </p>
+              <ShieldAlert class="w-8 h-8 text-yellow-300" />
+              <p>{{ $t('repairRequest.notUrgent') }}</p>
+            </div>
+            <div class="flex items-center">
+              <ShieldAlert class="w-8 h-8 text-orange-500" />
+              <p>{{ $t('repairRequest.mildlyUrgent') }}</p>
             </div>
             <div class="flex items-center">
               <ShieldAlert class="w-8 h-8 text-red-600" />
-              <p>Very urgent!</p>
+              <p>{{ $t('repairRequest.veryUrgent') }}</p>
             </div>
           </div>
         </div>
-        <div>
+        <div class="flex gap-2">
           <select
             id="sorting"
             class="bg-primary-surface b-2 border-neutral-200 px-4 mb-2 xl:mb-4 2xl:mb-6"
             name="sorting"
             @change="changeSorting"
           >
-            <option value="date">Date</option>
-            <option value="urgency">Urgency</option>
-            <option value="repaired">Repaired</option>
+            <option value="date">{{ $t('repairRequest.date') }}</option>
+            <option value="urgency">{{ $t('repairRequest.urgency') }}</option>
+            <option value="repaired">{{ $t('repairRequest.repaired') }}</option>
           </select>
           <select
             id="sortingReverse"
@@ -188,27 +193,28 @@ export default defineComponent({
             name="sortingReverse"
             @change="changeReverseSorting"
           >
-            <option value="normal">Normal</option>
-            <option value="reverse">Reverse</option>
+            <option value="normal">{{ $t('repairRequest.normal') }}</option>
+            <option value="reverse">{{ $t('repairRequest.reversed') }}</option>
           </select>
         </div>
         <ul
-          class="flex flex-col w-full h-200 overflow-auto gap-2 lg:gap-4 2xl:gap-6"
+          class="flex flex-col w-full h-160 overflow-auto gap-2 lg:gap-4 2xl:gap-6 border-primary-light p-2 border-2 rounded-md"
         >
           <li
             :key="repairRequest.id"
             v-for="repairRequest in sortedRepairRequests"
           >
             <Button
-              class="flex p-2 lg:p-3 2xl:p-4 rounded-md shadow-md bg-white w-full"
+              class="flex justify-between p-2 lg:p-3 2xl:p-4 rounded-md shadow-md bg-white w-full"
             >
-              <div>
+              <div
+                class="flex flex-col justify-start items-start w-full sm:w-[60%] md:w-[30%]"
+              >
                 <h3
                   class="text-lg 2xl:text-xl font-bold text-primary-text text-left mb-2"
                 >
                   {{ repairRequest.title }}
                 </h3>
-                <div></div>
                 <div class="flex justify-center items-center gap-2">
                   <ShieldAlert
                     class="w-8 h-8 mr-2"
@@ -216,6 +222,13 @@ export default defineComponent({
                       'text-green-600': repairRequest.urgency == 1,
                       'text-yellow-400': repairRequest.urgency == 2,
                       'text-red-600': repairRequest.urgency == 3,
+                      hidden: repairRequest.isRepaired,
+                    }"
+                  />
+                  <BadgeCheck
+                    class="w-8 h-8 text-green-600"
+                    :class="{
+                      hidden: !repairRequest.isRepaired,
                     }"
                   />
                   <div class="flex flex-col">
@@ -228,11 +241,25 @@ export default defineComponent({
                       />
                       <ul class="flex flex-wrap">
                         <li
-                          class="group"
-                          v-for="loanableMaterial in repairRequest.loanableMaterial"
+                          v-if="Array.isArray(repairRequest.loanableMaterial)"
                         >
-                          {{ loanableMaterial.name }}
-                          <span class="group-last:hidden mr-1">,</span>
+                          <template
+                            v-for="(loanableMaterial,
+                            index) in repairRequest.loanableMaterial"
+                          >
+                            {{ loanableMaterial.name }}
+                            <span
+                              v-if="
+                                index !==
+                                repairRequest.loanableMaterial.length - 1
+                              "
+                              class="mr-1"
+                              >,</span
+                            >
+                          </template>
+                        </li>
+                        <li v-else>
+                          {{ repairRequest.loanableMaterial }}
                         </li>
                       </ul>
                     </div>
@@ -241,16 +268,63 @@ export default defineComponent({
                         class="w-8 h-8 mr-2 opacity-10"
                         :class="{ 'opacity-100': repairRequest.room }"
                       />
-                      <ul>
-                        <li v-for="room in repairRequest.room">
+                      <ul v-if="Array.isArray(repairRequest.room)">
+                        <li
+                          v-for="(room, index) in repairRequest.room"
+                          :key="index"
+                        >
                           {{ room.name }}
+                          <span
+                            v-if="index !== repairRequest.room.length - 1"
+                            class="mr-1"
+                            >,</span
+                          >
                         </li>
                       </ul>
+                      <p v-else>{{ repairRequest.room }}</p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div>{{ repairRequest.isRepaired }}</div>
+              <div class="hidden md:flex flex-col text-left w-[25%]">
+                <h4 class="font-bold text-primary-text">
+                  {{ $t('repairRequest.requester') }}
+                </h4>
+                <div class="flex flex-col">
+                  <div class="flex gap-2">
+                    <h5 class="font-medium text-primary-text">
+                      {{ $t('repairRequest.name') }}:
+                    </h5>
+                    <p v-if="repairRequest.requestUser.role !== 'GROUP'">
+                      {{ repairRequest.requestUser.firstName }}
+                      {{ repairRequest.requestUser.lastName }}
+                    </p>
+                    <p v-if="repairRequest.requestUser.role === 'GROUP'">
+                      {{ repairRequest.requestUser.name }}
+                    </p>
+                  </div>
+                  <div class="flex gap-2">
+                    <h5 class="font-medium text-primary-text">
+                      {{ $t('repairRequest.email') }}:
+                    </h5>
+                    <p>{{ repairRequest.requestUser.email }},</p>
+                  </div>
+                  <div class="flex gap-2">
+                    <h5 class="font-medium text-primary-text">
+                      {{ $t('repairRequest.role') }}:
+                    </h5>
+                    <p>{{ repairRequest.requestUser.role }},</p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="hidden items-start text-start sm:flex flex-col w-[25%]"
+              >
+                <h4 class="font-bold text-primary-text">
+                  {{ $t('repairRequest.description') }}
+                </h4>
+                <p>{{ repairRequest.description }}</p>
+              </div>
             </Button>
           </li>
         </ul>
