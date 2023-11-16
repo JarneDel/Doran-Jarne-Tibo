@@ -198,13 +198,15 @@ export class ReservationService {
             //check if the reservation is in the time
             let reservationStart = new Date(date + ' ' + reservation.startTime)
             let reservationEnd = new Date(date + ' ' + reservation.endTime)
+            console.log('test')
             if (
-              (start < reservationStart && end > reservationStart) ||
-              (start < reservationEnd && end > reservationEnd) ||
-              (reservationStart < start &&
-                reservationStart < end &&
-                reservationEnd > end)
+              (start <= reservationStart && end >= reservationStart) ||
+              (start <= reservationEnd && end >= reservationEnd) ||
+              (reservationStart <= start &&
+                reservationStart <= end &&
+                reservationEnd >= end)
             ) {
+              console.log(resMat.amountReserved)
               overMaterial = overMaterial - resMat.amountReserved
               if (overMaterial < 0) {
                 isAvailable = false
