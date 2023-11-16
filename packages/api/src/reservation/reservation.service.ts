@@ -189,6 +189,9 @@ export class ReservationService {
       let isAvailable = true
       let overMaterial = material.totalAmount
       for (const reservation of reservations) {
+        if (reservation.isCancelled) {
+          continue
+        }
         for (const resMat of reservation.reservedMaterials) {
           //check if the material is reserved
           if (resMat.id.toString() === material.id.toString()) {
@@ -240,6 +243,9 @@ export class ReservationService {
     for (const room of rooms) {
       let isAvailable = true
       for (const reservation of reservations) {
+        if (reservation.isCancelled) {
+          continue
+        }
         for (const resroom of reservation.rooms) {
           if (room.id.toString() === resroom.id.toString()) {
             let reservationStart = new Date(date + ' ' + reservation.startTime)
