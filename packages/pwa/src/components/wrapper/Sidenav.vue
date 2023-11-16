@@ -90,7 +90,7 @@ export default defineComponent({
 <template>
   <div
     :class="{
-      'w-1/6 min-w-48': !isClosed,
+      'w-1/6 min-w-54': !isClosed,
       'w-16': isClosed,
     }"
     class="min-h-full overflow-hidden bg-white transition-all duration-200"

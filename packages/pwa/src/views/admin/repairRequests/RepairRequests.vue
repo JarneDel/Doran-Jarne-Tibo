@@ -1,22 +1,14 @@
 <script lang="ts">
 // Interfaces
-// interface Room {
-//   id: string;
-//   name: string;
-//   sports: Sport[];
-//   pricePerHour: number;
-//   type: string;
-//   createdAt: string;
-//   updatedAt: string;
-// }
-
-// interface Sport {
-//   id: string;
-//   name: string;
-// }
+interface IRepairRequest {
+  GetAllRepairRequests: [RepairRequest];
+}
 
 // Imports
+import { RepairRequest } from '@/interface/repairRequestInterface';
 import { defineComponent, ref, watch } from 'vue';
+import { useQuery } from '@vue/apollo-composable';
+import { ALL_REPAIR_REQUESTS } from '@/graphql/repairRequests.query';
 import UseFirebase from '../../../composables/useFirebase';
 import { PlusCircle } from 'lucide-vue-next';
 import Modal from '@/components/Modal.vue';
@@ -42,6 +34,14 @@ export default defineComponent({
     };
     getIdToken();
 
+    const {
+      loading: loadingRepairRequests,
+      result: resultRepairRequests,
+      error: errorRepairRequests,
+    } = useQuery<IRepairRequest>(ALL_REPAIR_REQUESTS);
+
+    console.log(resultRepairRequests);
+
     const { lastRoute } = useLastRoute();
 
     watch(
@@ -61,6 +61,9 @@ export default defineComponent({
 
     return {
       idToken,
+      loadingRepairRequests,
+      resultRepairRequests,
+      errorRepairRequests,
       push,
       replace,
       currentRoute,
@@ -71,9 +74,8 @@ export default defineComponent({
 
 <template>
   <div class="m-8">
-    <div>
-      <h1>Title</h1>
-      <p>Content</p>
+    <div v-for="repairRequest in resultRepairRequests">
+      {{ repairRequest }}
     </div>
     <RouterView />
   </div>
