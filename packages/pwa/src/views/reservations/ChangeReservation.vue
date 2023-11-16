@@ -5,7 +5,7 @@ import StyledButton from '@/components/generic/StyledButton.vue'
 import {
   AVAILABLEMATERAILS,
   GET_AVAILABLE_ROOMS,
-  CREATERESEVATION,
+  UPDATE_RESEVATION,
   GET_ONE_RESERVATION,
 } from '@/graphql/reservations.query'
 import { useMutation, useQuery } from '@vue/apollo-composable'
@@ -24,9 +24,7 @@ export default defineComponent({
     const { customUser } = useUser()
     const checkboxStatus = ref<any>({})
     const checkboxStatusMaterials = ref<any>({})
-    const { mutate: addReservarion } = useMutation(CREATERESEVATION)
-    console.log(reservations.value)
-    console.log(reservations.value?.date)
+    const { mutate: updateReservation } = useMutation(UPDATE_RESEVATION)
     const timeDivrent = () => {
       let begin = reservation.value.beginTime.split(':')
       let end = reservation.value.endTime.split(':')
@@ -62,7 +60,7 @@ export default defineComponent({
       onResult(result => {
         if (result.loading) return
         reservations.value = result.data.GetReservatiounById
-        if (reservations.value){
+        if (reservations.value) {
           price.value = reservations.value.price
           const date = new Date(reservations.value?.date)
           reservation.value.date = date.toISOString().substr(0, 10)
@@ -77,19 +75,18 @@ export default defineComponent({
         })
         timeDivrent()
         new Promise<void>(resolve => {
-          const { onResult:onRoom } = useQuery<any>(GET_AVAILABLE_ROOMS, {
+          const { onResult: onRoom } = useQuery<any>(GET_AVAILABLE_ROOMS, {
             date: reservation.value.date,
             startTime: reservation.value.beginTime,
             endTime: reservation.value.endTime,
           })
           onRoom(result => {
             if (result.loading) return
-            const rooms:Room[] = result.data.getAvailableRooms
+            const rooms: Room[] = result.data.getAvailableRooms
             rooms.forEach(room => {
               availableRooms.value.push(room)
             })
             reservations.value?.rooms.forEach(room => {
-              console.log(room)
               availableRooms.value.push(room)
             })
 
@@ -98,9 +95,10 @@ export default defineComponent({
                 checkboxStatus.value[room.name] = true
               else checkboxStatus.value[room.name] = false
             })
-            checkMaterials()
             resolve()
           })
+        })
+        new Promise<void>(resolve => {
           let sportId: string[] = []
           wantedRoom.value.forEach((room: Room) => {
             room.sports.forEach((sport: any) => {
@@ -116,16 +114,20 @@ export default defineComponent({
           onResult(result => {
             if (result.loading) return
             availableMaterials.value = result.data.GetAvailableloanableMaterials
+            const listIds: string[] = []
+            console.log(wantedMaterials.value)
+            wantedMaterials.value.forEach(material => {
+              listIds.push(material.id)
+            })
             availableMaterials.value.forEach(material => {
-              wantedMaterials.value.forEach(wantedMaterial => {
-                console.log(wantedMaterial)
-                if (material.id == wantedMaterial.id) {
-                  checkboxStatusMaterials.value[material.name] = {
-                    amount: wantedMaterial.amountReserved,
-                  }
+              if (listIds.includes(material.id)){
+                const wantedmat= wantedMaterials.value.find(wanted => wanted.id == material.id)
+                if (wantedmat)
+                checkboxStatusMaterials.value[material.name] = {
+                  amount: wantedmat.amountReserved,
                 }
-              })
-              if (!checkboxStatusMaterials.value[material.name])
+              }
+              else
                 checkboxStatusMaterials.value[material.name] = {
                   amount: 0,
                 }
@@ -136,7 +138,7 @@ export default defineComponent({
         resolve()
       })
     })
-    const AddReservation = () => {
+    const changeReservation = () => {
       let materials: material[] = []
       wantedMaterials.value.forEach(material => {
         let sportsist: any = []
@@ -193,7 +195,7 @@ export default defineComponent({
         }
         roomlist.push(listedroom)
       })
-      addReservarion({
+      updateReservation({
         date: reservation.value.date,
         startTime: reservation.value.beginTime,
         endTime: reservation.value.endTime,
@@ -201,6 +203,8 @@ export default defineComponent({
         price: price.value,
         material: materials,
         rooms: roomlist,
+        id: id.value,
+        canceld: false,
       }).then(() => {
         push('/reservation')
       })
@@ -333,7 +337,7 @@ export default defineComponent({
       availableMaterials,
       checkboxStatusMaterials,
       Material,
-      AddReservation,
+      changeReservation,
     }
   },
   components: { StyledInputText, StyledButton, Plus, Minus },
@@ -372,13 +376,10 @@ export default defineComponent({
           type="time"
           @change="checkEndTime"
         />
-        <StyledButton type="button" class="mt-2 h-fit" @click="check">
-          {{ $t('reservation.check') }}
-        </StyledButton>
       </div>
       <div class="ml-4 flex items-center gap-2 lg:mr-0">
         <p class="text-xl">€ {{ price }}</p>
-        <StyledButton type="button" class="h-fit" @click="AddReservation()">
+        <StyledButton type="button" class="h-fit" @click="changeReservation()">
           {{ $t('navigation.addreservation') }}
         </StyledButton>
       </div>

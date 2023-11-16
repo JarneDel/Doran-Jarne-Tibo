@@ -163,6 +163,77 @@ export const GET_AVAILABLE_ROOMS = gql`
   }
 `
 
+export const UPDATE_RESEVATION = gql`
+  mutation UpdateReservation(
+    $date: DateTime!
+    $startTime: String!
+    $endTime: String!
+    $groupId: String!
+    $price: Float!
+    $rooms: [RoomsInput!]!
+    $material: [MaterialsInput!]!
+    $id: String!
+    $canceld: Boolean!
+  ) {
+    UpdateReservation(
+      updateReservationInput: {
+        id: $id
+        date: $date
+        startTime: $startTime
+        endTime: $endTime
+        groupId: $groupId
+        price: $price
+        rooms: $rooms
+        reservedMaterials: $material
+        isCancelled: $canceld
+      }
+    ) {
+      id
+      date
+      startTime
+      endTime
+      group {
+        id
+        UID
+        locale
+        role
+        createdAt
+        updatedAt
+        name
+        btwNumber
+        score
+      }
+      reservedMaterials {
+        name
+        totalAmount
+        wantedAmount
+        price
+        sports {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        isComplete
+        description
+      }
+      rooms {
+        name
+        sports {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        pricePerHour
+        type
+      }
+      price
+      isCancelled
+    }
+  }
+`
+
 export const CREATERESEVATION = gql`
   mutation createReservation(
     $date: DateTime!
