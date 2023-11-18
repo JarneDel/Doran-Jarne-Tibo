@@ -88,15 +88,15 @@ export default {
   <div>
     <div>
       <img
-        class="h-64 w-full object-cover md:h-fit"
+        class="h-64 w-full object-cover md:h-fit lg:h-96 xl:h-120 2xl:h-140"
         src="../assets/sportcomplex.webp"
         alt="Afbeelding van het sportcomplex"
       />
       <div
-        class="hidden w-full lg:flex items-end justify-end pr-12 -mt-104 pb-4 xl:pr-20 xl:-mt-120 xl:pb-20 2xl:-mt-140"
+        class="hidden w-full lg:flex items-end justify-end pr-8 -mt-88 pb-4 xl:pr-12 xl:-mt-110 2xl:-mt-130"
       >
         <div
-          class="hidden lg:flex bg-white w-100 h-100 2xl:h-120 2xl:w-120 rounded-full text-center items-center justify-center overflow-hidden shadow-2xl"
+          class="hidden lg:flex bg-white w-80 h-80 xl:h-100 xl:w-100 2xl:h-120 2xl:w-120 rounded-full text-center items-center justify-center overflow-hidden shadow-2xl"
         >
           <GoogleMaps />
         </div>
