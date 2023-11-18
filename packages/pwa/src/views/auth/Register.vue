@@ -6,7 +6,7 @@ import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledLink from '@/components/generic/StyledLink.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { useMutation } from '@vue/apollo-composable'
-import { CREATE_GROUP } from '@/graphql/usser.query'
+import { CREATE_GROUP } from '@/graphql/user.query.ts'
 import useUser from '@/composables/useUser'
 import useLanguage from '@/composables/useLanguage'
 
@@ -27,7 +27,7 @@ export default defineComponent({
     const { register } = useFirebase()
     const { restoreCustomUser } = useUser()
     const { mutate } = useMutation(CREATE_GROUP)
-    const { locale} = useLanguage()
+    const { locale } = useLanguage()
     const { currentRoute } = useRouter()
 
     // methods
@@ -38,7 +38,7 @@ export default defineComponent({
             await mutate({
               name: form.displayName,
               btwNumber: null,
-              locale:locale,
+              locale: locale,
             })
           } else {
             await mutate({
