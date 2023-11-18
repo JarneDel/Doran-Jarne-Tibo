@@ -7,16 +7,20 @@ import {
 import useFirebase from '@/composables/useFirebase.ts'
 import useLastRoute from '@/composables/useLastRoute.ts'
 import useUser from '@/composables/useUser'
+import { nextTick } from 'vue'
 
 const { firebaseUser, logout } = useFirebase()
 const { lastRoute } = useLastRoute()
-
+export const SITE_NAME = 'Sport complex'
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: '/',
       component: () => import('@/views/Home.vue'),
+      meta: {
+        title: SITE_NAME + ' - Home',
+      },
     },
     {
       path: '/admin',
@@ -24,26 +28,32 @@ export const router = createRouter({
       meta: {
         shouldBeAuthenticated: true,
         allowedRoles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
+        title: SITE_NAME + ' - Admin',
       },
       children: [
         {
           path: 'groups',
           component: () => import('@/views/admin/Groups.vue'),
+          meta: {
+            title: SITE_NAME + ' - Groups',
+          },
         },
         {
           path: 'inventory/new',
           component: () => import('@/views/admin/inventory/New.vue'),
+          meta: {
+            title: 'Create new item | ' + SITE_NAME,
+          },
         },
         {
           path: 'inventory',
           component: () => import('@/views/admin/inventory/Overview.vue'),
+          meta: {
+            title: SITE_NAME + ' - Inventory',
+          },
           children: [
             {
-              path: 'edit',
-              component: () =>
-                import('@/views/admin/inventory/SelectEditItem.vue'),
-            },
-            {
+              // title only for static pages
               path: ':id',
               component: () => import('@/views/admin/inventory/Item.vue'),
             },
@@ -66,32 +76,23 @@ export const router = createRouter({
               path: 'id/:id/edit',
               component: () => import('@/views/admin/rooms/Edit.vue'),
             },
+            {
+              path: 'type/:type',
+              component: () => import('@/views/admin/rooms/Rooms.vue'),
+              props: true,
+            },
+            {
+              path: 'create',
+              component: () => import('@/views/admin/rooms/Create.vue'),
+            },
+            {
+              path: 'rooms/create/type/:type',
+              component: () => import('@/views/admin/rooms/Create.vue'),
+            },
           ],
           meta: {
             shouldBeAuthenticated: true,
-          },
-        },
-        {
-          path: 'rooms/type/:type',
-          component: () => import('@/views/admin/rooms/Rooms.vue'),
-          props: true,
-          meta: {
-            shouldBeAuthenticated: true,
-          },
-        },
-        {
-          path: 'rooms/create',
-          component: () => import('@/views/admin/rooms/Create.vue'),
-          meta: {
-            shouldBeAuthenticated: true,
-          },
-        },
-        {
-          path: 'rooms/create/type/:type',
-          component: () => import('@/views/admin/rooms/Create.vue'),
-          props: true,
-          meta: {
-            shouldBeAuthenticated: true,
+            title: SITE_NAME + ' - Rooms',
           },
         },
         {
@@ -104,22 +105,16 @@ export const router = createRouter({
               component: () => import('@/views/admin/reservations/Item.vue'),
               props: true,
             },
-            // {
-            //   path: 'id/:id/edit',
-            //   component: () => import('@/views/admin/reservations/Edit.vue'),
-            // },
+            {
+              path: 'type/:type',
+              component: () =>
+                import('@/views/admin/reservations/Reservations.vue'),
+              props: true,
+            },
           ],
           meta: {
             shouldBeAuthenticated: true,
-          },
-        },
-        {
-          path: 'reservations/type/:type',
-          component: () =>
-            import('@/views/admin/reservations/Reservations.vue'),
-          props: true,
-          meta: {
-            shouldBeAuthenticated: true,
+            title: SITE_NAME + ' - Reservations',
           },
         },
         {
@@ -146,6 +141,9 @@ export const router = createRouter({
         {
           path: 'staff',
           component: () => import('@/views/admin/staff/Staff.vue'),
+          meta: {
+            title: SITE_NAME + ' - Staff',
+          },
         },
         {
           path: 'vacation',
@@ -153,6 +151,14 @@ export const router = createRouter({
             import('@/views/admin/vacation/VacationOverview.vue'),
           meta: {
             allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
+            title: SITE_NAME + ' - Vacation Requests',
+          },
+        },
+        {
+          path: '403',
+          component: () => import('@/views/403.vue'),
+          meta: {
+            title: "403: You don't have permission to access this page.",
           },
         },
         {
@@ -167,6 +173,7 @@ export const router = createRouter({
       meta: {
         shouldBeAuthenticated: true,
         allowedRoles: ['STAFF', 'SUPER_ADMIN'],
+        title: 'Staff Home | ' + SITE_NAME,
       },
       children: [
         {
@@ -176,6 +183,9 @@ export const router = createRouter({
             {
               path: 'request-vacation',
               component: () => import('@/views/staff/RequestVacation.vue'),
+              meta: {
+                title: 'Request Vacation | ' + SITE_NAME,
+              },
             },
           ],
         },
@@ -188,14 +198,23 @@ export const router = createRouter({
         {
           path: '/login',
           component: () => import('@/views/auth/Login.vue'),
+          meta: {
+            title: 'Login | ' + SITE_NAME,
+          },
         },
         {
           path: '/register',
           component: () => import('@/views/auth/Register.vue'),
+          meta: {
+            title: 'Register | ' + SITE_NAME,
+          },
         },
         {
           path: '/password-reset',
           component: () => import('@/views/auth/PasswordReset.vue'),
+          meta: {
+            title: 'Password Reset | ' + SITE_NAME,
+          },
         },
       ],
       meta: {
@@ -208,6 +227,7 @@ export const router = createRouter({
       meta: {
         shouldBeAuthenticated: true,
         allowedRoles: ['GROUP', 'ADMIN', 'SUPER_ADMIN', 'STAFF'],
+        title: 'Profile | ' + SITE_NAME,
       },
     },
     {
@@ -216,6 +236,7 @@ export const router = createRouter({
       meta: {
         shouldBeAuthenticated: true,
         allowedRoles: ['GROUP', 'ADMIN', 'SUPER_ADMIN', 'STAFF'],
+        title: 'Account | ' + SITE_NAME,
       },
     },
     {
@@ -234,11 +255,15 @@ export const router = createRouter({
       meta: {
         shouldBeAuthenticated: true,
         allowedRoles: ['GROUP'],
+        title: 'Reservation | ' + SITE_NAME,
       },
     },
     {
       path: '/403',
       component: () => import('@/views/403.vue'),
+      meta: {
+        title: "403: You don't have permission to access this page.",
+      },
     },
     {
       path: '/:pathMatch(.*)*',
@@ -249,7 +274,7 @@ export const router = createRouter({
 
 const redirectToLogin = (
   to: RouteLocationNormalized,
-  next: NavigationGuardNext
+  next: NavigationGuardNext,
 ) => {
   next('/login?redirect=' + to.path)
 }
@@ -270,7 +295,14 @@ const redirectToHome = (next: NavigationGuardNext) => {
   // Todo: redirect to group page
   next('/profile')
 }
-const unauthorized = (next: NavigationGuardNext) => {
+const unauthorized = (
+  to: RouteLocationNormalized,
+  next: NavigationGuardNext,
+) => {
+  if (to.path.includes('/admin')) {
+    next('/admin/403')
+    return
+  }
   next('/403')
 }
 
@@ -287,7 +319,16 @@ const isRoleAllowed = (role: string, allowedRoles: string[]) => {
   return allowedRoles.includes(role)
 }
 
+const setPageTitle = (to: RouteLocationNormalized) => {
+  // check if page is static
+  nextTick(() => {
+    document.title = (to.meta.title as string) || SITE_NAME
+  })
+}
+
 router.beforeEach((to, _, next) => {
+  console.debug('Meta', to.meta)
+  setPageTitle(to)
   // get user from database
   const { customUser } = useUser()
   // @ts-ignore
@@ -308,7 +349,7 @@ router.beforeEach((to, _, next) => {
     // when route is not allowed for user role redirect to 403
     case customUser.value &&
       !isRoleAllowed(customUser.value.userByUid.role, allowedRoles):
-      unauthorized(next)
+      unauthorized(to, next)
       break
     default:
       next()
