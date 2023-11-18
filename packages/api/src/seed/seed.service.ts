@@ -92,6 +92,7 @@ export class SeedService {
     for (let group of groups) {
       const g = new Group()
       g.name = group.name
+      g.email = group.email
       g.btwNumber = group.btw_number
       g.score = group.score
       g.locale = group.locale
@@ -236,7 +237,6 @@ export class SeedService {
       r.startTime = reservation.start_time
       r.endTime = reservation.end_time
       r.groupId = groups[Math.floor(Math.random() * groups.length)].id.toString()
-      console.log({'🌈':r.groupId})
       const loanableMaterial =
         await loanableMaterials[
           Math.floor(Math.random() * loanableMaterials.length)
@@ -327,16 +327,25 @@ export class SeedService {
 
     for (let repairRequest of repairRequests) {
       const rr = new RepairRequest()
+      rr.title = repairRequest.title
       rr.description = repairRequest.description
-      rr.isRepaired = false
+      rr.urgency = Math.floor(Math.random() * 3) + 1
+      const randNumb = Math.floor(Math.random() * 2)
+      if(randNumb === 0){
+        rr.isRepaired = false
+      }
+      else{
+        rr.isRepaired = true
+      }
 
-      const randNumb1 = Math.floor(Math.random() * 2)
+      const randNumb1 = Math.floor(Math.random() * 3)
       if (randNumb1 === 0) {
         //Room
         rr.loanableMaterial = null // Set to null because it's a room
         const room = rooms[Math.floor(Math.random() * rooms.length)]
         const roomList: Rooms[] = []
         const r = new Rooms()
+        r.id = room.id
         r.name = room.name
         r.pricePerHour = room.pricePerHour
         let sports: Sport[] = []
@@ -350,26 +359,86 @@ export class SeedService {
         r.type = room.type
         roomList.push(r)
         rr.room = roomList
-      } else {
+      } else if (randNumb1 === 1) {
         //LoanableMaterial
+        const numberOfLoanableMaterials = Math.floor(Math.random() * 3) + 1
         rr.room = null // Set to null because it's a loanable material
-        const loanableMaterial =
+        const materialList: Materials[] = []
+        const materialIds: string[] = []
+        for(let i = 0; i < numberOfLoanableMaterials; i++)
+        {
+          let loanableMaterial =
           loanableMaterials[
             Math.floor(Math.random() * loanableMaterials.length)
           ]
-        const material = new Materials()
+          // check if the id is already in the list
+          // if so, get a new one
+          while(materialIds.includes(loanableMaterial.id)){
+            loanableMaterial =
+            loanableMaterials[
+              Math.floor(Math.random() * loanableMaterials.length)
+            ]
+          }
+          // save id to check if it's already in the list
+          materialIds.push(loanableMaterial.id)
+
+          const material = new Materials()
+          let sports: Sport[] = []
+          for (let sportId of loanableMaterial.SportId) {
+            const s = this.sportService.findOneById(sportId)
+            s.then(sport => {
+              sports.push(sport)
+            })
+          }
+          material.id = loanableMaterial.id
+          material.name = loanableMaterial.name
+          material.totalAmount = loanableMaterial.totalAmount
+          material.wantedAmount = loanableMaterial.wantedAmount
+          material.price = loanableMaterial.price
+          material.sports = sports
+          material.isComplete = loanableMaterial.isComplete
+          material.description = loanableMaterial.description
+          materialList.push(material)
+        }
+        rr.loanableMaterial = materialList
+      } else{
+        //Room
+        const room = rooms[Math.floor(Math.random() * rooms.length)]
+        const roomList: Rooms[] = []
+        const r = new Rooms()
+        r.id = room.id
+        r.name = room.name
+        r.pricePerHour = room.pricePerHour
         let sports: Sport[] = []
-        for (let sportId of loanableMaterial.SportId) {
+        for (let sportId of room.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
             sports.push(sport)
           })
         }
+        r.sports = sports
+        r.type = room.type
+        roomList.push(r)
+        rr.room = roomList
+        //LoanableMaterial
+        const loanableMaterial =
+          loanableMaterials[
+            Math.floor(Math.random() * loanableMaterials.length)
+          ]
+        const material = new Materials()
+        let sports2: Sport[] = []
+        for (let sportId of loanableMaterial.SportId) {
+          const s = this.sportService.findOneById(sportId)
+          s.then(sport => {
+            sports2.push(sport)
+          })
+        }
+        material.id = loanableMaterial.id
         material.name = loanableMaterial.name
         material.totalAmount = loanableMaterial.totalAmount
         material.wantedAmount = loanableMaterial.wantedAmount
         material.price = loanableMaterial.price
-        material.sports = sports
+        material.sports = sports2
         material.isComplete = loanableMaterial.isComplete
         material.description = loanableMaterial.description
         const materialList: Materials[] = []

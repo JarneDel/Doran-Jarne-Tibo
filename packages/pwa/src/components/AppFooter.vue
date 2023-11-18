@@ -31,8 +31,8 @@ export default defineComponent({
       <h3 class="text-3xl font-bold">Sportcomplex</h3>
       <div class="flex flex-col">
         <p>Stad Waregem</p>
-        <p>Gemeenteplein 2</p>
-        <p>8793 Waregem</p>
+        <p>Meersstraat 5</p>
+        <p>8790 Waregem</p>
       </div>
       <div>
         <a

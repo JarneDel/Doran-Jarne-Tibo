@@ -1,6 +1,6 @@
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
-import Logo from '@/components/generic/Logo.vue'
+import { computed, defineComponent } from 'vue';
+import Logo from '@/components/generic/Logo.vue';
 import {
   Box,
   CalendarClock,
@@ -10,11 +10,13 @@ import {
   PanelRightClose,
   Users,
   Warehouse,
-} from 'lucide-vue-next'
-import { useLocalStorage } from '@vueuse/core'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+  Wrench,
+} from 'lucide-vue-next';
+import { useLocalStorage } from '@vueuse/core';
+import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import useUser from '@/composables/useUser.ts'
+
 
 export default defineComponent({
   name: 'Sidenav',
@@ -28,14 +30,15 @@ export default defineComponent({
     CalendarClock,
     Contact2,
     Palmtree,
+    Wrench,
   },
   setup() {
-    const isClosed = useLocalStorage('isClosed', false)
-    const { currentRoute } = useRouter()
+    const isClosed = useLocalStorage('isClosed', false);
+    const { currentRoute } = useRouter();
     const { customUser } = useUser()
     const role = computed(() => customUser.value?.userByUid.role)
-    const { t } = useI18n()
-    const section = computed(() => currentRoute.value.path.split('/')[2])
+    const { t } = useI18n();
+    const section = computed(() => currentRoute.value.path.split('/')[2]);
     const pages = computed(() => {
       return [
         {
@@ -67,6 +70,13 @@ export default defineComponent({
           roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
         },
         {
+          name: 'repair-requests',
+          icon: Wrench,
+          content: t('nav.repairRequests'),
+          route: '/admin/repair-requests',
+          roles: ['ADMIN', 'SUPER_ADMIN']
+        },
+        {
           name: 'staff',
           icon: Contact2,
           content: t('nav.staff'),
@@ -80,15 +90,12 @@ export default defineComponent({
           route: '/admin/vacation',
           roles: ['ADMIN', 'SUPER_ADMIN'],
         },
-      ]
-    })
-    const shownPages = computed(() => {
-      return pages.value.filter(page => {
-        return page.roles.includes(role.value ?? 'STAFF')
+      ].filter(page => {
+        return page.roles.includes(role.value ?? "")
       })
     })
 
-    return { isClosed, section, pages: shownPages }
+    return { isClosed, section, pages }
   },
 })
 </script>
@@ -96,7 +103,7 @@ export default defineComponent({
 <template>
   <div
     :class="{
-      'min-w-48 w-1/6': !isClosed,
+      'w-1/6 min-w-54': !isClosed,
       'w-16': isClosed,
     }"
     class="min-h-full overflow-hidden bg-white transition-all duration-200"

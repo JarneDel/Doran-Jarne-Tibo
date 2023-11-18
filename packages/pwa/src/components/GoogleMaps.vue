@@ -43,7 +43,7 @@ export default {
         .setPopup(
           new Popup({ offset: 25 }) // add popups
             .setHTML(
-              '<h3 class="text-primary-text font-bold text-xl">SportComplex</h3>'
+              '<h3 class="text-primary-text font-bold text-xl">SportComplex</h3><a class="underline" href="https://www.google.com/maps/dir/50.9096009,3.411897/Sporthal+De+Treffer,+Meersstraat+5,+8790+Waregem/@50.8944852,3.4077865,14z/data=!4m10!4m9!1m1!4e1!1m5!1m1!1s0x47c315fc75c322f5:0xb318f33c483810a3!2m2!1d3.4299844!2d50.8848538!3e0?entry=ttu">Meersstraat 5, 8790</a>'
             )
         )
         .addTo(map.value!);

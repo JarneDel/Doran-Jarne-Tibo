@@ -99,7 +99,6 @@ export default defineComponent({
         SportId: sportsIds,
         type: type,
       };
-      console.log(params);
 
       //Create a new room in the database
       const res = await mutate({
@@ -122,7 +121,6 @@ export default defineComponent({
           await push('/admin/rooms/type/4');
         }
       }
-      console.log('submit');
     };
 
     return {
