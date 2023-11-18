@@ -48,6 +48,8 @@ export class RepairRequestService {
     rr.description = updateRepairRequestInput.description
     rr.urgency = updateRepairRequestInput.urgency
     rr.isRepaired = updateRepairRequestInput.isRepaired
+    rr.room = updateRepairRequestInput.room
+    rr.loanableMaterial = updateRepairRequestInput.loanableMaterial
     return this.RepairRequestRepository.save(rr)
   }
 

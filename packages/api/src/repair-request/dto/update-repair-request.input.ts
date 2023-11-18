@@ -6,6 +6,9 @@ import { InputType, Field, PartialType, ID } from '@nestjs/graphql';
 import { IsBoolean, Min, Max, IsNotEmpty, MinLength } from 'class-validator'
 // Typeorm
 import { ObjectIdColumn } from 'typeorm';
+// Entities from other modules (reservation)
+import { Rooms } from 'src/reservation/entities/room.entity'
+import { Materials } from 'src/reservation/entities/material.entity'
 
 @InputType()
 export class UpdateRepairRequestInput  {
@@ -31,4 +34,12 @@ export class UpdateRepairRequestInput  {
   @Max(3)
   @Field()
   urgency: number
+
+
+  @Field(() => [Rooms], { nullable: true })
+  room: Rooms[]
+
+
+  @Field(() => [Materials], { nullable: true })
+  loanableMaterial: Materials[]
 }

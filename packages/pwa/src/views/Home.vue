@@ -104,7 +104,7 @@ export default {
     </div>
     <div
       style="
-        background-image: url('public/backgroundPattern.webp');
+        background-image: url('/backgroundPattern.webp');
         background-repeat: repeat;
       "
       class="p-4 md:p-8 flex flex-col items-center justify-center gap-4 md:gap-6 lg:gap-8 xl:gap-10 2xl:gap-20 lg:flex-row xl:p-12 2xl:p-20"

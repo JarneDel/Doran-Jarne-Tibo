@@ -237,7 +237,6 @@ export class SeedService {
       r.startTime = reservation.start_time
       r.endTime = reservation.end_time
       r.groupId = groups[Math.floor(Math.random() * groups.length)].id.toString()
-      console.log({'🌈':r.groupId})
       const loanableMaterial =
         await loanableMaterials[
           Math.floor(Math.random() * loanableMaterials.length)
@@ -346,6 +345,7 @@ export class SeedService {
         const room = rooms[Math.floor(Math.random() * rooms.length)]
         const roomList: Rooms[] = []
         const r = new Rooms()
+        r.id = room.id
         r.name = room.name
         r.pricePerHour = room.pricePerHour
         let sports: Sport[] = []
@@ -405,6 +405,7 @@ export class SeedService {
         const room = rooms[Math.floor(Math.random() * rooms.length)]
         const roomList: Rooms[] = []
         const r = new Rooms()
+        r.id = room.id
         r.name = room.name
         r.pricePerHour = room.pricePerHour
         let sports: Sport[] = []

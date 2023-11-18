@@ -38,7 +38,6 @@ export default defineComponent({
   setup: () => {
     const { push, replace, currentRoute } = useRouter();
     const id = computed(() => currentRoute.value.params.id);
-    console.log(id.value);
     // region graphql
     const { error, loading, result } = useQuery<IRepairRequest>(
       GET_ONE_REPAIR_REQUEST,

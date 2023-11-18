@@ -151,7 +151,6 @@ export default defineComponent({
     watch(
       lastRoute,
       (value) => {
-        console.log(value);
         if (value.startsWith('/admin/rooms/id/')) {
           fetchWithFilters();
         }
@@ -160,8 +159,6 @@ export default defineComponent({
     );
 
     const fetchWithFilters = () => {
-      console.log('fetchWithFilters');
-      console.log(typeSelector.value);
       if (typeSelector.value == 0) {
         refetchGyms();
       } else if (typeSelector.value == 1) {

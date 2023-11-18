@@ -11,6 +11,8 @@ export interface material {
     isComplete: boolean
     description: string
     amountReserved:number
+    createdAt: Date,
+    updatedAt: Date,
   }
 
 export interface RepairRequest {
@@ -19,9 +21,20 @@ export interface RepairRequest {
     requestUser: RequestUser;
     description: string;
     urgency: number;
-    room: Room;
-    loanableMaterial: material;
+    room: Room[];
+    loanableMaterial: material[];
     isRepaired: boolean;
     createdAt: Date;
     updatedAt: Date;
+}
+
+export interface IUpdateRepairRequest {
+  id: string;
+  title: string;
+  description: string;
+  urgency: number;
+  requestUser: RequestUser;
+  room: Room[];
+  loanableMaterial: material[];
+  isRepaired: boolean;
 }

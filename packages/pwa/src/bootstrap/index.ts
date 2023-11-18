@@ -133,11 +133,11 @@ export const router = createRouter({
                 import('@/views/admin/repairRequests/Item.vue'),
               props: true,
             },
-            // {
-            //   path: 'id/:id/edit',
-            //   component: () =>
-            //     import('@/views/admin/repair-requests/Edit.vue'),
-            // },
+            {
+              path: 'id/:id/edit',
+              component: () =>
+                import('@/views/admin/repairRequests/Edit.vue'),
+            },
           ],
           meta: {
             shouldBeAuthenticated: true,

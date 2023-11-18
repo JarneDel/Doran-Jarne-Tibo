@@ -86,18 +86,11 @@ export default defineComponent({
     });
 
     const handleSubmit = () => {
-      console.log('submit');
-
-      console.log(currentRoom.value);
-
       // Convert sports to sportIds
       let SportIds: String[] = [];
       currentRoom.value.sports.forEach((sport) => {
         SportIds.push(sport.id);
       });
-
-      console.log(SportIds);
-      console.log(currentRoom.value);
 
       // Save changes
       mutateUpdateItem({
@@ -182,21 +175,17 @@ export default defineComponent({
                   @change="
                     (e: any) => {
                       if (e.target?.checked) {
-                        console.log('checked');
                         currentRoom = {
                           ...currentRoom,
                           sports: [...currentRoom.sports, sport],
                         };
-                        console.log(currentRoom.sports);
                       } else {
-                        console.log('unchecked');
                         currentRoom = {
                           ...currentRoom,
                           sports: currentRoom.sports.filter(
                             (s) => s.id !== sport.id
                           ),
                         };
-                        console.log(currentRoom.sports);
                       }
                     }
                   "

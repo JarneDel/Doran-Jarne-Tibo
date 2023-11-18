@@ -42,6 +42,7 @@ export default defineComponent({
       result: resultRepairRequests,
       error: errorRepairRequests,
       onResult: onResultRepairRequests,
+      refetch: refetchRepairRequests,
     } = useQuery<IRepairRequest>(ALL_REPAIR_REQUESTS);
 
     const sortedRepairRequests = ref<RepairRequest[]>();
@@ -60,7 +61,7 @@ export default defineComponent({
       lastRoute,
       (value) => {
         console.log(value);
-        if (value.startsWith('/admin/repairRequests/id/')) {
+        if (value.startsWith('/admin/repair-requests/id/')) {
           fetchWithFilters();
         }
       },
@@ -69,6 +70,7 @@ export default defineComponent({
 
     const fetchWithFilters = () => {
       console.log('fetchWithFilters');
+      refetchRepairRequests();
     };
 
     const changeSorting = (e: any) => {
@@ -91,8 +93,8 @@ export default defineComponent({
           case 'date':
             newArray.sort((a, b) => {
               return (
-                new Date(a.updatedAt).getTime() -
-                new Date(b.updatedAt).getTime()
+                new Date(a.createdAt).getTime() -
+                new Date(b.createdAt).getTime()
               );
             });
             break;
@@ -209,7 +211,7 @@ export default defineComponent({
             :key="repairRequest.id"
             v-for="repairRequest in sortedRepairRequests"
           >
-            <Button
+            <button
               class="flex justify-between p-2 lg:p-3 2xl:p-4 rounded-md shadow-md bg-white w-full"
               @click="handleRepairRequestDetail(repairRequest)"
             >
@@ -331,7 +333,7 @@ export default defineComponent({
                 </h4>
                 <p>{{ repairRequest.description }}</p>
               </div>
-            </Button>
+            </button>
           </li>
         </ul>
       </div>

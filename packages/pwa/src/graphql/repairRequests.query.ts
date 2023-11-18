@@ -36,6 +36,7 @@ query {
       description
       urgency
       room{
+        id
         name
         sports{
           id
@@ -98,6 +99,7 @@ query GetRepairRequestById($repairRequestId: String!) {
     }
     description
     room{
+      id
       name
       sports{
         id
@@ -121,6 +123,14 @@ query GetRepairRequestById($repairRequestId: String!) {
     isRepaired
     createdAt
     updatedAt
+  }
+}
+`
+
+export const UPDATE_REPAIR_REQUEST = gql`
+mutation($updateRepairRequestInput: UpdateRepairRequestInput!) {
+  updateRepairRequest(updateRepairRequestInput: $updateRepairRequestInput) {
+    id
   }
 }
 `
