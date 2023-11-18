@@ -67,74 +67,9 @@ export default defineComponent({
           reservation.value.beginTime = reservations.value?.startTime
           reservation.value.endTime = reservations.value?.endTime
         }
-        reservations.value?.rooms.forEach(room => {
-          wantedRoom.value.push(room)
-        })
-        reservations.value?.reservedMaterials.forEach(material => {
-          wantedMaterials.value.push(material)
-        })
         timeDivrent()
-        new Promise<void>(resolve => {
-          const { onResult: onRoom } = useQuery<any>(GET_AVAILABLE_ROOMS, {
-            date: reservation.value.date,
-            startTime: reservation.value.beginTime,
-            endTime: reservation.value.endTime,
-          })
-          onRoom(result => {
-            if (result.loading) return
-            const rooms: Room[] = result.data.getAvailableRooms
-            rooms.forEach(room => {
-              availableRooms.value.push(room)
-            })
-            reservations.value?.rooms.forEach(room => {
-              availableRooms.value.push(room)
-            })
-
-            availableRooms.value.forEach(room => {
-              if (wantedRoom.value.includes(room))
-                checkboxStatus.value[room.name] = true
-              else checkboxStatus.value[room.name] = false
-            })
-            resolve()
-          })
-        })
-        new Promise<void>(resolve => {
-          let sportId: string[] = []
-          wantedRoom.value.forEach((room: Room) => {
-            room.sports.forEach((sport: any) => {
-              if (!sportId.includes(sport.id)) sportId.push(sport.id)
-            })
-          })
-          const { onResult } = useQuery<any>(AVAILABLEMATERAILS, {
-            date: reservation.value.date,
-            startTime: reservation.value.beginTime,
-            endTime: reservation.value.endTime,
-            sportId: sportId,
-          })
-          onResult(result => {
-            if (result.loading) return
-            availableMaterials.value = result.data.GetAvailableloanableMaterials
-            const listIds: string[] = []
-            console.log(wantedMaterials.value)
-            wantedMaterials.value.forEach(material => {
-              listIds.push(material.id)
-            })
-            availableMaterials.value.forEach(material => {
-              if (listIds.includes(material.id)){
-                const wantedmat= wantedMaterials.value.find(wanted => wanted.id == material.id)
-                if (wantedmat)
-                checkboxStatusMaterials.value[material.name] = {
-                  amount: wantedmat.amountReserved,
-                }
-              }
-              else
-                checkboxStatusMaterials.value[material.name] = {
-                  amount: 0,
-                }
-            })
-            resolve()
-          })
-        })
+        check()
+        checkMaterials()
         resolve()
       })
     })
@@ -178,7 +113,6 @@ export default defineComponent({
             createdAt: new Date(),
             updatedAt: new Date(),
           }
-          console.log(sportt)
           sport.id = sportt.id
           sport.name = sportt.name
           sport.createdAt = sportt.createdAt
@@ -210,7 +144,6 @@ export default defineComponent({
       })
     }
     const Material = (material: material, plus: boolean) => {
-      //add material
       if (plus) {
         if (
           checkboxStatusMaterials.value[material.name].amount ==
@@ -226,7 +159,9 @@ export default defineComponent({
         wantedMaterials.value.push(material)
         price.value += material.price * reservation.value.timeDivrent
       } else {
-        if (checkboxStatusMaterials.value[material.name].amount == 0) return
+        if (checkboxStatusMaterials.value[material.name].amount == 0) {
+          return
+        }
         //remove material
         checkboxStatusMaterials.value[material.name].amount--
         wantedMaterials.value.splice(wantedMaterials.value.indexOf(material), 1)
@@ -236,27 +171,91 @@ export default defineComponent({
       }
     }
     const checkMaterials = () => {
-      return new Promise<void>(resolve => {
-        let sportId: string[] = []
-        wantedRoom.value.forEach((room: Room) => {
-          room.sports.forEach((sport: any) => {
-            if (!sportId.includes(sport.id)) sportId.push(sport.id)
-          })
+      let sportId: string[] = []
+      wantedRoom.value.forEach((room: Room) => {
+        room.sports.forEach((sport: any) => {
+          if (!sportId.includes(sport.id)) sportId.push(sport.id)
         })
+      })
+      availableMaterials.value = []
+      wantedMaterials.value = []
+      checkboxStatusMaterials.value = {}
+      return new Promise<void>(resolve => {
         const { onResult } = useQuery<any>(AVAILABLEMATERAILS, {
           date: reservation.value.date,
           startTime: reservation.value.beginTime,
           endTime: reservation.value.endTime,
           sportId: sportId,
+        },{
+          fetchPolicy: 'no-cache',
         })
         onResult(result => {
-          if (result.loading) return
-          availableMaterials.value = result.data.GetAvailableloanableMaterials
-          availableMaterials.value.forEach(material => {
-            checkboxStatusMaterials.value[material.name] = {
-              amount: 0,
-            }
-          })
+          if (
+            reservations.value?.date.substr(0, 10) == reservation.value?.date &&
+            reservations.value?.endTime == reservation.value?.endTime &&
+            reservations.value?.startTime == reservation.value?.beginTime &&
+            wantedRoom.value.length >0
+          ) {
+            if (result.loading) return
+            reservations.value?.reservedMaterials.forEach(material => {
+              wantedMaterials.value.push(material)
+            })
+            result.data.GetAvailableloanableMaterials.forEach(material => {
+              availableMaterials.value.push(material)
+            })
+            const listIds: string[] = []
+            wantedMaterials.value.forEach(material => {
+              listIds.push(material.id)
+            })
+            const listIds2: string[] = []
+            availableMaterials.value.forEach(material => {
+              listIds2.push(material.id)
+            })
+            wantedMaterials.value.forEach(material => {
+              if (!listIds2.includes(material.id))
+                availableMaterials.value.push(material)
+            })
+            availableMaterials.value.forEach(material => {
+              if (listIds.includes(material.id)) {
+                let changeMat = {
+                  id: material.id,
+                  name: material.name,
+                  price: material.price,
+                  sports: material.sports,
+                  totalAmount: material.totalAmount,
+                  amountReserved: 0,
+                  wantedAmount: material.wantedAmount,
+                  isComplete: material.isComplete,
+                  description: material.description,
+                }
+                const wantedmat = wantedMaterials.value.find(
+                  wanted => wanted.id == material.id,
+                )
+                changeMat.totalAmount =
+                  changeMat.totalAmount + wantedmat.amountReserved
+                availableMaterials.value.splice(
+                  availableMaterials.value.indexOf(material),
+                  1,
+                  changeMat,
+                )
+                if (wantedmat)
+                  checkboxStatusMaterials.value[material.name] = {
+                    amount: wantedmat.amountReserved,
+                  }
+              } else
+                checkboxStatusMaterials.value[material.name] = {
+                  amount: 0,
+                }
+            })
+          } else {
+            if (result.loading) return
+            availableMaterials.value = result.data.GetAvailableloanableMaterials
+            availableMaterials.value.forEach(material => {
+              checkboxStatusMaterials.value[material.name] = {
+                amount: 0,
+              }
+            })
+          }
           resolve()
         })
       })
@@ -272,22 +271,54 @@ export default defineComponent({
       checkMaterials()
     }
     const check = async () => {
+      if (availableRooms.value.length > 0) {
+        availableRooms.value = []
+        checkboxStatus.value = {}
+        wantedRoom.value = []
+      }
       return new Promise<void>(resolve => {
         const { onResult } = useQuery<any>(GET_AVAILABLE_ROOMS, {
           date: reservation.value.date,
           startTime: reservation.value.beginTime,
           endTime: reservation.value.endTime,
+        },{
+          fetchPolicy: 'no-cache',
         })
         onResult(result => {
-          if (result.loading) return
-          availableRooms.value = result.data.getAvailableRooms
-          wantedRoom.value = []
-          wantedMaterials.value = []
-          availableMaterials.value = []
-          price.value = 0
-          availableRooms.value.forEach(room => {
-            checkboxStatus.value[room.name] = false
-          })
+          if (
+            reservations.value?.date.substr(0, 10) == reservation.value?.date &&
+            reservations.value?.endTime == reservation.value?.endTime &&
+            reservations.value?.startTime == reservation.value?.beginTime
+          ) {
+            if (result.loading) return
+            reservations.value?.rooms.forEach(room => {
+              wantedRoom.value.push(room)
+            })
+            const rooms: Room[] = result.data.getAvailableRooms
+            rooms.forEach(room => {
+              availableRooms.value.push(room)
+            })
+            reservations.value?.rooms.forEach(room => {
+              availableRooms.value.push(room)
+            })
+
+            availableRooms.value.forEach(room => {
+              if (wantedRoom.value.includes(room))
+                checkboxStatus.value[room.name] = true
+              else checkboxStatus.value[room.name] = false
+            })
+            checkMaterials()
+          } else {
+            if (result.loading) return
+            availableRooms.value = result.data.getAvailableRooms
+            wantedRoom.value = []
+            wantedMaterials.value = []
+            availableMaterials.value = []
+            price.value = 0
+            availableRooms.value.forEach(room => {
+              checkboxStatus.value[room.name] = false
+            })
+          }
           resolve()
         })
       })

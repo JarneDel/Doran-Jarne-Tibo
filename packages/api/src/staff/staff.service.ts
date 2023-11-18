@@ -94,10 +94,8 @@ export class StaffService {
       profilePictureUrl = url.toString()
 
       const user = await this.staffRepository.findOneByOrFail({ UID: uid })
-      console.log('updateProfilePictureUrl', uid, profilePictureUrl)
       return this.staffRepository.merge(user, { profilePictureUrl })
     } catch (e) {
-      console.log(e)
       if (e instanceof TypeError) {
         throw new GraphQLError('Invalid URL')
       }

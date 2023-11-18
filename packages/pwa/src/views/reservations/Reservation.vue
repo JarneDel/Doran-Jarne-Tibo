@@ -105,10 +105,10 @@ export default defineComponent({
           }}</StyledButton>
         </div>
       </div>
-      <StyledButton class="h-fit"
-        ><router-link to="reservation/add">{{
+      <router-link to="reservation/add">
+        <StyledButton class="h-fit">{{
           $t('navigation.addreservation')
-        }}</router-link></StyledButton
+        }}</StyledButton></router-link
       >
     </div>
     <div class="grid gap-4 lg:grid-cols-3 2xl:grid-cols-4">
@@ -127,7 +127,10 @@ export default defineComponent({
                 <p>{{ reservation.startTime }}</p>
                 <p>{{ reservation.endTime }}</p>
               </div>
-              <router-link class="flex justify-center items-center rounded-full bg-gray-300 h-9 w-9" :to="'reservation/edit/'+reservation.id">
+              <router-link
+                class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-300"
+                :to="'reservation/edit/' + reservation.id"
+              >
                 <Pencil />
               </router-link>
             </div>

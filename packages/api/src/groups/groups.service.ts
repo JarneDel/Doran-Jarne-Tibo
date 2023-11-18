@@ -61,7 +61,6 @@ export class GroupsService {
 
   async updateProfilePictureUrl(uid: string, profilePictureUrl: string) {
     const group = await this.groupRepository.findOneByOrFail({ UID: uid })
-    console.log('updateProfilePictureUrl', uid, profilePictureUrl)
     return this.groupRepository.merge(group, { profilePictureUrl })
     // return user
   }

@@ -56,7 +56,6 @@ export class ReservationResolver {
     if (Role.GROUP) {
       const group = await this.groupService.findOneByUid(user.uid)
       const reservation = await this.reservationService.findOne(id)
-      // console.log(group.id, reservation.groupId)
       if (group.id.toString() !== reservation.groupId)
         throw new GraphQLError('Not authorized')
       return reservation

@@ -198,7 +198,6 @@ export class ReservationService {
             //check if the reservation is in the time
             let reservationStart = new Date(date + ' ' + reservation.startTime)
             let reservationEnd = new Date(date + ' ' + reservation.endTime)
-            console.log('test')
             if (
               (start <= reservationStart && end >= reservationStart) ||
               (start <= reservationEnd && end >= reservationEnd) ||
