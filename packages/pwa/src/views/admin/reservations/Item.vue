@@ -75,7 +75,6 @@ export default defineComponent({
   setup: () => {
     const { push, replace, currentRoute } = useRouter();
     const id = computed(() => currentRoute.value.params.id);
-    console.log(id.value);
     // region graphql
     const { error, loading, result } = useQuery<IReservation>(
       GET_ONE_RESERVATION,
@@ -91,8 +90,6 @@ export default defineComponent({
         replace('/admin/reservations');
       });
     };
-
-    console.log(result);
 
     return {
       push,

@@ -21,6 +21,7 @@ export class GroupsService {
   create(uid: string, createGroupInput: CreateGroupInput) {
     const g = new Group()
     g.name = createGroupInput.name
+    g.email = createGroupInput.email
     g.btwNumber = createGroupInput.btwNumber
     g.locale = createGroupInput.locale
     g.UID = uid

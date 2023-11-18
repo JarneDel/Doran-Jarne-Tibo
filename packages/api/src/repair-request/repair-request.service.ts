@@ -19,6 +19,7 @@ export class RepairRequestService {
 
   create(createRepairRequestInput: CreateRepairRequestInput) {
     const RR = new RepairRequest()
+    RR.title = createRepairRequestInput.title
     RR.requestUserId = createRepairRequestInput.requestUserId
     RR.description = createRepairRequestInput.description
     RR.room = createRepairRequestInput.room
@@ -43,7 +44,12 @@ export class RepairRequestService {
 
   async update(id: string, updateRepairRequestInput: UpdateRepairRequestInput) {
     const rr = await this.findOneById(id)
+    rr.title = updateRepairRequestInput.title
+    rr.description = updateRepairRequestInput.description
+    rr.urgency = updateRepairRequestInput.urgency
     rr.isRepaired = updateRepairRequestInput.isRepaired
+    rr.room = updateRepairRequestInput.room
+    rr.loanableMaterial = updateRepairRequestInput.loanableMaterial
     return this.RepairRequestRepository.save(rr)
   }
 
