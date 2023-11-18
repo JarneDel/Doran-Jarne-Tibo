@@ -1,60 +1,66 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import { ref } from 'vue';
-import { ChevronDown } from 'lucide-vue-next';
-import useUser from '@/composables/useUser';
-import firebase from '@/composables/useFirebase';
-import logo from '@/components/generic/Logo.vue';
-import { OnClickOutside } from '@vueuse/components';
-import useLanguage from '@/composables/useLanguage';
+import { defineComponent, ref } from 'vue'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import { ChevronDown } from 'lucide-vue-next'
+import useUser from '@/composables/useUser'
+import firebase from '@/composables/useFirebase'
+import logo from '@/components/generic/Logo.vue'
+import { OnClickOutside } from '@vueuse/components'
+import useLanguage from '@/composables/useLanguage'
+import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
+
 export default defineComponent({
+  computed: {
+    SUPPORTED_LOCALES() {
+      return SUPPORTED_LOCALES
+    },
+  },
   setup() {
-    const { logout } = firebase();
-    const { firebaseUser } = firebase();
-    const { setLocale, locale } = useLanguage();
-    let options = ref(false);
-    const toggleOptions = () => {
-      options.value = !options.value;
-    };
-    const { customUser, userLogout } = useUser();
-    const logoutbutton = () => {
+    const { logout } = firebase()
+    const { firebaseUser } = firebase()
+    const { setLocale, locale } = useLanguage()
+    let options = ref(false)
+    const { customUser, userLogout } = useUser()
+    const logoutButton = () => {
       logout().then(() => {
-        userLogout();
-        options.value = false;
-      });
-    };
+        userLogout()
+        options.value = false
+      })
+    }
+    const toggleOptions = () => {
+      options.value = !options.value
+    }
     return {
       options,
       toggleOptions,
       customUser,
-      logoutbutton,
+      logoutButton,
       firebaseUser,
       setLocale,
       locale,
-    };
+    }
   },
   components: { StyledButton, ChevronDown, logo, OnClickOutside },
-});
+})
 </script>
 
 <template>
   <div
     class="flex h-20 min-h-min items-center justify-between bg-white fill-slate-700 p-2 shadow-md"
   >
-    <router-link to="/" class="flex items-center justify-center gap-2">
+    <router-link class="flex items-center justify-center gap-2" to="/">
       <logo class="h-10" />
 
-      <h1 class="sr-only sm:not-sr-only text-primary-text text-xl font-bold">
+      <h1 class="text-primary-text sr-only text-xl font-bold sm:not-sr-only">
         {{ $t('navigation.title') }}
       </h1>
     </router-link>
     <div class="flex items-center justify-center md:gap-8">
-      <div class="flex justify-center gap-4" v-if="customUser">
+      <div v-if="customUser" class="flex justify-center gap-4">
         <div
           v-if="
             ['SUPER_ADMIN', 'ADMIN', 'STAFF'].includes(
-              customUser?.userByUid.role
+              customUser?.userByUid.role,
             )
           "
           class="hover:font-bold"
@@ -76,14 +82,13 @@ export default defineComponent({
       <div v-if="!customUser">
         <label class="my-3 block">
           <select
-            @change="setLocale(locale)"
             v-model="locale"
             class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
+            @change="setLocale(locale)"
           >
-            <option value="nl">Nederland</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="zh">中文</option>
+            <option v-for="(locale, key) in SUPPORTED_LOCALES" :value="key">
+              {{ locale }}
+            </option>
           </select>
         </label>
       </div>
@@ -96,17 +101,17 @@ export default defineComponent({
           <ChevronDown />
           <div class="">
             <p
-              class="max-w-[6rem] overflow-hidden text-ellipsis whitespace-nowrap"
-              :title="customUser?.userByUid.firstName"
               v-if="customUser?.userByUid.__typename == 'Staff'"
+              :title="customUser?.userByUid.firstName"
+              class="max-w-[6rem] overflow-hidden text-ellipsis whitespace-nowrap"
             >
               {{ customUser?.userByUid.firstName }}
             </p>
 
             <p
-              class="max-w-[6rem] overflow-hidden text-ellipsis whitespace-nowrap"
-              :title="customUser?.userByUid.name"
               v-if="customUser?.userByUid.__typename == 'Group'"
+              :title="customUser?.userByUid.name"
+              class="max-w-[6rem] overflow-hidden text-ellipsis whitespace-nowrap"
             >
               {{ customUser?.userByUid.name }}
             </p>
@@ -114,8 +119,8 @@ export default defineComponent({
         </button>
         <router-link
           v-if="!customUser"
-          to="/login"
           class="px4 bg-secondary hover:border-secondary-lighter active:border-secondary-lighter active:bg-secondary-400 focus-visible-outline-none transition-color rounded border-2 border-transparent py-2 focus:border-black focus:outline-none focus-visible:border-black"
+          to="/login"
         >
           {{ $t('auth.login') }}
         </router-link>
@@ -125,7 +130,7 @@ export default defineComponent({
             class="absolute right-0 top-9 rounded-md bg-white p-4 shadow-md"
           >
             <router-link to="/profile">{{ $t('nav.profile') }}</router-link>
-            <StyledButton @click="logoutbutton()" class="mt-2">
+            <StyledButton class="mt-2" @click="logoutButton()">
               {{ $t('account.log.out') }}
             </StyledButton>
           </div>
