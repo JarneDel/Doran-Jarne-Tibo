@@ -133,6 +133,10 @@ export default defineComponent({
       sortedRepairRequests.value = newArray;
     };
 
+    const handleRepairRequestDetail = (repairRequest: RepairRequest) => {
+      push(`/admin/repair-requests/id/${repairRequest.id}`);
+    };
+
     return {
       idToken,
       loadingRepairRequests,
@@ -144,6 +148,7 @@ export default defineComponent({
       currentRoute,
       changeSorting,
       changeReverseSorting,
+      handleRepairRequestDetail,
     };
   },
 });
@@ -206,6 +211,7 @@ export default defineComponent({
           >
             <Button
               class="flex justify-between p-2 lg:p-3 2xl:p-4 rounded-md shadow-md bg-white w-full"
+              @click="handleRepairRequestDetail(repairRequest)"
             >
               <div
                 class="flex flex-col justify-start items-start w-full sm:w-[60%] md:w-[30%]"
@@ -219,14 +225,14 @@ export default defineComponent({
                   <ShieldAlert
                     class="w-8 h-8 mr-2"
                     :class="{
-                      'text-green-600': repairRequest.urgency == 1,
-                      'text-yellow-400': repairRequest.urgency == 2,
+                      'text-yellow-300': repairRequest.urgency == 1,
+                      'text-orange-500': repairRequest.urgency == 2,
                       'text-red-600': repairRequest.urgency == 3,
                       hidden: repairRequest.isRepaired,
                     }"
                   />
                   <BadgeCheck
-                    class="w-8 h-8 text-green-600"
+                    class="w-8 h-8 mr-2 text-green-600"
                     :class="{
                       hidden: !repairRequest.isRepaired,
                     }"
@@ -307,13 +313,13 @@ export default defineComponent({
                     <h5 class="font-medium text-primary-text">
                       {{ $t('repairRequest.email') }}:
                     </h5>
-                    <p>{{ repairRequest.requestUser.email }},</p>
+                    <p>{{ repairRequest.requestUser.email }}</p>
                   </div>
                   <div class="flex gap-2">
                     <h5 class="font-medium text-primary-text">
                       {{ $t('repairRequest.role') }}:
                     </h5>
-                    <p>{{ repairRequest.requestUser.role }},</p>
+                    <p>{{ repairRequest.requestUser.role }}</p>
                   </div>
                 </div>
               </div>

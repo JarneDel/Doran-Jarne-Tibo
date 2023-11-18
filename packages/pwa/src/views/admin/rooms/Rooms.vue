@@ -1,41 +1,41 @@
 <script lang="ts">
 // Interfaces
 interface Room {
-  id: string
-  name: string
-  sports: Sport[]
-  pricePerHour: number
-  type: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  name: string;
+  sports: Sport[];
+  pricePerHour: number;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
 }
 interface IRooms {
-  GetAllGyms: [Room]
-  GetAllWorkRooms: [Room]
-  GetAllChangingRooms: [Room]
-  GetAllSwimmingPools: [Room]
-  GetAllDivePools: [Room]
+  GetAllGyms: [Room];
+  GetAllWorkRooms: [Room];
+  GetAllChangingRooms: [Room];
+  GetAllSwimmingPools: [Room];
+  GetAllDivePools: [Room];
 }
 
 interface Sport {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 interface Sports {
   GetAllSports: [
     {
-      id: string
-      name: string
-      createdAt: string
-      updatedAt: string
-    },
-  ]
+      id: string;
+      name: string;
+      createdAt: string;
+      updatedAt: string;
+    }
+  ];
 }
 
 // Imports
-import { useQuery, useMutation } from '@vue/apollo-composable'
-import { ALL_SPORTS } from '@/graphql/sport.query'
+import { useQuery, useMutation } from '@vue/apollo-composable';
+import { ALL_SPORTS } from '@/graphql/sport.query';
 import {
   ALL_GYMS,
   ALL_WORK_ROOMS,
@@ -43,14 +43,14 @@ import {
   ALL_SWIMMING_POOLS,
   ALL_DIVE_POOLS,
   UPDATE_ROOM,
-} from '../../../graphql/room.query'
-import { computed, defineComponent, ref, watch } from 'vue'
-import UseFirebase from '../../../composables/useFirebase'
-import { PlusCircle } from 'lucide-vue-next'
-import Modal from '@/components/Modal.vue'
-import { useRouter } from 'vue-router'
-import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
-import useLastRoute from '@/composables/useLastRoute'
+} from '../../../graphql/room.query';
+import { computed, defineComponent, ref, watch } from 'vue';
+import UseFirebase from '../../../composables/useFirebase';
+import { PlusCircle } from 'lucide-vue-next';
+import Modal from '@/components/Modal.vue';
+import { useRouter } from 'vue-router';
+import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
+import useLastRoute from '@/composables/useLastRoute';
 
 // Export default
 export default defineComponent({
@@ -61,20 +61,20 @@ export default defineComponent({
   },
   setup() {
     // Router
-    const { push, replace, currentRoute } = useRouter()
+    const { push, replace, currentRoute } = useRouter();
     // Firebase
-    const { firebaseUser } = UseFirebase()
-    const idToken = ref()
+    const { firebaseUser } = UseFirebase();
+    const idToken = ref();
     const getIdToken = async () => {
-      idToken.value = await firebaseUser.value?.getIdToken()
-    }
-    getIdToken()
+      idToken.value = await firebaseUser.value?.getIdToken();
+    };
+    getIdToken();
     // All sports
     const {
       loading: loadingSports,
       result: resultSports,
       error: errorSports,
-    } = useQuery<Sports>(ALL_SPORTS)
+    } = useQuery<Sports>(ALL_SPORTS);
     const {
       loading: loadingGyms,
       result: resultGyms,
@@ -85,8 +85,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      },
-    )
+      }
+    );
     const {
       loading: loadingWorkRooms,
       result: resultWorkRooms,
@@ -97,8 +97,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      },
-    )
+      }
+    );
     const {
       loading: loadingChangingRooms,
       result: resultChangingRooms,
@@ -109,8 +109,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      },
-    )
+      }
+    );
     const {
       loading: loadingSwimmingPools,
       result: resultSwimmingPools,
@@ -121,8 +121,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      },
-    )
+      }
+    );
     const {
       loading: loadingDivePools,
       result: resultDivePools,
@@ -133,50 +133,50 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      },
-    )
+      }
+    );
 
     // Mutation
-    const { mutate } = useMutation(UPDATE_ROOM)
+    const { mutate } = useMutation(UPDATE_ROOM);
 
     // Selector type of room
-    let typeSelector = ref(0)
+    let typeSelector = ref(0);
 
-    const type = computed(() => currentRoute.value.params.type)
-    if (type.value !== undefined) typeSelector.value = Number(type.value)
-    else push('/admin/rooms/type/0')
+    const type = computed(() => currentRoute.value.params.type);
+    if (type.value !== undefined) typeSelector.value = Number(type.value);
+    else push('/admin/rooms/type/0');
 
-    const { lastRoute } = useLastRoute()
+    const { lastRoute } = useLastRoute();
 
     watch(
       lastRoute,
-      value => {
-        console.log(value)
+      (value) => {
+        console.log(value);
         if (value.startsWith('/admin/rooms/id/')) {
-          fetchWithFilters()
+          fetchWithFilters();
         }
       },
-      { immediate: true },
-    )
+      { immediate: true }
+    );
 
     const fetchWithFilters = () => {
-      console.log('fetchWithFilters')
-      console.log(typeSelector.value)
+      console.log('fetchWithFilters');
+      console.log(typeSelector.value);
       if (typeSelector.value == 0) {
-        refetchGyms()
+        refetchGyms();
       } else if (typeSelector.value == 1) {
-        refetchWorkRooms()
+        refetchWorkRooms();
       } else if (typeSelector.value == 2) {
-        refetchChangingRooms()
+        refetchChangingRooms();
       } else if (typeSelector.value == 3) {
-        refetchSwimmingPools()
+        refetchSwimmingPools();
       } else if (typeSelector.value == 4) {
-        refetchDivePools()
+        refetchDivePools();
       }
-    }
+    };
 
     // Modal
-    const isOpen = ref(false)
+    const isOpen = ref(false);
     const currentRoom = ref<Room>({
       id: '',
       name: '',
@@ -190,17 +190,17 @@ export default defineComponent({
       type: '',
       createdAt: '',
       updatedAt: '',
-    })
+    });
 
     const handleCloseModal = () => {
       // toggle modal
-      isOpen.value = !isOpen.value
+      isOpen.value = !isOpen.value;
 
       // Convert sports to sportIds
-      let SportIds: String[] = []
-      currentRoom.value.sports.forEach(sport => {
-        SportIds.push(sport.id)
-      })
+      let SportIds: String[] = [];
+      currentRoom.value.sports.forEach((sport) => {
+        SportIds.push(sport.id);
+      });
 
       // Save changes
       mutate({
@@ -211,12 +211,12 @@ export default defineComponent({
           pricePerHour: currentRoom.value.pricePerHour,
           type: currentRoom.value.type,
         },
-      })
-    }
+      });
+    };
 
-    const handleRoomDetail = (room: any) => {
-      push(`/admin/rooms/id/${room.id}`)
-    }
+    const handleRoomDetail = (room: Room) => {
+      push(`/admin/rooms/id/${room.id}`);
+    };
 
     return {
       idToken,
@@ -247,9 +247,9 @@ export default defineComponent({
       replace,
       currentRoute,
       mutate,
-    }
+    };
   },
-})
+});
 </script>
 
 <template>

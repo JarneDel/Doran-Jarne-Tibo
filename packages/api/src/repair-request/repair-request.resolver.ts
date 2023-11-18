@@ -75,7 +75,7 @@ export class RepairRequestResolver {
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => String)
-  removeRepairRequest(@Args('id', { type: () => String }) id: string) {
+  RemoveRepairRequestById(@Args('id', { type: () => String }) id: string) {
     return this.repairRequestService
       .remove(id)
       .then(res => {

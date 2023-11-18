@@ -126,19 +126,19 @@ export const router = createRouter({
           path: 'repair-requests',
           component: () =>
             import('@/views/admin/repairRequests/RepairRequests.vue'),
-          // children: [
-          //   {
-          //     path: 'id/:id',
-          //     component: () =>
-          //       import('@/views/admin/repair-requests/Item.vue'),
-          //     props: true,
-          //   },
-          //   {
-          //     path: 'id/:id/edit',
-          //     component: () =>
-          //       import('@/views/admin/repair-requests/Edit.vue'),
-          //   },
-          // ],
+          children: [
+            {
+              path: 'id/:id',
+              component: () =>
+                import('@/views/admin/repairRequests/Item.vue'),
+              props: true,
+            },
+            // {
+            //   path: 'id/:id/edit',
+            //   component: () =>
+            //     import('@/views/admin/repair-requests/Edit.vue'),
+            // },
+          ],
           meta: {
             shouldBeAuthenticated: true,
           },
