@@ -92,6 +92,7 @@ export class SeedService {
     for (let group of groups) {
       const g = new Group()
       g.name = group.name
+      g.email = group.email
       g.btwNumber = group.btw_number
       g.score = group.score
       g.locale = group.locale

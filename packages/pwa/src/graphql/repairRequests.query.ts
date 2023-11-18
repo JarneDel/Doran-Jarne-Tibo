@@ -9,6 +9,7 @@ query {
         ...on Group{
           id
           UID
+          email
           locale
           role
           createdAt
@@ -72,6 +73,7 @@ query GetRepairRequestById($repairRequestId: String!) {
       ... on Group {
         id
         UID
+        email
         locale
         role
         createdAt
