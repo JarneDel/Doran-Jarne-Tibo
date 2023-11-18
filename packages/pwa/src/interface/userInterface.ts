@@ -14,5 +14,6 @@ export interface User {
     phone: string
     holidaysLeft: number
     holidayDates: Date[]
+    profilePictureUrl: string
   }
 }

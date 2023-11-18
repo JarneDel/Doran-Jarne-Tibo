@@ -3,18 +3,20 @@ import { computed, defineComponent } from 'vue';
 import Logo from '@/components/generic/Logo.vue';
 import {
   Box,
+  CalendarClock,
+  Contact2,
+  Palmtree,
   PanelLeftClose,
   PanelRightClose,
   Users,
   Warehouse,
-  CalendarClock,
-  Contact2,
-  Palmtree,
   Wrench,
 } from 'lucide-vue-next';
 import { useLocalStorage } from '@vueuse/core';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import useUser from '@/composables/useUser.ts'
+
 
 export default defineComponent({
   name: 'Sidenav',
@@ -33,6 +35,8 @@ export default defineComponent({
   setup() {
     const isClosed = useLocalStorage('isClosed', false);
     const { currentRoute } = useRouter();
+    const { customUser } = useUser()
+    const role = computed(() => customUser.value?.userByUid.role)
     const { t } = useI18n();
     const section = computed(() => currentRoute.value.path.split('/')[2]);
     const pages = computed(() => {
@@ -42,49 +46,58 @@ export default defineComponent({
           icon: Users,
           content: t('nav.groups'),
           route: '/admin/groups',
+          roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
         },
         {
           name: 'inventory',
           icon: Box,
           content: t('nav.inventory'),
           route: '/admin/inventory',
+          roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
         },
         {
           name: 'rooms',
           icon: Warehouse,
           content: t('nav.rooms'),
           route: '/admin/rooms',
+          roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
         },
         {
           name: 'reservations',
           icon: CalendarClock,
           content: t('nav.reservations'),
           route: '/admin/reservations',
+          roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
         },
         {
           name: 'repair-requests',
           icon: Wrench,
           content: t('nav.repairRequests'),
           route: '/admin/repair-requests',
+          roles: ['ADMIN', 'SUPER_ADMIN']
         },
         {
           name: 'staff',
           icon: Contact2,
           content: t('nav.staff'),
           route: '/admin/staff',
+          roles: ['ADMIN', 'SUPER_ADMIN'],
         },
         {
           name: 'vacation',
           icon: Palmtree,
           content: t('nav.vacation'),
           route: '/admin/vacation',
+          roles: ['ADMIN', 'SUPER_ADMIN'],
         },
-      ];
-    });
+      ].filter(page => {
+        return page.roles.includes(role.value ?? "")
+      })
+    })
 
-    return { isClosed, section, pages };
+    return { isClosed, section, pages }
   },
-});
+})
 </script>
 
 <template>
