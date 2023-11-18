@@ -62,7 +62,7 @@ export default defineComponent({
           route: '/admin/reservations',
         },
         {
-          name: 'repairRequests',
+          name: 'repair-requests',
           icon: Wrench,
           content: t('nav.repairRequests'),
           route: '/admin/repair-requests',
