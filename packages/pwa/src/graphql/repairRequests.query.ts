@@ -46,6 +46,7 @@ query {
         type
       }
       loanableMaterial{
+        id
         name
         totalAmount
         wantedAmount
@@ -109,6 +110,7 @@ query GetRepairRequestById($repairRequestId: String!) {
       type
     }
     loanableMaterial{
+      id
       name
       totalAmount
       wantedAmount

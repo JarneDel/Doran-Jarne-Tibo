@@ -390,6 +390,7 @@ export class SeedService {
               sports.push(sport)
             })
           }
+          material.id = loanableMaterial.id
           material.name = loanableMaterial.name
           material.totalAmount = loanableMaterial.totalAmount
           material.wantedAmount = loanableMaterial.wantedAmount
@@ -429,9 +430,10 @@ export class SeedService {
         for (let sportId of loanableMaterial.SportId) {
           const s = this.sportService.findOneById(sportId)
           s.then(sport => {
-            sports.push(sport)
+            sports2.push(sport)
           })
         }
+        material.id = loanableMaterial.id
         material.name = loanableMaterial.name
         material.totalAmount = loanableMaterial.totalAmount
         material.wantedAmount = loanableMaterial.wantedAmount

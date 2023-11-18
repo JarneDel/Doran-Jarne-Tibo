@@ -11,6 +11,7 @@ interface ICurrentRepairRequestCanBeEmpty {
   isRepaired?: boolean;
   requestUser?: RequestUser;
   room?: Room[];
+  loanableMaterial?: material[];
   urgency?: number;
 }
 
@@ -25,6 +26,28 @@ interface IRooms {
   GetAllRooms: [Room];
 }
 
+interface IconvertedLoanableMaterials {
+  id?: string;
+  name?: string;
+  totalAmount?: number;
+  wantedAmount?: number;
+  price?: number;
+  sports?: Sport[];
+  isComplete?: boolean;
+  description?: string;
+}
+
+interface Sport {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface ILoanableMaterials {
+  GetAllLoanableMaterials: material[];
+}
+
 import { computed, defineComponent, ref } from 'vue';
 import { ShieldAlert, BadgeCheck } from 'lucide-vue-next';
 import Modal from '@/components/Modal.vue';
@@ -34,6 +57,7 @@ import {
   GET_ONE_REPAIR_REQUEST,
   UPDATE_REPAIR_REQUEST,
 } from '@/graphql/repairRequests.query.ts';
+import { ALL_LOANABLE_MATERIALS } from '@/graphql/loanableMaterials.query.ts';
 import { ALL_ROOMS } from '@/graphql/room.query.ts';
 import StyledButton from '@/components/generic/StyledButton.vue';
 import StyledInputText from '@/components/generic/StyledInputText.vue';
@@ -41,6 +65,7 @@ import { onBeforeMount } from 'vue';
 import { RepairRequest } from '@/interface/repairRequestInterface';
 import { RequestUser } from '@/interface/requestUserInterface';
 import { Room } from '@/interface/roomInterface';
+import { material } from '@/interface/materialInterface';
 
 export default defineComponent({
   name: 'Edit',
@@ -72,6 +97,13 @@ export default defineComponent({
       result: resultRooms,
     } = useQuery<IRooms>(ALL_ROOMS, {});
 
+    // ALL_LOANABLE_MATERIALS
+    const {
+      error: errorMaterials,
+      loading: loadingMaterials,
+      result: resultMaterials,
+    } = useQuery<ILoanableMaterials>(ALL_LOANABLE_MATERIALS, {});
+
     const currentRepairRequest = ref<ICurrentRepairRequestCanBeEmpty>({});
 
     // Set currentRepairRequest based on result
@@ -94,6 +126,32 @@ export default defineComponent({
         });
       }
 
+      const convertedLoanableMaterials: IconvertedLoanableMaterials[] = [];
+      if (currentRepairRequest.value.loanableMaterial) {
+        currentRepairRequest.value.loanableMaterial.forEach((material) => {
+          const Sports = material.sports?.map((sport) => {
+            return {
+              id: sport.id,
+              name: sport.name,
+              createdAt: sport.createdAt,
+              updatedAt: sport.updatedAt,
+            };
+          });
+
+          const tempMaterial: IconvertedLoanableMaterials = {};
+          tempMaterial.id = material.id;
+          tempMaterial.name = material.name;
+          tempMaterial.totalAmount = material.totalAmount;
+          tempMaterial.wantedAmount = material.wantedAmount;
+          tempMaterial.price = material.price;
+          tempMaterial.sports = Sports;
+          tempMaterial.isComplete = material.isComplete;
+          tempMaterial.description = material.description;
+          convertedLoanableMaterials.push(tempMaterial);
+        });
+      }
+      console.log('convertedLoanableMaterials', convertedLoanableMaterials);
+
       // Save changes
       mutateUpdateItem({
         updateRepairRequestInput: {
@@ -102,6 +160,7 @@ export default defineComponent({
           description: currentRepairRequest.value.description,
           isRepaired: currentRepairRequest.value.isRepaired,
           room: convertedRooms,
+          loanableMaterial: convertedLoanableMaterials,
           urgency: Number(currentRepairRequest.value.urgency),
         },
       }).then((e) => {
@@ -118,6 +177,9 @@ export default defineComponent({
       resultRooms,
       errorRooms,
       loadingRooms,
+      resultMaterials,
+      errorMaterials,
+      loadingMaterials,
       currentRepairRequest,
     };
   },
@@ -235,11 +297,58 @@ export default defineComponent({
             />
           </div>
           <div>
-            <h4>{{ $t('repairRequest.materials') }}</h4>
-            <ul></ul>
+            <h4 class="text-primary-text font-medium">
+              {{ $t('repairRequest.materials') }}
+            </h4>
+            <ul>
+              <li>
+                <div
+                  v-for="material in resultMaterials?.GetAllLoanableMaterials"
+                  :key="material.id"
+                  class="flex items-center gap-2"
+                >
+                  <input
+                    v-if="currentRepairRequest.loanableMaterial"
+                    type="checkbox"
+                    :name="material.id"
+                    :id="material.id"
+                    :checked="
+                      (console.log(currentRepairRequest.loanableMaterial),
+                      currentRepairRequest.loanableMaterial.some(
+                        (s) => s.id === material.id
+                      )
+                        ? true
+                        : false)
+                    "
+                    @change="
+                        (e: any) => {
+                            if (e.target?.checked) {
+                            currentRepairRequest = {
+                                ...currentRepairRequest,
+                                loanableMaterial: Array.isArray(currentRepairRequest.loanableMaterial) ? [...currentRepairRequest.loanableMaterial, material] : [material],
+                            };
+                            } else {
+                            currentRepairRequest = {
+                                ...currentRepairRequest,
+                                loanableMaterial: Array.isArray(currentRepairRequest.loanableMaterial)
+                                ? currentRepairRequest.loanableMaterial.filter((s) => s.id !== material.id)
+                                : [],
+                            };
+                            }
+                        }
+                        "
+                  />
+                  <label :for="material.id" class="select-none">{{
+                    material.name
+                  }}</label>
+                </div>
+              </li>
+            </ul>
           </div>
           <div>
-            <h4>{{ $t('repairRequest.rooms') }}</h4>
+            <h4 class="text-primary-text font-medium">
+              {{ $t('repairRequest.rooms') }}
+            </h4>
             <ul>
               <li>
                 <div
