@@ -8,6 +8,7 @@ import StyledLink from '@/components/generic/StyledLink.vue'
 import { useRouter } from 'vue-router'
 import useUser from '@/composables/useUser'
 import { useI18n } from 'vue-i18n'
+import useLanguage from '@/composables/useLanguage.ts'
 
 export default defineComponent({
   components: { StyledLink, StyledInputText, StyledButton },
@@ -19,6 +20,7 @@ export default defineComponent({
     const { login, firebaseUser } = useFirebase()
     const { currentRoute } = useRouter()
     const { t } = useI18n()
+    const { setLocale } = useLanguage()
 
     const credentials = ref({
       email: '',
@@ -27,10 +29,8 @@ export default defineComponent({
     const handleLogin = () => {
       login(credentials.value.email, credentials.value.password)
         .then(() => {
-          console.log('logged in')
-        })
-        .then(() => {
           restoreCustomUser().then(() => {
+            setLocale(customUser.value?.userByUid.locale ?? 'en')
             console.log(firebaseUser.value?.email)
             console.log(customUser.value?.userByUid)
             console.log('restored user')
