@@ -348,14 +348,14 @@ export class ReservationService {
           if (room.id.toString() === resroom.id.toString()) {
             let reservationStart = new Date(date + ' ' + reservation.startTime)
             let reservationEnd = new Date(date + ' ' + reservation.endTime)
-
             if (
               (start <= reservationStart && end >= reservationStart) ||
               (start <= reservationEnd && end >= reservationEnd) ||
               (reservationStart <= start &&
                 reservationStart <= end &&
                 reservationEnd >= end)
-            ) {
+                ) {
+              console.log(room.name)
               isAvailable = false
             }
           }
