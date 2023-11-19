@@ -65,7 +65,7 @@ export const router = createRouter({
         },
         {
           path: 'rooms',
-          component: () => import('@/views/admin/rooms/Rooms.vue'),
+          component: () => import('@/views/admin/rooms/Ro' + 'oms.vue'),
           children: [
             {
               path: 'id/:id',
@@ -113,13 +113,17 @@ export const router = createRouter({
               component: () => import('@/views/admin/reservations/Item.vue'),
               props: true,
             },
-            {
-              path: 'type/:type',
-              component: () =>
-                import('@/views/admin/reservations/Reservations.vue'),
-              props: true,
-            },
           ],
+          meta: {
+            shouldBeAuthenticated: true,
+            title: SITE_NAME + ' - Reservations',
+          },
+        },
+        {
+          path: 'reservations/type/:type',
+          component: () =>
+            import('@/views/admin/reservations/Reservations.vue'),
+          props: true,
           meta: {
             shouldBeAuthenticated: true,
             title: SITE_NAME + ' - Reservations',
@@ -132,14 +136,12 @@ export const router = createRouter({
           children: [
             {
               path: 'id/:id',
-              component: () =>
-                import('@/views/admin/repairRequests/Item.vue'),
+              component: () => import('@/views/admin/repairRequests/Item.vue'),
               props: true,
             },
             {
               path: 'id/:id/edit',
-              component: () =>
-                import('@/views/admin/repairRequests/Edit.vue'),
+              component: () => import('@/views/admin/repairRequests/Edit.vue'),
             },
           ],
           meta: {
