@@ -261,6 +261,10 @@ export const router = createRouter({
           path: 'add',
           component: () => import('@/views/reservations/AddReservation.vue'),
         },
+        {
+          path: 'edit/:id',
+          component: () => import('@/views/reservations/ChangeReservation.vue'),
+        }
       ],
       meta: {
         shouldBeAuthenticated: true,

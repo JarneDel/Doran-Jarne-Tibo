@@ -1,11 +1,12 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import {
   AVAILABLEMATERAILS,
   GET_AVAILABLE_ROOMS,
-  CREATERESEVATION,
+  UPDATE_RESEVATION,
+  GET_ONE_RESERVATION,
 } from '@/graphql/reservations.query'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { Room } from '@/interface/roomInterface'
@@ -13,25 +14,40 @@ import { material } from '@/interface/materialInterface'
 import { Plus, Minus } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import { useRouter } from 'vue-router'
+import { Reservation } from '@/interface/reservation'
 
 export default defineComponent({
   setup() {
-    const { push } = useRouter()
+    const reservations = ref<Reservation>()
+    const { push, currentRoute } = useRouter()
+    const id = computed(() => currentRoute.value.params.id)
     const { customUser } = useUser()
     const checkboxStatus = ref<any>({})
     const checkboxStatusMaterials = ref<any>({})
-    const { mutate: addReservarion } = useMutation(CREATERESEVATION)
-    const reservation = ref({
-      date: new Date().toISOString().substr(0, 10),
-      beginTime: '08:00',
-      endTime: '18:00',
-      timeDivrent: 10,
-    })
+    const { mutate: updateReservation } = useMutation(UPDATE_RESEVATION)
     const availableRooms = ref<Room[]>([])
     const availableMaterials = ref<material[]>([])
     const wantedRoom = ref<Room[]>([])
     const wantedMaterials = ref<material[]>([])
     const price = ref(0)
+    const timeDivrent = () => {
+      let begin = reservation.value.beginTime.split(':')
+      let end = reservation.value.endTime.split(':')
+      let beginTime = new Date(
+        0,
+        0,
+        0,
+        parseInt(begin[0]),
+        parseInt(begin[1]),
+        0,
+      )
+      let endTime = new Date(0, 0, 0, parseInt(end[0]), parseInt(end[1]), 0)
+      let diff = endTime.getTime() - beginTime.getTime()
+      let hours = Math.floor(diff / 1000 / 60 / 60)
+      diff -= hours * 1000 * 60 * 60
+      let minutes = Math.floor(diff / 1000 / 60)
+      reservation.value.timeDivrent = (hours * 60 + minutes) / 60
+    }
     const calculatePrice = () => {
       price.value = 0
       wantedRoom.value.forEach(room => {
@@ -41,7 +57,31 @@ export default defineComponent({
         price.value += material.price*checkboxStatusMaterials.value[material.name].amount* reservation.value.timeDivrent
       })
     }
-    const AddReservation = () => {
+    const date = new Date()
+    const reservation = ref({
+      date: date.toISOString().substr(0, 10),
+      beginTime: '08:00',
+      endTime: '18:00',
+      timeDivrent: 10,
+    })
+    new Promise<void>(resolve => {
+      const { onResult } = useQuery<any>(GET_ONE_RESERVATION, { id: id.value })
+      onResult(result => {
+        if (result.loading) return
+        reservations.value = result.data.GetReservatiounById
+        if (reservations.value) {
+          price.value = reservations.value.price
+          const date = new Date(reservations.value?.date)
+          reservation.value.date = date.toISOString().substr(0, 10)
+          reservation.value.beginTime = reservations.value?.startTime
+          reservation.value.endTime = reservations.value?.endTime
+        }
+        timeDivrent()
+        check()
+        resolve()
+      })
+    })
+    const changeReservation = () => {
       let materials: material[] = []
       wantedMaterials.value.forEach(material => {
         let sportsist: any = []
@@ -97,7 +137,7 @@ export default defineComponent({
         }
         roomlist.push(listedroom)
       })
-      addReservarion({
+      updateReservation({
         date: reservation.value.date,
         startTime: reservation.value.beginTime,
         endTime: reservation.value.endTime,
@@ -105,6 +145,8 @@ export default defineComponent({
         price: price.value,
         material: materials,
         rooms: roomlist,
+        id: id.value,
+        canceld: false,
       }).then(() => {
         push('/reservation')
       })
@@ -139,28 +181,53 @@ export default defineComponent({
       calculatePrice()
     }
     const checkMaterials = () => {
+      let sportId: string[] = []
+      wantedRoom.value.forEach((room: Room) => {
+        room.sports.forEach((sport: any) => {
+          if (!sportId.includes(sport.id)) sportId.push(sport.id)
+        })
+      })
+      availableMaterials.value = []
+      wantedMaterials.value = []
+      checkboxStatusMaterials.value = {}
       return new Promise<void>(resolve => {
-        let sportId: string[] = []
-        wantedRoom.value.forEach((room: Room) => {
-          room.sports.forEach((sport: any) => {
-            if (!sportId.includes(sport.id)) sportId.push(sport.id)
-          })
-        })
-        const { onResult } = useQuery<any>(AVAILABLEMATERAILS, {
-          date: reservation.value.date,
-          startTime: reservation.value.beginTime,
-          endTime: reservation.value.endTime,
-          sportId: sportId,
-        })
+        const { onResult } = useQuery<any>(
+          AVAILABLEMATERAILS,
+          {
+            date: reservation.value.date,
+            startTime: reservation.value.beginTime,
+            endTime: reservation.value.endTime,
+            sportId: sportId,
+            reservationId: reservations.value?.id,
+          },
+          {
+            fetchPolicy: 'no-cache',
+          },
+        )
         onResult(result => {
           if (result.loading) return
           availableMaterials.value = result.data.GetAvailableloanableMaterials
-          availableMaterials.value.forEach(material => {
-            checkboxStatusMaterials.value[material.name] = {
-              amount: 0,
-              checked: false,
-            }
+          if (reservations.value?.date.substr(0, 10) == reservation.value.date)
+            reservations.value?.reservedMaterials.forEach(material => {
+              wantedMaterials.value.push(material)
+            })
+          const listIds: string[] = []
+          wantedMaterials.value.forEach(material => {
+            listIds.push(material.id)
           })
+          availableMaterials.value.forEach(material => {
+            if (!listIds.includes(material.id))
+              checkboxStatusMaterials.value[material.name] = {
+                amount: 0,
+              }
+            else
+              checkboxStatusMaterials.value[material.name] = {
+                amount: reservations.value?.reservedMaterials.find(
+                  wanted => wanted.id == material.id,
+                )?.amountReserved,
+              }
+          })
+          calculatePrice()
           resolve()
         })
       })
@@ -168,28 +235,56 @@ export default defineComponent({
     const addRoom = (room: Room) => {
       if (checkboxStatus.value[room.name]) {
         wantedRoom.value.splice(wantedRoom.value.indexOf(room), 1)
+        price.value -= room.pricePerHour * reservation.value.timeDivrent
       } else {
         wantedRoom.value.push(room)
+        calculatePrice()
       }
-      calculatePrice()
       checkMaterials()
     }
     const check = async () => {
+      if (availableRooms.value.length > 0) {
+        availableRooms.value = []
+        checkboxStatus.value = {}
+        wantedRoom.value = []
+      }
       return new Promise<void>(resolve => {
-        const { onResult } = useQuery<any>(GET_AVAILABLE_ROOMS, {
-          date: reservation.value.date,
-          startTime: reservation.value.beginTime,
-          endTime: reservation.value.endTime,
-        })
+        const { onResult } = useQuery<any>(
+          GET_AVAILABLE_ROOMS,
+          {
+            date: reservation.value.date,
+            startTime: reservation.value.beginTime,
+            endTime: reservation.value.endTime,
+            reservationId: reservations.value?.id,
+          },
+          {
+            fetchPolicy: 'no-cache',
+          },
+        )
         onResult(result => {
-          if( result.loading) return
-          availableRooms.value = result.data.getAvailableRooms
           wantedRoom.value = []
-          wantedMaterials.value = []
+          if (
+            reservations.value?.date.substr(0, 10) == reservation.value?.date
+          ) {
+            if (result.loading) return
+            reservations.value?.rooms.forEach(room => {
+              wantedRoom.value.push(room)
+            })
+          }
+          if (result.loading) return
+          availableRooms.value = result.data.getAvailableRooms
+          const listwantedRooms: string[] = []
+          wantedRoom.value.forEach(room => {
+            listwantedRooms.push(room.id)
+          })
           price.value = 0
           availableRooms.value.forEach(room => {
-            checkboxStatus.value[room.name] = false
+            if (listwantedRooms.includes(room.id))
+              checkboxStatus.value[room.name] = true
+            else checkboxStatus.value[room.name] = false
           })
+          checkMaterials()
+          // }
           resolve()
         })
       })
@@ -204,22 +299,7 @@ export default defineComponent({
         reservation.value.endTime = reservation.value.beginTime
       }
       //time difrentce
-      let begin = reservation.value.beginTime.split(':')
-      let end = reservation.value.endTime.split(':')
-      let beginTime = new Date(
-        0,
-        0,
-        0,
-        parseInt(begin[0]),
-        parseInt(begin[1]),
-        0,
-      )
-      let endTime = new Date(0, 0, 0, parseInt(end[0]), parseInt(end[1]), 0)
-      let diff = endTime.getTime() - beginTime.getTime()
-      let hours = Math.floor(diff / 1000 / 60 / 60)
-      diff -= hours * 1000 * 60 * 60
-      let minutes = Math.floor(diff / 1000 / 60)
-      reservation.value.timeDivrent = (hours * 60 + minutes) / 60
+      timeDivrent()
       check()
     }
     const checkStartTime = () => {
@@ -232,22 +312,7 @@ export default defineComponent({
         reservation.value.beginTime = reservation.value.endTime
       }
       //time difrentce
-      let begin = reservation.value.beginTime.split(':')
-      let end = reservation.value.endTime.split(':')
-      let beginTime = new Date(
-        0,
-        0,
-        0,
-        parseInt(begin[0]),
-        parseInt(begin[1]),
-        0,
-      )
-      let endTime = new Date(0, 0, 0, parseInt(end[0]), parseInt(end[1]), 0)
-      let diff = endTime.getTime() - beginTime.getTime()
-      let hours = Math.floor(diff / 1000 / 60 / 60)
-      diff -= hours * 1000 * 60 * 60
-      let minutes = Math.floor(diff / 1000 / 60)
-      reservation.value.timeDivrent = (hours * 60 + minutes) / 60
+      timeDivrent()
       check()
     }
     const checkDate = () => {
@@ -269,7 +334,7 @@ export default defineComponent({
       availableMaterials,
       checkboxStatusMaterials,
       Material,
-      AddReservation,
+      changeReservation,
     }
   },
   components: { StyledInputText, StyledButton, Plus, Minus },
@@ -308,21 +373,23 @@ export default defineComponent({
           type="time"
           @change="checkEndTime"
         />
-        <StyledButton type="button" class="mt-2 h-fit" @click="check">
-          {{ $t('reservation.check') }}
-        </StyledButton>
       </div>
       <div class="ml-4 flex items-center gap-2 lg:mr-0">
         <p class="text-xl">€ {{ price }}</p>
-        <StyledButton type="button" class="h-fit" @click="AddReservation()">
+        <StyledButton type="button" class="h-fit" @click="changeReservation()">
           {{ $t('navigation.addreservation') }}
         </StyledButton>
       </div>
     </div>
     <div class="mx-4" v-if="availableRooms.length > 0">
       <p class="text-xl font-medium">beschikbare ruimtes</p>
-      <div class="grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4 mt-2 mb-4">
-        <label class="h-full focus-within:ring-secondary ring-4 ring-transparent rounded-md" v-for="room in availableRooms">
+      <div
+        class="mb-4 mt-2 grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4"
+      >
+        <label
+          class="focus-within:ring-secondary h-full rounded-md ring-4 ring-transparent"
+          v-for="room in availableRooms"
+        >
           <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
           <input
             type="checkbox"
@@ -331,7 +398,7 @@ export default defineComponent({
             v-model="checkboxStatus[room.name]"
           />
           <div
-            class="peer-checked:border-black peer-checked:border-2 h-full rounded-md border bg-white p-4 shadow-sm transition-all duration-300 peer-checked:shadow-lg"
+            class="h-full rounded-md border bg-white p-4 shadow-sm transition-all duration-300 peer-checked:border-2 peer-checked:border-black peer-checked:shadow-lg"
           >
             <div class="flex h-full flex-col justify-between gap-2">
               <p class="text-lg font-medium">{{ room.name }}</p>
@@ -355,9 +422,13 @@ export default defineComponent({
     <div class="mx-4" v-if="availableMaterials.length > 0">
       <p class="text-xl font-medium">beschikbare materialen</p>
       <div
-        class="grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4 mt-2 mb-4"
+        class="mb-4 mt-2 grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4"
       >
-        <div class="h-full" :key="material.id" v-for="material in availableMaterials">
+        <div
+          class="h-full"
+          :key="material.id"
+          v-for="material in availableMaterials"
+        >
           <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
           <div
             class="flex h-full items-center justify-between rounded-md border bg-white p-4 shadow-sm"
@@ -368,7 +439,7 @@ export default defineComponent({
                 <!-- <p>Sporten :</p> -->
                 <div class="flex gap-2">
                   <p
-                  :key="sport.id"
+                    :key="sport.id"
                     v-for="sport in material.sports"
                     class="bg-secondary mt-1 rounded-full px-4"
                   >
@@ -379,7 +450,7 @@ export default defineComponent({
               <p class="font-bold">€ {{ material.price }}/h</p>
             </div>
             <div class="flex items-center gap-1">
-              <StyledButton @click="()=>Material(material, false)">
+              <StyledButton @click="() => Material(material, false)">
                 <Minus />
               </StyledButton>
               <p class="text-lg font-medium">
@@ -387,7 +458,7 @@ export default defineComponent({
                   material.totalAmount
                 }}
               </p>
-              <StyledButton @click="()=>Material(material, true)">
+              <StyledButton @click="() => Material(material, true)">
                 <Plus />
               </StyledButton>
             </div>
