@@ -9,7 +9,8 @@ import AppHeader from '@/components/AppHeader.vue'
       class="bg-primary-surface grid min-h-screen grid-rows-[min-content_1fr]"
     >
       <AppHeader />
-      <div class="h-full">
+      <div class="relative h-full">
+        <div id="error" class="left-4/6 absolute right-4 top-2"></div>
         <slot />
       </div>
     </div>

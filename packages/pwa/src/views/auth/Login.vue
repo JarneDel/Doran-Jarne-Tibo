@@ -9,12 +9,13 @@ import { useRouter } from 'vue-router'
 import useUser from '@/composables/useUser'
 import { useI18n } from 'vue-i18n'
 import useLanguage from '@/composables/useLanguage.ts'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
-  components: { StyledLink, StyledInputText, StyledButton },
+  components: { Error, StyledLink, StyledInputText, StyledButton },
   setup() {
     const { restoreCustomUser, customUser } = useUser()
-    const error = ref<string | null>(null)
+    const error = ref<string[]>([])
 
     const { replace } = useRouter()
     const { login, firebaseUser } = useFirebase()
@@ -38,7 +39,7 @@ export default defineComponent({
           })
         })
         .catch((err: string) => {
-          error.value = t(err)
+          error.value.push(t(err))
         })
     }
 
@@ -60,10 +61,12 @@ export default defineComponent({
 <template>
   <form class="c-primary-text" @submit.prevent="handleLogin">
     <h1 class="font-600 text-xl">{{ $t('auth.login') }}</h1>
-    <p v-if="error">{{ error }}</p>
-    <p v-if="firebaseUser">
-      {{ $t('auth.loggedInAs') }} {{ firebaseUser.email }}
-    </p>
+    <Error
+      v-for="(err, index) in error"
+      :isShown="!!err"
+      :msg="err ?? undefined"
+      @update:isShown="error[index] = ''"
+    />
     <styled-input-text
       v-model="credentials.email"
       :label="$t('auth.email')"

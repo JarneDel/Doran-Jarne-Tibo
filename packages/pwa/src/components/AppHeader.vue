@@ -145,7 +145,7 @@ export default defineComponent({
         <OnClickOutside @trigger="options = false">
           <div
             v-if="options"
-            class="top-21 absolute right-0 flex flex-col items-center rounded-md bg-white p-4 shadow-md"
+            class="top-21 z-100 absolute right-0 flex flex-col items-center rounded-md bg-white p-4 shadow-md"
           >
             <router-link class="styled-link" to="/profile">{{
               $t('nav.profile')
