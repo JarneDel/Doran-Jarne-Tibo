@@ -7,6 +7,7 @@ export const ALL_GROUPS = gql`
       name
       btwNumber
       score
+      email
     }
   }
 `
@@ -17,6 +18,7 @@ export const UPDATE_SCORE = gql`
       name
       btwNumber
       score
+      email
     }
   }
 `

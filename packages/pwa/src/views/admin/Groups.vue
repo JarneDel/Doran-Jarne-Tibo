@@ -1,6 +1,6 @@
 <script lang="ts">
 interface Group {
-  groups: [{ id: string; name: string; btwNumber: string; score: number }]
+  groups: [{ id: string;email:string; name: string; btwNumber: string; score: number }]
 }
 
 import { useMutation, useQuery } from '@vue/apollo-composable'
@@ -52,12 +52,13 @@ export default defineComponent({
 
 <template>
   <div class="m-8">
-    <div class="mx-auto w-fit grid lg:grid-cols-3 md:grid-cols-2 gap-6">
-      <div v-for="group in result?.groups" :key="group.id" class="2xl:w-90 xl:w-70 md:w-55 h-full rounded-lg bg-white p-4 shadow-md">
+    <div class="mx-auto w-fit grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-6">
+      <div v-for="group in result?.groups" :key="group.id" class="2xl:w-75 xl:w-70 md:w-55 h-full rounded-lg bg-white p-4 shadow-md">
 
           <p class=" xl:h-20 h-16 xl:text-2xl text-xl">{{ group.name }}</p>
-          <p class="xl:text-lg text-base h-5">{{ group.btwNumber }}</p>
-          <p class="xl:text-lg text-base">Score:</p>
+          <p class="xl:text-lg text-base h-5">{{ group.email }}</p>
+          <p class="xl:text-lg text-base h-5 my-2">{{ group.btwNumber }}</p>
+          <p class="xl:text-lg text-base ">Score:</p>
           <div class="relative h-4 w-full rounded-md overflow-hidden">
             <div
             class="absolute h-4 w-full bg-gradient-to-r from-green-600 via-yellow-400 to-red-600"
