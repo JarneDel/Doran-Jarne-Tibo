@@ -1,6 +1,5 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { type AuthError } from 'firebase/auth'
 
 import useFirebase from '@/composables/useFirebase'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
@@ -8,16 +7,18 @@ import StyledButton from '@/components/generic/StyledButton.vue'
 import StyledLink from '@/components/generic/StyledLink.vue'
 import { useRouter } from 'vue-router'
 import useUser from '@/composables/useUser'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: { StyledLink, StyledInputText, StyledButton },
   setup() {
     const { restoreCustomUser, customUser } = useUser()
-    const error = ref<AuthError | null>(null)
+    const error = ref<string | null>(null)
 
     const { replace } = useRouter()
     const { login, firebaseUser } = useFirebase()
     const { currentRoute } = useRouter()
+    const { t } = useI18n()
 
     const credentials = ref({
       email: '',
@@ -36,8 +37,8 @@ export default defineComponent({
             replace('/')
           })
         })
-        .catch((err: AuthError) => {
-          error.value = err
+        .catch((err: string) => {
+          error.value = t(err)
         })
     }
 

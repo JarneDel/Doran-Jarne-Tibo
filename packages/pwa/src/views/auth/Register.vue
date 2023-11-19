@@ -9,6 +9,7 @@ import { useMutation } from '@vue/apollo-composable'
 import { CREATE_GROUP } from '@/graphql/user.query.ts'
 import useUser from '@/composables/useUser'
 import useLanguage from '@/composables/useLanguage'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   components: { StyledInputText, StyledButton, StyledLink },
@@ -29,6 +30,7 @@ export default defineComponent({
     const { mutate } = useMutation(CREATE_GROUP)
     const { locale } = useLanguage()
     const { currentRoute } = useRouter()
+    const { t } = useI18n()
 
     // methods
     const submitForm = () => {
@@ -52,7 +54,7 @@ export default defineComponent({
         })
         .catch(error => {
           console.info({ error })
-          form.error = error
+          form.error = t(error)
         })
     }
 
