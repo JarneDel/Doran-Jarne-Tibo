@@ -90,10 +90,18 @@ export const router = createRouter({
           path: 'rooms/type/:type',
           component: () => import('@/views/admin/rooms/Rooms.vue'),
           props: true,
+          meta: {
+            shouldBeAuthenticated: true,
+            title: SITE_NAME + ' - Rooms',
+          },
         },
         {
           path: 'rooms/create/type/:type',
           component: () => import('@/views/admin/rooms/Create.vue'),
+          meta: {
+            shouldBeAuthenticated: true,
+            title: SITE_NAME + ' - Rooms',
+          },
         },
         {
           path: 'reservations',
