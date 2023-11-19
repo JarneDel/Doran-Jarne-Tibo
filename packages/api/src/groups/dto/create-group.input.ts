@@ -1,18 +1,25 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
-import { IsNotEmpty, IsOptional, IsString, MinLength, IsEmail } from 'class-validator';
-import { CreateUserInput } from 'src/users/dto/create-user.input';
+import { Field, InputType } from '@nestjs/graphql'
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  MinLength,
+} from 'class-validator'
+import { CreateUserInput } from 'src/users/dto/create-user.input'
 
 @InputType()
 export class CreateGroupInput extends CreateUserInput {
   @IsString()
   @IsNotEmpty()
-  @MinLength(5)
+  @MinLength(2)
   @Field()
   name: string
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(5)
+  @IsEmail()
   @Field()
   email: string
 
@@ -21,4 +28,9 @@ export class CreateGroupInput extends CreateUserInput {
   @MinLength(12)
   @Field({ nullable: true })
   btwNumber: string
+
+  @IsOptional()
+  @IsUrl()
+  @Field({ nullable: true })
+  profilePictureUrl: string
 }

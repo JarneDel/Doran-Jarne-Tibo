@@ -10,6 +10,7 @@ import useLanguage from '@/composables/useLanguage'
 import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
 import { useI18n } from 'vue-i18n'
 import ProfilePicture from '@/components/staff/ProfilePicture.vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   computed: {
@@ -18,17 +19,14 @@ export default defineComponent({
     },
   },
   setup() {
-    const { logout } = firebase()
     const { firebaseUser } = firebase()
     const { setLocale, locale } = useLanguage()
     let options = ref(false)
-    const { customUser, userLogout } = useUser()
+    const { customUser } = useUser()
+    const { push } = useRouter()
     const { t } = useI18n()
     const logoutButton = () => {
-      logout().then(() => {
-        userLogout()
-        options.value = false
-      })
+      push('/logout')
     }
     const toggleOptions = () => {
       options.value = !options.value
@@ -122,11 +120,7 @@ export default defineComponent({
       </div>
       <div>
         <button v-if="customUser" class="mx-2" @click="toggleOptions()">
-          <ProfilePicture
-            v-if="firebaseUser?.photoURL"
-            :size="48"
-            class="cursor-pointer"
-          />
+          <ProfilePicture v-if="firebaseUser?.photoURL" :size="48" />
           <span v-else class="gap2 flex flex-row items-center justify-center">
             <span
               :title="username"
@@ -147,7 +141,7 @@ export default defineComponent({
         <OnClickOutside @trigger="options = false">
           <div
             v-if="options"
-            class="top-21 absolute right-0 flex flex-col items-center rounded-md bg-white p-4 shadow-md"
+            class="top-21 z-100 absolute right-0 flex flex-col items-center rounded-md bg-white p-4 shadow-md"
           >
             <router-link class="styled-link" to="/profile">{{
               $t('nav.profile')

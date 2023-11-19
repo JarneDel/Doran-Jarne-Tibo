@@ -98,15 +98,8 @@ export const UPDATE_STAFF = gql`
 `
 
 export const CREATE_GROUP = gql`
-  mutation createGroup($name: String!, $locale: String!, $btwNummer: String) {
-    createGroup(
-      createGroupInput: {
-        locale: $locale
-        name: $name
-        btwNumber: $btwNummer
-        profilePictureUrl: ""
-      }
-    ) {
+  mutation createGroup($createGroupInput: CreateGroupInput!) {
+    createGroup(createGroupInput: $createGroupInput) {
       id
       UID
       locale
@@ -119,3 +112,13 @@ export const CREATE_GROUP = gql`
     }
   }
 `
+
+export interface CreateGroupInput {
+  createGroupInput: {
+    btwNumber: string
+    locale: string
+    name: string
+    profilePictureUrl?: string
+    email: string
+  }
+}

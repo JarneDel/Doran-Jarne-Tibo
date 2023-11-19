@@ -84,16 +84,16 @@ export default defineComponent({
       alt="your profile"
       class="size col-start-1 row-start-1 rounded-full object-cover"
     />
-    <div
+    <span
       v-if="editable"
-      class="hover:bg-neutral-6/60 size col-start-1 row-start-1 grid place-content-center rounded-full transition-colors"
+      class="hover:bg-neutral-6/60 size col-start-1 row-start-1 block grid place-content-center rounded-full transition-colors"
       @mouseenter="isHovering = true"
       @mouseleave="isHovering = false"
     >
       <Transition appear name="fade">
         <Upload v-if="isHovering" :size="size / 2" class="c-white"></Upload>
       </Transition>
-    </div>
+    </span>
   </label>
   <input
     v-if="editable"

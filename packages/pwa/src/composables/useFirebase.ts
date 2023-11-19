@@ -50,7 +50,7 @@ const login = async (email: string, password: string): Promise<User> => {
         resolve(userCredential.user)
       })
       .catch((error: AuthError) => {
-        reject(mapAuthCodeToMessage(error.code))
+        reject(error.code)
       })
   })
 }
@@ -70,7 +70,7 @@ const register = async (email: string, password: string): Promise<User> => {
         resolve(userCredential.user)
       })
       .catch((err: AuthError) => {
-        reject(mapAuthCodeToMessage(err.code))
+        reject(err.code)
       })
   })
 }
@@ -88,7 +88,7 @@ const passwordReset = async (email: string): Promise<void> => {
         resolve(true)
       })
       .catch((err: AuthError) => {
-        reject(mapAuthCodeToMessage(err.code))
+        reject(err.code)
       })
   })
 }
@@ -96,6 +96,7 @@ const passwordReset = async (email: string): Promise<void> => {
 /**
  * Logout the current user
  * @returns {Promise<void>}
+ * @exception {String} key of the error
  */
 const logout = async (): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -105,7 +106,7 @@ const logout = async (): Promise<void> => {
         resolve()
       })
       .catch((err: AuthError) => {
-        reject(mapAuthCodeToMessage(err.code))
+        reject(err.code)
       })
   })
 }
@@ -121,35 +122,6 @@ const restoreUser = () => {
       }
     })
   })
-}
-
-/**
- * Map an auth code to a message
- * @param code The auth code coming from AuthError.code
- */
-const mapAuthCodeToMessage = (code: string): string => {
-  let error: string
-  switch (code) {
-    case 'auth/invalid-email':
-      error = 'Email provided is invalid.'
-      break
-    case 'auth/user-disabled':
-      error = 'User corresponding to the given email has been disabled.'
-      break
-    case 'auth/user-not-found':
-      error = 'There is no user found with the given email.'
-      return error
-    case 'auth/invalid-password':
-      error = 'Password provided is invalid.'
-      break
-    case 'auth/email-already-in-use':
-      error = 'Email provided is already in use.'
-      break
-    default:
-      console.error(`Unhandled error code: ${code}`)
-      error = 'An error occurred.'
-  }
-  return error
 }
 
 /**
