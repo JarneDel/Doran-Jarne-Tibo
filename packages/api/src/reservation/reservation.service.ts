@@ -115,7 +115,6 @@ export class ReservationService {
 
       return this.reservationRepository.save(r)
     } else {
-      console.log(isRoomAvailable, isMaterialAvailable, date >= today)
       throw new Error(
         'Room or material is not available or date is not correct',
       )
@@ -235,11 +234,9 @@ export class ReservationService {
       r.rooms = updateReservationInput.rooms
       r.reservedMaterials = updateReservationInput.reservedMaterials
       r.isCancelled = false
-      console.log(r)
       this.reservationRepository.update(r.id,r)
       return r
     } else {
-      console.log(isRoomAvailable , isMaterialAvailable , date >= today)
       throw new Error(
         'Room or material is not available or date is not correct',
       )
@@ -301,7 +298,6 @@ export class ReservationService {
                 reservationStart <= end &&
                 reservationEnd >= end)
             ) {
-              console.log(resMat.amountReserved)
               overMaterial = overMaterial - resMat.amountReserved
               if (overMaterial < 0) {
                 isAvailable = false
@@ -355,7 +351,6 @@ export class ReservationService {
                 reservationStart <= end &&
                 reservationEnd >= end)
                 ) {
-              console.log(room.name)
               isAvailable = false
             }
           }
