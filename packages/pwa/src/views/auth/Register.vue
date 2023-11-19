@@ -6,7 +6,7 @@ import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledLink from '@/components/generic/StyledLink.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { useMutation } from '@vue/apollo-composable'
-import { CREATE_GROUP } from '@/graphql/user.query.ts'
+import { CREATE_GROUP, CreateGroupInput } from '@/graphql/user.query.ts'
 import useUser from '@/composables/useUser'
 import useLanguage from '@/composables/useLanguage'
 import { useI18n } from 'vue-i18n'
@@ -16,10 +16,10 @@ export default defineComponent({
   setup() {
     // data
     const form = reactive({
-      btwNummer: '',
-      email: '',
-      password: '',
-      displayName: '',
+      btwNummer: 'BE 0000.000.000',
+      email: 'test@test.test',
+      password: 'Test1234',
+      displayName: 'test',
       error: '',
     })
 
@@ -27,7 +27,7 @@ export default defineComponent({
     const { replace } = useRouter()
     const { register } = useFirebase()
     const { restoreCustomUser } = useUser()
-    const { mutate } = useMutation(CREATE_GROUP)
+    const { mutate } = useMutation<any, CreateGroupInput>(CREATE_GROUP)
     const { locale } = useLanguage()
     const { currentRoute } = useRouter()
     const { t } = useI18n()
@@ -36,19 +36,15 @@ export default defineComponent({
     const submitForm = () => {
       register(form.email, form.password)
         .then(async () => {
-          if (form.btwNummer == '') {
-            await mutate({
+          await mutate({
+            createGroupInput: {
               name: form.displayName,
-              btwNumber: null,
-              locale: locale,
-            })
-          } else {
-            await mutate({
-              name: form.displayName,
+              locale: locale.value,
               btwNumber: form.btwNummer,
-              locale: locale,
-            })
-          }
+              email: form.email,
+            },
+          })
+
           await restoreCustomUser()
           replace('/')
         })
