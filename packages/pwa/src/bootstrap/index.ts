@@ -77,16 +77,7 @@ export const router = createRouter({
               component: () => import('@/views/admin/rooms/Edit.vue'),
             },
             {
-              path: 'type/:type',
-              component: () => import('@/views/admin/rooms/Rooms.vue'),
-              props: true,
-            },
-            {
               path: 'create',
-              component: () => import('@/views/admin/rooms/Create.vue'),
-            },
-            {
-              path: 'rooms/create/type/:type',
               component: () => import('@/views/admin/rooms/Create.vue'),
             },
           ],
@@ -94,6 +85,15 @@ export const router = createRouter({
             shouldBeAuthenticated: true,
             title: SITE_NAME + ' - Rooms',
           },
+        },
+        {
+          path: 'rooms/type/:type',
+          component: () => import('@/views/admin/rooms/Rooms.vue'),
+          props: true,
+        },
+        {
+          path: 'rooms/create/type/:type',
+          component: () => import('@/views/admin/rooms/Create.vue'),
         },
         {
           path: 'reservations',
