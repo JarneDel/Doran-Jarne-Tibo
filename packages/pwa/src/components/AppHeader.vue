@@ -120,11 +120,7 @@ export default defineComponent({
       </div>
       <div>
         <button v-if="customUser" class="mx-2" @click="toggleOptions()">
-          <ProfilePicture
-            v-if="firebaseUser?.photoURL"
-            :size="48"
-            class="cursor-pointer"
-          />
+          <ProfilePicture v-if="firebaseUser?.photoURL" :size="48" />
           <span v-else class="gap2 flex flex-row items-center justify-center">
             <span
               :title="username"
