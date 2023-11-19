@@ -1,13 +1,13 @@
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
-import { useMutation, useQuery } from '@vue/apollo-composable';
+import { defineComponent, ref, watch } from 'vue'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   ALL_STOCK_AND_SERVICES,
   AllStockAndServices,
   getUpdatedStockItem,
   IUpdateItemOptional,
   UPDATE_STOCK,
-} from '@/graphql/stock.query.ts';
+} from '@/graphql/stock.query.ts'
 import {
   ArrowDownNarrowWide,
   ArrowUpDown,
@@ -15,17 +15,19 @@ import {
   ChevronRight,
   Edit2,
   Search,
-} from 'lucide-vue-next';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import useLastRoute from '@/composables/useLastRoute.ts';
-import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
-import DoubleClickSelect from '@/components/generic/DoubleClickSelect.vue';
+} from 'lucide-vue-next'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import Modal from '@/components/Modal.vue'
+import { useRouter } from 'vue-router'
+import useLastRoute from '@/composables/useLastRoute.ts'
+import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
+import DoubleClickSelect from '@/components/generic/DoubleClickSelect.vue'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
   name: 'Overview',
   components: {
+    Error,
     DoubleClickSelect,
     DoubleClickEdit,
     Modal,
@@ -39,13 +41,13 @@ export default defineComponent({
   },
 
   setup: function () {
-    const search = ref<string>('');
-    const searchServiceId = ref<string>('');
-    const sortDirection = ref<string>('ASC');
-    const sortFieldName = ref<string>('name');
-    const isModalShown = ref<boolean>(true);
-
-    const { push } = useRouter();
+    const search = ref<string>('')
+    const searchServiceId = ref<string>('')
+    const sortDirection = ref<string>('ASC')
+    const sortFieldName = ref<string>('name')
+    const isModalShown = ref<boolean>(true)
+    const errorMessages = ref<string[]>([])
+    const { push } = useRouter()
 
     // graphql
     const { error, loading, result, refetch } = useQuery<AllStockAndServices>(
@@ -58,10 +60,11 @@ export default defineComponent({
       {
         nextFetchPolicy: 'cache-and-network',
         fetchPolicy: 'cache-and-network',
-      }
-    );
+      },
+    )
 
-    const { mutate: mutateUpdateItem } = useMutation(UPDATE_STOCK);
+    const { mutate: mutateUpdateItem, onError: onMutateUpdateItemError } =
+      useMutation(UPDATE_STOCK)
 
     /**
      * Sorts the table by the given field and requests the data again
@@ -69,24 +72,24 @@ export default defineComponent({
      */
     const sortField = (field: string) => {
       if (sortFieldName.value === field) {
-        sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC';
+        sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC'
       } else {
-        sortFieldName.value = field;
-        sortDirection.value = 'asc';
+        sortFieldName.value = field
+        sortDirection.value = 'asc'
       }
-      fetchWithFilters();
-    };
+      fetchWithFilters()
+    }
 
     const whereName = (e: Event) => {
-      const target = e.target as HTMLInputElement;
-      search.value = target.value;
-      fetchWithFilters();
-    };
+      const target = e.target as HTMLInputElement
+      search.value = target.value
+      fetchWithFilters()
+    }
     const whereService = (e: Event) => {
-      const target = e.target as HTMLSelectElement;
-      searchServiceId.value = target.value;
-      fetchWithFilters();
-    };
+      const target = e.target as HTMLSelectElement
+      searchServiceId.value = target.value
+      fetchWithFilters()
+    }
 
     const fetchWithFilters = () => {
       refetch({
@@ -94,34 +97,45 @@ export default defineComponent({
         orderDirection: sortDirection.value,
         orderByField: sortFieldName.value,
         searchServiceId: searchServiceId.value,
-      });
-    };
+      })
+    }
 
-    const { lastRoute } = useLastRoute();
+    const { lastRoute } = useLastRoute()
     watch(
       lastRoute,
-      (value) => {
-        console.log(lastRoute);
+      value => {
+        console.log(lastRoute)
         if (value.startsWith('/admin/inventory/')) {
-          console.log('refetching');
-          fetchWithFilters();
+          console.log('refetching')
+          fetchWithFilters()
         }
       },
-      { immediate: true }
-    );
+      { immediate: true },
+    )
 
     const updateItem = (
       id: string,
-      fieldsToUpdate: Partial<IUpdateItemOptional>
+      fieldsToUpdate: Partial<IUpdateItemOptional>,
     ) => {
-      const stockItem = result.value?.stock.find((s) => s.id == id);
-      if (!stockItem) return;
+      const stockItem = result.value?.stock.find(s => s.id == id)
+      if (!stockItem) return
       mutateUpdateItem({
         updateStockInput: getUpdatedStockItem(stockItem, fieldsToUpdate),
       }).then(() => {
-        fetchWithFilters();
-      });
-    };
+        fetchWithFilters()
+      })
+    }
+
+    onMutateUpdateItemError(err => {
+      const originalError = err.graphQLErrors[0].extensions.originalError as any
+      if (!originalError || !originalError.message)
+        return console.log('no message')
+
+      console.log({ originalError })
+      originalError.message.forEach((message: string) => {
+        errorMessages.value.push(message)
+      })
+    })
 
     return {
       error,
@@ -131,18 +145,25 @@ export default defineComponent({
       sortDirection,
       sortFieldName,
       isModalShown,
+      errorMessages,
       sortField,
       whereName,
       whereService,
       push,
       updateItem,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
   <RouterView />
+  <Error
+    v-for="(err, index) of errorMessages"
+    :is-shown="!!err"
+    :msg="err"
+    @update:is-shown="errorMessages[index] = ''"
+  />
   <div class="mx-a max-w-7xl">
     <div class="flex items-center justify-between">
       <div class="py4 flex flex-row gap-4">
@@ -238,14 +259,14 @@ export default defineComponent({
           <td>
             <DoubleClickEdit
               :value="stock.name"
-              @submit="(newValue) => updateItem(stock.id, { name: newValue })"
+              @submit="newValue => updateItem(stock.id, { name: newValue })"
             />
           </td>
           <td :title="stock.description" class="truncate">
             <DoubleClickEdit
               :value="stock.description"
               @submit="
-                (newValue) => updateItem(stock.id, { description: newValue })
+                newValue => updateItem(stock.id, { description: newValue })
               "
             />
           </td>
@@ -260,7 +281,7 @@ export default defineComponent({
               :value="stock.amountInStock"
               type="number"
               @submit="
-                (newValue) => updateItem(stock.id, { amountInStock: newValue })
+                newValue => updateItem(stock.id, { amountInStock: newValue })
               "
             />
             /
@@ -268,7 +289,7 @@ export default defineComponent({
               :value="stock.idealStock"
               type="number"
               @submit="
-                (newValue) => updateItem(stock.id, { idealStock: newValue })
+                newValue => updateItem(stock.id, { idealStock: newValue })
               "
             />
           </td>
@@ -282,7 +303,7 @@ export default defineComponent({
               "
               :selected="{ key: stock.service.id, value: stock.service.name }"
               @submit="
-                (newValue) => updateItem(stock.id, { serviceId: newValue })
+                newValue => updateItem(stock.id, { serviceId: newValue })
               "
             />
           </td>
