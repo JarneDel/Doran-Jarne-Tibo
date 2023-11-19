@@ -10,6 +10,7 @@ import useLanguage from '@/composables/useLanguage'
 import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
 import { useI18n } from 'vue-i18n'
 import ProfilePicture from '@/components/staff/ProfilePicture.vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   computed: {
@@ -18,17 +19,14 @@ export default defineComponent({
     },
   },
   setup() {
-    const { logout } = firebase()
     const { firebaseUser } = firebase()
     const { setLocale, locale } = useLanguage()
     let options = ref(false)
-    const { customUser, userLogout } = useUser()
+    const { customUser } = useUser()
+    const { push } = useRouter()
     const { t } = useI18n()
     const logoutButton = () => {
-      logout().then(() => {
-        userLogout()
-        options.value = false
-      })
+      push('/logout')
     }
     const toggleOptions = () => {
       options.value = !options.value
