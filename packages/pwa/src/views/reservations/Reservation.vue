@@ -32,7 +32,6 @@ export default defineComponent({
       onResult(result => {
         if (result.loading) return
         reservations.value = result.data.getReservationsByUser
-        // console.log(reservations.value)
         resolve()
       })
     })
@@ -45,7 +44,6 @@ export default defineComponent({
         onResult(result => {
           if (result.loading) return
           reservations.value = result.data.GetReservationsByDateAndUser
-          console.log(reservations.value)
           resolve()
         })
       })
@@ -57,15 +55,13 @@ export default defineComponent({
         onResult(result => {
           if (result.loading) return
           reservations.value = result.data.getReservationsByUser
-          // console.log(reservations.value)
           resolve()
         })
       })
     }
 
     const cancelReservationById = async (id: string) => {
-      const result = await cancelReservation({ id: id })
-      console.log(result)
+      await cancelReservation({ id: id })
       //delete reservation from list
       reservations.value = reservations.value.filter(
         reservation => reservation.id !== id,
@@ -130,6 +126,7 @@ export default defineComponent({
               <router-link
                 class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-300"
                 :to="'reservation/edit/' + reservation.id"
+                v-if="reservation.date > new Date().toISOString().substr(0, 10)"
               >
                 <Pencil />
               </router-link>
@@ -155,9 +152,11 @@ export default defineComponent({
             <p class="text-lg font-bold">
               € {{ reservation.price.toFixed(2) }}
             </p>
-            <StyledButton @click="cancelReservationById(reservation.id)">{{
-              $t('reservation.cansle')
-            }}</StyledButton>
+            <StyledButton
+              @click="cancelReservationById(reservation.id)"
+              v-if="reservation.date > new Date().toISOString().substr(0, 10)"
+              >{{ $t('reservation.cansle') }}</StyledButton
+            >
           </div>
         </div>
       </div>

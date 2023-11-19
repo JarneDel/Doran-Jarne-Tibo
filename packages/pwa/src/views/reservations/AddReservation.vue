@@ -81,7 +81,6 @@ export default defineComponent({
             createdAt: new Date(),
             updatedAt: new Date(),
           }
-          console.log(sportt)
           sport.id = sportt.id
           sport.name = sportt.name
           sport.createdAt = sportt.createdAt
