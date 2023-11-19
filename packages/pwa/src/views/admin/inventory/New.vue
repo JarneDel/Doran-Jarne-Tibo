@@ -11,12 +11,13 @@ import {
   CreateStockInput,
   ICreateStock,
 } from '@/graphql/stock.query.ts'
+import Error from '@/components/Error.vue'
 
 // todo: error handling
 
 export default defineComponent({
   name: 'New.vue',
-  components: { StyledButton, StyledLink, StyledInputText },
+  components: { Error, StyledButton, StyledLink, StyledInputText },
   setup() {
     // refs
     const name = ref<string>('')
@@ -33,11 +34,15 @@ export default defineComponent({
       error: servicesError,
     } = useQuery<IServices>(ALL_SERVICES)
 
-    const { mutate } = useMutation<ICreateStock>(CREATE_STOCK)
+    const { mutate, onError } = useMutation<ICreateStock>(CREATE_STOCK)
+    onError(e => {
+      errors.value.push(e.message)
+    })
+
     const createNewItem = async () => {
       if (service.value == '') {
         errors.value.push('Please select a service')
-
+        console.log(errors)
         return
       }
 
@@ -49,27 +54,9 @@ export default defineComponent({
         needToOrderMore: false,
         serviceId: service.value,
       }
-      const res = await mutate(
-        {
-          createStockInput: params,
-        },
-        // {
-        // update: (cache, result) => {
-        //   const res = cache.readQuery({
-        //     query: ALL_STOCK_AND_SERVICES,
-        //   })
-        //
-        //   cache.writeQuery({
-        //     query: ALL_STOCK_AND_SERVICES,
-        //     data: {
-        //       ...res,
-        //       stock: [...res.stock, result.data?.createStock],
-        //     },
-        //   })
-        // },
-        // },
-      )
-      console.info(res)
+      const res = await mutate({
+        createStockInput: params,
+      })
 
       // todo: error handling, possible redirect to edit if name already exists
       if (res?.data?.createStock.id) {
@@ -87,13 +74,21 @@ export default defineComponent({
       idealAmountInStock,
       inStock,
       service,
-      errors,
+      errorMessages: errors,
     }
   },
 })
 </script>
 
 <template>
+  <Error
+    v-for="(error, index) of errorMessages"
+    :key="index"
+    :is-shown="errorMessages[index] !== ''"
+    :msg="error"
+    @update:is-shown="errorMessages[index] = ''"
+  />
+
   <form
     class="mx-auto mt-12 flex max-w-lg flex-col"
     @submit.prevent="createNewItem"
