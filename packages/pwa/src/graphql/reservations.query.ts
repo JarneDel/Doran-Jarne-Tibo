@@ -118,12 +118,14 @@ export const AVAILABLEMATERAILS = gql`
     $startTime: String!
     $endTime: String!
     $sportId: [String!]!
+    $reservationId: String
   ) {
     GetAvailableloanableMaterials(
       date: $date
       startTime: $startTime
       endTime: $endTime
       sportId: $sportId
+      reservationId: $reservationId
     ) {
       id
       name
@@ -147,8 +149,9 @@ export const GET_AVAILABLE_ROOMS = gql`
     $date: String!
     $startTime: String!
     $endTime: String!
+    $reservationId: String
   ) {
-    getAvailableRooms(date: $date, startTime: $startTime, endTime: $endTime) {
+    getAvailableRooms(date: $date, startTime: $startTime, endTime: $endTime, reservationId: $reservationId) {
       id
       name
       sports {

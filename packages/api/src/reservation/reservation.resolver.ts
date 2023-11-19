@@ -108,12 +108,15 @@ export class ReservationResolver {
     @Args('startTime', { type: () => String }) startTime: string,
     @Args('endTime', { type: () => String }) endTime: string,
     @Args('sportId', { type: () => [String] }) sportId: string[],
+    @Args('reservationId', { type: () => String, nullable: true })
+    reservationId: string,
   ) {
     return this.reservationService.getAvailableMaterail(
       date,
       startTime,
       endTime,
       sportId,
+      reservationId,
     )
   }
 
@@ -127,8 +130,10 @@ export class ReservationResolver {
     @Args('date', { type: () => String }) date: string,
     @Args('startTime', { type: () => String }) startTime: string,
     @Args('endTime', { type: () => String }) endTime: string,
+    @Args('reservationId', { type: () => String, nullable: true })
+    reservationId: string,
   ) {
-    return this.reservationService.getAvailableRooms(date, startTime, endTime)
+    return this.reservationService.getAvailableRooms(date, startTime, endTime, reservationId)
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)

@@ -32,6 +32,15 @@ export default defineComponent({
     const wantedRoom = ref<Room[]>([])
     const wantedMaterials = ref<material[]>([])
     const price = ref(0)
+    const calculatePrice = () => {
+      price.value = 0
+      wantedRoom.value.forEach(room => {
+        price.value += room.pricePerHour * reservation.value.timeDivrent
+      })
+      wantedMaterials.value.forEach(material => {
+        price.value += material.price*checkboxStatusMaterials.value[material.name].amount* reservation.value.timeDivrent
+      })
+    }
     const AddReservation = () => {
       let materials: material[] = []
       wantedMaterials.value.forEach(material => {
@@ -102,7 +111,6 @@ export default defineComponent({
       })
     }
     const Material = (material: material, plus: boolean) => {
-      //add material
       if (plus) {
         if (
           checkboxStatusMaterials.value[material.name].amount ==
@@ -115,17 +123,21 @@ export default defineComponent({
             1,
           )
         checkboxStatusMaterials.value[material.name].amount++
-        wantedMaterials.value.push(material)
-        price.value += material.price * reservation.value.timeDivrent
       } else {
         if (checkboxStatusMaterials.value[material.name].amount == 0) return
         //remove material
         checkboxStatusMaterials.value[material.name].amount--
-        wantedMaterials.value.splice(wantedMaterials.value.indexOf(material), 1)
-        if (checkboxStatusMaterials.value[material.name].amount != 0)
-          wantedMaterials.value.push(material)
-        price.value -= material.price * reservation.value.timeDivrent
       }
+      const listIds: string[] = []
+      wantedMaterials.value.forEach(material => {
+        listIds.push(material.id)
+      })
+      if (checkboxStatusMaterials.value[material.name].amount == 0)
+        wantedMaterials.value.splice(wantedMaterials.value.indexOf(material), 1)
+      else {
+        if (!listIds.includes(material.id)) wantedMaterials.value.push(material)
+      }
+      calculatePrice()
     }
     const checkMaterials = () => {
       return new Promise<void>(resolve => {
@@ -157,11 +169,10 @@ export default defineComponent({
     const addRoom = (room: Room) => {
       if (checkboxStatus.value[room.name]) {
         wantedRoom.value.splice(wantedRoom.value.indexOf(room), 1)
-        price.value -= room.pricePerHour * reservation.value.timeDivrent
       } else {
         wantedRoom.value.push(room)
-        price.value += room.pricePerHour * reservation.value.timeDivrent
       }
+      calculatePrice()
       checkMaterials()
     }
     const check = async () => {
