@@ -25,6 +25,11 @@ export class CreateRepairRequestInput {
   @Field()
   requestUserId: string
 
+  @IsNotEmpty()
+  @MinLength(4)
+  @Field()
+  title: string;
+
   @IsString()
   @Field({ nullable: true })
   description?: string

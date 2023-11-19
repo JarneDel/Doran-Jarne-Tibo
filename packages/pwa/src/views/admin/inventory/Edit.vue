@@ -12,6 +12,7 @@ import {
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import { ALL_SERVICES, IServices } from '@/graphql/service.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
+import useA11y from '@/composables/useA11y.ts'
 
 export default defineComponent({
   name: 'Edit',
@@ -19,7 +20,7 @@ export default defineComponent({
   setup() {
     const { push, currentRoute } = useRouter()
     const id = currentRoute.value.params.id as string
-
+    const { setPageTitle } = useA11y()
     const { result, onResult } = useQuery<IOneStockItem>(ONE_STOCK, { id })
     const { result: services } = useQuery<IServices>(ALL_SERVICES)
     const { mutate: mutateUpdateItem } = useMutation(UPDATE_STOCK)
@@ -28,6 +29,12 @@ export default defineComponent({
     const oldResult = ref<IOneStockItem>()
     onResult(param => {
       oldResult.value = JSON.parse(JSON.stringify(param.data))
+      setPageTitle(
+        'Edit ' +
+          param.data.stockItem.name +
+          ' - ' +
+          param.data.stockItem.service.name,
+      )
     })
     const compare = (
       val?: IOneStockItem,

@@ -14,6 +14,7 @@ export const USER_BY_UID = gql`
         name
         btwNumber
         score
+        profilePictureUrl
       }
       ... on Staff {
         id
@@ -28,6 +29,7 @@ export const USER_BY_UID = gql`
         phone
         holidaysLeft
         holidayDates
+        profilePictureUrl
       }
     }
   }
@@ -96,10 +98,8 @@ export const UPDATE_STAFF = gql`
 `
 
 export const CREATE_GROUP = gql`
-  mutation createGroup($name: String!, $locale: String!, $btwNummer: String) {
-    createGroup(
-      createGroupInput: { locale: $locale, name: $name, btwNumber: $btwNummer }
-    ) {
+  mutation createGroup($createGroupInput: CreateGroupInput!) {
+    createGroup(createGroupInput: $createGroupInput) {
       id
       UID
       locale
@@ -112,3 +112,13 @@ export const CREATE_GROUP = gql`
     }
   }
 `
+
+export interface CreateGroupInput {
+  createGroupInput: {
+    btwNumber: string
+    locale: string
+    name: string
+    profilePictureUrl?: string
+    email: string
+  }
+}
