@@ -33,9 +33,9 @@ export class DatabaseSeedCommand {
     console.log(`${staff.length} staff were added`)
 
     // vacationRequests (after staff because of foreign key)
-    // console.info('🌱 Start seeding of vacationRequests')
-    // const vacationRequests = await this.seedService.addVacationRequests()
-    // console.info(`added ${vacationRequests} vacationRequests to the database`)
+    console.info('🌱 Start seeding of vacationRequests')
+    const vacationRequests = await this.seedService.addVacationRequests()
+    console.info(`added ${vacationRequests} vacationRequests to the database`)
 
     //Rooms
     console.info('🌱 Start seeding of rooms')
@@ -58,7 +58,7 @@ export class DatabaseSeedCommand {
     console.info(
       `added ${repairRequests.length} repairRequests to the database`,
     )
-    
+
     // Reservations (after loanableMaterials, rooms, groups, sports and staff because of foreign key)
     console.info('🌱 Start seeding of reservations')
     const reservations = await this.seedService.addReservationsFromJson()
