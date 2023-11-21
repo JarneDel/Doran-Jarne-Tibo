@@ -9,7 +9,9 @@ import {
   UPDATE_STOCK,
 } from '@/graphql/stock.query.ts'
 import {
+  ArrowDownAz,
   ArrowDownNarrowWide,
+  ArrowUpAz,
   ArrowUpDown,
   ArrowUpNarrowWide,
   ChevronRight,
@@ -38,6 +40,8 @@ export default defineComponent({
     ArrowUpNarrowWide,
     ArrowUpDown,
     ChevronRight,
+    ArrowUpAz,
+    ArrowDownAz,
   },
 
   setup: function () {
@@ -200,18 +204,15 @@ export default defineComponent({
       </div>
     </div>
 
-    <table class="w-full border-collapse border-spacing-0">
-      <thead class="border-2 border-neutral-200 bg-neutral-200/60 text-left">
-        <tr class="text-neutral-8">
+    <table class="w-full border-collapse text-sm">
+      <thead>
+        <tr class="border-b text-left transition-colors">
           <th class="cursor-pointer" @click="sortField('name')">
             <button class="gap2 flex flex-row items-center">
               <span>{{ $t('inventory.name') }}</span>
               <arrow-up-down v-if="sortFieldName !== 'name'" :size="16" />
-              <arrow-down-narrow-wide
-                v-else-if="sortDirection === 'DESC'"
-                :size="16"
-              />
-              <arrow-up-narrow-wide v-else :size="16" />
+              <arrow-up-az v-else-if="sortDirection === 'DESC'" :size="16" />
+              <arrow-down-az v-else :size="16" />
             </button>
           </th>
           <th>{{ $t('inventory.description') }}</th>
@@ -227,23 +228,20 @@ export default defineComponent({
                 :size="16"
                 class="inline"
               />
-              <arrow-down-narrow-wide
+              <arrow-up-az
                 v-else-if="sortDirection === 'DESC'"
                 :size="16"
                 class="inline"
               />
-              <arrow-up-narrow-wide v-else :size="16" class="inline" />
+              <arrow-down-az v-else :size="16" class="inline" />
             </button>
           </th>
           <th class="cursor-pointer" @click="sortField('service')">
             <button class="flex flex-row items-center gap-2">
               <span>{{ $t('inventory.service') }}</span>
               <arrow-up-down v-if="sortFieldName !== 'service'" :size="16" />
-              <arrow-down-narrow-wide
-                v-else-if="sortDirection === 'DESC'"
-                :size="16"
-              />
-              <arrow-up-narrow-wide v-else :size="16" />
+              <arrow-up-az v-else-if="sortDirection === 'DESC'" :size="16" />
+              <arrow-down-az v-else :size="16" />
             </button>
           </th>
           <!--          <th>Actions</th>-->
@@ -333,20 +331,11 @@ export default defineComponent({
 }
 
 th {
-  font-weight: 400;
-  font-size: 0.875rem;
-  padding-block: 12px;
-  padding-inline: 16px;
+  @apply h-12 px-4 text-left align-middle font-medium;
 }
 
 td {
-  padding-block: 8px;
-  padding-inline: 16px;
-  border-top: 2px solid #e6edfa;
-}
-
-table {
-  border: 2px solid #e6edfa;
+  @apply p-4 align-middle;
 }
 
 .loader {
