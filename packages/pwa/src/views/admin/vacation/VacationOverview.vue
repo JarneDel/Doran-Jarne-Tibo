@@ -131,11 +131,11 @@ export default defineComponent({
       <StyledInputText v-model="rejectMessage" label="Reject message" />
     </template>
     <template v-slot:actions>
-      <StyledButton button-type="danger" @click="rejectVacation">
-        Reject
-      </StyledButton>
       <StyledButton button-type="gray" @click="reject = undefined"
         >Cancel
+      </StyledButton>
+      <StyledButton button-type="danger" @click="rejectVacation">
+        Reject
       </StyledButton>
     </template>
   </Modal>
