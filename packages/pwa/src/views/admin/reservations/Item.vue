@@ -1,68 +1,68 @@
 <script lang="ts">
 // Interfaces
 interface Room {
-  id: string;
-  name: string;
-  sports: Sport[];
-  pricePerHour: number;
-  type: string;
-  createdAt?: string;
-  updatedAt?: string;
+  id: string
+  name: string
+  sports: Sport[]
+  pricePerHour: number
+  type: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 interface Sport {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
 interface group {
-  id: string;
-  name: string;
-  UID: string;
-  locale: string;
-  role: string;
+  id: string
+  name: string
+  UID: string
+  locale: string
+  role: string
 }
 
 interface reservedMaterials {
-  id: string;
-  name: string;
-  totalAmount: number;
-  wantedAmount: number;
-  price: number;
-  sports: Sport[];
-  isComplete: boolean;
-  description: string;
-  amountReserved: number;
+  id: string
+  name: string
+  totalAmount: number
+  wantedAmount: number
+  price: number
+  sports: Sport[]
+  isComplete: boolean
+  description: string
+  amountReserved: number
 }
 
 interface Reservation {
-  id: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  group: group;
-  reservedMaterials: reservedMaterials[];
-  rooms: Room[];
-  price: number;
-  isCancelled: boolean;
-  createdAt: string;
-  updatedAt: string;
+  id: string
+  date: string
+  startTime: string
+  endTime: string
+  group: group
+  reservedMaterials: reservedMaterials[]
+  rooms: Room[]
+  price: number
+  isCancelled: boolean
+  createdAt: string
+  updatedAt: string
 }
 
 interface IReservation {
-  GetReservatiounById: Reservation;
+  GetReservatiounById: Reservation
 }
 
-import { computed, defineComponent } from 'vue';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import { useMutation, useQuery } from '@vue/apollo-composable';
+import { computed, defineComponent } from 'vue'
+import Modal from '@/components/Modal.vue'
+import { useRouter } from 'vue-router'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   DELETE_RESERVATION,
   GET_ONE_RESERVATION,
-} from '@/graphql/reservations.query.ts';
-import { Edit2, Trash2 } from 'lucide-vue-next';
-import StyledButton from '@/components/generic/StyledButton.vue';
+} from '@/graphql/reservations.query.ts'
+import { Edit2, Trash2 } from 'lucide-vue-next'
+import StyledButton from '@/components/generic/StyledButton.vue'
 
 export default defineComponent({
   components: {
@@ -73,23 +73,23 @@ export default defineComponent({
   },
   name: 'Item',
   setup: () => {
-    const { push, replace, currentRoute } = useRouter();
-    const id = computed(() => currentRoute.value.params.id);
+    const { push, replace, currentRoute } = useRouter()
+    const id = computed(() => currentRoute.value.params.id)
     // region graphql
     const { error, loading, result } = useQuery<IReservation>(
       GET_ONE_RESERVATION,
       {
         id: id.value,
-      }
-    );
-    const { mutate: deleteItem } = useMutation(DELETE_RESERVATION);
+      },
+    )
+    const { mutate: deleteItem } = useMutation(DELETE_RESERVATION)
 
     const deleteItemWithConfirmation = (id: string) => {
-      if (!confirm('Are you sure you want to delete this item?')) return;
-      deleteItem({ id }).then((e) => {
-        replace('/admin/reservations');
-      });
-    };
+      if (!confirm('Are you sure you want to delete this item?')) return
+      deleteItem({ id }).then(e => {
+        replace('/admin/reservations')
+      })
+    }
 
     return {
       push,
@@ -97,18 +97,16 @@ export default defineComponent({
       error,
       loading,
       deleteItemWithConfirmation,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
   <Modal max-width="max-w-xl" @close="push('/admin/reservations')">
     <template v-slot:title>
       <div class="flex w-full flex-row items-center justify-between">
-        <h2 v-if="loading" class="mr-2 w-full text-lg font-bold">
-          Loading...
-        </h2>
+        <h2 v-if="loading" class="mr-2 w-full text-lg font-bold">Loading...</h2>
         <h2
           v-if="!result?.GetReservatiounById && !loading"
           class="mr-2 w-full text-lg font-bold"
@@ -132,7 +130,7 @@ export default defineComponent({
             push(
               '/admin/reservations/id/' +
                 result?.GetReservatiounById.id +
-                '/edit'
+                '/edit',
             )
           "
         >
@@ -153,27 +151,29 @@ export default defineComponent({
           </h3>
         </div>
         <div>
-          <h3 class="font-medium">
-            Rooms:
-          </h3>
-          <div v-for="room in result?.GetReservatiounById.rooms">
-            <p>{{ room.name }}</p>
-          </div>
+          <h3 class="font-medium">Rooms:</h3>
+          <ul>
+            <li
+              class="bg-rooms mt-1 w-fit rounded-full px-4 text-sm font-medium"
+              v-for="room in result?.GetReservatiounById.rooms"
+            >
+              {{ room.name }}
+            </li>
+          </ul>
         </div>
         <div>
-          <h3 class="font-medium">
-            Materials:
-          </h3>
-          <div
-            v-for="material in result?.GetReservatiounById.reservedMaterials"
-          >
-            <p>{{ material.name }}</p>
-          </div>
+          <h3 class="font-medium">Materials:</h3>
+          <ul>
+            <li
+              class="bg-materials mt-1 w-fit rounded-full px-4 text-sm font-medium"
+              v-for="material in result?.GetReservatiounById.reservedMaterials"
+            >
+              {{ material.name }}
+            </li>
+          </ul>
         </div>
         <div class="flex gap-2">
-          <h3 class="font-medium">
-            Price:
-          </h3>
+          <h3 class="font-medium">Price:</h3>
           <p>€ {{ result?.GetReservatiounById.price }}</p>
         </div>
       </div>
