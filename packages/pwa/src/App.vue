@@ -12,7 +12,7 @@ import { useStorage } from '@vueuse/core'
 export default defineComponent({
   components: { Layout },
   setup() {
-    const locale = useStorage('locale', 'em')
+    const locale = useStorage('locale', 'en')
     const { apolloClient } = useGraphql()
     provide(DefaultApolloClient, apolloClient)
     const { setLocale } = useLanguage()
