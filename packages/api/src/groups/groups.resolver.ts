@@ -75,7 +75,6 @@ export class GroupsResolver {
     profilePictureUrl: string,
     @FirebaseUser() user: UserRecord,
   ) {
-    console.log('updateProfilePictureUrl', profilePictureUrl)
     return this.groupsService.updateProfilePictureUrl(
       user.uid,
       profilePictureUrl,

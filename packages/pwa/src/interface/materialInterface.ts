@@ -7,5 +7,5 @@ export interface material {
   sports: [{ id: string; name: string; createdAt: Date; updatedAt: Date }]
   isComplete: boolean
   description: string
-  amountReserved:number
+  amountReserved: number
 }

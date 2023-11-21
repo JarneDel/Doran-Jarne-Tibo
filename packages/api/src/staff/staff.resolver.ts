@@ -55,7 +55,6 @@ export class StaffResolver {
     profilePictureUrl: string,
     @FirebaseUser() user: UserRecord,
   ) {
-    console.log('updateProfilePictureUrl', profilePictureUrl)
     return this.staffService.updateProfilePictureUrl(
       user.uid,
       profilePictureUrl,

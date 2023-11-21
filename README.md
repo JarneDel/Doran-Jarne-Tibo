@@ -93,7 +93,7 @@ VITE_API_URL=http://localhost:3000
 
 Save it as `oauthsecret.json` in `packages/pwa/src/utils/`
 
-Add yourself as test user in
+Add yourself as test user in 
 [OAuth consent screen](https://console.cloud.google.com/apis/credentials/consent)
 
 ### run script
