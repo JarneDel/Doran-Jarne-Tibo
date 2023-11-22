@@ -23,6 +23,10 @@ export const router = createRouter({
       },
     },
     {
+      path: '/repair',
+      component: () => import('@/views/CreateRepairRequest.vue'),
+    },
+    {
       path: '/admin',
       component: () => import('@/components/wrapper/adminWrapper.vue'),
       meta: {
@@ -264,7 +268,7 @@ export const router = createRouter({
         {
           path: 'edit/:id',
           component: () => import('@/views/reservations/ChangeReservation.vue'),
-        }
+        },
       ],
       meta: {
         shouldBeAuthenticated: true,
