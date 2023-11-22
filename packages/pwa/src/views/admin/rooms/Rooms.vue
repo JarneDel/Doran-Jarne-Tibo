@@ -258,7 +258,7 @@ export default defineComponent({
           'bg-secondary': typeSelector === 0,
           'bg-primary-light': typeSelector !== 0,
         }"
-        class="w-30 rounded-l-md p-2 hover:text-white"
+        class="min-w-[120px] rounded-l-md p-2 transition-colors duration-100 hover:text-white"
       >
         {{ $t('rooms.gyms') }}
       </button>
@@ -268,7 +268,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 1,
           'bg-primary-light': typeSelector !== 1,
         }"
-        class="w-30 p-2 hover:text-white"
+        class="min-w-[120px] p-2 transition-colors duration-100 hover:text-white"
       >
         {{ $t('rooms.workRooms') }}
       </button>
@@ -278,7 +278,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 2,
           'bg-primary-light': typeSelector !== 2,
         }"
-        class="w-30 p-2 hover:text-white"
+        class="min-w-[120px] p-2 transition-colors duration-100 hover:text-white"
       >
         {{ $t('rooms.dressingRooms') }}
       </button>
@@ -288,7 +288,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 3,
           'bg-primary-light': typeSelector !== 3,
         }"
-        class="w-30 p-2 hover:text-white"
+        class="min-w-[120px] p-2 transition-colors duration-100 hover:text-white"
       >
         {{ $t('rooms.swimmingPools') }}
       </button>
@@ -298,7 +298,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 4,
           'bg-primary-light': typeSelector !== 4,
         }"
-        class="w-30 rounded-r-md p-2 hover:text-white"
+        class="min-w-[120px] rounded-r-md p-2 transition-colors duration-100 hover:text-white"
       >
         {{ $t('rooms.divingWells') }}
       </button>
