@@ -22,15 +22,8 @@ query {
 
 export const UPDATE_LOABALE_MATERIAL = gql`
 mutation ($updateLoanableMaterialInput: UpdateLoanableMaterialInput!) {
-  updateLoanableMaterial(updateLoanableMaterialInput: $updateLoanableMaterialInput) {
-    id
+  updateLoanableMaterial(updateLoanableMaterialInput: $updateLoanableMaterialInput){
     name
-    totalAmount
-    wantedAmount
-    price
-    sports
-    isComplete
-    description
   }
 }
 `

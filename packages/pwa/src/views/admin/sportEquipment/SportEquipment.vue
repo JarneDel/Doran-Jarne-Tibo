@@ -9,16 +9,37 @@ interface ISport {
     {
       id: string;
       name: string;
-      createdAt: string;
-      updatedAt: string;
+      createdAt: Date;
+      updatedAt: Date;
     }
   ];
 }
 
+interface Sport {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IUpdateItem {
+  id?: string;
+  name?: string;
+  totalAmount?: number;
+  wantedAmount?: number;
+  price?: number;
+  sports?: Sport[];
+  isComplete?: boolean;
+  description?: string;
+}
+
 import { material } from '@/interface/materialInterface';
 import { defineComponent, ref, watch } from 'vue';
-import { useQuery } from '@vue/apollo-composable';
-import { ALL_LOANABLE_MATERIALS } from '@/graphql/loanableMaterials.query.ts';
+import { useQuery, useMutation } from '@vue/apollo-composable';
+import {
+  ALL_LOANABLE_MATERIALS,
+  UPDATE_LOABALE_MATERIAL,
+} from '@/graphql/loanableMaterials.query.ts';
 import { ALL_SPORTS } from '@/graphql/sport.query.ts';
 import {
   ArrowDownNarrowWide,
@@ -55,12 +76,15 @@ export default defineComponent({
     const searchServiceId = ref<string>('');
     const sortDirection = ref<string>('ASC');
     const sortFieldName = ref<string>('name');
+    const sportFilter = ref<string>('all');
     const isModalShown = ref<boolean>(true);
 
     const { push } = useRouter();
 
     // graphql
-    const { error, loading, result } = useQuery<ILoanableMaterial>(
+    const { error, loading, result, onResult, refetch } = useQuery<
+      ILoanableMaterial
+    >(
       ALL_LOANABLE_MATERIALS,
       {},
       {
@@ -69,16 +93,119 @@ export default defineComponent({
       }
     );
 
+    const currentItem = ref<IUpdateItem>({});
+
     const {
       error: errorSports,
       loading: loadingSports,
       result: resultSports,
+      refetch: refetchSports,
     } = useQuery<ISport>(ALL_SPORTS, {}, { fetchPolicy: 'cache-and-network' });
 
-    // const { mutate: mutateUpdateItem } = useMutation(UPDATE_LOABALE_MATERIAL);
+    const { mutate: mutateUpdateItem } = useMutation(UPDATE_LOABALE_MATERIAL);
+
+    const sortedSportEquipment = ref<material[]>();
+
+    onResult((result) => {
+      sortedSportEquipment.value = result.data.GetAllLoanableMaterials;
+      sortSportEquipment();
+    });
+
+    const updateItem = (id: string, newValue: any) => {
+      console.log(newValue);
+      const item = sortedSportEquipment.value?.find((item) => item.id === id);
+      if (!item) return;
+      // Update the item in the local array
+      currentItem.value.name = item.name;
+      currentItem.value.totalAmount = item.totalAmount;
+      currentItem.value.wantedAmount = item.wantedAmount;
+      currentItem.value.price = item.price;
+      currentItem.value.sports?.map((sport) => {
+        return sport.id;
+      });
+      currentItem.value.isComplete = item.isComplete;
+      currentItem.value.description = item.description;
+
+      // Update the item with the new values
+      if (newValue.name) currentItem.value.name = newValue.name;
+      if (newValue.totalAmount)
+        currentItem.value.totalAmount = newValue.totalAmount;
+      if (newValue.wantedAmount)
+        currentItem.value.wantedAmount = newValue.wantedAmount;
+      if (newValue.price) currentItem.value.price = newValue.price;
+      if (newValue.sports) currentItem.value.sports = newValue.sports;
+      if (newValue.isComplete)
+        currentItem.value.isComplete = newValue.isComplete;
+      if (newValue.description)
+        currentItem.value.description = newValue.description;
+
+      // Update the item in the database
+      mutateUpdateItem({
+        updateLoanableMaterialInput: {
+          _id: id,
+          name: currentItem.value.name,
+          totalAmount: currentItem.value.totalAmount,
+          wantedAmount: currentItem.value.wantedAmount,
+          price: currentItem.value.price,
+          SportId: currentItem.value.sports?.map((sport) => {
+            return sport.id;
+          }),
+          isComplete: currentItem.value.isComplete,
+          description: currentItem.value.description,
+        },
+      }).then((e) => {
+        fetchWithFilters();
+      });
+    };
+
+    const sortSportEquipment = () => {
+      if (!sortedSportEquipment.value) return;
+
+      let newArray = [...sortedSportEquipment.value];
+
+      if (sportFilter.value !== 'all') {
+        // Go through all loanable materials and remove those that don't have the selected sport
+        newArray = newArray.filter((loanableMaterial) => {
+          return loanableMaterial.sports.some(
+            (sport) => sport.id === sportFilter.value
+          );
+        });
+      } else {
+        if (result.value?.GetAllLoanableMaterials)
+          sortedSportEquipment.value = result.value.GetAllLoanableMaterials;
+        newArray = [...sortedSportEquipment.value];
+      }
+
+      if (sortFieldName.value === 'name') {
+        if (sortDirection.value === 'ASC') {
+          newArray.sort((a, b) => a.name.localeCompare(b.name));
+        } else {
+          newArray.sort((a, b) => b.name.localeCompare(a.name));
+        }
+      } else if (sortFieldName.value === 'amount') {
+        if (sortDirection.value === 'ASC') {
+          newArray.sort((a, b) => a.totalAmount - b.totalAmount);
+        } else {
+          newArray.sort((a, b) => b.totalAmount - a.totalAmount);
+        }
+      }
+
+      sortedSportEquipment.value = newArray;
+    };
+
+    const sortField = (field: string) => {
+      if (sortFieldName.value === field) {
+        sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC';
+      } else {
+        sortFieldName.value = field;
+        sortDirection.value = 'asc';
+      }
+      sortSportEquipment();
+    };
 
     const fetchWithFilters = () => {
-      console.log('fetching with filters');
+      refetch();
+      refetchSports();
     };
 
     const { lastRoute } = useLastRoute();
@@ -94,8 +221,11 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const ChangeSportsFilter = (event: Event) => {
-      console.log(event);
+    const ChangeSportsFilter = (e: Event) => {
+      fetchWithFilters();
+      const target = e.target as HTMLSelectElement;
+      sportFilter.value = target.value;
+      sortSportEquipment();
     };
 
     return {
@@ -110,8 +240,12 @@ export default defineComponent({
       sortDirection,
       sortFieldName,
       isModalShown,
+      sortField,
       ChangeSportsFilter,
       push,
+      updateItem,
+      currentItem,
+      sortedSportEquipment,
     };
   },
 });
@@ -134,9 +268,9 @@ export default defineComponent({
           id="service"
           class="bg-primary-surface b-2 border-neutral-200 px-4"
           name="service"
-          @change="ChangeSportsFilter($event)"
+          @input.capture="ChangeSportsFilter"
         >
-          <option value="">{{ $t('inventory.sort.service.all') }}</option>
+          <option value="all">{{ $t('inventory.sort.service.all') }}</option>
           <option
             v-for="sport of resultSports?.GetAllSports"
             v-if="result"
@@ -157,7 +291,7 @@ export default defineComponent({
     <table class="w-full border-collapse border-spacing-0">
       <thead class="border-2 border-neutral-200 bg-neutral-200/60 text-left">
         <tr class="text-neutral-8">
-          <th class="cursor-pointer">
+          <th class="cursor-pointer" @click="sortField('name')">
             <button class="gap2 flex flex-row items-center">
               <span>{{ $t('inventory.name') }}</span>
               <arrow-up-down v-if="sortFieldName !== 'name'" :size="16" />
@@ -172,11 +306,12 @@ export default defineComponent({
           <th
             :title="$t('inventory.title.amount.tooltip')"
             class="cursor-pointer"
+            @click="sortField('amount')"
           >
             <button class="flex flex-row items-center gap-2">
               <span>{{ $t('inventory.amount') }} &nbsp;</span>
               <arrow-up-down
-                v-if="sortFieldName !== 'amountInStock'"
+                v-if="sortFieldName !== 'amount'"
                 :size="16"
                 class="inline"
               />
@@ -196,16 +331,29 @@ export default defineComponent({
         </tr>
       </thead>
       <tbody v-if="result">
+        <div></div>
         <tr
-          v-for="loanableMaterial of result.GetAllLoanableMaterials"
+          v-for="loanableMaterial of sortedSportEquipment"
           :key="loanableMaterial.id"
           class="hover:bg-primary-light/20 transition-colors duration-200"
         >
           <td>
-            <DoubleClickEdit :value="loanableMaterial.name" />
+            <DoubleClickEdit
+              :value="loanableMaterial.name"
+              @submit="
+                (newValue) =>
+                  updateItem(loanableMaterial.id, { name: newValue })
+              "
+            />
           </td>
           <td :title="loanableMaterial.description" class="truncate">
-            <DoubleClickEdit :value="loanableMaterial.description" />
+            <DoubleClickEdit
+              :value="loanableMaterial.description"
+              @submit="
+                (newValue) =>
+                  updateItem(loanableMaterial.id, { description: newValue })
+              "
+            />
           </td>
           <td
             :class="{
@@ -219,11 +367,19 @@ export default defineComponent({
             <DoubleClickEdit
               :value="loanableMaterial.totalAmount"
               type="number"
+              @submit="
+                (newValue) =>
+                  updateItem(loanableMaterial.id, { totalAmount: newValue })
+              "
             />
             /
             <DoubleClickEdit
               :value="loanableMaterial.wantedAmount"
               type="number"
+              @submit="
+                (newValue) =>
+                  updateItem(loanableMaterial.id, { wantedAmount: newValue })
+              "
             />
           </td>
           <td>
@@ -255,8 +411,6 @@ export default defineComponent({
       </tbody>
     </table>
   </div>
-
-  <div v-if="loading">Loading...</div>
 </template>
 
 <style scoped>
