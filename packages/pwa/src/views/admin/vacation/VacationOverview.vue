@@ -201,7 +201,7 @@ export default defineComponent({
           <tbody>
             <tr
               v-for="vacationRequest in result?.vacationRequestsBy"
-              class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
+              class="border-b transition-colors"
             >
               <td class="p-4 align-middle">
                 <BadgeCheck v-if="vacationRequest.isApproved" />

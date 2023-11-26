@@ -248,11 +248,11 @@ export default defineComponent({
           <th></th>
         </tr>
       </thead>
-      <tbody v-if="result">
+      <tbody v-if="result" :class="{ loader: loading }">
         <tr
           v-for="stock of result.stock"
           :key="stock.id"
-          class="hover:bg-primary-light/20 transition-colors duration-200"
+          class="hover:bg-primary-light/20 border-b transition-colors duration-200"
         >
           <td>
             <DoubleClickEdit
@@ -319,8 +319,6 @@ export default defineComponent({
       </tbody>
     </table>
   </div>
-
-  <div v-if="loading">Loading...</div>
 </template>
 
 <style scoped>
@@ -331,11 +329,16 @@ export default defineComponent({
 }
 
 th {
-  @apply h-12 px-4 text-left align-middle font-medium;
+  @apply h-12 text-left align-middle font-medium;
 }
 
 td {
-  @apply p-4 align-middle;
+  @apply py2 align-middle;
+}
+
+th:first-child,
+td:first-child {
+  @apply pl-4;
 }
 
 .loader {
