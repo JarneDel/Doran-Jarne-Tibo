@@ -11,8 +11,6 @@ export const ALL_ROOMS = gql`
       }
       pricePerHour
       type
-      createdAt
-      updatedAt
     }
   }
 `

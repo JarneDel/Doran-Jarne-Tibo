@@ -1,18 +1,16 @@
 import gql from 'graphql-tag'
 
 export const ALL_LOANABLE_MATERIALS = gql`
-query {
+  query {
     GetAllLoanableMaterials {
       id
       name
       totalAmount
       wantedAmount
       price
-      sports{
+      sports {
         id
         name
-        createdAt
-        updatedAt
       }
       isComplete
       description
