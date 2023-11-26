@@ -206,7 +206,7 @@ export default defineComponent({
 
 <template>
   <!--  Todo: popup to discard changes-->
-  <Modal min-width="min-w-md" @close="push(`/admin/sport-equipment/id/${id}`)">
+  <Modal min-width="min-w-md" @close="push(`/admin/sport-equipment`)">
     <template v-slot:title>
       <h2 v-if="result?.GetloanableMaterialById" class="mr-2 w-full">
         <!--        <span>{{ $t('edit.edit') }}</span>-->

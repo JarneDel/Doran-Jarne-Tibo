@@ -173,7 +173,7 @@ export default defineComponent({
 
         <div>
           <h4 class="text-primary-text font-medium">
-            Voor welke sporten dient deze uitrusting?
+            {{ $t('item.new.forWhatSport') }}
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-2">
             <div
