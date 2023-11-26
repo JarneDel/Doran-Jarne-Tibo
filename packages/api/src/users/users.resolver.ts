@@ -64,6 +64,7 @@ export class UsersResolver {
   @Query(() => GrSt1, { name: 'userByUid' })
   @UseGuards(FirebaseGuard)
   async userByUid(@FirebaseUser() user: UserRecord) {
+    
     let returnUser
     try {
       returnUser = await this.StaffService.findOneByUid(user.uid)

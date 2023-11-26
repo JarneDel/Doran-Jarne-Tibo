@@ -12,6 +12,15 @@ export default defineConfig({
       '2xs': '16rem',
     },
     colors: {
+      sports: {
+        DEFAULT: '#d379e7',
+      },
+      rooms: {
+        DEFAULT: '#0FA3B1',
+      },
+      materials: {
+        DEFAULT: '#979741',
+      },
       secondary: {
         DEFAULT: '#F5CB5C',
         100: '#FAE8B8',

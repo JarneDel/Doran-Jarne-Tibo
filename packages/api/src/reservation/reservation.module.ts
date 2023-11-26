@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { Reservation } from './entities/reservation.entity'
 import { RoomModule } from 'src/room/room.module'
 import { LoanableMaterialsModule } from 'src/loanable-materials/loanable-materials.module'
+import { UsersModule } from 'src/users/users.module'
 @Module({
   imports: [
     TypeOrmModule.forFeature(
