@@ -25,7 +25,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="bg-primaryz-medium bg flex flex-col items-center gap-10 p-4 pb-8 text-center text-white md:flex-row md:items-start md:justify-around md:py-6 md:text-start"
+    class="bg-primary-medium bg flex flex-col items-center gap-10 p-4 pb-8 text-center text-white md:flex-row md:items-start md:justify-around md:py-6 md:text-start"
   >
     <div class="flex flex-col gap-3">
       <h3 class="text-3xl font-bold">Sportcomplex</h3>
