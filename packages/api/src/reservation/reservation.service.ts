@@ -145,7 +145,12 @@ export class ReservationService {
     if (r.isCancelled) {
       throw new Error('Reservation is cancelled')
     }
-    if (r.date < new Date()) {
+    const today = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+    )
+    if (r.date < today) {
       throw new Error('Reservation is in the past')
     }
     r.id = id
@@ -188,12 +193,6 @@ export class ReservationService {
       }
     })
     const date = updateReservationInput.date
-    //get date of today at 00:00:00
-    const today = new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate(),
-    )
     //check if the material is available
     const reservedMaterials = updateReservationInput.reservedMaterials
     const reservedMaterialsId = reservedMaterials.map(material => material.id)
@@ -330,7 +329,7 @@ export class ReservationService {
     const rooms = (await this.roomService.findAll()).filter(
       room =>
         room.type === 'Sportzaal' ||
-        room.type === 'Kleedkamer' ||
+        room.type === 'Kleedruimte' ||
         room.type === 'Zwembad' ||
         room.type === 'Duikput',
     )
@@ -389,10 +388,10 @@ export class ReservationService {
       if (b.type === 'Duikput') {
         return 1
       }
-      if (a.type === 'Kleedkamer') {
+      if (a.type === 'Kleedruimte') {
         return -1
       }
-      if (b.type === 'Kleedkamer') {
+      if (b.type === 'Kleedruimte') {
         return 1
       }
     })
@@ -448,8 +447,13 @@ export class ReservationService {
   }
 
   async cancelReservation(id: string) {
+    const today = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+    )
     const reservation = await this.findOne(id)
-    if (reservation.date < new Date()) {
+    if (reservation.date < today) {
       throw new Error('Reservation is in the past')
     }
     reservation.isCancelled = true

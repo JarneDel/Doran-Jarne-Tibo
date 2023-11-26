@@ -256,6 +256,7 @@ export default defineComponent({
       }
       check()
     }
+    check()
     return {
       reservation,
       check,
@@ -308,9 +309,9 @@ export default defineComponent({
           type="time"
           @change="checkEndTime"
         />
-        <StyledButton type="button" class="mt-2 h-fit" @click="check">
+        <!-- <StyledButton type="button" class="mt-2 h-fit" @click="check">
           {{ $t('reservation.check') }}
-        </StyledButton>
+        </StyledButton> -->
       </div>
       <div class="ml-4 flex items-center gap-2 lg:mr-0">
         <p class="text-xl">€ {{ price }}</p>

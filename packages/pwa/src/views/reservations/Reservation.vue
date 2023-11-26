@@ -11,6 +11,7 @@ import {
 } from '@/graphql/reservations.query'
 import { Reservation } from '@/interface/reservation'
 import { Pencil } from 'lucide-vue-next'
+import { Check } from 'lucide-vue-next'
 
 export default defineComponent({
   components: { StyledButton, StyledInputText, Pencil },
@@ -67,6 +68,7 @@ export default defineComponent({
         reservation => reservation.id !== id,
       )
     }
+    
 
     return {
       reservations,
@@ -82,81 +84,89 @@ export default defineComponent({
 
 <template>
   <div class="m-4">
-    <div class="mb-4 flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <div>
-          <h1 class="text-xl font-bold">Reservation</h1>
-          <styled-input-text
-            v-model="reservationDate"
-            :label="$t('reservation.date')"
-            class="w-fit"
-            required
-            type="date"
-            @change="onDateChange()"
-          />
-        </div>
-        <div v-if="reservationSeach">
-          <StyledButton @click="getAllReservations()">{{
-            $t('reservation.showAll')
-          }}</StyledButton>
-        </div>
-      </div>
-      <router-link to="reservation/add">
-        <StyledButton class="h-fit">{{
-          $t('navigation.addreservation')
-        }}</StyledButton></router-link
-      >
-    </div>
-    <div class="grid gap-4 lg:grid-cols-3 2xl:grid-cols-4">
-      <div v-for="reservation in reservations">
-        <div
-          class="flex h-full flex-col justify-between rounded-md border bg-white p-4 shadow-sm"
-        >
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="flex items-end gap-4">
           <div>
-            <div class="flex justify-between">
-              <div class="flex gap-4 text-lg">
-                <p>
-                  <span>{{ new Date(reservation.date).getDate() }}</span
-                  >/<span>{{ new Date(reservation.date).getMonth() + 1 }}</span
-                  >/<span>{{ new Date(reservation.date).getFullYear() }}</span>
-                </p>
-                <p>{{ reservation.startTime }}</p>
-                <p>{{ reservation.endTime }}</p>
-              </div>
-              <router-link
-                class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-300"
-                :to="'reservation/edit/' + reservation.id"
-                v-if="reservation.date > new Date().toISOString().substr(0, 10)"
-              >
-                <Pencil />
-              </router-link>
-            </div>
-            <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
-              <p
-                v-for="room in reservation.rooms"
-                class="bg-secondary w-fit rounded-full px-4"
-              >
-                {{ room.name }}
-              </p>
-            </div>
-            <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
-              <p
-                v-for="material in reservation.reservedMaterials"
-                class="bg-secondary w-fit rounded-full px-4"
-              >
-                {{ material.amountReserved }} x {{ material.name }}
-              </p>
-            </div>
+            <h1 class="text-xl font-bold">Reservation</h1>
+            <styled-input-text
+              v-model="reservationDate"
+              :label="$t('reservation.date')"
+              class="w-fit"
+              required
+              type="date"
+              @change="onDateChange()"
+            />
           </div>
-          <div class="mt-4 flex items-center justify-between">
-            <p class="text-lg font-bold">
-              € {{ reservation.price.toFixed(2) }}
-            </p>
-            <StyledButton
-              @click="cancelReservationById(reservation.id)"
-              v-if="reservation.date > new Date().toISOString().substr(0, 10)"
-              >{{ $t('reservation.cansle') }}</StyledButton
-            >
+          <div v-if="reservationSeach">
+            <StyledButton @click="getAllReservations()">{{
+              $t('reservation.showAll')
+            }}</StyledButton>
+          </div>
+        </div>
+        <router-link to="reservation/add">
+          <StyledButton class="h-fit">{{
+            $t('navigation.addreservation')
+          }}</StyledButton></router-link
+        >
+      </div>
+      <div class="grid gap-4 lg:grid-cols-3 2xl:grid-cols-4">
+        <div v-for="reservation in reservations">
+          <div
+            class="flex h-full flex-col justify-between rounded-md border bg-white p-4 shadow-sm"
+          >
+            <div>
+              <div class="flex justify-between">
+                <div class="flex gap-4 text-lg">
+                  <p>
+                    <span>{{ new Date(reservation.date).getDate() }}</span
+                    >/<span>{{
+                      new Date(reservation.date).getMonth() + 1
+                    }}</span
+                    >/<span>{{
+                      new Date(reservation.date).getFullYear()
+                    }}</span>
+                  </p>
+                  <p>{{ reservation.startTime }}</p>
+                  <p>{{ reservation.endTime }}</p>
+                </div>
+                <router-link
+                  class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-300"
+                  :to="'reservation/edit/' + reservation.id"
+                  v-if="
+                    reservation.date > new Date().toISOString().substr(0, 10)
+                  "
+                >
+                  <Pencil />
+                </router-link>
+              </div>
+              <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
+                <p
+                  v-for="room in reservation.rooms"
+                  class="bg-secondary w-fit rounded-full px-4"
+                >
+                  {{ room.name }}
+                </p>
+              </div>
+              <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
+                <p
+                  v-for="material in reservation.reservedMaterials"
+                  class="bg-secondary w-fit rounded-full px-4"
+                >
+                  {{ material.amountReserved }} x {{ material.name }}
+                </p>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="text-lg font-bold">
+                € {{ reservation.price.toFixed(2) }}
+              </p>
+              <StyledButton
+                @click="cancelReservationById(reservation.id)"
+                v-if="reservation.date > new Date().toISOString().substr(0, 10)"
+                >{{ $t('reservation.cansle') }}</StyledButton
+              >
+            </div>
           </div>
         </div>
       </div>
