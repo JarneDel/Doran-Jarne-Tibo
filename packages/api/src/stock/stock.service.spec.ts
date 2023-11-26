@@ -5,8 +5,9 @@ import { Stock } from './entities/stock.entity'
 import { Repository } from 'typeorm/repository/Repository'
 import { ServiceService } from '../service/service.service'
 import { CreateStockInput } from './dto/create-stock.input'
-import { createStockStub, StockStub } from './stubs/stock.stub'
+import { createStockStub, StockStub, UpdateStockStub } from './stubs/stock.stub'
 import { GraphQLError } from 'graphql/error'
+import { ObjectId } from 'mongodb'
 
 describe('StockService', () => {
   let service: StockService
@@ -88,5 +89,44 @@ describe('StockService', () => {
       await service.findOne('6537e4b4de3a65536d4751fb')
       expect(findOneSpy).toBeCalledTimes(1)
     })
+  })
+  describe('update', () => {
+    it('should find the stock item', async () => {
+      const updateStockInput = UpdateStockStub()
+      const testId = updateStockInput.id
+      await service.update(testId, updateStockInput)
+
+      expect(mockStockRepository.findOneByOrFail).toHaveBeenCalledWith({
+        _id: new ObjectId(testId),
+      })
+    })
+    it('should call stockRepository.save', async () => {
+      const updateStockInput = UpdateStockStub()
+      const testId = updateStockInput.id
+      await service.update(testId, updateStockInput)
+      expect(mockStockRepository.save).toBeCalledTimes(1)
+    })
+
+    it('should RETURN the UPDATED the stock item', async () => {
+      const updateStockInput = UpdateStockStub()
+      const testId = updateStockInput.id
+      const result = await service.update(testId, updateStockInput)
+      expect(result).toEqual(StockStub())
+    })
+
+    it('should throw an error if the stock item does not exist', async () => {
+      const updateStockInput = UpdateStockStub()
+      const testId = new ObjectId().toString()
+      jest
+        .spyOn(mockStockRepository, 'findOneByOrFail')
+        .mockRejectedValueOnce(new Error(''))
+
+      await expect(service.update(testId, updateStockInput)).rejects.toThrow(
+        'Stock item not found',
+      )
+    })
+  })
+  describe('find with filter', () => {
+    // todo
   })
 })
