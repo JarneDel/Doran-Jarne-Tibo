@@ -50,7 +50,7 @@ export default defineComponent({
         phone: customUser.value.userByUid.phone,
       }
     }
-    const rooms = ref<Room[]>([])
+    const rooms = ref<Room[]>([])  
     const loanableMaterials = ref<material[]>([])
     const { onResult } = useQuery(ALL_ROOMS)
     onResult(result => {
