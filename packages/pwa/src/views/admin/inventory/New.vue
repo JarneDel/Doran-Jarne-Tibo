@@ -90,7 +90,7 @@ export default defineComponent({
   />
 
   <form
-    class="mx-auto mt-12 flex max-w-lg flex-col"
+    class="mx-auto mt-12 flex h-min w-full max-w-lg flex-col overflow-hidden rounded-xl border bg-white p-4 shadow-md dark:bg-gray-800"
     @submit.prevent="createNewItem"
   >
     <h2 class="font-500 mb-1 text-xl">{{ $t('item.new.title') }}</h2>
