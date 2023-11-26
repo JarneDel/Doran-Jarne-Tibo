@@ -142,6 +142,12 @@ export class ReservationService {
 
   async update(id: string, updateReservationInput: UpdateReservationInput) {
     let r = await this.findOne(id)
+    if (r.isCancelled) {
+      throw new Error('Reservation is cancelled')
+    }
+    if (r.date < new Date()) {
+      throw new Error('Reservation is in the past')
+    }
     r.id = id
     const availableRooms = await this.getAvailableRooms(
       updateReservationInput.date.toISOString().substr(0, 10),
@@ -443,6 +449,9 @@ export class ReservationService {
 
   async cancelReservation(id: string) {
     const reservation = await this.findOne(id)
+    if (reservation.date < new Date()) {
+      throw new Error('Reservation is in the past')
+    }
     reservation.isCancelled = true
     return this.reservationRepository.save(reservation)
   }
