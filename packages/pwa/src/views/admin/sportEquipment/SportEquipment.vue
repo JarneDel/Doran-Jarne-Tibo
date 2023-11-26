@@ -112,7 +112,6 @@ export default defineComponent({
     });
 
     const updateItem = (id: string, newValue: any) => {
-      console.log(newValue);
       const item = sortedSportEquipment.value?.find((item) => item.id === id);
       if (!item) return;
       // Update the item in the local array
@@ -198,7 +197,7 @@ export default defineComponent({
         sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC';
       } else {
         sortFieldName.value = field;
-        sortDirection.value = 'asc';
+        sortDirection.value = 'ASC';
       }
       sortSportEquipment();
     };
@@ -212,9 +211,7 @@ export default defineComponent({
     watch(
       lastRoute,
       (value) => {
-        console.log(lastRoute);
         if (value.startsWith('/admin/sport-equipment/')) {
-          console.log('refetching');
           fetchWithFilters();
         }
       },

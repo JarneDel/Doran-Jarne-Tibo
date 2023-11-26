@@ -152,19 +152,19 @@ export const router = createRouter({
           path: 'sport-equipment',
           component: () =>
             import('@/views/admin/sportEquipment/SportEquipment.vue'),
-          // children: [
-          //   {
-          //     path: 'id/:id',
-          //     component: () =>
-          //       import('@/views/admin/sportEquipment/Item.vue'),
-          //     props: true,
-          //   },
-          //   {
-          //     path: 'id/:id/edit',
-          //     component: () =>
-          //       import('@/views/admin/sportEquipment/Edit.vue'),
-          //   },
-          // ],
+          children: [
+            {
+              path: 'id/:id',
+              component: () =>
+                import('@/views/admin/sportEquipment/Item.vue'),
+              props: true,
+            },
+            {
+              path: 'id/:id/edit',
+              component: () =>
+                import('@/views/admin/sportEquipment/Edit.vue'),
+            },
+          ],
           meta: {
             shouldBeAuthenticated: true,
           },
