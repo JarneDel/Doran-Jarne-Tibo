@@ -14,7 +14,7 @@ import { Repository } from 'typeorm'
 export class RepairRequestService {
   constructor(
     @InjectRepository(RepairRequest)
-    private readonly RepairRequestRepository: Repository<RepairRequest>
+    private readonly RepairRequestRepository: Repository<RepairRequest>,
   ) {}
 
   create(createRepairRequestInput: CreateRepairRequestInput) {
@@ -35,7 +35,7 @@ export class RepairRequestService {
 
   findOneById(id: string): Promise<RepairRequest> {
     const obj = new ObjectId(id)
-    console.log(obj)
+    // console.log(obj)
     return this.RepairRequestRepository.findOneByOrFail({
       // @ts-ignore
       _id: new ObjectId(id),
@@ -55,10 +55,10 @@ export class RepairRequestService {
 
   remove(id: string): Promise<String> {
     return this.RepairRequestRepository.delete(id)
-      .then((res) => {
+      .then(res => {
         return res
       })
-      .catch((err) => {
+      .catch(err => {
         return err
       })
   }

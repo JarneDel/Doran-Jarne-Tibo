@@ -1,18 +1,18 @@
 <script lang="ts">
 // Interfaces
 interface IRepairRequest {
-  GetRepairRequestById: RepairRequest;
+  GetRepairRequestById: RepairRequest
 }
 
-import { RepairRequest } from '@/interface/repairRequestInterface';
-import { computed, defineComponent } from 'vue';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import { useMutation, useQuery } from '@vue/apollo-composable';
+import { RepairRequest } from '@/interface/repairRequestInterface'
+import { computed, defineComponent } from 'vue'
+import Modal from '@/components/Modal.vue'
+import { useRouter } from 'vue-router'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   GET_ONE_REPAIR_REQUEST,
   DELETE_REPAIR_REQUEST,
-} from '@/graphql/repairRequests.query.ts';
+} from '@/graphql/repairRequests.query.ts'
 import {
   Edit2,
   Trash2,
@@ -20,8 +20,8 @@ import {
   ShieldAlert,
   Warehouse,
   Box,
-} from 'lucide-vue-next';
-import StyledButton from '@/components/generic/StyledButton.vue';
+} from 'lucide-vue-next'
+import StyledButton from '@/components/generic/StyledButton.vue'
 
 export default defineComponent({
   components: {
@@ -36,8 +36,8 @@ export default defineComponent({
   },
   name: 'Item',
   setup: () => {
-    const { push, replace, currentRoute } = useRouter();
-    const id = computed(() => currentRoute.value.params.id);
+    const { push, replace, currentRoute } = useRouter()
+    const id = computed(() => currentRoute.value.params.id)
     // region graphql
     const { error, loading, result } = useQuery<IRepairRequest>(
       GET_ONE_REPAIR_REQUEST,
@@ -46,16 +46,16 @@ export default defineComponent({
       },
       {
         fetchPolicy: 'cache-and-network',
-      }
-    );
-    const { mutate: deleteItem } = useMutation(DELETE_REPAIR_REQUEST);
+      },
+    )
+    const { mutate: deleteItem } = useMutation(DELETE_REPAIR_REQUEST)
 
     const deleteItemWithConfirmation = (repairRequestId: string) => {
-      if (!confirm('Are you sure you want to delete this item?')) return;
-      deleteItem({ repairRequestId }).then((e) => {
-        replace('/admin/repair-requests');
-      });
-    };
+      if (!confirm('Are you sure you want to delete this item?')) return
+      deleteItem({ repairRequestId }).then(() => {
+        replace('/admin/repair-requests')
+      })
+    }
 
     return {
       push,
@@ -63,9 +63,9 @@ export default defineComponent({
       error,
       loading,
       deleteItemWithConfirmation,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
@@ -79,11 +79,11 @@ export default defineComponent({
         >
           No item found with this id
         </h2>
-        <h3 class="mb-2 mr-2 text-2xl font-bold text-primary-text">
+        <h3 class="text-primary-text mr-4 text-2xl font-bold">
           {{ result?.GetRepairRequestById.title }}
         </h3>
         <ShieldAlert
-          class="w-8 h-8 mr-2"
+          class="mr-2 h-8 w-8"
           :class="{
             'text-yellow-300': result?.GetRepairRequestById.urgency == 1,
             'text-orange-500': result?.GetRepairRequestById.urgency == 2,
@@ -92,7 +92,7 @@ export default defineComponent({
           }"
         />
         <BadgeCheck
-          class="w-8 h-8 mr-2 text-green-600"
+          class="mr-2 h-8 w-8 text-green-600"
           :class="{
             hidden: !result?.GetRepairRequestById.isRepaired,
           }"
@@ -112,7 +112,7 @@ export default defineComponent({
               push(
                 '/admin/repair-requests/id/' +
                   result?.GetRepairRequestById.id +
-                  '/edit'
+                  '/edit',
               )
             "
           >
@@ -126,7 +126,7 @@ export default defineComponent({
         <div class="flex flex-col">
           <div class="flex items-center">
             <Box
-              class="w-8 h-8 mr-2 opacity-10"
+              class="mr-2 h-8 w-8 opacity-10"
               :class="{
                 'opacity-100': result?.GetRepairRequestById.loanableMaterial,
               }"
@@ -160,7 +160,7 @@ export default defineComponent({
           </div>
           <div class="flex items-center">
             <Warehouse
-              class="w-8 h-8 mr-2 opacity-10"
+              class="mr-2 h-8 w-8 opacity-10"
               :class="{ 'opacity-100': result?.GetRepairRequestById.room }"
             />
             <ul v-if="Array.isArray(result?.GetRepairRequestById.room)">
@@ -181,12 +181,12 @@ export default defineComponent({
           </div>
         </div>
         <div class="flex flex-col text-left">
-          <h4 class="font-bold text-xl mb-1 text-primary-text">
+          <h4 class="text-primary-text mb-1 text-xl font-bold">
             {{ $t('repairRequest.requester') }}
           </h4>
           <div class="flex flex-col">
             <div class="flex gap-2">
-              <h5 class="font-medium text-primary-text">
+              <h5 class="text-primary-text font-medium">
                 {{ $t('repairRequest.name') }}:
               </h5>
               <p
@@ -202,13 +202,13 @@ export default defineComponent({
               </p>
             </div>
             <div class="flex gap-2">
-              <h5 class="font-medium text-primary-text">
+              <h5 class="text-primary-text font-medium">
                 {{ $t('repairRequest.email') }}:
               </h5>
               <p>{{ result?.GetRepairRequestById.requestUser.email }}</p>
             </div>
             <div class="flex gap-2">
-              <h5 class="font-medium text-primary-text">
+              <h5 class="text-primary-text font-medium">
                 {{ $t('repairRequest.role') }}:
               </h5>
               <p>{{ result?.GetRepairRequestById.requestUser.role }}</p>
@@ -216,7 +216,7 @@ export default defineComponent({
           </div>
         </div>
         <div class="items-start text-start">
-          <h4 class="font-bold text-xl mb-1 text-primary-text">
+          <h4 class="text-primary-text mb-1 text-xl font-bold">
             {{ $t('repairRequest.description') }}
           </h4>
           <p>{{ result?.GetRepairRequestById.description }}</p>

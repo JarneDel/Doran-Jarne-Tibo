@@ -86,7 +86,7 @@ export default defineComponent({
 
     const deleteItemWithConfirmation = (id: string) => {
       if (!confirm('Are you sure you want to delete this item?')) return
-      deleteItem({ id }).then(e => {
+      deleteItem({ id }).then(() => {
         replace('/admin/reservations')
       })
     }
@@ -113,7 +113,7 @@ export default defineComponent({
         >
           No item found with this id
         </h2>
-        <h3 class="mb-2 mr-2 text-2xl font-bold">
+        <h3 class="mr4 text-2xl font-bold">
           {{ result?.GetReservatiounById.group.name }}
         </h3>
         <button

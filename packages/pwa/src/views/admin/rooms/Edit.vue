@@ -1,40 +1,40 @@
 <script lang="ts">
 // Interfaces
 interface Room {
-  id: string;
-  name: string;
-  sports: Sport[];
-  pricePerHour: number;
-  type: string;
-  canBeUsed: boolean;
+  id: string
+  name: string
+  sports: Sport[]
+  pricePerHour: number
+  type: string
+  canBeUsed: boolean
 }
 interface IRoom {
-  GetRoomById: Room;
+  GetRoomById: Room
 }
 
 interface Sport {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
 interface Sports {
   GetAllSports: [
     {
-      id: string;
-      name: string;
-    }
-  ];
+      id: string
+      name: string
+    },
+  ]
 }
 
-import { computed, defineComponent, ref } from 'vue';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import { useQuery, useMutation } from '@vue/apollo-composable';
-import { GET_ONE_ROOM, UPDATE_ROOM } from '@/graphql/room.query.ts';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import StyledInputText from '@/components/generic/StyledInputText.vue';
-import { ALL_SPORTS } from '@/graphql/sport.query';
-import { onBeforeMount } from 'vue';
+import { computed, defineComponent, ref } from 'vue'
+import Modal from '@/components/Modal.vue'
+import { useRouter } from 'vue-router'
+import { useQuery, useMutation } from '@vue/apollo-composable'
+import { GET_ONE_ROOM, UPDATE_ROOM } from '@/graphql/room.query.ts'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import StyledInputText from '@/components/generic/StyledInputText.vue'
+import { ALL_SPORTS } from '@/graphql/sport.query'
+import { onBeforeMount } from 'vue'
 
 export default defineComponent({
   name: 'Edit',
@@ -44,30 +44,30 @@ export default defineComponent({
     StyledInputText,
   },
   setup: () => {
-    const { push, currentRoute } = useRouter();
-    const id = computed(() => currentRoute.value.params.id);
+    const { push, currentRoute } = useRouter()
+    const id = computed(() => currentRoute.value.params.id)
 
-    const { mutate: mutateUpdateItem } = useMutation(UPDATE_ROOM);
+    const { mutate: mutateUpdateItem } = useMutation(UPDATE_ROOM)
 
     // GET_ONE_ROOM
     const { error, loading, result } = useQuery<IRoom>(GET_ONE_ROOM, {
       roomId: id.value,
-    });
+    })
     // All sports
     const {
       loading: loadingSports,
       result: resultSports,
       error: errorSports,
-    } = useQuery<Sports>(ALL_SPORTS);
+    } = useQuery<Sports>(ALL_SPORTS)
 
     const sortedSports = computed(() => {
       if (resultSports.value && resultSports.value.GetAllSports) {
         return resultSports.value.GetAllSports.slice().sort((a, b) =>
-          a.name.localeCompare(b.name)
-        );
+          a.name.localeCompare(b.name),
+        )
       }
-      return [];
-    });
+      return []
+    })
 
     const currentRoom = ref<Room>({
       id: '',
@@ -76,21 +76,21 @@ export default defineComponent({
       pricePerHour: 0,
       type: '',
       canBeUsed: false,
-    });
+    })
 
     // Set currentRoom based on result
     onBeforeMount(() => {
       if (result.value?.GetRoomById) {
-        currentRoom.value = { ...result.value?.GetRoomById };
+        currentRoom.value = { ...result.value?.GetRoomById }
       }
-    });
+    })
 
     const handleSubmit = () => {
       // Convert sports to sportIds
-      let SportIds: String[] = [];
-      currentRoom.value.sports.forEach((sport) => {
-        SportIds.push(sport.id);
-      });
+      let SportIds: String[] = []
+      currentRoom.value.sports.forEach(sport => {
+        SportIds.push(sport.id)
+      })
 
       // Save changes
       mutateUpdateItem({
@@ -101,10 +101,10 @@ export default defineComponent({
           pricePerHour: Number(currentRoom.value.pricePerHour),
           type: currentRoom.value.type,
         },
-      }).then((e) => {
-        push('/admin/rooms');
-      });
-    };
+      }).then(() => {
+        push('/admin/rooms')
+      })
+    }
 
     return {
       push,
@@ -117,25 +117,23 @@ export default defineComponent({
       loadingSports,
       currentRoom,
       sortedSports,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
   <Modal max-width="max-w-xl" @close="push('/admin/rooms')">
     <template v-slot:title>
       <div class="flex w-full flex-row items-center justify-between">
-        <h2 v-if="loading" class="mr-2 w-full text-lg font-bold">
-          Loading...
-        </h2>
+        <h2 v-if="loading" class="mr-2 w-full text-lg font-bold">Loading...</h2>
         <h2
           v-if="!result?.GetRoomById && !loading"
           class="mr-2 w-full text-lg font-bold"
         >
           No item found with this id
         </h2>
-        <h3 class="mb-2 mr-2 text-2xl font-bold">
+        <h3 class="mr4 text-2xl font-bold">
           {{ result?.GetRoomById.name }}
         </h3>
         <div></div>
@@ -167,25 +165,21 @@ export default defineComponent({
                   type="checkbox"
                   :name="sport.id"
                   :id="sport.id"
-                  :checked="
-                    currentRoom.sports.some((s) => s.id === sport.id)
-                      ? true
-                      : false
-                  "
+                  :checked="currentRoom.sports.some(s => s.id === sport.id)"
                   @change="
                     (e: any) => {
                       if (e.target?.checked) {
                         currentRoom = {
                           ...currentRoom,
                           sports: [...currentRoom.sports, sport],
-                        };
+                        }
                       } else {
                         currentRoom = {
                           ...currentRoom,
                           sports: currentRoom.sports.filter(
-                            (s) => s.id !== sport.id
+                            s => s.id !== sport.id,
                           ),
-                        };
+                        }
                       }
                     }
                   "

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 import {
   Phone,
   Mail,
@@ -8,7 +8,7 @@ import {
   InstagramIcon,
   YoutubeIcon,
   LinkedinIcon,
-} from 'lucide-vue-next';
+} from 'lucide-vue-next'
 
 export default defineComponent({
   components: {
@@ -20,12 +20,12 @@ export default defineComponent({
     YoutubeIcon,
     LinkedinIcon,
   },
-});
+})
 </script>
 
 <template>
   <div
-    class="flex flex-col items-center text-center p-4 pb-8 gap-10 md:flex-row md:justify-around md:items-start md:text-start md:py-6 bg-primary-medium bg text-white"
+    class="bg-primary-medium bg flex flex-col items-center gap-10 p-4 pb-8 text-center text-white md:flex-row md:items-start md:justify-around md:py-6 md:text-start"
   >
     <div class="flex flex-col gap-3">
       <h3 class="text-3xl font-bold">Sportcomplex</h3>
@@ -36,7 +36,7 @@ export default defineComponent({
       </div>
       <div>
         <a
-          class="flex justify-center md:justify-start gap-2"
+          class="flex justify-center gap-2 md:justify-start"
           href="tel:+056621211"
         >
           <Phone />
@@ -44,7 +44,7 @@ export default defineComponent({
         >
         <a
           href="mailto:info@waregem.be"
-          class="flex justify-center md:justify-start gap-2"
+          class="flex justify-center gap-2 md:justify-start"
         >
           <Mail />
           <u>info@waregem.be</u>

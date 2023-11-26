@@ -3,9 +3,8 @@ import { CreateLoanableMaterialInput } from './dto/create-loanable-material.inpu
 import { UpdateLoanableMaterialInput } from './dto/update-loanable-material.input'
 import { InjectRepository } from '@nestjs/typeorm'
 import { LoanableMaterial } from './entities/loanable-material.entity'
-import { DeleteResult, Repository, UpdateResult } from 'typeorm'
+import { Repository } from 'typeorm'
 import { ObjectId } from 'mongodb'
-import { ReservationService } from 'src/reservation/reservation.service'
 
 @Injectable()
 export class LoanableMaterialsService {
@@ -38,7 +37,7 @@ export class LoanableMaterialsService {
 
   findOneById(id: string): Promise<LoanableMaterial> {
     const obj = new ObjectId(id)
-    console.log(obj)
+    // console.log(obj)
     // @ts-ignore
     return this.LoanableMaterialRepository.findOne({ _id: new ObjectId(id) })
   }
@@ -75,6 +74,4 @@ export class LoanableMaterialsService {
   truncate(): Promise<void> {
     return this.LoanableMaterialRepository.clear()
   }
-
-  
 }

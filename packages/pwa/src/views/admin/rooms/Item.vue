@@ -50,7 +50,7 @@ export default defineComponent({
 
     const deleteItemWithConfirmation = (roomId: string) => {
       if (!confirm('Are you sure you want to delete this item?')) return
-      deleteItem({ roomId }).then(e => {
+      deleteItem({ roomId }).then(() => {
         replace('/admin/rooms')
       })
     }
@@ -77,7 +77,7 @@ export default defineComponent({
         >
           No item found with this id
         </h2>
-        <h3 class="mb-2 mr-2 text-2xl font-bold">
+        <h3 class="mr-4 text-2xl font-bold">
           {{ result?.GetRoomById.name }}
         </h3>
         <div>

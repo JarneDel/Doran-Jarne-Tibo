@@ -68,11 +68,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="m2 relative w-full">
+  <div
+    class="relative h-min w-full overflow-hidden rounded-xl bg-white p-4 shadow-md dark:bg-gray-800"
+  >
     <h2 class="text-2xl font-medium">Vacations</h2>
     <styled-button
       button-type="secondary"
-      class="absolute right-2 top-2"
+      class="absolute right-2 top-6"
       type="button"
       @click="$router.push('/staff/request-vacation')"
       >{{ $t('staff.requestVacation') }}
@@ -97,7 +99,7 @@ export default defineComponent({
       <div class="gap4 flex flex-row flex-row flex-wrap">
         <div
           v-for="request of resultFiltered"
-          class="py.5 p1 rounded bg-white shadow-md"
+          class="py.5 p1 rounded bg-gray-100 shadow-md"
         >
           <VacationRow :data="request"></VacationRow>
         </div>

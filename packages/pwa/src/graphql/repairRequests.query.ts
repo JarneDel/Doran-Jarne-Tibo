@@ -142,3 +142,56 @@ mutation RemoveRepairRequestById($repairRequestId: String!) {
   removeRepairRequest(id: $repairRequestId)
 }
 `
+
+export const CREATE_REPAIR_REQUEST = gql`
+  mutation createRepairRequestInput(
+    $requestUserId: String!
+    $room: [RoomsInput!]!
+    $loanableMaterial: [MaterialsInput!]!
+    $title: String!
+    $description: String!
+  ) {
+    createRepairRequest(
+      createRepairRequestInput: {
+        requestUserId: $requestUserId
+        title: $title
+        description: $description
+        room: $room
+        loanableMaterial: $loanableMaterial
+      }
+    ) {
+      id
+      requestUser {
+        __typename
+      }
+      title
+      description
+      room {
+        id
+        name
+        sports {
+          id
+          name
+        }
+        pricePerHour
+        type
+      }
+      loanableMaterial {
+        id
+        name
+        totalAmount
+        wantedAmount
+        sports {
+          id
+          name
+        }
+        price
+        isComplete
+        description
+        amountReserved
+      }
+      urgency
+      isRepaired
+    }
+  }
+`
