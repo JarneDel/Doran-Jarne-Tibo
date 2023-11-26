@@ -104,17 +104,9 @@ export default defineComponent({
   <Modal max-width="max-w-xl" @close="push('/admin/sport-equipment')">
     <template v-slot:title>
       <div class="flex w-full flex-row items-center justify-between">
-        <h2 class="mr-2 w-full">
+        <h2 class="text-primary-text font-bold text-xl mr-2 w-full">
           <span class="text-xl font-bold">
             {{ result?.GetloanableMaterialById.name }}
-          </span>
-          <span class="text-base">
-            -
-            {{
-              result?.GetloanableMaterialById.sports.forEach(
-                (e) => e.name + ' '
-              )
-            }}
           </span>
         </h2>
         <button
@@ -143,34 +135,68 @@ export default defineComponent({
     </template>
     <template v-slot:default>
       <div v-if="result">
-        <div>{{ result.GetloanableMaterialById.description }}</div>
-
-        <div class="mt-2 flex w-1/2 flex-row items-center justify-between">
-          <div>
-            <div class="text-gray-6">{{ $t('inventory.amount') }}</div>
-            <div class="text-bold text-lg">
-              {{ result.GetloanableMaterialById.totalAmount }}
-            </div>
-          </div>
-          <div>
-            <div class="text-gray-6">{{ $t('inventory.idealStock') }}</div>
-            <div class="text-bold text-right text-lg">
-              {{ result.GetloanableMaterialById.wantedAmount }}
-            </div>
-          </div>
+        <div>
+          <h4 class="text-primary-text font-medium">
+            {{ $t('inventory.description') }}
+          </h4>
+          <div>{{ result.GetloanableMaterialById.description }}</div>
         </div>
 
-        <div class="bg-primary-light h-3 w-1/2 rounded-full">
-          <div ref="progressbar" class="bg-primary h-3 w-0 rounded-full"></div>
+        <div>
+          <h4 class="text-primary-text font-medium">
+            {{ $t('sportEquipment.sports') }}
+          </h4>
+          <ul class="flex flex-wrap gap-x-2 gap-y-1">
+            <li
+              class="bg-sports mt-1 w-fit rounded-full px-4 text-sm font-medium"
+              v-for="sport in result?.GetloanableMaterialById.sports"
+              :key="sport.name"
+            >
+              <p>{{ sport.name }}</p>
+            </li>
+          </ul>
         </div>
 
-        <!--        <div v-if='success' ></div>-->
+        <div>
+          <h4 class="text-primary-text font-medium">
+            {{ $t('inventory.pricePerHour') }}
+          </h4>
+          <div>€ {{ result.GetloanableMaterialById.price }}</div>
+        </div>
+
+        <div>
+          <div class="mt-2 flex flex-row items-center justify-between">
+            <div>
+              <h4 class="text-primary-text font-medium">
+                {{ $t('inventory.amount') }}
+              </h4>
+              <div class="text-bold text-lg">
+                {{ result.GetloanableMaterialById.totalAmount }}
+              </div>
+            </div>
+            <div>
+              <h4 class="text-primary-text font-medium">
+                {{ $t('inventory.idealStock') }}
+              </h4>
+              <div class="text-bold text-right text-lg">
+                {{ result.GetloanableMaterialById.wantedAmount }}
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-primary-light h-3 rounded-full">
+            <div
+              ref="progressbar"
+              class="bg-primary h-3 w-0 rounded-full"
+            ></div>
+          </div>
+        </div>
       </div>
     </template>
     <template v-slot:actions>
-      <StyledButton :px="2" :py="1" button-type="danger"
+      <!-- <StyledButton :px="2" :py="1" button-type="danger"
         >Report broken / missing item</StyledButton
-      >
+      > -->
     </template>
   </Modal>
 </template>

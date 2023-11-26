@@ -170,6 +170,14 @@ export const router = createRouter({
           },
         },
         {
+          path: 'sport-equipment/create',
+          component: () =>
+            import('@/views/admin/sportEquipment/Create.vue'),
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
           path: 'staff',
           component: () => import('@/views/admin/staff/Staff.vue'),
           meta: {

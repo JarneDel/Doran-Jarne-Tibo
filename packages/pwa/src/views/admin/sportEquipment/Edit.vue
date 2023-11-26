@@ -248,7 +248,7 @@ export default defineComponent({
         />
         <StyledInputText
           v-model="currentItem.price"
-          :label="$t('inventory.price')"
+          :label="$t('inventory.pricePerHour') + '(€)'"
           :min="0"
           type="number"
         />

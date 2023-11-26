@@ -71,3 +71,29 @@ mutation ($updateLoanableMaterialInput: UpdateLoanableMaterialInput!) {
   }
 }
 `
+
+export interface ICreateLoanableMaterial{
+  createLoanableMaterial: {
+    id: string
+    name: string
+    totalAmount: number
+    wantedAmount: number
+    price: number
+    sports: {
+      id: string
+      name: string
+    }[]
+    isComplete: boolean
+    description: string
+  }
+}
+
+export interface createLoanableMaterialInput {
+  name: string
+  totalAmount: number
+  wantedAmount: number
+  price: number
+  SportId: string[]
+  isComplete: boolean
+  description: string
+}

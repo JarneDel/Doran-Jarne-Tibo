@@ -175,6 +175,19 @@ export default defineComponent({
         newArray = [...sortedSportEquipment.value];
       }
 
+      if (search.value !== '') {
+        newArray = newArray.filter((loanableMaterial) => {
+          return (
+            loanableMaterial.name
+              .toLowerCase()
+              .includes(search.value.toLowerCase()) ||
+            loanableMaterial.description
+              .toLowerCase()
+              .includes(search.value.toLowerCase())
+          );
+        });
+      }
+
       if (sortFieldName.value === 'name') {
         if (sortDirection.value === 'ASC') {
           newArray.sort((a, b) => a.name.localeCompare(b.name));
@@ -225,6 +238,13 @@ export default defineComponent({
       sortSportEquipment();
     };
 
+    const ChangeSearchFilter = (e: Event) => {
+      fetchWithFilters();
+      const target = e.target as HTMLInputElement;
+      search.value = target.value;
+      sortSportEquipment();
+    };
+
     return {
       error,
       loading,
@@ -243,6 +263,7 @@ export default defineComponent({
       updateItem,
       currentItem,
       sortedSportEquipment,
+      ChangeSearchFilter,
     };
   },
 });
@@ -258,6 +279,8 @@ export default defineComponent({
             :placeholder="$t('search')"
             class="p1 bg-primary-surface b-2 col-start-1 row-start-1 border-neutral-200 px-4"
             type="text"
+            v-model="search"
+            @input.change="ChangeSearchFilter"
           />
           <Search class="m2 col-start-1 row-start-1 mx-3 justify-self-end" />
         </label>
@@ -279,7 +302,10 @@ export default defineComponent({
         </select>
       </div>
       <div>
-        <StyledButton type="button" @click="push('/admin/sport-equipment/new')">
+        <StyledButton
+          type="button"
+          @click="push('/admin/sport-equipment/create')"
+        >
           {{ $t('inventory.new') }}
         </StyledButton>
       </div>
