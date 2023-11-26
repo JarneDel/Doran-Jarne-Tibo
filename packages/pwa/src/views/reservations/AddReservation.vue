@@ -38,7 +38,10 @@ export default defineComponent({
         price.value += room.pricePerHour * reservation.value.timeDivrent
       })
       wantedMaterials.value.forEach(material => {
-        price.value += material.price*checkboxStatusMaterials.value[material.name].amount* reservation.value.timeDivrent
+        price.value +=
+          material.price *
+          checkboxStatusMaterials.value[material.name].amount *
+          reservation.value.timeDivrent
       })
     }
     const AddReservation = () => {
@@ -182,7 +185,7 @@ export default defineComponent({
           endTime: reservation.value.endTime,
         })
         onResult(result => {
-          if( result.loading) return
+          if (result.loading) return
           availableRooms.value = result.data.getAvailableRooms
           wantedRoom.value = []
           wantedMaterials.value = []
@@ -278,119 +281,130 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <h1 class="m-4 text-xl font-bold">{{ $t('reservation.title') }}</h1>
-    <p class="ml-4 text-lg">
-      {{ $t('reservation.subtitle') }}
-    </p>
-    <div class="justify-between lg:flex">
-      <div class="m-4 items-end gap-2 md:flex">
-        <styled-input-text
-          v-model="reservation.date"
-          :label="$t('reservation.date')"
-          class="w-fit"
-          required
-          type="date"
-          @change="checkDate"
-        />
-        <styled-input-text
-          v-model="reservation.beginTime"
-          :label="$t('reservation.begin')"
-          class="w-fit"
-          required
-          type="time"
-          @change="checkStartTime"
-        />
-        <styled-input-text
-          v-model="reservation.endTime"
-          :label="$t('reservation.end')"
-          class="w-fit"
-          required
-          type="time"
-          @change="checkEndTime"
-        />
-        <!-- <StyledButton type="button" class="mt-2 h-fit" @click="check">
+  <div class="m-4">
+    <div class="mx-auto max-w-7xl">
+      <h1 class="my-4 text-xl font-bold">{{ $t('reservation.title') }}</h1>
+      <p class="text-lg">
+        {{ $t('reservation.subtitle') }}
+      </p>
+      <div class="justify-between lg:flex">
+        <div class="my-4 items-end gap-2 md:flex">
+          <styled-input-text
+            v-model="reservation.date"
+            :label="$t('reservation.date')"
+            class="w-fit"
+            required
+            type="date"
+            @change="checkDate"
+          />
+          <styled-input-text
+            v-model="reservation.beginTime"
+            :label="$t('reservation.begin')"
+            class="w-fit"
+            required
+            type="time"
+            @change="checkStartTime"
+          />
+          <styled-input-text
+            v-model="reservation.endTime"
+            :label="$t('reservation.end')"
+            class="w-fit"
+            required
+            type="time"
+            @change="checkEndTime"
+          />
+          <!-- <StyledButton type="button" class="mt-2 h-fit" @click="check">
           {{ $t('reservation.check') }}
         </StyledButton> -->
+        </div>
+        <div class="flex items-center gap-2 lg:mr-0">
+          <p class="text-xl">€ {{ price }}</p>
+          <StyledButton type="button" class="h-fit" @click="AddReservation()">
+            {{ $t('navigation.addreservation') }}
+          </StyledButton>
+        </div>
       </div>
-      <div class="ml-4 flex items-center gap-2 lg:mr-0">
-        <p class="text-xl">€ {{ price }}</p>
-        <StyledButton type="button" class="h-fit" @click="AddReservation()">
-          {{ $t('navigation.addreservation') }}
-        </StyledButton>
-      </div>
-    </div>
-    <div class="mx-4" v-if="availableRooms.length > 0">
-      <p class="text-xl font-medium">beschikbare ruimtes</p>
-      <div class="grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4 mt-2 mb-4">
-        <label class="h-full focus-within:ring-secondary ring-4 ring-transparent rounded-md" v-for="room in availableRooms">
-          <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
-          <input
-            type="checkbox"
-            @click="addRoom(room)"
-            class="peer sr-only"
-            v-model="checkboxStatus[room.name]"
-          />
-          <div
-            class="peer-checked:border-black peer-checked:border-2 h-full rounded-md border bg-white p-4 shadow-sm transition-all duration-300 peer-checked:shadow-lg"
+      <div class="" v-if="availableRooms.length > 0">
+        <p class="text-xl font-medium">beschikbare ruimtes</p>
+        <div
+          class="mb-4 mt-2 grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4"
+        >
+          <label
+            class="focus-within:ring-secondary h-full rounded-md ring-4 ring-transparent"
+            v-for="room in availableRooms"
           >
-            <div class="flex h-full flex-col justify-between gap-2">
-              <p class="text-lg font-medium">{{ room.name }}</p>
-              <div v-if="room.sports.length > 0">
-                <!-- <p>Sporten :</p> -->
-                <div class="flex gap-2">
-                  <p
-                    v-for="sport in room.sports"
-                    class="bg-secondary mt-1 rounded-full px-4"
-                  >
-                    {{ sport.name }}
-                  </p>
+            <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
+            <input
+              type="checkbox"
+              @click="addRoom(room)"
+              class="peer sr-only"
+              v-model="checkboxStatus[room.name]"
+            />
+            <div
+              class="h-full rounded-md border bg-white p-4 shadow-sm transition-all duration-300 peer-checked:border-2 peer-checked:border-black peer-checked:shadow-lg"
+            >
+              <div class="flex h-full flex-col justify-between gap-2">
+                <p class="text-lg font-medium">{{ room.name }}</p>
+                <div v-if="room.sports.length > 0">
+                  <!-- <p>Sporten :</p> -->
+                  <div class="flex flex-wrap gap-2">
+                    <p
+                      v-for="sport in room.sports"
+                      class="bg-secondary mt-1 rounded-full px-4"
+                    >
+                      {{ sport.name }}
+                    </p>
+                  </div>
                 </div>
+                <p class="font-bold">€ {{ room.pricePerHour }}/h</p>
               </div>
-              <p class="font-bold">€ {{ room.pricePerHour }}/h</p>
             </div>
-          </div>
-        </label>
+          </label>
+        </div>
       </div>
-    </div>
-    <div class="mx-4" v-if="availableMaterials.length > 0">
-      <p class="text-xl font-medium">beschikbare materialen</p>
-      <div
-        class="grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4 mt-2 mb-4"
-      >
-        <div class="h-full" :key="material.id" v-for="material in availableMaterials">
-          <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
+      <div class="" v-if="availableMaterials.length > 0">
+        <p class="text-xl font-medium">beschikbare materialen</p>
+        <div
+          class="mb-4 mt-2 grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4"
+        >
           <div
-            class="flex h-full items-center justify-between rounded-md border bg-white p-4 shadow-sm"
+            class="h-full"
+            :key="material.id"
+            v-for="material in availableMaterials"
           >
-            <div class="flex h-full flex-col justify-between gap-2">
-              <p class="text-lg font-medium">{{ material.name }}</p>
-              <div v-if="material.sports.length > 0">
-                <!-- <p>Sporten :</p> -->
-                <div class="flex gap-2">
-                  <p
-                  :key="sport.id"
-                    v-for="sport in material.sports"
-                    class="bg-secondary mt-1 rounded-full px-4"
-                  >
-                    {{ sport.name }}
-                  </p>
+            <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
+            <div
+              class="flex h-full items-center justify-between rounded-md border bg-white p-4 shadow-sm"
+            >
+              <div class="flex h-full flex-col justify-between gap-2">
+                <p class="text-lg font-medium">{{ material.name }}</p>
+                <div v-if="material.sports.length > 0">
+                  <!-- <p>Sporten :</p> -->
+                  <div class="flex flex-wrap gap-2">
+                    <p
+                      :key="sport.id"
+                      v-for="sport in material.sports"
+                      class="bg-secondary mt-1 rounded-full px-4"
+                    >
+                      {{ sport.name }}
+                    </p>
+                  </div>
                 </div>
+                <p class="font-bold">€ {{ material.price }}/h</p>
               </div>
-              <p class="font-bold">€ {{ material.price }}/h</p>
-            </div>
-            <div class="flex items-center gap-1">
-              <StyledButton @click="()=>Material(material, false)">
-                <Minus />
-              </StyledButton>
-              <p class="text-lg font-medium">
-                {{ checkboxStatusMaterials[material.name].amount }}/{{
-                  material.totalAmount
-                }}
-              </p>
-              <StyledButton @click="()=>Material(material, true)">
-                <Plus />
-              </StyledButton>
+              <div class="flex items-center gap-1">
+                <StyledButton @click="() => Material(material, false)">
+                  <Minus />
+                </StyledButton>
+                <p class="text-lg font-medium">
+                  {{ checkboxStatusMaterials[material.name].amount }}/{{
+                    material.totalAmount
+                  }}
+                </p>
+                <StyledButton @click="() => Material(material, true)">
+                  <Plus />
+                </StyledButton>
+              </div>
             </div>
           </div>
         </div>
