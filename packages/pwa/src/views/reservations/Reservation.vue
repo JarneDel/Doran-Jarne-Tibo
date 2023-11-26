@@ -11,7 +11,6 @@ import {
 } from '@/graphql/reservations.query'
 import { Reservation } from '@/interface/reservation'
 import { Pencil } from 'lucide-vue-next'
-import { Check } from 'lucide-vue-next'
 
 export default defineComponent({
   components: { StyledButton, StyledInputText, Pencil },
