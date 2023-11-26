@@ -186,7 +186,7 @@ export const router = createRouter({
       component: () => import('@/components/wrapper/StaffWrapper.vue'),
       meta: {
         shouldBeAuthenticated: true,
-        allowedRoles: ['STAFF', 'SUPER_ADMIN'],
+        allowedRoles: ['STAFF'],
         title: 'Staff Home | ' + SITE_NAME,
       },
       children: [
