@@ -59,16 +59,6 @@ export default defineComponent({
 </script>
 
 <template>
-  <!--  <div class="b-1 p2 border-black">-->
-  <!--    <h2 class="font-medium">{{ $t('staff.profile') }}</h2>-->
-  <!--    <div>{{ data.lastName + ' ' + data.firstName }}</div>-->
-  <!--    <div>{{ isWorking }}</div>-->
-  <!--    <div>{{ data.email }}</div>-->
-  <!--    <div>{{ data.phone }}</div>-->
-  <!--    <div v-if="isOnVacation">🎉{{ $t('staff.vacation') }}</div>-->
-  <!--    <ProfilePicture editable />-->
-  <!--  </div>-->
-
   <div
     class="h-min w-full overflow-hidden rounded-xl border bg-white shadow-md dark:bg-gray-800"
   >
