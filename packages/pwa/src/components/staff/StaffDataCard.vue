@@ -74,7 +74,7 @@ export default defineComponent({
         </div>
       </div>
       <div class="flex flex-col items-center justify-between gap-4">
-        <button>
+        <button @click="$router.push('/profile')">
           <LucidePencil></LucidePencil>
         </button>
         <div

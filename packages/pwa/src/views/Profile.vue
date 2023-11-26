@@ -6,6 +6,7 @@ import StyledInputText from '@/components/generic/StyledInputText.vue'
 import { useMutation } from '@vue/apollo-composable'
 import { UPDATE_GROUP, UPDATE_STAFF } from '@/graphql/user.query.ts'
 import useLanguage from '@/composables/useLanguage'
+import ProfilePicture from '@/components/staff/ProfilePicture.vue'
 
 export default defineComponent({
   setup() {
@@ -34,7 +35,7 @@ export default defineComponent({
     }
     return { customUser, saveGroup, SaveStaff, setLocale }
   },
-  components: { StyledButton, StyledInputText },
+  components: { ProfilePicture, StyledButton, StyledInputText },
 })
 </script>
 <template>
@@ -45,6 +46,8 @@ export default defineComponent({
         class="w-full max-w-sm rounded-lg bg-white p-4 shadow-sm"
       >
         <h1 class="font-600 text-xl">{{ $t('nav.profile') }}</h1>
+        <ProfilePicture />
+
         <styled-input-text
           v-model="customUser.userByUid.name"
           :label="$t('profile.name')"
@@ -79,6 +82,8 @@ export default defineComponent({
         class="w-full max-w-sm rounded-lg bg-white p-4 shadow-sm"
       >
         <h1 class="font-600 text-xl">{{ $t('nav.profile') }}</h1>
+        <ProfilePicture editable />
+
         <styled-input-text
           v-model="customUser.userByUid.firstName"
           :label="$t('staff.firstname')"
