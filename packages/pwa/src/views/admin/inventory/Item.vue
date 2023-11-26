@@ -93,7 +93,7 @@ export default defineComponent({
   <Modal max-width="max-w-xl" @close="push('/admin/inventory')">
     <template v-slot:title>
       <div class="flex w-full flex-row items-center justify-between">
-        <h2 class="mr-2 w-full">
+        <h2 class="pr4 mr-2 w-full">
           <span class="text-xl font-bold">
             {{ result?.stockItem.name }}
           </span>
@@ -144,6 +144,7 @@ export default defineComponent({
       </div>
     </template>
     <template v-slot:actions>
+      <!--      todo: link to broken-->
       <StyledButton :px="2" :py="1" button-type="danger"
         >Report broken / missing item</StyledButton
       >

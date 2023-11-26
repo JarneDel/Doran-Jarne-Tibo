@@ -1,29 +1,29 @@
 <script lang="ts">
 // Interfaces
 interface Room {
-  id: string;
-  name: string;
-  sports: Sport[];
-  pricePerHour: number;
-  type: string;
-  canBeUsed: boolean;
+  id: string
+  name: string
+  sports: Sport[]
+  pricePerHour: number
+  type: string
+  canBeUsed: boolean
 }
 interface IRoom {
-  GetRoomById: Room;
+  GetRoomById: Room
 }
 
 interface Sport {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
-import { computed, defineComponent } from 'vue';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import { useMutation, useQuery } from '@vue/apollo-composable';
-import { DELETE_ROOM, GET_ONE_ROOM } from '@/graphql/room.query.ts';
-import { Edit2, Trash2 } from 'lucide-vue-next';
-import StyledButton from '@/components/generic/StyledButton.vue';
+import { computed, defineComponent } from 'vue'
+import Modal from '@/components/Modal.vue'
+import { useRouter } from 'vue-router'
+import { useMutation, useQuery } from '@vue/apollo-composable'
+import { DELETE_ROOM, GET_ONE_ROOM } from '@/graphql/room.query.ts'
+import { Edit2, Trash2 } from 'lucide-vue-next'
+import StyledButton from '@/components/generic/StyledButton.vue'
 
 export default defineComponent({
   components: {
@@ -34,8 +34,8 @@ export default defineComponent({
   },
   name: 'Item',
   setup: () => {
-    const { push, replace, currentRoute } = useRouter();
-    const id = computed(() => currentRoute.value.params.id);
+    const { push, replace, currentRoute } = useRouter()
+    const id = computed(() => currentRoute.value.params.id)
     // region graphql
     const { error, loading, result } = useQuery<IRoom>(
       GET_ONE_ROOM,
@@ -44,16 +44,16 @@ export default defineComponent({
       },
       {
         fetchPolicy: 'cache-and-network',
-      }
-    );
-    const { mutate: deleteItem } = useMutation(DELETE_ROOM);
+      },
+    )
+    const { mutate: deleteItem } = useMutation(DELETE_ROOM)
 
     const deleteItemWithConfirmation = (roomId: string) => {
-      if (!confirm('Are you sure you want to delete this item?')) return;
-      deleteItem({ roomId }).then((e) => {
-        replace('/admin/rooms');
-      });
-    };
+      if (!confirm('Are you sure you want to delete this item?')) return
+      deleteItem({ roomId }).then(() => {
+        replace('/admin/rooms')
+      })
+    }
 
     return {
       push,
@@ -61,9 +61,9 @@ export default defineComponent({
       error,
       loading,
       deleteItemWithConfirmation,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
@@ -77,7 +77,7 @@ export default defineComponent({
         >
           No item found with this id
         </h2>
-        <h3 class="mb-2 mr-2 text-2xl font-bold">
+        <h3 class="mr-4 text-2xl font-bold">
           {{ result?.GetRoomById.name }}
         </h3>
         <div>
