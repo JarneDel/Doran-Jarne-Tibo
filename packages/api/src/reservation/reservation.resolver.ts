@@ -23,12 +23,14 @@ import { Room } from 'src/room/entities/room.entity'
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
 import { use } from 'passport'
+// import { UsersResolver } from 'src/users/users.resolver'
 
 @Resolver(() => Reservation)
 export class ReservationResolver {
   constructor(
     private readonly reservationService: ReservationService,
     private readonly groupService: GroupsService,
+    // private readonly usersService: UsersResolver,
   ) {}
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF, Role.GROUP)
@@ -53,13 +55,19 @@ export class ReservationResolver {
     @Args('id', { type: () => String }) id: string,
     @FirebaseUser() user: UserRecord,
   ) {
-    if (Role.GROUP) {
+    try {
       const group = await this.groupService.findOneByUid(user.uid)
       const reservation = await this.reservationService.findOne(id)
       if (group.id.toString() !== reservation.groupId)
-        throw new GraphQLError('Not authorized')
+      {console.log(group.id.toString(), reservation.groupId)
+        throw new GraphQLError('Not authorized')}
       return reservation
-    } else return this.reservationService.findOne(id)
+    } catch (error) {
+      throw new GraphQLError('Not authorized')
+    }
+    finally {
+    return this.reservationService.findOne(id)
+    }
   }
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)

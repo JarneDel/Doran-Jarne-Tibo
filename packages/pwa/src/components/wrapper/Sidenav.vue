@@ -11,12 +11,12 @@ import {
   Users,
   Warehouse,
   Wrench,
+  Dumbbell,
 } from 'lucide-vue-next';
 import { useLocalStorage } from '@vueuse/core';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import useUser from '@/composables/useUser.ts'
-
+import useUser from '@/composables/useUser.ts';
 
 export default defineComponent({
   name: 'Sidenav',
@@ -31,12 +31,13 @@ export default defineComponent({
     Contact2,
     Palmtree,
     Wrench,
+    Dumbbell,
   },
   setup() {
     const isClosed = useLocalStorage('isClosed', false);
     const { currentRoute } = useRouter();
-    const { customUser } = useUser()
-    const role = computed(() => customUser.value?.userByUid.role)
+    const { customUser } = useUser();
+    const role = computed(() => customUser.value?.userByUid.role);
     const { t } = useI18n();
     const section = computed(() => currentRoute.value.path.split('/')[2]);
     const pages = computed(() => {
@@ -54,6 +55,13 @@ export default defineComponent({
           content: t('nav.inventory'),
           route: '/admin/inventory',
           roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
+        },
+        {
+          name: 'sport-equipment',
+          icon: Dumbbell,
+          content: t('nav.sportEquipment'),
+          route: '/admin/sport-equipment',
+          roles: ['ADMIN', 'SUPER_ADMIN'],
         },
         {
           name: 'rooms',
@@ -74,7 +82,7 @@ export default defineComponent({
           icon: Wrench,
           content: t('nav.repairRequests'),
           route: '/admin/repair-requests',
-          roles: ['ADMIN', 'SUPER_ADMIN']
+          roles: ['ADMIN', 'SUPER_ADMIN'],
         },
         {
           name: 'staff',
@@ -90,14 +98,14 @@ export default defineComponent({
           route: '/admin/vacation',
           roles: ['ADMIN', 'SUPER_ADMIN'],
         },
-      ].filter(page => {
-        return page.roles.includes(role.value ?? "")
-      })
-    })
+      ].filter((page) => {
+        return page.roles.includes(role.value ?? '');
+      });
+    });
 
-    return { isClosed, section, pages }
+    return { isClosed, section, pages };
   },
-})
+});
 </script>
 
 <template>

@@ -109,7 +109,7 @@ export default defineComponent({
         <p class="text-lg font-semibold">Sports:</p>
         <ul class="flex flex-wrap gap-x-2 gap-y-1">
           <li
-            class="bg-secondary mt-1 w-fit rounded-full px-4 text-sm"
+            class="bg-sports mt-1 w-fit rounded-full px-4 text-sm font-medium"
             v-for="sport in result?.GetRoomById.sports"
             :key="sport.name"
           >
