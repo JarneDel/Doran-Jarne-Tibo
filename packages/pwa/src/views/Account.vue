@@ -7,6 +7,7 @@ import UseFirebase from '@/composables/useFirebase'
 import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
 import UseLanguage from '@/composables/useLanguage.ts'
 import ChangeLanguage from '@/components/ChangeLanguage.vue'
+import ClipboardCopy from '@/components/generic/ClipboardCopy.vue'
 
 interface Group {
   groups: [{ _id: string; name: string }]
@@ -16,7 +17,7 @@ interface Stock {
 }
 
 export default defineComponent({
-  components: { ChangeLanguage },
+  components: { ClipboardCopy, ChangeLanguage },
   computed: {
     SUPPORTED_LOCALES() {
       return SUPPORTED_LOCALES
@@ -28,7 +29,9 @@ export default defineComponent({
     const { setLocale: setLanguage } = UseLanguage()
 
     const getIdToken = async () => {
-      idToken.value = await firebaseUser.value?.getIdToken()
+      idToken.value = `{
+      "Authorization": "Bearer `+await firebaseUser.value?.getIdToken()+`"
+    }`
     }
     const setLocale = (event: Event) => {
       const target = event.target as HTMLSelectElement
@@ -67,11 +70,11 @@ export default defineComponent({
     }}
   </h2>
   <div>
-    <pre class="overflow-hidden">
-    {
-      "Authorization": "Bearer {{ idToken }} "
-    }</pre
-    >
+    <div class="flex w-max flex-row items-center justify-center gap-2">
+      Copy Auth token
+      <clipboard-copy v-if="idToken" :text="idToken"></clipboard-copy>
+    </div>
+
     <div>
       <ul>
         <li v-for="group in result?.groups" :key="group._id">

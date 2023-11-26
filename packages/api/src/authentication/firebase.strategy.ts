@@ -33,7 +33,6 @@ export class FirebaseAuthStrategy extends PassportStrategy(
   async validate(jwtToken: string): Promise<auth.UserRecord> {
     const payload = await this.authorize(jwtToken)
     const user = await this.firebase.getAuth().getUser(payload.uid)
-    // console.log('validate')
     if (user.disabled) {
       throw new ForbiddenException()
     }

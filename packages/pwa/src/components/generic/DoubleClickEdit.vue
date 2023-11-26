@@ -48,6 +48,10 @@ export default defineComponent({
       this.isPopupShown = false
       this.isEditing = false
     },
+    save() {
+      this.$emit('submit', this.updateValue)
+      this.isEditing = false
+    },
   },
 })
 </script>
@@ -56,13 +60,13 @@ export default defineComponent({
   <OptionsModal
     v-if="isPopupShown && isEditing"
     :button1="{ text: $t('common.discard'), type: 'danger' }"
-    :button2="{ text: $t('common.cancel'), type: 'gray' }"
+    :button2="{ text: $t('common.save'), type: 'primary' }"
     :focus-button="2"
     :show-modal="isPopupShown"
-    :title="$t('common.discardChanges')"
+    :title="$t('common.saveChanges')"
     @update:show-modal="edit"
     @button1-click="discard"
-    @button2-click="edit"
+    @button2-click="save"
   />
 
   <span v-if="isChanging">...</span>

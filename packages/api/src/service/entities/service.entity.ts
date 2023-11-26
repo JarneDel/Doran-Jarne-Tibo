@@ -1,5 +1,11 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
-import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ObjectIdColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 import { Staff } from '../../staff/entities/staff.entity'
 import { Room } from '../../room/entities/room.entity'
 
@@ -23,8 +29,11 @@ export class Service {
   @Field(() => [Staff])
   staff: Staff[]
 
+  // @Column({ type: 'array', default: [] })
+  // staffId: string[]
+
   @Column({ type: 'array', default: [] })
-  staffId: string[]
+  staffUID: string[]
 
   @Field(() => [Room])
   rooms: Room[]

@@ -8,7 +8,7 @@ export default {
 </script>
 
 <template>
-  <div class="bg-primary-surface flex w-full">
+  <div class="flex w-full h-full ">
     <Sidenav />
     <div class="w-full">
       <RouterView />

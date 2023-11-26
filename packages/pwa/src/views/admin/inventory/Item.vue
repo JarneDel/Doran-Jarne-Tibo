@@ -10,6 +10,7 @@ import {
 } from '@/graphql/stock.query.ts'
 import { Edit2, Trash2 } from 'lucide-vue-next'
 import StyledButton from '@/components/generic/StyledButton.vue'
+import useA11y from '@/composables/useA11y.ts'
 
 export default defineComponent({
   components: {
@@ -23,11 +24,15 @@ export default defineComponent({
     const progressbar = ref<HTMLDivElement | null>(null)
 
     const { push, replace, currentRoute } = useRouter()
+    const { setPageTitle } = useA11y()
     const id = computed(() => currentRoute.value.params.id)
     // region graphql
-    const { error, loading, result } = useQuery<IOneStockItem>(ONE_STOCK, {
-      id: id.value,
-    })
+    const { error, loading, result, onResult } = useQuery<IOneStockItem>(
+      ONE_STOCK,
+      {
+        id: id.value,
+      },
+    )
     const { mutate: deleteItem } = useMutation(DELETE_STOCK)
 
     const widthPercentage = computed(() => {
@@ -63,6 +68,13 @@ export default defineComponent({
         }
       })
     }
+    onResult(e => {
+      if (e?.data?.stockItem) {
+        setPageTitle(
+          e.data.stockItem.name + ' - ' + e.data.stockItem.service.name,
+        )
+      }
+    })
 
     return {
       push,
@@ -81,7 +93,7 @@ export default defineComponent({
   <Modal max-width="max-w-xl" @close="push('/admin/inventory')">
     <template v-slot:title>
       <div class="flex w-full flex-row items-center justify-between">
-        <h2 class="mr-2 w-full">
+        <h2 class="pr4 mr-2 w-full">
           <span class="text-xl font-bold">
             {{ result?.stockItem.name }}
           </span>
@@ -132,6 +144,7 @@ export default defineComponent({
       </div>
     </template>
     <template v-slot:actions>
+      <!--      todo: link to broken-->
       <StyledButton :px="2" :py="1" button-type="danger"
         >Report broken / missing item</StyledButton
       >

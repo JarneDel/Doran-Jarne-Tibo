@@ -1,21 +1,27 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { type AuthError } from 'firebase/auth'
 
 import useFirebase from '@/composables/useFirebase'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import StyledLink from '@/components/generic/StyledLink.vue'
 import { useRouter } from 'vue-router'
+import useUser from '@/composables/useUser'
+import { useI18n } from 'vue-i18n'
+import useLanguage from '@/composables/useLanguage.ts'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
-  components: { StyledLink, StyledInputText, StyledButton },
+  components: { Error, StyledLink, StyledInputText, StyledButton },
   setup() {
-    const error = ref<AuthError | null>(null)
+    const { restoreCustomUser, customUser } = useUser()
+    const error = ref<string[]>([])
 
     const { replace } = useRouter()
     const { login, firebaseUser } = useFirebase()
     const { currentRoute } = useRouter()
+    const { t } = useI18n()
+    const { setLocale } = useLanguage()
 
     const credentials = ref({
       email: '',
@@ -24,11 +30,16 @@ export default defineComponent({
     const handleLogin = () => {
       login(credentials.value.email, credentials.value.password)
         .then(() => {
-          console.log('logged in')
-          replace((currentRoute.value.query.redirect as string) || '/')
+          restoreCustomUser().then(() => {
+            setLocale(customUser.value?.userByUid.locale ?? 'en')
+            console.log(firebaseUser.value?.email)
+            console.log(customUser.value?.userByUid)
+            console.log('restored user')
+            replace('/')
+          })
         })
-        .catch((err: AuthError) => {
-          error.value = err
+        .catch((err: string) => {
+          error.value.push(t(err))
         })
     }
 
@@ -50,10 +61,12 @@ export default defineComponent({
 <template>
   <form class="c-primary-text" @submit.prevent="handleLogin">
     <h1 class="font-600 text-xl">{{ $t('auth.login') }}</h1>
-    <p v-if="error">{{ error }}</p>
-    <p v-if="firebaseUser">
-      {{ $t('auth.loggedInAs') }} {{ firebaseUser.email }}
-    </p>
+    <Error
+      v-for="(err, index) in error"
+      :isShown="!!err"
+      :msg="err ?? undefined"
+      @update:isShown="error[index] = ''"
+    />
     <styled-input-text
       v-model="credentials.email"
       :label="$t('auth.email')"

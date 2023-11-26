@@ -2,15 +2,14 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { GroupsService } from './groups.service'
 import { Group } from './entities/group.entity'
 import { CreateGroupInput } from './dto/create-group.input'
-import { number } from 'yargs'
 import { UpdateGroupInput } from './dto/update-group.input'
 import { UseGuards } from '@nestjs/common'
 import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
-import { AllowedRoles } from 'src/users/decorators/role.decorator'
-import { Role } from 'src/users/entities/user.entity'
-import { RolesGuard } from 'src/users/guards/roles.guard'
+import { AllowedRoles } from 'src/authentication/decorators/role.decorator'
+import { Role, User } from 'src/users/entities/user.entity'
+import { RolesGuard } from 'src/authentication/guards/roles.guard'
 
 @Resolver(() => Group)
 export class GroupsResolver {
@@ -36,8 +35,8 @@ export class GroupsResolver {
     return this.groupsService.findOneByUid(user.uid)
   }
 
-  @UseGuards(FirebaseGuard, RolesGuard)
-  @Mutation(() => Group, { description: 'Create a bird using the DTO.' })
+  @UseGuards(FirebaseGuard)
+  @Mutation(() => Group, { description: 'makes a group whit uid' })
   createGroup(
     @Args('createGroupInput') createGroupInput: CreateGroupInput,
     @FirebaseUser() user: UserRecord,
@@ -67,5 +66,18 @@ export class GroupsResolver {
   @Mutation(() => Group)
   removeGroup(@Args('id', { type: () => Int }) id: number) {
     return this.groupsService.remove(id)
+  }
+
+  @Mutation(() => User)
+  @UseGuards(FirebaseGuard)
+  async updateGroupProfilePictureUrl(
+    @Args('profilePictureUrl', { type: () => String })
+    profilePictureUrl: string,
+    @FirebaseUser() user: UserRecord,
+  ) {
+    return this.groupsService.updateProfilePictureUrl(
+      user.uid,
+      profilePictureUrl,
+    )
   }
 }

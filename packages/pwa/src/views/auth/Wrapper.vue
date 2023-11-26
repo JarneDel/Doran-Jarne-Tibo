@@ -7,7 +7,7 @@ export default defineComponent({});
 <template>
   <div class="flex min-h-screen items-center justify-center">
     <div
-      class="bg-primary-surface rounded-2 border-3 min-w-md border-primary-light p-8"
+      class="bg-white rounded-2  min-w-md shadow-md p-8"
     >
       <RouterView />
     </div>

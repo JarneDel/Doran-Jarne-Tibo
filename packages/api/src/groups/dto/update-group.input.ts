@@ -7,7 +7,7 @@ import { IsInt, IsNotEmpty, IsString, Max, Min, MinLength } from 'class-validato
 @InputType()
 export class UpdateGroupInput extends PartialType(CreateGroupInput) {
   @ObjectIdColumn()
-  @Field(() => ID)
+  @Field(() => String)
   _id: string
   @IsString()
   @IsNotEmpty()

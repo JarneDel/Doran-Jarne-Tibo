@@ -15,7 +15,6 @@ export default defineComponent({
 
     const setLocale = (event: Event) => {
       const target = event.target as HTMLSelectElement
-      console.log(target.value)
       setLanguage(target.value)
     }
 

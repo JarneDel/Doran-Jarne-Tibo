@@ -15,7 +15,16 @@ import { StaffService } from '../staff/staff.service'
 import { GraphQLError } from 'graphql/error'
 import { RoomService } from '../room/room.service'
 import { Room } from '../room/entities/room.entity'
+import { UseGuards } from '@nestjs/common'
+import { FirebaseGuard } from '../authentication/guards/firebase.guard'
+import { RolesGuard } from '../authentication/guards/roles.guard'
+import { AllowedRoles } from '../authentication/decorators/role.decorator'
+import { Role } from '../users/entities/user.entity'
+import { FirebaseUser } from '../authentication/decorators/user.decorator'
+import { UserRecord } from 'firebase-admin/auth'
 
+@UseGuards(FirebaseGuard, RolesGuard)
+@AllowedRoles(Role.STAFF, Role.ADMIN, Role.SUPER_ADMIN)
 @Resolver(() => Service)
 export class ServiceResolver {
   constructor(
@@ -41,6 +50,12 @@ export class ServiceResolver {
     return this.serviceService.findOne(id)
   }
 
+  @Query(() => [Service], { name: 'servicesByStaff' })
+  findByStaffId(@FirebaseUser() user: UserRecord) {
+    console.log(user.uid, 'getting services by staff id')
+    return this.serviceService.findByStaffUId(user.uid)
+  }
+
   @Mutation(() => Service)
   updateService(
     @Args('updateServiceInput') updateServiceInput: UpdateServiceInput,
@@ -55,10 +70,9 @@ export class ServiceResolver {
 
   @ResolveField()
   staff(@Parent() service: Service): Promise<Staff[]> {
-    const { staffId: staffIds } = service
-    if (!staffIds) throw new GraphQLError(`No staffId found ${service}`)
-
-    return this.staffService.find(staffIds)
+    const { staffUID: staffUIDs } = service
+    if (!staffUIDs) throw new GraphQLError(`No staffId found ${service}`)
+    return this.staffService.findByUIDs(staffUIDs)
   }
 
   @ResolveField()

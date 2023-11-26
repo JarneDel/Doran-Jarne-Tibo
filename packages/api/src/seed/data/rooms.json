@@ -7,7 +7,8 @@
             "Basketbal"
         ],
         "pricePerHour": 35.0,
-        "type": "Sportzaal"
+        "type": "Sportzaal",
+        "canBeUsed": true
     },
     {
         "name": "Sportzaal 2",
@@ -16,7 +17,8 @@
             "Handbal"
         ],
         "pricePerHour": 30.0,
-        "type": "Sportzaal"
+        "type": "Sportzaal",
+        "canBeUsed": true
     },
     {
         "name": "Sportzaal 3",
@@ -26,7 +28,8 @@
             "Korfbal"
         ],
         "pricePerHour": 35.0,
-        "type": "Sportzaal"
+        "type": "Sportzaal",
+        "canBeUsed": true
     },
     {
         "name": "Sportzaal 4",
@@ -38,43 +41,50 @@
             "Dansen"
         ],
         "pricePerHour": 35.0,
-        "type": "Sportzaal"
+        "type": "Sportzaal",
+        "canBeUsed": true
     },
     {
-        "name": "Kleedkamer 1",
+        "name": "Kleedruimte 1",
         "sports": [],
         "pricePerHour": 15.0,
-        "type": "Kleedkamer"
+        "type": "Kleedruimte",
+        "canBeUsed": true
     },
     {
-        "name": "Kleedkamer 2",
+        "name": "Kleedruimte 2",
         "sports": [],
         "pricePerHour": 15.0,
-        "type": "Kleedkamer"
+        "type": "Kleedruimte",
+        "canBeUsed": true
     },
     {
-        "name": "Kleedkamer 3",
+        "name": "Kleedruimte 3",
         "sports": [],
         "pricePerHour": 15.0,
-        "type": "Kleedkamer"
+        "type": "Kleedruimte",
+        "canBeUsed": true
     },
     {
-        "name": "Kleedkamer 4",
+        "name": "Kleedruimte 4",
         "sports": [],
         "pricePerHour": 15.0,
-        "type": "Kleedkamer"
+        "type": "Kleedruimte",
+        "canBeUsed": true
     },
     {
         "name": "Onderhoudsruimte",
         "sports": [],
         "pricePerHour": 0.0,
-        "type": "werkruimte"
+        "type": "Werkruimte",
+        "canBeUsed": true
     },
     {
         "name": "Kuisruimte",
         "sports": [],
         "pricePerHour": 0.0,
-        "type": "werkruimte"
+        "type": "Werkruimte",
+        "canBeUsed": true
     },
     {
         "name": "Zwembad 1",
@@ -85,7 +95,20 @@
             "Pilates"
         ],
         "pricePerHour": 50.0,
-        "type": "Zwembad"
+        "type": "Zwembad",
+        "canBeUsed": true
+    },
+    {
+        "name": "Zwembad 2",
+        "sports": [
+            "Zwemmen",
+            "Waterpolo",
+            "Synchroonzwemmen",
+            "Pilates"
+        ],
+        "pricePerHour": 50.0,
+        "type": "Zwembad",
+        "canBeUsed": true
     },
     {
         "name": "Duikput 1",
@@ -94,6 +117,17 @@
             "Zwemmen"
         ],
         "pricePerHour": 45.0,
-        "type": "Duikput"
+        "type": "Duikput",
+        "canBeUsed": true
+    },
+    {
+        "name": "Duikput 2",
+        "sports": [
+            "Duiken",
+            "Zwemmen"
+        ],
+        "pricePerHour": 45.0,
+        "type": "Duikput",
+        "canBeUsed": true
     }
 ]

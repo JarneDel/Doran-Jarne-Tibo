@@ -7,6 +7,7 @@ import { UseGuards } from '@nestjs/common'
 import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { UserRecord } from 'firebase-admin/auth'
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
+import { User } from '../users/entities/user.entity'
 
 @Resolver('Staff')
 export class StaffResolver {
@@ -31,7 +32,7 @@ export class StaffResolver {
     return this.staffService.findOne(id)
   }
 
-  @Mutation(() => Staff)
+  @Mutation(() => Staff, { name: 'updateStaff' })
   update(@Args('updateStaffInput') updateStaffInput: UpdateStaffInput) {
     return this.staffService.update(updateStaffInput.id, updateStaffInput)
   }
@@ -42,9 +43,21 @@ export class StaffResolver {
   }
 
   @UseGuards(FirebaseGuard)
-  @Query(() => Staff, { name: 'StaffByUid' })
+  @Query(() => Staff, { name: 'staffByUid' })
   findOneByUid(@FirebaseUser() user: UserRecord): Promise<Staff> {
-    console.log(user.uid)
     return this.staffService.findOneByUid(user.uid)
+  }
+
+  @Mutation(() => User)
+  @UseGuards(FirebaseGuard)
+  async updateStaffProfilePictureUrl(
+    @Args('ProfilePictureUrl', { type: () => String })
+    profilePictureUrl: string,
+    @FirebaseUser() user: UserRecord,
+  ) {
+    return this.staffService.updateProfilePictureUrl(
+      user.uid,
+      profilePictureUrl,
+    )
   }
 }

@@ -1,19 +1,45 @@
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
-import Logo from '@/components/generic/Logo.vue'
-import { Box, PanelLeftClose, PanelRightClose, Users } from 'lucide-vue-next'
-import { useLocalStorage } from '@vueuse/core'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+import { computed, defineComponent } from 'vue';
+import Logo from '@/components/generic/Logo.vue';
+import {
+  Box,
+  CalendarClock,
+  Contact2,
+  Palmtree,
+  PanelLeftClose,
+  PanelRightClose,
+  Users,
+  Warehouse,
+  Wrench,
+  Dumbbell,
+} from 'lucide-vue-next';
+import { useLocalStorage } from '@vueuse/core';
+import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import useUser from '@/composables/useUser.ts';
 
 export default defineComponent({
   name: 'Sidenav',
-  components: { Logo, Users, Box, PanelLeftClose, PanelRightClose },
+  components: {
+    Logo,
+    Users,
+    Box,
+    Warehouse,
+    PanelLeftClose,
+    PanelRightClose,
+    CalendarClock,
+    Contact2,
+    Palmtree,
+    Wrench,
+    Dumbbell,
+  },
   setup() {
-    const isClosed = useLocalStorage('isClosed', false)
-    const { currentRoute } = useRouter()
-    const { t } = useI18n()
-    const section = computed(() => currentRoute.value.path.split('/')[2])
+    const isClosed = useLocalStorage('isClosed', false);
+    const { currentRoute } = useRouter();
+    const { customUser } = useUser();
+    const role = computed(() => customUser.value?.userByUid.role);
+    const { t } = useI18n();
+    const section = computed(() => currentRoute.value.path.split('/')[2]);
     const pages = computed(() => {
       return [
         {
@@ -21,28 +47,74 @@ export default defineComponent({
           icon: Users,
           content: t('nav.groups'),
           route: '/admin/groups',
+          roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
         },
         {
           name: 'inventory',
           icon: Box,
           content: t('nav.inventory'),
           route: '/admin/inventory',
+          roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
         },
-      ]
-    })
+        {
+          name: 'sport-equipment',
+          icon: Dumbbell,
+          content: t('nav.sportEquipment'),
+          route: '/admin/sport-equipment',
+          roles: ['ADMIN', 'SUPER_ADMIN'],
+        },
+        {
+          name: 'rooms',
+          icon: Warehouse,
+          content: t('nav.rooms'),
+          route: '/admin/rooms',
+          roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
+        },
+        {
+          name: 'reservations',
+          icon: CalendarClock,
+          content: t('nav.reservations'),
+          route: '/admin/reservations',
+          roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
+        },
+        {
+          name: 'repair-requests',
+          icon: Wrench,
+          content: t('nav.repairRequests'),
+          route: '/admin/repair-requests',
+          roles: ['ADMIN', 'SUPER_ADMIN'],
+        },
+        {
+          name: 'staff',
+          icon: Contact2,
+          content: t('nav.staff'),
+          route: '/admin/staff',
+          roles: ['ADMIN', 'SUPER_ADMIN'],
+        },
+        {
+          name: 'vacation',
+          icon: Palmtree,
+          content: t('nav.vacation'),
+          route: '/admin/vacation',
+          roles: ['ADMIN', 'SUPER_ADMIN'],
+        },
+      ].filter((page) => {
+        return page.roles.includes(role.value ?? '');
+      });
+    });
 
-    return { isClosed, section, pages }
+    return { isClosed, section, pages };
   },
-})
+});
 </script>
 
 <template>
   <div
     :class="{
-      'w-1/6': !isClosed,
+      'w-1/6 min-w-54': !isClosed,
       'w-16': isClosed,
     }"
-    class="h-screen overflow-hidden bg-white transition-all duration-200"
+    class="min-h-full overflow-hidden bg-white transition-all duration-200"
   >
     <div class="mt-4 grid">
       <button

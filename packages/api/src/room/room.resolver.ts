@@ -1,12 +1,11 @@
 // GraphQL
 import {
-  Resolver,
-  Query,
-  Mutation,
   Args,
-  Int,
-  ResolveField,
+  Mutation,
   Parent,
+  Query,
+  ResolveField,
+  Resolver,
 } from '@nestjs/graphql'
 // Services
 import { RoomService } from './room.service'
@@ -21,17 +20,17 @@ import { Role } from 'src/users/entities/user.entity'
 // Common
 import { UseGuards } from '@nestjs/common'
 // Auth
-import { AllowedRoles } from '../users/decorators/role.decorator'
+import { AllowedRoles } from '../authentication/decorators/role.decorator'
 import { GraphQLError } from 'graphql/error'
 // Guards
 import { FirebaseGuard } from '../authentication/guards/firebase.guard'
-import { RolesGuard } from 'src/users/guards/roles.guard'
+import { RolesGuard } from 'src/authentication/guards/roles.guard'
 
 @Resolver(() => Room)
 export class RoomResolver {
   constructor(
     private readonly roomService: RoomService,
-    private readonly sportService: SportService
+    private readonly sportService: SportService,
   ) {}
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
@@ -39,7 +38,7 @@ export class RoomResolver {
   @Mutation(() => Room)
   createRoom(
     @Args('createRoomInput')
-    createRoomInput: CreateRoomInput
+    createRoomInput: CreateRoomInput,
   ) {
     return this.roomService.create(createRoomInput)
   }
@@ -51,6 +50,53 @@ export class RoomResolver {
   })
   findAll() {
     return this.roomService.findAll()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllGyms',
+  })
+  findAllGyms() {
+    return this.roomService.findAllGyms()
+  }
+
+  findAllByType(type: string) {}
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllChangingRooms',
+  })
+  findAllChangingRooms() {
+    return this.roomService.findAllChangingRooms()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllWorkRooms',
+  })
+  findAllWorkRooms() {
+    return this.roomService.findAllWorkRooms()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllSwimmingPools',
+  })
+  findAllSwimmingPools() {
+    return this.roomService.findAllSwimmingPools()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Room], {
+    name: 'GetAllDivePools',
+  })
+  findAllDivePools() {
+    return this.roomService.findAllDivePools()
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
@@ -76,7 +122,7 @@ export class RoomResolver {
   removeRoomById(@Args('id', { type: () => String }) id: string) {
     return this.roomService
       .remove(id)
-      .then((res) => {
+      .then(res => {
         const obj = JSON.parse(JSON.stringify(res))
         if (obj.raw.deletedCount > 0) {
           return 'Deleted room with id: ' + id + ' succesfully'
@@ -84,7 +130,7 @@ export class RoomResolver {
           return 'No room with id: ' + id + ' found'
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err)
         return err
       })

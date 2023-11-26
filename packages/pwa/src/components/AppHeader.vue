@@ -1,61 +1,172 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent, ref } from 'vue'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import { ChevronDown } from 'lucide-vue-next'
+import useUser from '@/composables/useUser'
+import firebase from '@/composables/useFirebase'
+import logo from '@/components/generic/Logo.vue'
+import { OnClickOutside } from '@vueuse/components'
+import useLanguage from '@/composables/useLanguage'
+import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
+import { useI18n } from 'vue-i18n'
+import ProfilePicture from '@/components/staff/ProfilePicture.vue'
+import { useRouter } from 'vue-router'
 
-export default defineComponent({});
+export default defineComponent({
+  computed: {
+    SUPPORTED_LOCALES() {
+      return SUPPORTED_LOCALES
+    },
+  },
+  setup() {
+    const { firebaseUser } = firebase()
+    const { setLocale, locale } = useLanguage()
+    let options = ref(false)
+    const { customUser } = useUser()
+    const { push } = useRouter()
+    const { t } = useI18n()
+    const logoutButton = () => {
+      push('/logout')
+    }
+    const toggleOptions = () => {
+      options.value = !options.value
+    }
+
+    const topNavItems = computed(() => {
+      return [
+        {
+          name: t('navigation.admin'),
+          url: '/admin',
+          roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
+        },
+        {
+          name: t('navigation.reservation'),
+          url: '/reservation',
+          roles: ['GROUP'],
+        },
+        {
+          name: t('navigation.repair'),
+          url: '/repair',
+          roles: ['GROUP', 'ADMIN', 'SUPER_ADMIN', 'STAFF'],
+        },
+        {
+          name: t('navigation.staff'),
+          url: '/staff',
+          roles: ['STAFF'],
+        },
+      ].filter(item =>
+        item.roles.includes(customUser.value?.userByUid.role ?? ''),
+      )
+    })
+
+    return {
+      options,
+      toggleOptions,
+      customUser,
+      logoutButton,
+      firebaseUser,
+      setLocale,
+      locale,
+      topNavItems,
+      username: computed(() =>
+        customUser.value?.userByUid.__typename == 'Staff'
+          ? customUser.value?.userByUid.firstName
+          : customUser.value?.userByUid.name,
+      ),
+    }
+  },
+
+  components: {
+    ProfilePicture,
+    StyledButton,
+    ChevronDown,
+    logo,
+    OnClickOutside,
+  },
+})
 </script>
 
 <template>
   <div
-    class="flex items-center justify-between shadow-md bg-white fill-slate-700 p-2"
+    class="relative flex h-20 min-h-min items-center justify-between bg-white fill-slate-700 p-2 shadow-md"
   >
-    <router-link to="/" class="flex items-center justify-center gap-2">
-      <svg
-        class="m-1"
-        width="40"
-        height="40"
-        viewBox="0 0 43 44"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M21.2778 24.1856C25.3623 24.2859 29.2826 25.5052 32.6694 27.6385C26.5333 34.3164 17.8248 38.9468 8.95329 39.9472C7.08529 38.5728 5.44114 36.8933 4.0885 34.9789C10.6256 33.9224 16.5936 30.3584 20.7232 24.9167L21.2778 24.1856Z"
-          fill="#F5CB5C"
-        />
-        <path
-          d="M39.1697 33.8038C35.3996 39.934 28.779 44 21.2415 44C18.5179 44 15.9139 43.4692 13.5209 42.5016C21.8114 40.5852 29.6157 35.8892 35.2932 29.566C36.7384 30.7956 38.0435 32.2152 39.1697 33.8038Z"
-          fill="#F5CB5C"
-        />
-        <path
-          d="M41.6845 20.5879L41.6887 20.5923L42.4755 21.4121C42.4804 21.6074 42.4829 21.8034 42.4829 21.9999C42.4829 25.0529 41.8825 27.9606 40.7974 30.6033C36.0345 24.6588 28.968 21.0917 21.4139 20.8882C19.6534 17.7105 18.7566 14.1565 18.752 10.5845C27.3643 10.7578 35.5852 14.339 41.6845 20.5879Z"
-          fill="#F0B719"
-        />
-        <path
-          d="M19.0021 7.28939C19.2527 5.66547 19.6918 4.06091 20.3222 2.51013L21.3427 0C31.0791 0.0471243 39.2677 6.87875 41.7277 16.165C35.3788 10.6456 27.361 7.50182 19.0021 7.28939Z"
-          fill="#F0B719"
-        />
-        <path
-          d="M18.218 22.8776C16.2467 25.4753 13.7961 27.5876 11.0453 29.1236C7.69367 20.7546 7.46671 11.5776 10.3644 3.09916C12.5989 1.71676 15.0991 0.747387 17.7669 0.292755L17.386 1.22961C14.5846 8.12031 15.0431 15.9272 18.5793 22.4015L18.218 22.8776Z"
-          fill="#FAE7B2"
-        />
-        <path
-          d="M6.07209 6.59977C2.31602 10.568 0 16.0039 0 21.9999C0 25.5582 0.815631 28.9192 2.26383 31.8934C4.28989 31.6888 6.2649 31.2123 8.14201 30.4871C5.0512 22.8267 4.36527 14.5298 6.08422 6.58694L6.07209 6.59977Z"
-          fill="#FAE7B2"
-        />
-      </svg>
+    <router-link class="flex items-center justify-center gap-2" to="/">
+      <logo class="h-10" />
 
-      <h1 class="text-xl text-primary-text font-bold">
+      <h1 class="text-primary-text sr-only text-xl font-bold sm:not-sr-only">
         {{ $t('navigation.title') }}
       </h1>
     </router-link>
-    <div class="flex gap-2">
-      <div class="flex w-20 justify-center hover:font-bold">
-        <router-link to="/">{{ $t('navigation.home') }}</router-link>
+    <div class="flex items-center justify-center md:gap-8">
+      <ul v-if="customUser" class="flex justify-center gap-4">
+        <li v-for="item of topNavItems" :key="item.url">
+          <router-link :to="item.url" class="styled-link"
+            >{{ item.name }}
+          </router-link>
+        </li>
+      </ul>
+      <div v-if="!customUser">
+        <label class="my-3 block">
+          <select
+            v-model="locale"
+            class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
+            @change="setLocale(locale)"
+          >
+            <option v-for="(locale, key) in SUPPORTED_LOCALES" :value="key">
+              {{ locale }}
+            </option>
+          </select>
+        </label>
       </div>
-      <div class="flex w-20 justify-center hover:font-bold">
-        <router-link to="/Shop">{{ $t('navigation.shop') }}</router-link>
+      <div>
+        <button v-if="customUser" class="mx-2" @click="toggleOptions()">
+          <ProfilePicture v-if="firebaseUser?.photoURL" :size="48" />
+          <span v-else class="gap2 flex flex-row items-center justify-center">
+            <span
+              :title="username"
+              class="inline-block max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap"
+            >
+              {{ username }}
+            </span>
+            <ChevronDown />
+          </span>
+        </button>
+        <router-link
+          v-if="!customUser"
+          class="px4 bg-secondary hover:border-secondary-lighter active:border-secondary-lighter active:bg-secondary-400 focus-visible-outline-none transition-color rounded border-2 border-transparent py-2 focus:border-black focus:outline-none focus-visible:border-black"
+          to="/login"
+        >
+          {{ $t('auth.login') }}
+        </router-link>
+        <OnClickOutside @trigger="options = false">
+          <div
+            v-if="options"
+            class="top-21 z-100 absolute right-0 flex flex-col items-center rounded-md bg-white p-4 shadow-md"
+          >
+            <router-link class="styled-link" to="/profile">{{
+              $t('nav.profile')
+            }}</router-link>
+            <StyledButton class="mt-2" @click="logoutButton()">
+              {{ $t('account.log.out') }}
+            </StyledButton>
+          </div>
+        </OnClickOutside>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.styled-link::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #000;
+  transition: width 0.3s ease-in-out;
+}
+
+.styled-link:hover::after {
+  width: 100%;
+}
+</style>

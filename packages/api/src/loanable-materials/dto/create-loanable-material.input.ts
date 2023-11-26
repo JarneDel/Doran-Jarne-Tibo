@@ -14,14 +14,12 @@ export class CreateLoanableMaterialInput {
   @IsNumber()
   @Min(0)
   @Max(1000)
-  @IsPositive()
   @Field()
   totalAmount: number;
 
   @IsNumber()
   @Min(0)
   @Max(1000)
-  @IsPositive()
   @Field()
   wantedAmount: number;
 
@@ -31,7 +29,6 @@ export class CreateLoanableMaterialInput {
   @IsNumber()
   @Min(0)
   @Max(1000)
-  @IsPositive()
   @Field()
   price: number;
 

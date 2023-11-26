@@ -7,6 +7,7 @@ export const ALL_GROUPS = gql`
       name
       btwNumber
       score
+      email
     }
   }
 `
@@ -17,6 +18,16 @@ export const UPDATE_SCORE = gql`
       name
       btwNumber
       score
+      email
+    }
+  }
+`
+
+export const UPDATE_PROFILE_PICTURE_GROUP = gql`
+  mutation updateProfilePictureGroup($profilePictureUrl: String!) {
+    updateGroupProfilePictureUrl(profilePictureUrl: $profilePictureUrl) {
+      profilePictureUrl
+      id
     }
   }
 `

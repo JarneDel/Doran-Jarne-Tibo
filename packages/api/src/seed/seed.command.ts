@@ -23,13 +23,19 @@ export class DatabaseSeedCommand {
 
     //LoanableMaterials (after sports because of foreign key)
     console.info('🌱 Start seeding of loanableMaterials')
-    const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
+    const loanableMaterials =
+      await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
 
     //Staff
     console.log('🧑🏻‍🤝‍🧑🏼 Started seeding staff')
     const staff = await this.seedService.addStaffFromJson()
     console.log(`${staff.length} staff were added`)
+
+    // vacationRequests (after staff because of foreign key)
+    console.info('🌱 Start seeding of vacationRequests')
+    const vacationRequests = await this.seedService.addVacationRequests()
+    console.info(`added ${vacationRequests} vacationRequests to the database`)
 
     //Rooms
     console.info('🌱 Start seeding of rooms')
@@ -49,7 +55,14 @@ export class DatabaseSeedCommand {
     //repairRequests (after loanableMaterials, rooms, groups, sports and staff because of foreign key)
     console.info('🌱 Start seeding of repairRequests')
     const repairRequests = await this.seedService.addRepairRequestsFromJson()
-    console.info(`added ${repairRequests.length} repairRequests to the database`)
+    console.info(
+      `added ${repairRequests.length} repairRequests to the database`,
+    )
+
+    // Reservations (after loanableMaterials, rooms, groups, sports and staff because of foreign key)
+    console.info('🌱 Start seeding of reservations')
+    const reservations = await this.seedService.addReservationsFromJson()
+    console.info(`added ${reservations.length} reservations to the database`)
   }
 
   @Command({
@@ -93,6 +106,9 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting repair requests')
     await this.seedService.deleteAllRepairRequests()
     console.info('Removed all repair requests')
+    console.info('Deleting vacation requests')
+    await this.seedService.deleteAllVacationRequests()
+    console.info('Deleted all vacation requests')
   }
 
   //Stocks
@@ -147,7 +163,8 @@ export class DatabaseSeedCommand {
   })
   async seedLoanableMaterials() {
     console.info('🌱 Start seeding of loanableMaterials')
-    const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
+    const loanableMaterials =
+      await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
   }
   //Delete
@@ -280,7 +297,9 @@ export class DatabaseSeedCommand {
   async seedRepairRequests() {
     console.info('🌱 Start seeding of repairRequests')
     const repairRequests = await this.seedService.addRepairRequestsFromJson()
-    console.info(`added ${repairRequests.length} repairRequests to the database`)
+    console.info(
+      `added ${repairRequests.length} repairRequests to the database`,
+    )
   }
   //Delete
   @Command({
@@ -291,5 +310,27 @@ export class DatabaseSeedCommand {
     console.info('Deleting all repair requests')
     await this.seedService.deleteAllRepairRequests()
     console.log('removed repair requests')
+  }
+
+  // region vacationRequests
+  // ADD
+  @Command({
+    command: 'seed:database:vacationRequest',
+    describe: 'Seed vacationRequests',
+  })
+  async seedVacationRequests() {
+    const vacationRequests = await this.seedService.addVacationRequests()
+    console.info(`added ${vacationRequests} vacationRequests to the database`)
+  }
+
+  //Delete
+  @Command({
+    command: 'seed:reset:vacationRequest',
+    describe: 'Delete all data from the vacation requests table',
+  })
+  async deleteVacationRequests() {
+    console.info('Deleting all vacation requests')
+    await this.seedService.deleteAllVacationRequests()
+    console.log('removed vacation requests')
   }
 }

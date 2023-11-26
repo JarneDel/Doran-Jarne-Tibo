@@ -41,13 +41,12 @@ export class UpdateRoomInput extends PartialType(CreateRoomInput) {
 
   @Max(1000)
   @Min(0)
-  @IsPositive()
   @Field() // Graphql
   pricePerHour: number
 
   @IsNotEmpty()
   @IsIn(typeList)
-  @Field({ defaultValue: 'Sportzaal' }) // Graphql
+  @Field() // Graphql
   type: string
 
   @IsBoolean()

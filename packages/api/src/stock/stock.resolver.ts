@@ -15,7 +15,14 @@ import { FirebaseUser } from '../authentication/decorators/user.decorator'
 import { Service } from '../service/entities/service.entity'
 import { ServiceService } from '../service/service.service'
 import { FilterStockArgs } from './args/filter.stock.args'
+import { UseGuards } from '@nestjs/common'
+import { FirebaseGuard } from '../authentication/guards/firebase.guard'
+import { Role } from '../users/entities/user.entity'
+import { AllowedRoles } from '../authentication/decorators/role.decorator'
+import { RolesGuard } from '../authentication/guards/roles.guard'
 
+@UseGuards(FirebaseGuard, RolesGuard)
+@AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
 @Resolver(() => Stock)
 export class StockResolver {
   constructor(
@@ -28,8 +35,6 @@ export class StockResolver {
     return this.stockService.create(createStockInput)
   }
 
-  // @UseGuards(FirebaseGuard)
-  // @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @Query(() => [Stock], { name: 'stock' })
   findAll(@FirebaseUser() user: UserRecord, @Args() args: FilterStockArgs) {
     console.log(args)

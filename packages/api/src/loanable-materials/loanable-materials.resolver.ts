@@ -2,13 +2,12 @@
 import { UseGuards } from '@nestjs/common'
 // Graphql
 import {
-  Resolver,
-  Query,
-  Mutation,
   Args,
-  Int,
-  ResolveField,
+  Mutation,
   Parent,
+  Query,
+  ResolveField,
+  Resolver,
 } from '@nestjs/graphql'
 // Services
 import { LoanableMaterialsService } from './loanable-materials.service'
@@ -21,17 +20,17 @@ import { Sport } from 'src/sport/entities/sport.entity'
 import { CreateLoanableMaterialInput } from './dto/create-loanable-material.input'
 import { UpdateLoanableMaterialInput } from './dto/update-loanable-material.input'
 // Auth
-import { AllowedRoles } from '../users/decorators/role.decorator'
+import { AllowedRoles } from '../authentication/decorators/role.decorator'
 import { GraphQLError } from 'graphql/error'
 // Guards
 import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
-import { RolesGuard } from 'src/users/guards/roles.guard'
+import { RolesGuard } from 'src/authentication/guards/roles.guard'
 
 @Resolver(() => LoanableMaterial)
 export class LoanableMaterialsResolver {
   constructor(
     private readonly loanableMaterialsService: LoanableMaterialsService,
-    private readonly sportService: SportService
+    private readonly sportService: SportService,
   ) {}
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
@@ -39,7 +38,7 @@ export class LoanableMaterialsResolver {
   @Mutation(() => LoanableMaterial)
   createLoanableMaterial(
     @Args('createLoanableMaterialInput')
-    createLoanableMaterialInput: CreateLoanableMaterialInput
+    createLoanableMaterialInput: CreateLoanableMaterialInput,
   ) {
     return this.loanableMaterialsService.create(createLoanableMaterialInput)
   }
@@ -47,7 +46,7 @@ export class LoanableMaterialsResolver {
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [LoanableMaterial], {
-    name: 'GetAllloanableMaterials',
+    name: 'GetAllLoanableMaterials',
     nullable: true,
   })
   findAll() {
@@ -64,16 +63,17 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.findOneById(id)
   }
 
+
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => LoanableMaterial)
   updateLoanableMaterial(
     @Args('updateLoanableMaterialInput')
-    updateLoanableMaterialInput: UpdateLoanableMaterialInput
+    updateLoanableMaterialInput: UpdateLoanableMaterialInput,
   ) {
     return this.loanableMaterialsService.update(
       updateLoanableMaterialInput._id,
-      updateLoanableMaterialInput
+      updateLoanableMaterialInput,
     )
   }
 
@@ -83,7 +83,7 @@ export class LoanableMaterialsResolver {
   removeLoanableMaterialById(@Args('id', { type: () => String }) id: string) {
     return this.loanableMaterialsService
       .remove(id)
-      .then((res) => {
+      .then(res => {
         const obj = JSON.parse(JSON.stringify(res))
         if (obj.raw.deletedCount > 0) {
           return 'Deleted room with id: ' + id + ' succesfully'
@@ -91,7 +91,7 @@ export class LoanableMaterialsResolver {
           return 'No room with id: ' + id + ' found'
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err)
         return 'Error'
       })

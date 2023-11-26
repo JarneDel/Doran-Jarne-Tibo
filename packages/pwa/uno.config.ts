@@ -7,7 +7,20 @@ export default defineConfig({
   safelist: [...Array.from({ length: 100 }, (_, i) => `left-[${i + 1}%]`)],
   transformers: [transformerDirectives()],
   theme: {
+    maxWidth: {
+      '3xs': '12rem',
+      '2xs': '16rem',
+    },
     colors: {
+      sports: {
+        DEFAULT: '#d379e7',
+      },
+      rooms: {
+        DEFAULT: '#0FA3B1',
+      },
+      materials: {
+        DEFAULT: '#979741',
+      },
       secondary: {
         DEFAULT: '#F5CB5C',
         100: '#FAE8B8',
@@ -35,7 +48,7 @@ export default defineConfig({
         200: '#e6e6e6',
       },
       danger: {
-        DEFAULT: '#c7525c',
+        DEFAULT: '#EF4444',
         active: '#e65e69',
         surface: '#ffd9da',
         light: '#ffb3b5',

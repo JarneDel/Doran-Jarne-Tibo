@@ -10,14 +10,14 @@ import { GroupsModule } from './groups/groups.module'
 import { LoanableMaterialsModule } from './loanable-materials/loanable-materials.module'
 import { AuthenticationModule } from './authentication/authentication.module'
 import { ConfigModule } from '@nestjs/config'
-import { StaffModule } from './staff/staff.module';
-import { ServiceModule } from './service/service.module';
-import { RoomModule } from './room/room.module';
-import { SportModule } from './sport/sport.module';
-import { UsersModule } from './users/users.module';
-import { ReservationModule } from './reservation/reservation.module';
-import { RepairRequestModule } from './repair-request/repair-request.module';
-
+import { StaffModule } from './staff/staff.module'
+import { ServiceModule } from './service/service.module'
+import { RoomModule } from './room/room.module'
+import { SportModule } from './sport/sport.module'
+import { UsersModule } from './users/users.module'
+import { ReservationModule } from './reservation/reservation.module'
+import { RepairRequestModule } from './repair-request/repair-request.module'
+import { VacationRequestModule } from './vacation-request/vacation-request.module'
 
 @Module({
   imports: [
@@ -26,6 +26,8 @@ import { RepairRequestModule } from './repair-request/repair-request.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
+      // includeStacktraceInErrorResponses: process.env.NODE_ENV != 'production',
+      includeStacktraceInErrorResponses: false,
       // playground: process.env.NODE_ENV == "production" ? false : true, // todo: uncomment before production
     }),
     TypeOrmModule.forRoot({
@@ -40,8 +42,8 @@ import { RepairRequestModule } from './repair-request/repair-request.module';
     }),
     StockModule,
     GroupsModule,
-    LoanableMaterialsModule,
     SeedModule,
+    LoanableMaterialsModule,
     AuthenticationModule,
     StaffModule,
     ServiceModule,
@@ -50,6 +52,7 @@ import { RepairRequestModule } from './repair-request/repair-request.module';
     UsersModule,
     ReservationModule,
     RepairRequestModule,
+    VacationRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

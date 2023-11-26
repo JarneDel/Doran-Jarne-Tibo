@@ -1,18 +1,24 @@
 import { initializeApp } from 'firebase/app'
 import {
+  AuthError,
   browserLocalPersistence,
+  createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
   sendPasswordResetEmail,
   setPersistence,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   signOut,
-  AuthError,
+  updateProfile,
   type User,
 } from 'firebase/auth'
+import {
+  getDownloadURL,
+  getStorage,
+  ref as storageRef,
+  uploadBytes,
+} from 'firebase/storage'
 import { ref } from 'vue'
-
 
 // Shared state
 const app = initializeApp({
@@ -24,11 +30,10 @@ const app = initializeApp({
   appId: import.meta.env.VITE_APP_ID,
 })
 const auth = getAuth(app)
+const storage = getStorage(app)
 setPersistence(auth, browserLocalPersistence)
 
-
 const firebaseUser = ref<User | null>(auth.currentUser)
-
 
 /**
  * Login the user
@@ -45,11 +50,10 @@ const login = async (email: string, password: string): Promise<User> => {
         resolve(userCredential.user)
       })
       .catch((error: AuthError) => {
-        reject(mapAuthCodeToMessage(error.code))
+        reject(error.code)
       })
   })
 }
-
 
 /**
  * Register the user
@@ -60,15 +64,16 @@ const login = async (email: string, password: string): Promise<User> => {
  */
 const register = async (email: string, password: string): Promise<User> => {
   return new Promise((resolve, reject) => {
-    createUserWithEmailAndPassword(auth, email, password).then(userCredential => {
-      firebaseUser.value = userCredential.user
-      resolve(userCredential.user)
-    }).catch((err: AuthError) => {
-      reject(mapAuthCodeToMessage(err.code))
-    })
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        firebaseUser.value = userCredential.user
+        resolve(userCredential.user)
+      })
+      .catch((err: AuthError) => {
+        reject(err.code)
+      })
   })
 }
-
 
 /**
  * Send a password reset email
@@ -83,7 +88,7 @@ const passwordReset = async (email: string): Promise<void> => {
         resolve(true)
       })
       .catch((err: AuthError) => {
-        reject(mapAuthCodeToMessage(err.code))
+        reject(err.code)
       })
   })
 }
@@ -91,20 +96,20 @@ const passwordReset = async (email: string): Promise<void> => {
 /**
  * Logout the current user
  * @returns {Promise<void>}
+ * @exception {String} key of the error
  */
 const logout = async (): Promise<void> => {
-    return new Promise((resolve, reject) => {
-        signOut(auth)
-        .then(() => {
-            firebaseUser.value = null
-            resolve()
-        })
-        .catch((err: AuthError) => {
-            reject(mapAuthCodeToMessage(err.code))
-        })
-    })
+  return new Promise((resolve, reject) => {
+    signOut(auth)
+      .then(() => {
+        firebaseUser.value = null
+        resolve()
+      })
+      .catch((err: AuthError) => {
+        reject(err.code)
+      })
+  })
 }
-
 
 const restoreUser = () => {
   return new Promise((resolve, reject) => {
@@ -120,43 +125,38 @@ const restoreUser = () => {
 }
 
 /**
- * Map an auth code to a message
- * @param code The auth code coming from AuthError.code
+ * Upload a profile picture and update the user profile
+ * @param file
  */
-const mapAuthCodeToMessage = (code: string): string => {
-  let error : string;
-  switch (code) {
-    case 'auth/invalid-email':
-      error =  'Email provided is invalid.'
-      break;
-    case 'auth/user-disabled':
-      error =  'User corresponding to the given email has been disabled.'
-      break;
-    case 'auth/user-not-found':
-      error = 'There is no user found with the given email.'
-      return error
-    case 'auth/invalid-password':
-      error= 'Password provided is invalid.'
-      break;
-    case 'auth/email-already-in-use':
-      error =  'Email provided is already in use.'
-      break;
-    default:
-      console.error(`Unhandled error code: ${code}`)
-      error = 'An error occurred.'
+const uploadProfilePicture = async (file: File): Promise<string> => {
+  const user = auth.currentUser
+  if (!user) throw new Error('No user found')
+  const storageReference = storageRef(storage, `profile/${user.uid}`)
+  const res = await uploadBytes(storageReference, file)
+  const url = await getDownloadURL(res.ref)
+  await updateProfile(user, { photoURL: url })
+  return url
+}
+
+const getProfilePictureUrl = async (): Promise<string | null> => {
+  const user = firebaseUser.value
+  if (!user) {
+    console.log('no user')
+    return null
   }
-  return error
+  return user.photoURL
 }
 
 export default () => {
   // State for each composable
   return {
     firebaseUser,
-
     login,
     logout,
     passwordReset,
     register,
     restoreUser,
+    uploadProfilePicture,
+    getProfilePictureUrl,
   }
 }
