@@ -1,41 +1,41 @@
 <script lang="ts">
 // Interfaces
 interface Room {
-  id: string;
-  name: string;
-  sports: Sport[];
-  pricePerHour: number;
-  type: string;
-  createdAt: string;
-  updatedAt: string;
+  id: string
+  name: string
+  sports: Sport[]
+  pricePerHour: number
+  type: string
+  createdAt: string
+  updatedAt: string
 }
 interface IRooms {
-  GetAllGyms: [Room];
-  GetAllWorkRooms: [Room];
-  GetAllChangingRooms: [Room];
-  GetAllSwimmingPools: [Room];
-  GetAllDivePools: [Room];
+  GetAllGyms: [Room]
+  GetAllWorkRooms: [Room]
+  GetAllChangingRooms: [Room]
+  GetAllSwimmingPools: [Room]
+  GetAllDivePools: [Room]
 }
 
 interface Sport {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
 interface Sports {
   GetAllSports: [
     {
-      id: string;
-      name: string;
-      createdAt: string;
-      updatedAt: string;
-    }
-  ];
+      id: string
+      name: string
+      createdAt: string
+      updatedAt: string
+    },
+  ]
 }
 
 // Imports
-import { useQuery, useMutation } from '@vue/apollo-composable';
-import { ALL_SPORTS } from '@/graphql/sport.query';
+import { useQuery, useMutation } from '@vue/apollo-composable'
+import { ALL_SPORTS } from '@/graphql/sport.query'
 import {
   ALL_GYMS,
   ALL_WORK_ROOMS,
@@ -43,14 +43,14 @@ import {
   ALL_SWIMMING_POOLS,
   ALL_DIVE_POOLS,
   UPDATE_ROOM,
-} from '../../../graphql/room.query';
-import { computed, defineComponent, ref, watch } from 'vue';
-import UseFirebase from '../../../composables/useFirebase';
-import { PlusCircle } from 'lucide-vue-next';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
-import useLastRoute from '@/composables/useLastRoute';
+} from '../../../graphql/room.query'
+import { computed, defineComponent, ref, watch } from 'vue'
+import UseFirebase from '../../../composables/useFirebase'
+import { PlusCircle } from 'lucide-vue-next'
+import Modal from '@/components/Modal.vue'
+import { useRouter } from 'vue-router'
+import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
+import useLastRoute from '@/composables/useLastRoute'
 
 // Export default
 export default defineComponent({
@@ -61,20 +61,20 @@ export default defineComponent({
   },
   setup() {
     // Router
-    const { push, replace, currentRoute } = useRouter();
+    const { push, replace, currentRoute } = useRouter()
     // Firebase
-    const { firebaseUser } = UseFirebase();
-    const idToken = ref();
+    const { firebaseUser } = UseFirebase()
+    const idToken = ref()
     const getIdToken = async () => {
-      idToken.value = await firebaseUser.value?.getIdToken();
-    };
-    getIdToken();
+      idToken.value = await firebaseUser.value?.getIdToken()
+    }
+    getIdToken()
     // All sports
     const {
       loading: loadingSports,
       result: resultSports,
       error: errorSports,
-    } = useQuery<Sports>(ALL_SPORTS);
+    } = useQuery<Sports>(ALL_SPORTS)
     const {
       loading: loadingGyms,
       result: resultGyms,
@@ -85,8 +85,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      }
-    );
+      },
+    )
     const {
       loading: loadingWorkRooms,
       result: resultWorkRooms,
@@ -97,8 +97,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      }
-    );
+      },
+    )
     const {
       loading: loadingChangingRooms,
       result: resultChangingRooms,
@@ -109,8 +109,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      }
-    );
+      },
+    )
     const {
       loading: loadingSwimmingPools,
       result: resultSwimmingPools,
@@ -121,8 +121,8 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      }
-    );
+      },
+    )
     const {
       loading: loadingDivePools,
       result: resultDivePools,
@@ -133,50 +133,47 @@ export default defineComponent({
       {},
       {
         fetchPolicy: 'no-cache',
-      }
-    );
+      },
+    )
 
     // Mutation
-    const { mutate } = useMutation(UPDATE_ROOM);
+    const { mutate } = useMutation(UPDATE_ROOM)
 
     // Selector type of room
-    let typeSelector = ref(0);
+    let typeSelector = ref(0)
 
-    const type = computed(() => currentRoute.value.params.type);
-    if (type.value !== undefined) typeSelector.value = Number(type.value);
-    else push('/admin/rooms/type/0');
+    const type = computed(() => currentRoute.value.params.type)
+    if (type.value !== undefined) typeSelector.value = Number(type.value)
+    else push('/admin/rooms/type/0')
 
-    const { lastRoute } = useLastRoute();
+    const { lastRoute } = useLastRoute()
 
     watch(
       lastRoute,
-      (value) => {
-        console.log(value);
+      value => {
         if (value.startsWith('/admin/rooms/id/')) {
-          fetchWithFilters();
+          fetchWithFilters()
         }
       },
-      { immediate: true }
-    );
+      { immediate: true },
+    )
 
     const fetchWithFilters = () => {
-      console.log('fetchWithFilters');
-      console.log(typeSelector.value);
       if (typeSelector.value == 0) {
-        refetchGyms();
+        refetchGyms()
       } else if (typeSelector.value == 1) {
-        refetchWorkRooms();
+        refetchWorkRooms()
       } else if (typeSelector.value == 2) {
-        refetchChangingRooms();
+        refetchChangingRooms()
       } else if (typeSelector.value == 3) {
-        refetchSwimmingPools();
+        refetchSwimmingPools()
       } else if (typeSelector.value == 4) {
-        refetchDivePools();
+        refetchDivePools()
       }
-    };
+    }
 
     // Modal
-    const isOpen = ref(false);
+    const isOpen = ref(false)
     const currentRoom = ref<Room>({
       id: '',
       name: '',
@@ -190,17 +187,17 @@ export default defineComponent({
       type: '',
       createdAt: '',
       updatedAt: '',
-    });
+    })
 
     const handleCloseModal = () => {
       // toggle modal
-      isOpen.value = !isOpen.value;
+      isOpen.value = !isOpen.value
 
       // Convert sports to sportIds
-      let SportIds: String[] = [];
-      currentRoom.value.sports.forEach((sport) => {
-        SportIds.push(sport.id);
-      });
+      let SportIds: String[] = []
+      currentRoom.value.sports.forEach(sport => {
+        SportIds.push(sport.id)
+      })
 
       // Save changes
       mutate({
@@ -211,12 +208,12 @@ export default defineComponent({
           pricePerHour: currentRoom.value.pricePerHour,
           type: currentRoom.value.type,
         },
-      });
-    };
+      })
+    }
 
-    const handleRoomDetail = (room: any) => {
-      push(`/admin/rooms/id/${room.id}`);
-    };
+    const handleRoomDetail = (room: Room) => {
+      push(`/admin/rooms/id/${room.id}`)
+    }
 
     return {
       idToken,
@@ -247,103 +244,100 @@ export default defineComponent({
       replace,
       currentRoute,
       mutate,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
   <div class="m-8">
-    <div class="flex items-center justify-center">
+    <div class="flex flex-col items-center justify-center md:flex-row">
       <button
-        @click="
-          replace('/admin/rooms/type/0');
-          typeSelector = 0;
-        "
+        @click="replace('/admin/rooms/type/0'), (typeSelector = 0)"
         :class="{
-          'bg-secondary ': typeSelector === 0,
+          'bg-secondary': typeSelector === 0,
           'bg-primary-light': typeSelector !== 0,
         }"
-        class="p-2"
+        class="min-w-[120px] rounded-l-md p-2 transition-colors duration-100 hover:text-white"
       >
         {{ $t('rooms.gyms') }}
       </button>
       <button
-        @click="
-          replace('/admin/rooms/type/1');
-          typeSelector = 1;
-        "
+        @click="replace('/admin/rooms/type/1'), (typeSelector = 1)"
         :class="{
           'bg-secondary ': typeSelector === 1,
           'bg-primary-light': typeSelector !== 1,
         }"
-        class="p-2"
+        class="min-w-[120px] p-2 transition-colors duration-100 hover:text-white"
       >
         {{ $t('rooms.workRooms') }}
       </button>
       <button
-        @click="
-          replace('/admin/rooms/type/2');
-          typeSelector = 2;
-        "
+        @click="replace('/admin/rooms/type/2'), (typeSelector = 2)"
         :class="{
           'bg-secondary ': typeSelector === 2,
           'bg-primary-light': typeSelector !== 2,
         }"
-        class="p-2"
+        class="min-w-[120px] p-2 transition-colors duration-100 hover:text-white"
       >
         {{ $t('rooms.dressingRooms') }}
       </button>
       <button
-        @click="
-          replace('/admin/rooms/type/3');
-          typeSelector = 3;
-        "
+        @click="replace('/admin/rooms/type/3'), (typeSelector = 3)"
         :class="{
           'bg-secondary ': typeSelector === 3,
           'bg-primary-light': typeSelector !== 3,
         }"
-        class="p-2"
+        class="min-w-[120px] p-2 transition-colors duration-100 hover:text-white"
       >
         {{ $t('rooms.swimmingPools') }}
       </button>
       <button
-        @click="
-          replace('/admin/rooms/type/4');
-          typeSelector = 4;
-        "
+        @click="replace('/admin/rooms/type/4'), (typeSelector = 4)"
         :class="{
           'bg-secondary ': typeSelector === 4,
           'bg-primary-light': typeSelector !== 4,
         }"
-        class="p-2"
+        class="min-w-[120px] rounded-r-md p-2 transition-colors duration-100 hover:text-white"
       >
         {{ $t('rooms.divingWells') }}
       </button>
     </div>
     <div class="flex flex-col gap-20">
-      <div v-if="typeSelector == 0">
-        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.gyms') }}</h3>
-        <ul class="mx-auto grid grid-cols-3 gap-6">
-          <li v-for="gym in resultGyms?.GetAllGyms" :key="gym.id">
+      <div class="mx-auto" v-if="typeSelector == 0">
+        <h3
+          class="mb-2 py-4 text-center text-3xl font-bold md:py-8 md:text-left"
+        >
+          {{ $t('rooms.gyms') }}
+        </h3>
+        <ul class="grid w-fit gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <li
+            class="md:w-55 xl:w-70 2xl:w-90 w-full break-words"
+            v-for="gym in resultGyms?.GetAllGyms"
+            :key="gym.id"
+          >
             <button
-              class="h-full w-full text-left"
+              class="flex h-full w-full rounded-lg bg-white p-6 text-left shadow-md"
               @click="handleRoomDetail(gym)"
             >
-              <div class="h-full rounded-lg bg-white p-4 shadow-md">
-                <h3 class="mb-2 text-2xl font-bold">{{ gym.name }}</h3>
-                <p class="text-lg font-semibold">Sports:</p>
-                <ul>
-                  <li
-                    class="ml-4 list-disc"
-                    v-for="sport in resultGyms?.GetAllGyms[
-                      resultGyms?.GetAllGyms.indexOf(gym)
-                    ].sports.sort((a, b) => a.name.localeCompare(b.name))"
-                    :key="sport.name"
-                  >
-                    <p>{{ sport.name }}</p>
-                  </li>
-                </ul>
+              <div class="flex h-full flex-col justify-between">
+                <div>
+                  <h3 class="mb-2 text-xl font-bold lg:text-2xl">
+                    {{ gym.name }}
+                  </h3>
+                  <p class="text-lg font-semibold">Sports:</p>
+                  <ul class="flex flex-wrap gap-x-2 gap-y-1">
+                    <li
+                      class="bg-sports mt-1 w-fit rounded-full px-4 text-sm font-medium"
+                      v-for="sport in resultGyms?.GetAllGyms[
+                        resultGyms?.GetAllGyms.indexOf(gym)
+                      ].sports.sort((a, b) => a.name.localeCompare(b.name))"
+                      :key="sport.name"
+                    >
+                      <p>{{ sport.name }}</p>
+                    </li>
+                  </ul>
+                </div>
                 <div class="flex items-center gap-1">
                   <p class="text-lg font-semibold">
                     {{ $t('rooms.pricePerHour') }}:
@@ -367,10 +361,15 @@ export default defineComponent({
           </li>
         </ul>
       </div>
-      <div v-if="typeSelector == 1">
-        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.workRooms') }}</h3>
-        <ul class="mx-auto grid grid-cols-3 gap-6">
+      <div class="mx-auto" v-if="typeSelector == 1">
+        <h3
+          class="mb-2 py-4 text-center text-3xl font-bold md:py-8 md:text-left"
+        >
+          {{ $t('rooms.workRooms') }}
+        </h3>
+        <ul class="grid w-fit gap-6 md:grid-cols-2 lg:grid-cols-3">
           <li
+            class="md:w-55 xl:w-70 2xl:w-90 w-fit break-words"
             v-for="workRoom in resultWorkRooms?.GetAllWorkRooms"
             :key="workRoom.id"
           >
@@ -379,7 +378,9 @@ export default defineComponent({
               @click="handleRoomDetail(workRoom)"
             >
               <div class="h-full rounded-lg bg-white p-4 shadow-md">
-                <h3 class="mb-2 text-2xl font-bold">{{ workRoom.name }}</h3>
+                <h3 class="mb-2 text-xl font-bold lg:text-2xl">
+                  {{ workRoom.name }}
+                </h3>
               </div>
             </button>
           </li>
@@ -397,10 +398,15 @@ export default defineComponent({
           </li>
         </ul>
       </div>
-      <div v-if="typeSelector == 2">
-        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.dressingRooms') }}</h3>
-        <ul class="mx-auto grid grid-cols-3 gap-6">
+      <div class="mx-auto" v-if="typeSelector == 2">
+        <h3
+          class="mb-2 py-4 text-center text-3xl font-bold md:py-8 md:text-left"
+        >
+          {{ $t('rooms.dressingRooms') }}
+        </h3>
+        <ul class="grid w-fit gap-6 md:grid-cols-2 lg:grid-cols-3">
           <li
+            class="md:w-55 xl:w-70 2xl:w-90 w-fit break-words"
             v-for="changingRoom in resultChangingRooms?.GetAllChangingRooms"
             :key="changingRoom.id"
           >
@@ -409,7 +415,9 @@ export default defineComponent({
               @click="handleRoomDetail(changingRoom)"
             >
               <div class="h-full rounded-lg bg-white p-4 shadow-md">
-                <h3 class="mb-2 text-2xl font-bold">{{ changingRoom.name }}</h3>
+                <h3 class="mb-2 text-xl font-bold lg:text-2xl">
+                  {{ changingRoom.name }}
+                </h3>
                 <div class="flex items-center gap-1">
                   <p class="text-lg font-semibold">Price per hour:</p>
                   <p>€{{ changingRoom.pricePerHour }}</p>
@@ -431,10 +439,15 @@ export default defineComponent({
           </li>
         </ul>
       </div>
-      <div v-if="typeSelector == 3">
-        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.swimmingPools') }}</h3>
-        <ul class="mx-auto grid grid-cols-3 gap-6">
+      <div class="mx-auto" v-if="typeSelector == 3">
+        <h3
+          class="mb-2 py-4 text-center text-3xl font-bold md:py-8 md:text-left"
+        >
+          {{ $t('rooms.swimmingPools') }}
+        </h3>
+        <ul class="grid w-fit gap-6 md:grid-cols-2 lg:grid-cols-3">
           <li
+            class="md:w-55 xl:w-70 2xl:w-90 w-fit break-words"
             v-for="pool in resultSwimmingPools?.GetAllSwimmingPools"
             :key="pool.id"
           >
@@ -443,11 +456,13 @@ export default defineComponent({
               @click="handleRoomDetail(pool)"
             >
               <div class="h-full rounded-lg bg-white p-4 shadow-md">
-                <h3 class="mb-2 text-2xl font-bold">{{ pool.name }}</h3>
+                <h3 class="mb-2 text-xl font-bold lg:text-2xl">
+                  {{ pool.name }}
+                </h3>
                 <p class="text-lg font-semibold">Sports:</p>
-                <ul>
+                <ul class="flex flex-wrap gap-x-2 gap-y-1">
                   <li
-                    class="ml-4 list-disc"
+                    class="bg-sports mt-1 w-fit rounded-full px-4 text-sm"
                     v-for="sport in resultSwimmingPools?.GetAllSwimmingPools[
                       resultSwimmingPools?.GetAllSwimmingPools.indexOf(pool)
                     ].sports.sort((a, b) => a.name.localeCompare(b.name))"
@@ -477,10 +492,15 @@ export default defineComponent({
           </li>
         </ul>
       </div>
-      <div v-if="typeSelector == 4">
-        <h3 class="mb-2 text-3xl font-bold">{{ $t('rooms.divingWells') }}</h3>
-        <ul class="mx-auto grid grid-cols-3 gap-6">
+      <div class="mx-auto" v-if="typeSelector == 4">
+        <h3
+          class="mb-2 py-4 text-center text-3xl font-bold md:py-8 md:text-left"
+        >
+          {{ $t('rooms.divingWells') }}
+        </h3>
+        <ul class="grid w-fit gap-6 md:grid-cols-2 lg:grid-cols-3">
           <li
+            class="md:w-55 xl:w-70 2xl:w-90 w-fit break-words"
             v-for="divePool in resultDivePools?.GetAllDivePools"
             :key="divePool.id"
           >
@@ -489,11 +509,13 @@ export default defineComponent({
               @click="handleRoomDetail(divePool)"
             >
               <div class="h-full rounded-lg bg-white p-4 shadow-md">
-                <h3 class="mb-2 text-2xl font-bold">{{ divePool.name }}</h3>
+                <h3 class="mb-2 text-xl font-bold lg:text-2xl">
+                  {{ divePool.name }}
+                </h3>
                 <p class="text-lg font-semibold">Sports:</p>
                 <ul>
                   <li
-                    class="ml-4 list-disc"
+                    class="bg-sports mt-1 w-fit rounded-full px-4 text-sm"
                     v-for="sport in resultDivePools?.GetAllDivePools[
                       resultDivePools?.GetAllDivePools.indexOf(divePool)
                     ].sports.sort((a, b) => a.name.localeCompare(b.name))"

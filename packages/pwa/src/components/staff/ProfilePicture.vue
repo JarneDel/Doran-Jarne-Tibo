@@ -76,7 +76,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <label :for="id" class="grid grid-cols-1 grid-rows-1">
+  <label v-if="editable" :for="id" class="grid grid-cols-1 grid-rows-1">
     <User v-if="!pfpUrl" :size="size" class="col-start-1 row-start-1" />
     <img
       v-else
@@ -84,17 +84,28 @@ export default defineComponent({
       alt="your profile"
       class="size col-start-1 row-start-1 rounded-full object-cover"
     />
-    <div
+    <span
       v-if="editable"
-      class="hover:bg-neutral-6/60 size col-start-1 row-start-1 grid place-content-center rounded-full transition-colors"
+      class="hover:bg-neutral-6/60 size col-start-1 row-start-1 block flex items-center justify-center rounded-full transition-colors"
       @mouseenter="isHovering = true"
       @mouseleave="isHovering = false"
     >
       <Transition appear name="fade">
         <Upload v-if="isHovering" :size="size / 2" class="c-white"></Upload>
       </Transition>
-    </div>
+    </span>
   </label>
+
+  <span v-else class="grid grid-cols-1 grid-rows-1">
+    <User v-if="!pfpUrl" :size="size" class="col-start-1 row-start-1" />
+    <img
+      v-else
+      :src="pfpUrl"
+      alt="your profile"
+      class="size col-start-1 row-start-1 rounded-full object-cover"
+    />
+  </span>
+
   <input
     v-if="editable"
     :id="id"

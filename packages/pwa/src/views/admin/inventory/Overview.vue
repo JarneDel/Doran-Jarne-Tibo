@@ -1,31 +1,35 @@
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
-import { useMutation, useQuery } from '@vue/apollo-composable';
+import { defineComponent, ref, watch } from 'vue'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   ALL_STOCK_AND_SERVICES,
   AllStockAndServices,
   getUpdatedStockItem,
   IUpdateItemOptional,
   UPDATE_STOCK,
-} from '@/graphql/stock.query.ts';
+} from '@/graphql/stock.query.ts'
 import {
+  ArrowDownAz,
   ArrowDownNarrowWide,
+  ArrowUpAz,
   ArrowUpDown,
   ArrowUpNarrowWide,
   ChevronRight,
   Edit2,
   Search,
-} from 'lucide-vue-next';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import useLastRoute from '@/composables/useLastRoute.ts';
-import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
-import DoubleClickSelect from '@/components/generic/DoubleClickSelect.vue';
+} from 'lucide-vue-next'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import Modal from '@/components/Modal.vue'
+import { useRouter } from 'vue-router'
+import useLastRoute from '@/composables/useLastRoute.ts'
+import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
+import DoubleClickSelect from '@/components/generic/DoubleClickSelect.vue'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
   name: 'Overview',
   components: {
+    Error,
     DoubleClickSelect,
     DoubleClickEdit,
     Modal,
@@ -36,16 +40,18 @@ export default defineComponent({
     ArrowUpNarrowWide,
     ArrowUpDown,
     ChevronRight,
+    ArrowUpAz,
+    ArrowDownAz,
   },
 
   setup: function () {
-    const search = ref<string>('');
-    const searchServiceId = ref<string>('');
-    const sortDirection = ref<string>('ASC');
-    const sortFieldName = ref<string>('name');
-    const isModalShown = ref<boolean>(true);
-
-    const { push } = useRouter();
+    const search = ref<string>('')
+    const searchServiceId = ref<string>('')
+    const sortDirection = ref<string>('ASC')
+    const sortFieldName = ref<string>('name')
+    const isModalShown = ref<boolean>(true)
+    const errorMessages = ref<string[]>([])
+    const { push } = useRouter()
 
     // graphql
     const { error, loading, result, refetch } = useQuery<AllStockAndServices>(
@@ -58,10 +64,11 @@ export default defineComponent({
       {
         nextFetchPolicy: 'cache-and-network',
         fetchPolicy: 'cache-and-network',
-      }
-    );
+      },
+    )
 
-    const { mutate: mutateUpdateItem } = useMutation(UPDATE_STOCK);
+    const { mutate: mutateUpdateItem, onError: onMutateUpdateItemError } =
+      useMutation(UPDATE_STOCK)
 
     /**
      * Sorts the table by the given field and requests the data again
@@ -69,24 +76,24 @@ export default defineComponent({
      */
     const sortField = (field: string) => {
       if (sortFieldName.value === field) {
-        sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC';
+        sortDirection.value = sortDirection.value === 'ASC' ? 'DESC' : 'ASC'
       } else {
-        sortFieldName.value = field;
-        sortDirection.value = 'asc';
+        sortFieldName.value = field
+        sortDirection.value = 'asc'
       }
-      fetchWithFilters();
-    };
+      fetchWithFilters()
+    }
 
     const whereName = (e: Event) => {
-      const target = e.target as HTMLInputElement;
-      search.value = target.value;
-      fetchWithFilters();
-    };
+      const target = e.target as HTMLInputElement
+      search.value = target.value
+      fetchWithFilters()
+    }
     const whereService = (e: Event) => {
-      const target = e.target as HTMLSelectElement;
-      searchServiceId.value = target.value;
-      fetchWithFilters();
-    };
+      const target = e.target as HTMLSelectElement
+      searchServiceId.value = target.value
+      fetchWithFilters()
+    }
 
     const fetchWithFilters = () => {
       refetch({
@@ -94,34 +101,45 @@ export default defineComponent({
         orderDirection: sortDirection.value,
         orderByField: sortFieldName.value,
         searchServiceId: searchServiceId.value,
-      });
-    };
+      })
+    }
 
-    const { lastRoute } = useLastRoute();
+    const { lastRoute } = useLastRoute()
     watch(
       lastRoute,
-      (value) => {
-        console.log(lastRoute);
+      value => {
+        console.log(lastRoute)
         if (value.startsWith('/admin/inventory/')) {
-          console.log('refetching');
-          fetchWithFilters();
+          console.log('refetching')
+          fetchWithFilters()
         }
       },
-      { immediate: true }
-    );
+      { immediate: true },
+    )
 
     const updateItem = (
       id: string,
-      fieldsToUpdate: Partial<IUpdateItemOptional>
+      fieldsToUpdate: Partial<IUpdateItemOptional>,
     ) => {
-      const stockItem = result.value?.stock.find((s) => s.id == id);
-      if (!stockItem) return;
+      const stockItem = result.value?.stock.find(s => s.id == id)
+      if (!stockItem) return
       mutateUpdateItem({
         updateStockInput: getUpdatedStockItem(stockItem, fieldsToUpdate),
       }).then(() => {
-        fetchWithFilters();
-      });
-    };
+        fetchWithFilters()
+      })
+    }
+
+    onMutateUpdateItemError(err => {
+      const originalError = err.graphQLErrors[0].extensions.originalError as any
+      if (!originalError || !originalError.message)
+        return console.log('no message')
+
+      console.log({ originalError })
+      originalError.message.forEach((message: string) => {
+        errorMessages.value.push(message)
+      })
+    })
 
     return {
       error,
@@ -131,18 +149,25 @@ export default defineComponent({
       sortDirection,
       sortFieldName,
       isModalShown,
+      errorMessages,
       sortField,
       whereName,
       whereService,
       push,
       updateItem,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
   <RouterView />
+  <Error
+    v-for="(err, index) of errorMessages"
+    :is-shown="!!err"
+    :msg="err"
+    @update:is-shown="errorMessages[index] = ''"
+  />
   <div class="mx-a max-w-7xl">
     <div class="flex items-center justify-between">
       <div class="py4 flex flex-row gap-4">
@@ -179,18 +204,15 @@ export default defineComponent({
       </div>
     </div>
 
-    <table class="w-full border-collapse border-spacing-0">
-      <thead class="border-2 border-neutral-200 bg-neutral-200/60 text-left">
-        <tr class="text-neutral-8">
+    <table class="w-full border-collapse text-sm">
+      <thead>
+        <tr class="border-b text-left transition-colors">
           <th class="cursor-pointer" @click="sortField('name')">
             <button class="gap2 flex flex-row items-center">
               <span>{{ $t('inventory.name') }}</span>
               <arrow-up-down v-if="sortFieldName !== 'name'" :size="16" />
-              <arrow-down-narrow-wide
-                v-else-if="sortDirection === 'DESC'"
-                :size="16"
-              />
-              <arrow-up-narrow-wide v-else :size="16" />
+              <arrow-up-az v-else-if="sortDirection === 'DESC'" :size="16" />
+              <arrow-down-az v-else :size="16" />
             </button>
           </th>
           <th>{{ $t('inventory.description') }}</th>
@@ -206,46 +228,43 @@ export default defineComponent({
                 :size="16"
                 class="inline"
               />
-              <arrow-down-narrow-wide
+              <arrow-up-az
                 v-else-if="sortDirection === 'DESC'"
                 :size="16"
                 class="inline"
               />
-              <arrow-up-narrow-wide v-else :size="16" class="inline" />
+              <arrow-down-az v-else :size="16" class="inline" />
             </button>
           </th>
           <th class="cursor-pointer" @click="sortField('service')">
             <button class="flex flex-row items-center gap-2">
               <span>{{ $t('inventory.service') }}</span>
               <arrow-up-down v-if="sortFieldName !== 'service'" :size="16" />
-              <arrow-down-narrow-wide
-                v-else-if="sortDirection === 'DESC'"
-                :size="16"
-              />
-              <arrow-up-narrow-wide v-else :size="16" />
+              <arrow-up-az v-else-if="sortDirection === 'DESC'" :size="16" />
+              <arrow-down-az v-else :size="16" />
             </button>
           </th>
           <!--          <th>Actions</th>-->
           <th></th>
         </tr>
       </thead>
-      <tbody v-if="result">
+      <tbody v-if="result" :class="{ loader: loading }">
         <tr
           v-for="stock of result.stock"
           :key="stock.id"
-          class="hover:bg-primary-light/20 transition-colors duration-200"
+          class="hover:bg-primary-light/20 border-b transition-colors duration-200"
         >
           <td>
             <DoubleClickEdit
               :value="stock.name"
-              @submit="(newValue) => updateItem(stock.id, { name: newValue })"
+              @submit="newValue => updateItem(stock.id, { name: newValue })"
             />
           </td>
           <td :title="stock.description" class="truncate">
             <DoubleClickEdit
               :value="stock.description"
               @submit="
-                (newValue) => updateItem(stock.id, { description: newValue })
+                newValue => updateItem(stock.id, { description: newValue })
               "
             />
           </td>
@@ -260,7 +279,7 @@ export default defineComponent({
               :value="stock.amountInStock"
               type="number"
               @submit="
-                (newValue) => updateItem(stock.id, { amountInStock: newValue })
+                newValue => updateItem(stock.id, { amountInStock: newValue })
               "
             />
             /
@@ -268,7 +287,7 @@ export default defineComponent({
               :value="stock.idealStock"
               type="number"
               @submit="
-                (newValue) => updateItem(stock.id, { idealStock: newValue })
+                newValue => updateItem(stock.id, { idealStock: newValue })
               "
             />
           </td>
@@ -282,7 +301,7 @@ export default defineComponent({
               "
               :selected="{ key: stock.service.id, value: stock.service.name }"
               @submit="
-                (newValue) => updateItem(stock.id, { serviceId: newValue })
+                newValue => updateItem(stock.id, { serviceId: newValue })
               "
             />
           </td>
@@ -300,8 +319,6 @@ export default defineComponent({
       </tbody>
     </table>
   </div>
-
-  <div v-if="loading">Loading...</div>
 </template>
 
 <style scoped>
@@ -312,20 +329,16 @@ export default defineComponent({
 }
 
 th {
-  font-weight: 400;
-  font-size: 0.875rem;
-  padding-block: 12px;
-  padding-inline: 16px;
+  @apply h-12 text-left align-middle font-medium;
 }
 
 td {
-  padding-block: 8px;
-  padding-inline: 16px;
-  border-top: 2px solid #e6edfa;
+  @apply py2 align-middle;
 }
 
-table {
-  border: 2px solid #e6edfa;
+th:first-child,
+td:first-child {
+  @apply pl-4;
 }
 
 .loader {

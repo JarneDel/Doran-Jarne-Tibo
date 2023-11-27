@@ -15,7 +15,7 @@ import { Sport } from './entities/sport.entity'
 export class SportService {
   constructor(
     @InjectRepository(Sport)
-    private readonly sportRepository: Repository<Sport>
+    private readonly sportRepository: Repository<Sport>,
   ) {}
   create(createSportInput: CreateSportInput) {
     const s = new Sport()
@@ -30,7 +30,6 @@ export class SportService {
 
   findOneById(id: string): Promise<Sport> {
     const obj = new ObjectId(id)
-    console.log(obj)
     // @ts-ignore
     return this.sportRepository.findOne({ _id: new ObjectId(id) })
   }
@@ -48,10 +47,10 @@ export class SportService {
   remove(id: string): Promise<string> {
     return this.sportRepository
       .delete(id)
-      .then((res) => {
+      .then(res => {
         return res
       })
-      .catch((err) => {
+      .catch(err => {
         return err
       })
   }

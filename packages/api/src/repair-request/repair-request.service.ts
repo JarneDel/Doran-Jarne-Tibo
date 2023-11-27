@@ -14,11 +14,12 @@ import { Repository } from 'typeorm'
 export class RepairRequestService {
   constructor(
     @InjectRepository(RepairRequest)
-    private readonly RepairRequestRepository: Repository<RepairRequest>
+    private readonly RepairRequestRepository: Repository<RepairRequest>,
   ) {}
 
   create(createRepairRequestInput: CreateRepairRequestInput) {
     const RR = new RepairRequest()
+    RR.title = createRepairRequestInput.title
     RR.requestUserId = createRepairRequestInput.requestUserId
     RR.description = createRepairRequestInput.description
     RR.room = createRepairRequestInput.room
@@ -34,7 +35,7 @@ export class RepairRequestService {
 
   findOneById(id: string): Promise<RepairRequest> {
     const obj = new ObjectId(id)
-    console.log(obj)
+    // console.log(obj)
     return this.RepairRequestRepository.findOneByOrFail({
       // @ts-ignore
       _id: new ObjectId(id),
@@ -43,16 +44,21 @@ export class RepairRequestService {
 
   async update(id: string, updateRepairRequestInput: UpdateRepairRequestInput) {
     const rr = await this.findOneById(id)
+    rr.title = updateRepairRequestInput.title
+    rr.description = updateRepairRequestInput.description
+    rr.urgency = updateRepairRequestInput.urgency
     rr.isRepaired = updateRepairRequestInput.isRepaired
+    rr.room = updateRepairRequestInput.room
+    rr.loanableMaterial = updateRepairRequestInput.loanableMaterial
     return this.RepairRequestRepository.save(rr)
   }
 
   remove(id: string): Promise<String> {
     return this.RepairRequestRepository.delete(id)
-      .then((res) => {
+      .then(res => {
         return res
       })
-      .catch((err) => {
+      .catch(err => {
         return err
       })
   }

@@ -46,7 +46,7 @@ export class LoanableMaterialsResolver {
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [LoanableMaterial], {
-    name: 'GetAllloanableMaterials',
+    name: 'GetAllLoanableMaterials',
     nullable: true,
   })
   findAll() {

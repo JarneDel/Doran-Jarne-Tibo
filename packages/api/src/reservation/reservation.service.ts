@@ -76,7 +76,7 @@ export class ReservationService {
       availableMaterialsId.map(id => {
         if (
           material.id.toString() == id.toString() &&
-          material.amountReserved < material.totalAmount
+          material.amountReserved <= material.totalAmount
         ) {
           materialisAvailable = true
         }
@@ -98,7 +98,7 @@ export class ReservationService {
       totalPrice += room.pricePerHour * timediff
     })
     createReservationInput.reservedMaterials.map(material => {
-      totalPrice += material.price * timediff
+      totalPrice += material.price * material.amountReserved * timediff
     })
     createReservationInput.price = totalPrice
     if (isRoomAvailable && isMaterialAvailable && date >= today) {
@@ -142,17 +142,105 @@ export class ReservationService {
 
   async update(id: string, updateReservationInput: UpdateReservationInput) {
     let r = await this.findOne(id)
-    r.date = updateReservationInput.date
-    r.startTime = updateReservationInput.startTime
-    r.endTime = updateReservationInput.endTime
-    r.groupId = updateReservationInput.groupId
-    r.price = updateReservationInput.price
-    r.rooms = updateReservationInput.rooms
-    r.reservedMaterials = updateReservationInput.reservedMaterials
-    r.isCancelled = updateReservationInput.isCancelled
-    // r.rooms = updateReservationInput.rooms;
-    // r.reserved_materials = updateReservationInput.reserved_materials;
-    return this.reservationRepository.save(r)
+    r.id = id
+    const availableRooms = await this.getAvailableRooms(
+      updateReservationInput.date.toISOString().substr(0, 10),
+      updateReservationInput.startTime,
+      updateReservationInput.endTime,
+      id,
+    )
+    const sportid: string[] = []
+    availableRooms.forEach(room => {
+      room.SportId.forEach(sport => {
+        if (!sportid.includes(sport.toString())) {
+          sportid.push(sport.toString())
+        }
+      })
+    })
+    const availableMaterials = await this.getAvailableMaterail(
+      updateReservationInput.date.toISOString(),
+      updateReservationInput.startTime,
+      updateReservationInput.endTime,
+      sportid,
+      id,
+    )
+    //check if the room is available
+    const reservedRooms = updateReservationInput.rooms
+    const reservedRoomsId = reservedRooms.map(room => room.id)
+    const availableRoomsId = availableRooms.map(room => room.id)
+    let isRoomAvailable = true
+    reservedRooms.map(room => {
+      let roomisAvailable = false
+      availableRoomsId.map(id => {
+        if (room.id.toString() == id.toString()) {
+          roomisAvailable = true
+        }
+      })
+
+      if (roomisAvailable == false) {
+        isRoomAvailable = false
+      }
+    })
+    const date = updateReservationInput.date
+    //get date of today at 00:00:00
+    const today = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+    )
+    //check if the material is available
+    const reservedMaterials = updateReservationInput.reservedMaterials
+    const reservedMaterialsId = reservedMaterials.map(material => material.id)
+    const availableMaterialsId = availableMaterials.map(material => material.id)
+    const isMaterialAvailable = true
+    reservedMaterials.map(material => {
+      let materialisAvailable = false
+      availableMaterialsId.map(id => {
+        if (
+          material.id.toString() == id.toString() &&
+          material.amountReserved <= material.totalAmount
+        ) {
+          materialisAvailable = true
+        }
+      })
+      if (materialisAvailable == false) {
+        isRoomAvailable = false
+      }
+    })
+
+    //check if the price is correct
+    //time difference string to number
+    const begintime = updateReservationInput.startTime.split(':')
+    const endtime = updateReservationInput.endTime.split(':')
+    const begintimeNumber = Number(begintime[0]) + Number(begintime[1]) / 60
+    const endtimeNumber = Number(endtime[0]) + Number(endtime[1]) / 60
+    const timediff = endtimeNumber - begintimeNumber
+    let totalPrice = 0
+    updateReservationInput.rooms.map(room => {
+      totalPrice += room.pricePerHour * timediff
+    })
+    updateReservationInput.reservedMaterials.map(material => {
+      totalPrice += material.price * material.amountReserved * timediff
+    })
+    updateReservationInput.price = totalPrice
+    if (isRoomAvailable && isMaterialAvailable && date >= today) {
+      const id = new ObjectId(updateReservationInput.groupId)
+      r.date = updateReservationInput.date
+      r.startTime = updateReservationInput.startTime
+      r.endTime = updateReservationInput.endTime
+      r.groupId = id.toString()
+      
+      r.price = updateReservationInput.price
+      r.rooms = updateReservationInput.rooms
+      r.reservedMaterials = updateReservationInput.reservedMaterials
+      r.isCancelled = false
+      this.reservationRepository.update(r.id,r)
+      return r
+    } else {
+      throw new Error(
+        'Room or material is not available or date is not correct',
+      )
+    }
   }
 
   saveAll(services: Reservation[]): Promise<Reservation[]> {
@@ -172,6 +260,8 @@ export class ReservationService {
     startTime: string,
     endTime: string,
     SportId: string[],
+    // reservationId optional
+    reservationId?: string,
   ): Promise<LoanableMaterial[]> {
     const materials = (await this.loanableMaterialsService.findAll()).filter(
       material => {
@@ -189,6 +279,12 @@ export class ReservationService {
       let isAvailable = true
       let overMaterial = material.totalAmount
       for (const reservation of reservations) {
+        if (reservationId === reservation.id.toString()) {
+          continue
+        }
+        if (reservation.isCancelled) {
+          continue
+        }
         for (const resMat of reservation.reservedMaterials) {
           //check if the material is reserved
           if (resMat.id.toString() === material.id.toString()) {
@@ -196,11 +292,11 @@ export class ReservationService {
             let reservationStart = new Date(date + ' ' + reservation.startTime)
             let reservationEnd = new Date(date + ' ' + reservation.endTime)
             if (
-              (start < reservationStart && end > reservationStart) ||
-              (start < reservationEnd && end > reservationEnd) ||
-              (reservationStart < start &&
-                reservationStart < end &&
-                reservationEnd > end)
+              (start <= reservationStart && end >= reservationStart) ||
+              (start <= reservationEnd && end >= reservationEnd) ||
+              (reservationStart <= start &&
+                reservationStart <= end &&
+                reservationEnd >= end)
             ) {
               overMaterial = overMaterial - resMat.amountReserved
               if (overMaterial < 0) {
@@ -223,6 +319,7 @@ export class ReservationService {
     date: string,
     startTime: string,
     endTime: string,
+    reservationId?: string,
   ): Promise<Room[]> {
     const rooms = (await this.roomService.findAll()).filter(
       room =>
@@ -240,18 +337,20 @@ export class ReservationService {
     for (const room of rooms) {
       let isAvailable = true
       for (const reservation of reservations) {
+        if (reservation.isCancelled||reservationId === reservation.id.toString()) {
+          continue
+        }
         for (const resroom of reservation.rooms) {
           if (room.id.toString() === resroom.id.toString()) {
             let reservationStart = new Date(date + ' ' + reservation.startTime)
             let reservationEnd = new Date(date + ' ' + reservation.endTime)
-            
             if (
               (start <= reservationStart && end >= reservationStart) ||
               (start <= reservationEnd && end >= reservationEnd) ||
               (reservationStart <= start &&
                 reservationStart <= end &&
                 reservationEnd >= end)
-            ) {
+                ) {
               isAvailable = false
             }
           }
@@ -295,6 +394,22 @@ export class ReservationService {
     return availableRooms
   }
 
+  async getReservationsByRoomAndDay(
+    date: string,
+    roomId: string,
+  ): Promise<Reservation[]> {
+    const reservations = await this.findByDate(new Date(date))
+    const roomReservations: Reservation[] = []
+    reservations.forEach(reservation => {
+      reservation.rooms.forEach(room => {
+        if (room.id.toString() === roomId) {
+          roomReservations.push(reservation)
+        }
+      })
+    })
+    return roomReservations
+  }
+
   async getReservationsByUser(userId: string) {
     let timedate = new Date().toISOString().substr(0, 10)
     const date = new Date(timedate + 'T00:00:00.000Z')
@@ -304,8 +419,7 @@ export class ReservationService {
         where: { groupId: id, isCancelled: false },
       })
     )
-      .filter(reservation => 
-          reservation.date >= date)
+      .filter(reservation => reservation.date >= date)
       .sort((a, b) => {
         //sort by date
         const timeA = new Date(a.date + ' ' + a.startTime)

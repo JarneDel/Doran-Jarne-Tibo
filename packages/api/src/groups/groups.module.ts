@@ -10,8 +10,6 @@ import { StaffModule } from 'src/staff/staff.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Group]),
-    // StaffModule,
-    // UsersModule,
   ],
   providers: [GroupsResolver, GroupsService],
   exports: [GroupsService],

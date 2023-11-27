@@ -1,7 +1,6 @@
 [
   {
     "name": "zwembadkuiser",
-    "service": "651d6884d8931778b3de5408",
     "description": "kuist de vloer van het zwembad",
     "needToOrderMore": 0,
     "amountInStock": 1,
@@ -9,74 +8,32 @@
   },
   {
     "name": "zwembadchloor",
-    "service": "651d6884d8931778b3de5408",
     "description": "houdt het zwembadwater proper",
     "needToOrderMore": 1,
     "amountInStock": 0,
     "idealStock": 10
   },
   {
-    "name": "tennisracket",
-    "service": "651d6884d8931778b3de5409",
-    "description": "gebruikt om tennis te spelen",
-    "needToOrderMore": 0,
-    "amountInStock": 5,
-    "idealStock": 10
-  },
-  {
-    "name": "tennisballen",
-    "service": "651d6884d8931778b3de5409",
-    "description": "gebruikt om tennis te spelen",
-    "needToOrderMore": 1,
-    "amountInStock": 2,
-    "idealStock": 10
-  },
-  {
-    "name": "voetbal",
-    "service": "651d6884d8931778b3de5409",
-    "description": "gebruikt om voetbal te spelen",
-    "needToOrderMore": 0,
-    "amountInStock": 10,
-    "idealStock": 20
-  },
-  {
-    "name": "futsalbal",
-    "service": "651d6884d8931778b3de5409",
-    "description": "gebruikt om futsal te spelen",
-    "needToOrderMore": 0,
-    "amountInStock": 5,
-    "idealStock": 10
-  },
-  {
-    "name": "basketbal",
-    "service": "651d6884d8931778b3de5409",
-    "description": "gebruikt om basketbal te spelen",
-    "needToOrderMore": 0,
-    "amountInStock": 3,
-    "idealStock": 5
-  },
-  {
-    "name": "volleybalnet",
-    "service": "651d6884d8931778b3de5409",
-    "description": "gebruikt om volleybal te spelen",
-    "needToOrderMore": 0,
-    "amountInStock": 1,
-    "idealStock": 2
-  },
-  {
-    "name": "volleybal",
-    "service": "651d6884d8931778b3de5409",
-    "description": "gebruikt om volleybal te spelen",
-    "needToOrderMore": 1,
-    "amountInStock": 0,
-    "idealStock": 10
-  },
-  {
     "name": "sporthalverlichting",
-    "service": "651d6884d8931778b3de5409",
     "description": "verlicht de sporthal",
     "needToOrderMore": 0,
     "amountInStock": 10,
     "idealStock": 15
+  },
+  {
+    "name": "filters",
+    "description": "filtert het water",
+    "needToOrderMore": 1,
+    "amountInStock": 12,
+    "idealStock": 5
+  },
+  {
+    "name": "zwabber",
+    "description": "kuist de vloer van de sporthal",
+    "needToOrderMore": 0,
+    "amountInStock": 2,
+    "idealStock": 3
   }
+
+
 ]

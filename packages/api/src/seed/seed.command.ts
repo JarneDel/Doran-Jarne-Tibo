@@ -58,6 +58,11 @@ export class DatabaseSeedCommand {
     console.info(
       `added ${repairRequests.length} repairRequests to the database`,
     )
+
+    // Reservations (after loanableMaterials, rooms, groups, sports and staff because of foreign key)
+    console.info('🌱 Start seeding of reservations')
+    const reservations = await this.seedService.addReservationsFromJson()
+    console.info(`added ${reservations.length} reservations to the database`)
   }
 
   @Command({
@@ -101,6 +106,9 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting repair requests')
     await this.seedService.deleteAllRepairRequests()
     console.info('Removed all repair requests')
+    console.info('Deleting vacation requests')
+    await this.seedService.deleteAllVacationRequests()
+    console.info('Deleted all vacation requests')
   }
 
   //Stocks

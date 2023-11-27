@@ -11,6 +11,10 @@ export class Group extends User {
   @Field()
   name: string
 
+  @Field()
+  @Column()
+  email: string
+
   @Column()
   @Field({ nullable: true })
   btwNumber: string

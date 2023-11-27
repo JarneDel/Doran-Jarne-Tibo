@@ -21,6 +21,7 @@ export class GroupsService {
   create(uid: string, createGroupInput: CreateGroupInput) {
     const g = new Group()
     g.name = createGroupInput.name
+    g.email = createGroupInput.email
     g.btwNumber = createGroupInput.btwNumber
     g.locale = createGroupInput.locale
     g.UID = uid
@@ -61,7 +62,6 @@ export class GroupsService {
 
   async updateProfilePictureUrl(uid: string, profilePictureUrl: string) {
     const group = await this.groupRepository.findOneByOrFail({ UID: uid })
-    console.log('updateProfilePictureUrl', uid, profilePictureUrl)
     return this.groupRepository.merge(group, { profilePictureUrl })
     // return user
   }

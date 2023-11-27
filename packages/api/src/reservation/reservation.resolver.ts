@@ -23,12 +23,14 @@ import { Room } from 'src/room/entities/room.entity'
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
 import { use } from 'passport'
+// import { UsersResolver } from 'src/users/users.resolver'
 
 @Resolver(() => Reservation)
 export class ReservationResolver {
   constructor(
     private readonly reservationService: ReservationService,
     private readonly groupService: GroupsService,
+    // private readonly usersService: UsersResolver,
   ) {}
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF, Role.GROUP)
@@ -46,11 +48,26 @@ export class ReservationResolver {
   findAll() {
     return this.reservationService.findAll()
   }
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
+  @AllowedRoles(Role.GROUP, Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => Reservation, { name: 'GetReservatiounById' })
-  findOne(@Args('id', { type: () => String }) id: string) {
+  async findOne(
+    @Args('id', { type: () => String }) id: string,
+    @FirebaseUser() user: UserRecord,
+  ) {
+    try {
+      const group = await this.groupService.findOneByUid(user.uid)
+      const reservation = await this.reservationService.findOne(id)
+      if (group.id.toString() !== reservation.groupId)
+      {console.log(group.id.toString(), reservation.groupId)
+        throw new GraphQLError('Not authorized')}
+      return reservation
+    } catch (error) {
+      throw new GraphQLError('Not authorized')
+    }
+    finally {
     return this.reservationService.findOne(id)
+    }
   }
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)
@@ -99,12 +116,15 @@ export class ReservationResolver {
     @Args('startTime', { type: () => String }) startTime: string,
     @Args('endTime', { type: () => String }) endTime: string,
     @Args('sportId', { type: () => [String] }) sportId: string[],
+    @Args('reservationId', { type: () => String, nullable: true })
+    reservationId: string,
   ) {
     return this.reservationService.getAvailableMaterail(
       date,
       startTime,
       endTime,
       sportId,
+      reservationId,
     )
   }
 
@@ -118,8 +138,23 @@ export class ReservationResolver {
     @Args('date', { type: () => String }) date: string,
     @Args('startTime', { type: () => String }) startTime: string,
     @Args('endTime', { type: () => String }) endTime: string,
+    @Args('reservationId', { type: () => String, nullable: true })
+    reservationId: string,
   ) {
-    return this.reservationService.getAvailableRooms(date, startTime, endTime)
+    return this.reservationService.getAvailableRooms(date, startTime, endTime, reservationId)
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Query(() => [Reservation], {
+    name: 'GetReservationsByRoomAndDay',
+    nullable: true,
+  })
+  GetReservationsByRoomAndDay(
+    @Args('date', { type: () => String }) date: string,
+    @Args('roomId', { type: () => String }) roomId: string,
+  ) {
+    return this.reservationService.getReservationsByRoomAndDay(date, roomId)
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.USER, Role.STAFF, Role.GROUP)

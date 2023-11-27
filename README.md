@@ -53,6 +53,7 @@ VITE_API_URL=http://localhost:3000
 ## prod env files
 
 ```dotenv
+# /packages/api/.env.production
 DB_HOST=db
 DB_PORT=27017
 DB_NAME=api
@@ -66,6 +67,7 @@ CLI_PATH=./packages/api/dist/cli.js
 [Get Firebase Config](https://console.firebase.google.com/project/_/settings/general/web)
 
 ```dotenv
+# packages/pwa/.env.production.local
 VUE_APP_FIREBASE_API_KEY=<apiKey>
 VUE_APP_FIREBASE_AUTH_DOMAIN=<authDomain>
 VUE_APP_FIREBASE_DATABASE_URL=<databaseURL>
@@ -91,7 +93,7 @@ VITE_API_URL=http://localhost:3000
 
 Save it as `oauthsecret.json` in `packages/pwa/src/utils/`
 
-Add yourself as test user in
+Add yourself as test user in 
 [OAuth consent screen](https://console.cloud.google.com/apis/credentials/consent)
 
 ### run script

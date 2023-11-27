@@ -19,6 +19,7 @@ import { Role } from '../users/entities/user.entity'
 import { FirebaseUser } from '../authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
 import { ApproveVacationRequestInput } from './dto/approve-vacation-request.input'
+import { FindVacationArgs } from './args/findVacation.args'
 
 @UseGuards(FirebaseGuard, RolesGuard)
 @AllowedRoles(Role.STAFF, Role.ADMIN, Role.SUPER_ADMIN)
@@ -45,6 +46,21 @@ export class VacationRequestResolver {
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
   @Query(() => [VacationRequest], { name: 'vacationRequests' })
   findAll() {
+    return this.vacationRequestService.findAll()
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Query(() => [VacationRequest], { name: 'vacationRequestsBy' })
+  findBy(@Args() query: FindVacationArgs) {
+    if (query.isExpired && query.isOpen !== null) {
+      throw new Error('Cannot combine isOpen and isExpired')
+    }
+    if (query.isOpen !== null) {
+      return this.vacationRequestService.findByIsOpen(query.isOpen)
+    }
+    if (query.isExpired) {
+      return this.vacationRequestService.findExpired()
+    }
     return this.vacationRequestService.findAll()
   }
 

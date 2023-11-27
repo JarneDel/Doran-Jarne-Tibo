@@ -12,9 +12,11 @@ import { Room } from '@/interface/roomInterface'
 import { material } from '@/interface/materialInterface'
 import { Plus, Minus } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   setup() {
+    const { push } = useRouter()
     const { customUser } = useUser()
     const checkboxStatus = ref<any>({})
     const checkboxStatusMaterials = ref<any>({})
@@ -30,6 +32,15 @@ export default defineComponent({
     const wantedRoom = ref<Room[]>([])
     const wantedMaterials = ref<material[]>([])
     const price = ref(0)
+    const calculatePrice = () => {
+      price.value = 0
+      wantedRoom.value.forEach(room => {
+        price.value += room.pricePerHour * reservation.value.timeDivrent
+      })
+      wantedMaterials.value.forEach(material => {
+        price.value += material.price*checkboxStatusMaterials.value[material.name].amount* reservation.value.timeDivrent
+      })
+    }
     const AddReservation = () => {
       let materials: material[] = []
       wantedMaterials.value.forEach(material => {
@@ -70,7 +81,6 @@ export default defineComponent({
             createdAt: new Date(),
             updatedAt: new Date(),
           }
-          console.log(sportt)
           sport.id = sportt.id
           sport.name = sportt.name
           sport.createdAt = sportt.createdAt
@@ -95,10 +105,11 @@ export default defineComponent({
         price: price.value,
         material: materials,
         rooms: roomlist,
+      }).then(() => {
+        push('/reservation')
       })
     }
     const Material = (material: material, plus: boolean) => {
-      //add material
       if (plus) {
         if (
           checkboxStatusMaterials.value[material.name].amount ==
@@ -111,17 +122,21 @@ export default defineComponent({
             1,
           )
         checkboxStatusMaterials.value[material.name].amount++
-        wantedMaterials.value.push(material)
-        price.value += material.price * reservation.value.timeDivrent
       } else {
         if (checkboxStatusMaterials.value[material.name].amount == 0) return
         //remove material
         checkboxStatusMaterials.value[material.name].amount--
-        wantedMaterials.value.splice(wantedMaterials.value.indexOf(material), 1)
-        if (checkboxStatusMaterials.value[material.name].amount != 0)
-          wantedMaterials.value.push(material)
-        price.value -= material.price * reservation.value.timeDivrent
       }
+      const listIds: string[] = []
+      wantedMaterials.value.forEach(material => {
+        listIds.push(material.id)
+      })
+      if (checkboxStatusMaterials.value[material.name].amount == 0)
+        wantedMaterials.value.splice(wantedMaterials.value.indexOf(material), 1)
+      else {
+        if (!listIds.includes(material.id)) wantedMaterials.value.push(material)
+      }
+      calculatePrice()
     }
     const checkMaterials = () => {
       return new Promise<void>(resolve => {
@@ -138,6 +153,7 @@ export default defineComponent({
           sportId: sportId,
         })
         onResult(result => {
+          if (result.loading) return
           availableMaterials.value = result.data.GetAvailableloanableMaterials
           availableMaterials.value.forEach(material => {
             checkboxStatusMaterials.value[material.name] = {
@@ -152,11 +168,10 @@ export default defineComponent({
     const addRoom = (room: Room) => {
       if (checkboxStatus.value[room.name]) {
         wantedRoom.value.splice(wantedRoom.value.indexOf(room), 1)
-        price.value -= room.pricePerHour * reservation.value.timeDivrent
       } else {
         wantedRoom.value.push(room)
-        price.value += room.pricePerHour * reservation.value.timeDivrent
       }
+      calculatePrice()
       checkMaterials()
     }
     const check = async () => {
@@ -167,8 +182,10 @@ export default defineComponent({
           endTime: reservation.value.endTime,
         })
         onResult(result => {
+          if( result.loading) return
           availableRooms.value = result.data.getAvailableRooms
           wantedRoom.value = []
+          wantedMaterials.value = []
           price.value = 0
           availableRooms.value.forEach(room => {
             checkboxStatus.value[room.name] = false
@@ -303,18 +320,18 @@ export default defineComponent({
       </div>
     </div>
     <div class="mx-4" v-if="availableRooms.length > 0">
-      <p class="text-lg">beschikbare ruimtes</p>
-      <div class="grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4">
-        <label class="h-full" v-for="room in availableRooms">
+      <p class="text-xl font-medium">beschikbare ruimtes</p>
+      <div class="grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4 mt-2 mb-4">
+        <label class="h-full focus-within:ring-secondary ring-4 ring-transparent rounded-md" v-for="room in availableRooms">
           <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
           <input
             type="checkbox"
             @click="addRoom(room)"
-            class="peer hidden"
+            class="peer sr-only"
             v-model="checkboxStatus[room.name]"
           />
           <div
-            class="peer-checked:border-primary h-full rounded-md border bg-white p-4 shadow-sm transition-all duration-300 peer-checked:shadow-lg"
+            class="peer-checked:border-black peer-checked:border-2 h-full rounded-md border bg-white p-4 shadow-sm transition-all duration-300 peer-checked:shadow-lg"
           >
             <div class="flex h-full flex-col justify-between gap-2">
               <p class="text-lg font-medium">{{ room.name }}</p>
@@ -336,11 +353,11 @@ export default defineComponent({
       </div>
     </div>
     <div class="mx-4" v-if="availableMaterials.length > 0">
-      <p class="text-lg">beschikbare materialen</p>
+      <p class="text-xl font-medium">beschikbare materialen</p>
       <div
-        class="grid grid-rows-[repeat(4,1fr)] gap-4 lg:grid-cols-3 2xl:grid-cols-4"
+        class="grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4 mt-2 mb-4"
       >
-        <label class="h-full" v-for="material in availableMaterials">
+        <div class="h-full" :key="material.id" v-for="material in availableMaterials">
           <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
           <div
             class="flex h-full items-center justify-between rounded-md border bg-white p-4 shadow-sm"
@@ -351,6 +368,7 @@ export default defineComponent({
                 <!-- <p>Sporten :</p> -->
                 <div class="flex gap-2">
                   <p
+                  :key="sport.id"
                     v-for="sport in material.sports"
                     class="bg-secondary mt-1 rounded-full px-4"
                   >
@@ -360,21 +378,21 @@ export default defineComponent({
               </div>
               <p class="font-bold">€ {{ material.price }}/h</p>
             </div>
-            <div class="flex">
-              <StyledButton>
-                <Minus @click="Material(material, false)" />
+            <div class="flex items-center gap-1">
+              <StyledButton @click="()=>Material(material, false)">
+                <Minus />
               </StyledButton>
-              <p>
+              <p class="text-lg font-medium">
                 {{ checkboxStatusMaterials[material.name].amount }}/{{
                   material.totalAmount
                 }}
               </p>
-              <StyledButton>
-                <Plus @click="Material(material, true)" />
+              <StyledButton @click="()=>Material(material, true)">
+                <Plus />
               </StyledButton>
             </div>
           </div>
-        </label>
+        </div>
       </div>
     </div>
   </div>
