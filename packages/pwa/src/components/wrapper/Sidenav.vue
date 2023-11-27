@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, watch } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import Logo from '@/components/generic/Logo.vue'
 import {
   Box,
@@ -56,13 +56,21 @@ export default defineComponent({
     Dumbbell,
   },
   setup() {
-    const { result, subscription } =
-      useSubscription<IVacationRequestedSubscription>(
-        VACATION_REQUESTED_SUBSCRIPTION,
-      )
-    const { result: initialResult } = useQuery<IVacationRequestedCount>(
+    const { onResult } = useSubscription<IVacationRequestedSubscription>(
+      VACATION_REQUESTED_SUBSCRIPTION,
+    )
+    const { onResult: onInitialResult } = useQuery<IVacationRequestedCount>(
       VACATION_REQUESTED_COUNT,
     )
+    const count = ref<Number>(0)
+
+    onInitialResult(param => {
+      count.value = param.data?.pendingVacationRequestsCount.count ?? 0
+    })
+    onResult(param => {
+      console.log(param)
+      count.value = param.data?.vacationRequested.count ?? 0
+    })
 
     const isClosed = useLocalStorage('isClosed', false)
     const { currentRoute } = useRouter()
@@ -127,9 +135,7 @@ export default defineComponent({
           content: t('nav.vacation'),
           route: '/admin/vacation',
           roles: ['ADMIN', 'SUPER_ADMIN'],
-          count:
-            result.value?.vacationRequested.count ??
-            initialResult.value?.pendingVacationRequestsCount.count,
+          count: count.value,
         },
       ]
       return p.filter(page => {

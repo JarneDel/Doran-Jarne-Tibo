@@ -10,7 +10,7 @@ import AppHeader from '@/components/AppHeader.vue'
     >
       <AppHeader />
       <div class="relative h-full">
-        <div id="error" class="left-4/6 absolute right-4 top-2"></div>
+        <div id="error" class="left-4/6 z-100 absolute right-4 top-2"></div>
         <slot />
       </div>
     </div>

@@ -172,6 +172,8 @@ export const VACATION_REQUESTED_SUBSCRIPTION = gql`
     vacationRequested {
       count
       type
+      fromUid
+      fromName
     }
   }
 `
@@ -194,6 +196,8 @@ export interface IVacationRequestedSubscription {
   vacationRequested: {
     count: number
     type?: string
+    fromUid?: string
+    fromName?: string
   }
 }
 

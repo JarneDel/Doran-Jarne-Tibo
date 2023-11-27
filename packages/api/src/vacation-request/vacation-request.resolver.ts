@@ -37,7 +37,7 @@ export class VacationRequestResolver {
   @AllowedRoles(Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => VacationRequest)
-  createVacationRequest(
+  async createVacationRequest(
     @Args('createVacationRequestInput')
     createVacationRequestInput: CreateVacationRequestInput,
     @FirebaseUser() user: UserRecord,
@@ -48,9 +48,15 @@ export class VacationRequestResolver {
     )
 
     this.vacationRequestService.pendingCount().then(count => {
+      console.log(user.displayName)
       pubSub
         .publish('vacationRequested', {
-          vacationRequested: new CountSubscriptionMessage(count),
+          vacationRequested: new CountSubscriptionMessage(
+            count,
+            'new',
+            user.uid,
+            user.email,
+          ),
         })
         .then(() => {
           console.log('published')
@@ -117,7 +123,7 @@ export class VacationRequestResolver {
     const count = await this.vacationRequestService.pendingCount()
     pubSub
       .publish('vacationRequested', {
-        vacationRequested: new CountSubscriptionMessage(count, 'new'),
+        vacationRequested: new CountSubscriptionMessage(count, 'approved'),
       })
       .then(() => {
         console.debug('published')
@@ -167,8 +173,21 @@ class CountSubscriptionMessage {
   @Field(() => String, { nullable: true })
   type?: string
 
-  constructor(count: number, type?: string) {
+  @Field(() => String, { nullable: true })
+  fromUid?: string
+
+  @Field(() => String, { nullable: true })
+  fromName?: string
+
+  constructor(
+    count: number,
+    type?: string,
+    fromUid?: string,
+    fromName?: string,
+  ) {
     this.count = count
     this.type = type
+    this.fromName = fromName
+    this.fromUid = fromUid
   }
 }
