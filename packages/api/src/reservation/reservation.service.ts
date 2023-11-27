@@ -227,19 +227,13 @@ export class ReservationService {
 
     //check if the price is correct
     //time difference string to number
-    const begintime = updateReservationInput.startTime.split(':')
-    const endtime = updateReservationInput.endTime.split(':')
-    const begintimeNumber = Number(begintime[0]) + Number(begintime[1]) / 60
-    const endtimeNumber = Number(endtime[0]) + Number(endtime[1]) / 60
-    const timediff = endtimeNumber - begintimeNumber
-    let totalPrice = 0
-    updateReservationInput.rooms.map(room => {
-      totalPrice += room.pricePerHour * timediff
-    })
-    updateReservationInput.reservedMaterials.map(material => {
-      totalPrice += material.price * material.amountReserved * timediff
-    })
-    updateReservationInput.price = totalPrice
+    updateReservationInput.price = calculatePrice(
+      updateReservationInput.rooms,
+      updateReservationInput.reservedMaterials,
+      updateReservationInput.startTime,
+      updateReservationInput.endTime,
+      await this.groupsService.findOne(updateReservationInput.groupId),
+    )
     const groupid = new ObjectId(updateReservationInput.groupId)
     r.date = updateReservationInput.date
     r.startTime = updateReservationInput.startTime
