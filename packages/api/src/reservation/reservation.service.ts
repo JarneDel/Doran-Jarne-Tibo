@@ -12,6 +12,51 @@ import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-mater
 import { Room } from 'src/room/entities/room.entity'
 import { Inject } from '@nestjs/common'
 
+const checkIfRoomIsAvailable = async (available, reserved) => {
+  const reservedRoomsId = reserved.map(room => room.id)
+  const availableRoomsId = available.map(room => room.id)
+  let isRoomAvailable = true
+  reserved.map(room => {
+    let roomisAvailable = false
+    availableRoomsId.map(id => {
+      if (room.id.toString() == id.toString()) {
+        roomisAvailable = true
+      }
+    })
+
+    if (roomisAvailable == false) {
+      isRoomAvailable = false
+    }
+  })
+  return isRoomAvailable
+}
+
+const checkIfMaterialIsAvailable = async (available, reserved) => {
+  const reservedMaterialsId = reserved.map(material => material.id)
+  const availableMaterialsId = available.map(material => material.id)
+  let isMaterialAvailable = true
+  reserved.map(material => {
+    let materialisAvailable = false
+    availableMaterialsId.map(id => {
+      if (
+        material.id.toString() == id.toString() &&
+        material.amountReserved <= material.totalAmount
+      ) {
+        materialisAvailable = true
+      }
+    })
+    if (materialisAvailable == false) {
+      isMaterialAvailable = false
+    }
+  })
+  return isMaterialAvailable
+}
+
+const getToday = () => {
+  let date = new Date().toISOString().substr(0, 10)
+  const today = new Date(date)
+  return today
+}
 @Injectable()
 export class ReservationService {
   constructor(
@@ -22,12 +67,27 @@ export class ReservationService {
     // @Inject(forwardRef(() =>LoanableMaterialsService))
     private readonly loanableMaterialsService: LoanableMaterialsService,
   ) {}
+
   async create(createReservationInput: CreateReservationInput) {
+    if (createReservationInput.date < getToday()) {
+      throw new Error('Date is in the pas')
+    }
+    if ((createReservationInput.rooms.length as number) === 0) {
+      throw new Error('No rooms in reservation')
+    }
+
     const availableRooms = await this.getAvailableRooms(
       createReservationInput.date.toISOString().substr(0, 10),
       createReservationInput.startTime,
       createReservationInput.endTime,
     )
+    if (
+      !(await checkIfRoomIsAvailable(
+        availableRooms,
+        createReservationInput.rooms,
+      ))
+    )
+      throw new Error('Room is not available')
     const sportid: string[] = []
     availableRooms.forEach(room => {
       room.SportId.forEach(sport => {
@@ -42,52 +102,11 @@ export class ReservationService {
       createReservationInput.endTime,
       sportid,
     )
-    //check if the room is available
-    const reservedRooms = createReservationInput.rooms
-    const reservedRoomsId = reservedRooms.map(room => room.id)
-    const availableRoomsId = availableRooms.map(room => room.id)
-    let isRoomAvailable = true
-    reservedRooms.map(room => {
-      let roomisAvailable = false
-      availableRoomsId.map(id => {
-        if (room.id.toString() == id.toString()) {
-          roomisAvailable = true
-        }
-      })
-
-      if (roomisAvailable == false) {
-        isRoomAvailable = false
-      }
-    })
-    const date = createReservationInput.date
-    //get date of today at 00:00:00
-    const today = new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate(),
-    )
-    //check if the material is available
     const reservedMaterials = createReservationInput.reservedMaterials
-    const reservedMaterialsId = reservedMaterials.map(material => material.id)
-    const availableMaterialsId = availableMaterials.map(material => material.id)
-    const isMaterialAvailable = true
-    reservedMaterials.map(material => {
-      let materialisAvailable = false
-      availableMaterialsId.map(id => {
-        if (
-          material.id.toString() == id.toString() &&
-          material.amountReserved <= material.totalAmount
-        ) {
-          materialisAvailable = true
-        }
-      })
-      if (materialisAvailable == false) {
-        isRoomAvailable = false
-      }
-    })
-
-    //check if the price is correct
-    //time difference string to number
+    if (
+      !(await checkIfMaterialIsAvailable(availableMaterials, reservedMaterials))
+    )
+      throw new Error('Material is not available')
     const begintime = createReservationInput.startTime.split(':')
     const endtime = createReservationInput.endTime.split(':')
     const begintimeNumber = Number(begintime[0]) + Number(begintime[1]) / 60
@@ -101,24 +120,18 @@ export class ReservationService {
       totalPrice += material.price * material.amountReserved * timediff
     })
     createReservationInput.price = totalPrice
-    if (isRoomAvailable && isMaterialAvailable && date >= today) {
-      const r = new Reservation()
-      const id = new ObjectId(createReservationInput.groupId)
-      r.date = createReservationInput.date
-      r.startTime = createReservationInput.startTime
-      r.endTime = createReservationInput.endTime
-      r.groupId = id.toString()
-      r.price = createReservationInput.price
-      r.rooms = createReservationInput.rooms
-      r.reservedMaterials = createReservationInput.reservedMaterials
-      r.isCancelled = false
+    const r = new Reservation()
+    const id = new ObjectId(createReservationInput.groupId)
+    r.date = createReservationInput.date
+    r.startTime = createReservationInput.startTime
+    r.endTime = createReservationInput.endTime
+    r.groupId = id.toString()
+    r.price = createReservationInput.price
+    r.rooms = createReservationInput.rooms
+    r.reservedMaterials = createReservationInput.reservedMaterials
+    r.isCancelled = false
 
-      return this.reservationRepository.save(r)
-    } else {
-      throw new Error(
-        'Room or material is not available or date is not correct',
-      )
-    }
+    return this.reservationRepository.save(r)
   }
 
   findAll() {
@@ -145,13 +158,12 @@ export class ReservationService {
     if (r.isCancelled) {
       throw new Error('Reservation is cancelled')
     }
-    const today = new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate(),
-    )
-    if (r.date < today) {
+    if (r.date < getToday() || updateReservationInput.date < getToday()) {
       throw new Error('Reservation is in the past')
+    }
+
+    if ((updateReservationInput.rooms.length as number) === 0) {
+      throw new Error('No rooms in reservation')
     }
     r.id = id
     const availableRooms = await this.getAvailableRooms(
@@ -160,6 +172,13 @@ export class ReservationService {
       updateReservationInput.endTime,
       id,
     )
+    if (
+      !(await checkIfRoomIsAvailable(
+        availableRooms,
+        updateReservationInput.rooms,
+      ))
+    )
+      throw new Error('Room is not available')
     const sportid: string[] = []
     availableRooms.forEach(room => {
       room.SportId.forEach(sport => {
@@ -175,43 +194,16 @@ export class ReservationService {
       sportid,
       id,
     )
+    if (
+      !(await checkIfMaterialIsAvailable(
+        availableMaterials,
+        updateReservationInput.reservedMaterials,
+      ))
+    )
+      throw new Error('Material is not available')
     //check if the room is available
-    const reservedRooms = updateReservationInput.rooms
-    const reservedRoomsId = reservedRooms.map(room => room.id)
-    const availableRoomsId = availableRooms.map(room => room.id)
-    let isRoomAvailable = true
-    reservedRooms.map(room => {
-      let roomisAvailable = false
-      availableRoomsId.map(id => {
-        if (room.id.toString() == id.toString()) {
-          roomisAvailable = true
-        }
-      })
-
-      if (roomisAvailable == false) {
-        isRoomAvailable = false
-      }
-    })
     const date = updateReservationInput.date
     //check if the material is available
-    const reservedMaterials = updateReservationInput.reservedMaterials
-    const reservedMaterialsId = reservedMaterials.map(material => material.id)
-    const availableMaterialsId = availableMaterials.map(material => material.id)
-    const isMaterialAvailable = true
-    reservedMaterials.map(material => {
-      let materialisAvailable = false
-      availableMaterialsId.map(id => {
-        if (
-          material.id.toString() == id.toString() &&
-          material.amountReserved <= material.totalAmount
-        ) {
-          materialisAvailable = true
-        }
-      })
-      if (materialisAvailable == false) {
-        isRoomAvailable = false
-      }
-    })
 
     //check if the price is correct
     //time difference string to number
@@ -228,24 +220,18 @@ export class ReservationService {
       totalPrice += material.price * material.amountReserved * timediff
     })
     updateReservationInput.price = totalPrice
-    if (isRoomAvailable && isMaterialAvailable && date >= today) {
-      const id = new ObjectId(updateReservationInput.groupId)
-      r.date = updateReservationInput.date
-      r.startTime = updateReservationInput.startTime
-      r.endTime = updateReservationInput.endTime
-      r.groupId = id.toString()
-      
-      r.price = updateReservationInput.price
-      r.rooms = updateReservationInput.rooms
-      r.reservedMaterials = updateReservationInput.reservedMaterials
-      r.isCancelled = false
-      this.reservationRepository.update(r.id,r)
-      return r
-    } else {
-      throw new Error(
-        'Room or material is not available or date is not correct',
-      )
-    }
+    const groupid = new ObjectId(updateReservationInput.groupId)
+    r.date = updateReservationInput.date
+    r.startTime = updateReservationInput.startTime
+    r.endTime = updateReservationInput.endTime
+    r.groupId = groupid.toString()
+
+    r.price = updateReservationInput.price
+    r.rooms = updateReservationInput.rooms
+    r.reservedMaterials = updateReservationInput.reservedMaterials
+    r.isCancelled = false
+    this.reservationRepository.update(r.id, r)
+    return r
   }
 
   saveAll(services: Reservation[]): Promise<Reservation[]> {
@@ -342,7 +328,10 @@ export class ReservationService {
     for (const room of rooms) {
       let isAvailable = true
       for (const reservation of reservations) {
-        if (reservation.isCancelled||reservationId === reservation.id.toString()) {
+        if (
+          reservation.isCancelled ||
+          reservationId === reservation.id.toString()
+        ) {
           continue
         }
         for (const resroom of reservation.rooms) {
@@ -355,7 +344,7 @@ export class ReservationService {
               (reservationStart <= start &&
                 reservationStart <= end &&
                 reservationEnd >= end)
-                ) {
+            ) {
               isAvailable = false
             }
           }
@@ -447,13 +436,8 @@ export class ReservationService {
   }
 
   async cancelReservation(id: string) {
-    const today = new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      new Date().getDate(),
-    )
     const reservation = await this.findOne(id)
-    if (reservation.date < today) {
+    if (reservation.date < getToday()) {
       throw new Error('Reservation is in the past')
     }
     reservation.isCancelled = true
