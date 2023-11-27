@@ -3,11 +3,15 @@ import {
   createHttpLink,
   from,
   InMemoryCache,
+  split,
 } from '@apollo/client/core'
 import { setContext } from '@apollo/client/link/context'
 import useFirebase from './useFirebase'
 import { logErrorMessages } from '@vue/apollo-util'
 import { onError } from '@apollo/client/link/error'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { createClient } from 'graphql-ws'
+import { getMainDefinition } from '@apollo/client/utilities'
 
 const { firebaseUser } = useFirebase()
 
@@ -32,12 +36,36 @@ const errorLink = onError(error => {
   if (import.meta.env.DEV) logErrorMessages(error, false)
 })
 
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: import.meta.env.VITE_API_URL.replace('http', 'ws') + '/graphql',
+    connectionParams: async () => {
+      return {
+        authorization: `Bearer ${await firebaseUser.value?.getIdToken()}`,
+      }
+    },
+  }),
+)
+
+const link = split(
+  // split based on operation type
+  ({ query }) => {
+    const definition = getMainDefinition(query)
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    )
+  },
+  wsLink,
+  from([authLink, errorLink, httpLink]),
+)
+
 const read = (existing: any) => {
   return new Date(existing)
 }
 
 const apolloClient = new ApolloClient({
-  link: from([authLink, errorLink, httpLink]),
+  link: link,
   cache: new InMemoryCache({
     typePolicies: {
       VacationRequest: {

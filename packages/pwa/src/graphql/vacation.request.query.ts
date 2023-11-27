@@ -165,3 +165,19 @@ export interface VacationRequestWithStaff extends VacationRequest {
     email: string
   }
 }
+
+
+export const VACATION_REQUESTED_SUBSCRIPTION = gql`
+  subscription VacationRequested {
+    vacationRequested {
+      count
+    }
+  }
+`
+
+export interface IVacationRequestedSubscription {
+  vacationRequested: {
+    count: number
+  }
+}
+
