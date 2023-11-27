@@ -28,8 +28,7 @@ import { PubSub } from 'graphql-subscriptions'
 const pubSub = new PubSub()
 
 
-@UseGuards(FirebaseGuard, RolesGuard)
-@AllowedRoles(Role.STAFF, Role.ADMIN, Role.SUPER_ADMIN)
+
 @Resolver(() => VacationRequest)
 export class VacationRequestResolver {
   constructor(
@@ -38,6 +37,7 @@ export class VacationRequestResolver {
   ) {}
 
   @AllowedRoles(Role.STAFF)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => VacationRequest)
   createVacationRequest(
     @Args('createVacationRequestInput')
@@ -61,12 +61,14 @@ export class VacationRequestResolver {
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [VacationRequest], { name: 'vacationRequests' })
   findAll() {
     return this.vacationRequestService.findAll()
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [VacationRequest], { name: 'vacationRequestsBy' })
   findBy(@Args() query: FindVacationArgs) {
     if (query.isExpired && query.isOpen !== null) {
@@ -81,24 +83,29 @@ export class VacationRequestResolver {
     return this.vacationRequestService.findAll()
   }
 
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @AllowedRoles(Role.STAFF, Role.ADMIN, Role.SUPER_ADMIN)
   @Query(() => VacationRequest, { name: 'vacationRequest' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.vacationRequestService.findOne(id)
   }
 
   @AllowedRoles(Role.STAFF)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [VacationRequest], { name: 'vacationRequestLoggedIn' })
   findByFirebaseUser(@FirebaseUser() user: UserRecord) {
     return this.vacationRequestService.findByStaffUId(user.uid)
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [VacationRequest], { name: 'vacationRequestByStaff' })
   findByStaffId(@Args('staffId', { type: () => String }) staffId: string) {
     return this.vacationRequestService.findByStaffUId(staffId)
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => VacationRequest)
   approveVacationRequest(
     @Args('approveVacationRequestInput')
@@ -108,6 +115,7 @@ export class VacationRequestResolver {
   }
 
   @AllowedRoles(Role.STAFF)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => VacationRequest)
   cancelVacationRequest(
     @Args('id', { type: () => String }) id: string,
@@ -122,6 +130,7 @@ export class VacationRequestResolver {
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => Number, { name: 'pendingVacationRequestsCount' })
   pendingVacationRequestsCount() {
     return this.vacationRequestService.pendingCount()
