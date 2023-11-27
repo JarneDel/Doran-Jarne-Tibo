@@ -10,10 +10,12 @@ import { RoomService } from 'src/room/room.service'
 import { LoanableMaterialsService } from 'src/loanable-materials/loanable-materials.service'
 import { LoanableMaterial } from 'src/loanable-materials/entities/loanable-material.entity'
 import { Room } from 'src/room/entities/room.entity'
-import { Inject } from '@nestjs/common'
+import { GroupsService } from 'src/groups/groups.service'
+import { Materials } from './entities/material.entity'
+import { Group } from 'src/groups/entities/group.entity'
+import { Rooms } from './entities/room.entity'
 
 const checkIfRoomIsAvailable = async (available, reserved) => {
-  const reservedRoomsId = reserved.map(room => room.id)
   const availableRoomsId = available.map(room => room.id)
   let isRoomAvailable = true
   reserved.map(room => {
@@ -32,7 +34,6 @@ const checkIfRoomIsAvailable = async (available, reserved) => {
 }
 
 const checkIfMaterialIsAvailable = async (available, reserved) => {
-  const reservedMaterialsId = reserved.map(material => material.id)
   const availableMaterialsId = available.map(material => material.id)
   let isMaterialAvailable = true
   reserved.map(material => {
@@ -57,6 +58,29 @@ const getToday = () => {
   const today = new Date(date)
   return today
 }
+const calculatePrice = (rooms: [Rooms], materials:Materials[], startTime:String, endTime:String,group:Group) => {
+  const begintime = startTime.split(':')
+  const endtime = endTime.split(':')
+  const begintimeNumber = Number(begintime[0]) + Number(begintime[1]) / 60
+  const endtimeNumber = Number(endtime[0]) + Number(endtime[1]) / 60
+  const timediff = endtimeNumber - begintimeNumber
+  let totalPrice = 0
+  rooms.map(room => {
+    totalPrice += room.pricePerHour * timediff
+  })
+  materials.map(material => {
+    totalPrice += material.price * material.amountReserved * timediff
+  })
+  if (group.score > 50) {
+    const discount = (group.score - 50) / 100
+    totalPrice += totalPrice * discount
+  }
+  if (group.score < 50) {
+    const discount = (50 - group.score) / 100
+    totalPrice -= totalPrice * discount
+  }
+  return totalPrice
+}
 @Injectable()
 export class ReservationService {
   constructor(
@@ -66,6 +90,7 @@ export class ReservationService {
     private readonly roomService: RoomService,
     // @Inject(forwardRef(() =>LoanableMaterialsService))
     private readonly loanableMaterialsService: LoanableMaterialsService,
+    private readonly groupsService: GroupsService,
   ) {}
 
   async create(createReservationInput: CreateReservationInput) {
@@ -107,19 +132,14 @@ export class ReservationService {
       !(await checkIfMaterialIsAvailable(availableMaterials, reservedMaterials))
     )
       throw new Error('Material is not available')
-    const begintime = createReservationInput.startTime.split(':')
-    const endtime = createReservationInput.endTime.split(':')
-    const begintimeNumber = Number(begintime[0]) + Number(begintime[1]) / 60
-    const endtimeNumber = Number(endtime[0]) + Number(endtime[1]) / 60
-    const timediff = endtimeNumber - begintimeNumber
-    let totalPrice = 0
-    createReservationInput.rooms.map(room => {
-      totalPrice += room.pricePerHour * timediff
-    })
-    createReservationInput.reservedMaterials.map(material => {
-      totalPrice += material.price * material.amountReserved * timediff
-    })
-    createReservationInput.price = totalPrice
+      const group = await this.groupsService.findOne(createReservationInput.groupId)
+    createReservationInput.price = calculatePrice(
+      createReservationInput.rooms,
+      createReservationInput.reservedMaterials,
+      createReservationInput.startTime,
+      createReservationInput.endTime,
+      group,
+    )
     const r = new Reservation()
     const id = new ObjectId(createReservationInput.groupId)
     r.date = createReservationInput.date

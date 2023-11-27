@@ -30,6 +30,7 @@ export default defineComponent({
     const wantedRoom = ref<Room[]>([])
     const wantedMaterials = ref<material[]>([])
     const price = ref(0)
+    const PriceWhitDiscount = ref(0)
     const timeDivrent = () => {
       let begin = reservation.value.beginTime.split(':')
       let end = reservation.value.endTime.split(':')
@@ -50,15 +51,32 @@ export default defineComponent({
     }
     const calculatePrice = () => {
       price.value = 0
+      PriceWhitDiscount.value = 0
       wantedRoom.value.forEach(room => {
         price.value += room.pricePerHour * reservation.value.timeDivrent
+        PriceWhitDiscount.value +=
+          room.pricePerHour * reservation.value.timeDivrent
       })
       wantedMaterials.value.forEach(material => {
         price.value +=
           material.price *
           checkboxStatusMaterials.value[material.name].amount *
           reservation.value.timeDivrent
+        PriceWhitDiscount.value +=
+          material.price *
+          checkboxStatusMaterials.value[material.name].amount *
+          reservation.value.timeDivrent
       })
+      if (customUser.value?.userByUid.score) {
+        if (customUser.value?.userByUid.score > 50) {
+          const discount = (customUser.value?.userByUid.score-50) /100
+          PriceWhitDiscount.value += (PriceWhitDiscount.value)  * discount
+        }
+        if (customUser.value?.userByUid.score < 50) {
+          const discount = (50 - customUser.value?.userByUid.score) /100
+          PriceWhitDiscount.value -= (PriceWhitDiscount.value ) * discount
+        }
+      }
     }
     const date = new Date()
     const reservation = ref({
@@ -338,6 +356,7 @@ export default defineComponent({
       checkboxStatusMaterials,
       Material,
       changeReservation,
+      PriceWhitDiscount,
     }
   },
   components: { StyledInputText, StyledButton, Plus, Minus },
@@ -379,7 +398,7 @@ export default defineComponent({
           />
         </div>
         <div class="ml-4 flex items-center gap-2 lg:mr-0">
-          <p class="text-xl">€ {{ price }}</p>
+          <p class="text-xl">€ {{ PriceWhitDiscount }}</p>
           <StyledButton
             type="button"
             class="h-fit"

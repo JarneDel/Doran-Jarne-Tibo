@@ -53,12 +53,12 @@ export default defineComponent({
       })
       if (customUser.value?.userByUid.score) {
         if (customUser.value?.userByUid.score > 50) {
-          const discount = customUser.value?.userByUid.score-50
-          PriceWhitDiscount.value += (PriceWhitDiscount.value / 100) * discount
+          const discount = (customUser.value?.userByUid.score-50) /100
+          PriceWhitDiscount.value += (PriceWhitDiscount.value)  * discount
         }
         if (customUser.value?.userByUid.score < 50) {
-          const discount = 50 - customUser.value?.userByUid.score
-          PriceWhitDiscount.value -= (PriceWhitDiscount.value / 100) * discount
+          const discount = (50 - customUser.value?.userByUid.score) /100
+          PriceWhitDiscount.value -= (PriceWhitDiscount.value ) * discount
         }
       }
     }
