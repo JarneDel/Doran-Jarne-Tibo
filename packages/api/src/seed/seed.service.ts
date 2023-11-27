@@ -236,20 +236,41 @@ export class SeedService {
       r.date = new Date(reservation.date)
       r.startTime = reservation.start_time
       r.endTime = reservation.end_time
-      r.groupId = groups[Math.floor(Math.random() * groups.length)].id.toString()
-      const loanableMaterial =
-        await loanableMaterials[
-          Math.floor(Math.random() * loanableMaterials.length)
-        ]
-      const material = new Materials()
-      // give the sport a fake first sport so that the push function works
-      let sports:Sport[] = []
-      for (let sportId of loanableMaterial.SportId) {
-        const s = this.sportService.findOneById(sportId)
-        s.then(sport => {
-          sports.push(sport)
-        })
+      r.groupId =
+        groups[Math.floor(Math.random() * groups.length)].id.toString()
+      //@ts-ignore
+      const renroom = await rooms[Math.floor(Math.random() * rooms.length)]
+      const room = new Rooms()
+      let sportsroom: Sport[] = []
+      room.id = renroom.id
+      room.name = renroom.name
+      room.pricePerHour = renroom.pricePerHour
+      for (let sportId of renroom.SportId) {
+        const s = await this.sportService.findOneById(sportId)
+        sportsroom.push(s)
       }
+      room.sports = sportsroom
+      room.type = renroom.type
+      const roomList: [Rooms] = [room]
+      const sportroomsids: string[] = []
+      for (let sport of room.sports) {
+        sportroomsids.push(sport.id.toString())
+      }
+      r.rooms = roomList
+      r.price = reservation.price
+      r.isCancelled = reservation.isCancelled
+      const materials = loanableMaterials.filter(material =>
+        material.SportId.some(sport => sportroomsids.includes(sport)),
+      )
+      const loanableMaterial =
+        await materials[Math.floor(Math.random() * materials.length)]
+      const material = new Materials()
+      let sports: Sport[] = []
+      for (let sportId of loanableMaterial.SportId) {
+        const s = await this.sportService.findOneById(sportId)
+        sports.push(s)
+      }
+      // give the sport a fake first sport so that the push function works
       material.id = loanableMaterial.id
       material.name = loanableMaterial.name
       material.totalAmount = loanableMaterial.totalAmount
@@ -258,30 +279,21 @@ export class SeedService {
       material.sports = sports
       material.isComplete = loanableMaterial.isComplete
       material.description = loanableMaterial.description
-      material.amountReserved = Math.round(Math.random() * 10)
+      //amaount reserved is a random number between 0 and and total amount and min 1  
+      material.amountReserved = Math.floor(Math.random() * material.totalAmount) + 1
       const materialList: [Materials] = [material]
       r.reservedMaterials = materialList
-      //@ts-ignore
-      const renroom = await rooms[Math.floor(Math.random() * rooms.length)]
-      const room = new Rooms()
-      room.id = renroom.id
-      room.name = renroom.name
-      room.pricePerHour = renroom.pricePerHour
-      for (let sportId of renroom.SportId) {
-        const s = this.sportService.findOneById(sportId)
-        s.then(sport => {
-          sports.push(sport)
-        })
-      }
-      room.sports = sports
-      room.type = renroom.type
-      const roomList: [Rooms] = [room]
-      r.rooms = roomList
-      r.price = reservation.price
-      r.isCancelled = reservation.isCancelled
       outReservations.push(r)
     }
-    return this.reservationService.saveAll(outReservations)
+      await Promise.all( outReservations.map(async reservation => {
+        try {
+        await this.reservationService.create(reservation)
+        }
+        catch (e) {
+        }
+      }))
+
+    return outReservations
   }
 
   async deleteAllReservations(): Promise<void> {
@@ -331,10 +343,9 @@ export class SeedService {
       rr.description = repairRequest.description
       rr.urgency = Math.floor(Math.random() * 3) + 1
       const randNumb = Math.floor(Math.random() * 2)
-      if(randNumb === 0){
+      if (randNumb === 0) {
         rr.isRepaired = false
-      }
-      else{
+      } else {
         rr.isRepaired = true
       }
 
@@ -365,19 +376,18 @@ export class SeedService {
         rr.room = null // Set to null because it's a loanable material
         const materialList: Materials[] = []
         const materialIds: string[] = []
-        for(let i = 0; i < numberOfLoanableMaterials; i++)
-        {
+        for (let i = 0; i < numberOfLoanableMaterials; i++) {
           let loanableMaterial =
-          loanableMaterials[
-            Math.floor(Math.random() * loanableMaterials.length)
-          ]
-          // check if the id is already in the list
-          // if so, get a new one
-          while(materialIds.includes(loanableMaterial.id)){
-            loanableMaterial =
             loanableMaterials[
               Math.floor(Math.random() * loanableMaterials.length)
             ]
+          // check if the id is already in the list
+          // if so, get a new one
+          while (materialIds.includes(loanableMaterial.id)) {
+            loanableMaterial =
+              loanableMaterials[
+                Math.floor(Math.random() * loanableMaterials.length)
+              ]
           }
           // save id to check if it's already in the list
           materialIds.push(loanableMaterial.id)
@@ -401,7 +411,7 @@ export class SeedService {
           materialList.push(material)
         }
         rr.loanableMaterial = materialList
-      } else{
+      } else {
         //Room
         const room = rooms[Math.floor(Math.random() * rooms.length)]
         const roomList: Rooms[] = []

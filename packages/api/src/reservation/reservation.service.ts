@@ -33,7 +33,10 @@ const checkIfRoomIsAvailable = async (available, reserved) => {
   return isRoomAvailable
 }
 
-const checkIfMaterialIsAvailable = async (available, reserved) => {
+const checkIfMaterialIsAvailable = async (
+  available: LoanableMaterial[],
+  reserved: Materials[],
+) => {
   const availableMaterialsId = available.map(material => material.id)
   let isMaterialAvailable = true
   reserved.map(material => {
@@ -58,7 +61,13 @@ const getToday = () => {
   const today = new Date(date)
   return today
 }
-const calculatePrice = (rooms: [Rooms], materials:Materials[], startTime:String, endTime:String,group:Group) => {
+const calculatePrice = (
+  rooms: [Rooms],
+  materials: Materials[],
+  startTime: String,
+  endTime: String,
+  group: Group,
+) => {
   const begintime = startTime.split(':')
   const endtime = endTime.split(':')
   const begintimeNumber = Number(begintime[0]) + Number(begintime[1]) / 60
@@ -132,7 +141,9 @@ export class ReservationService {
       !(await checkIfMaterialIsAvailable(availableMaterials, reservedMaterials))
     )
       throw new Error('Material is not available')
-      const group = await this.groupsService.findOne(createReservationInput.groupId)
+    const group = await this.groupsService.findOne(
+      createReservationInput.groupId,
+    )
     createReservationInput.price = calculatePrice(
       createReservationInput.rooms,
       createReservationInput.reservedMaterials,
