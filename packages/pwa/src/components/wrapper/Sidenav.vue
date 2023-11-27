@@ -62,7 +62,7 @@ export default defineComponent({
     const { onResult: onInitialResult } = useQuery<IVacationRequestedCount>(
       VACATION_REQUESTED_COUNT,
     )
-    const count = ref<Number>(0)
+    const count = ref<number>(0)
 
     onInitialResult(param => {
       count.value = param.data?.pendingVacationRequestsCount.count ?? 0
