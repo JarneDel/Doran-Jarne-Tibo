@@ -1,10 +1,13 @@
 import {
   Args,
+  Field,
   Mutation,
+  ObjectType,
   Parent,
   Query,
   ResolveField,
   Resolver,
+  Subscription,
 } from '@nestjs/graphql'
 import { VacationRequestService } from './vacation-request.service'
 import { VacationRequest } from './entities/vacation-request.entity'
@@ -20,6 +23,10 @@ import { FirebaseUser } from '../authentication/decorators/user.decorator'
 import { UserRecord } from 'firebase-admin/auth'
 import { ApproveVacationRequestInput } from './dto/approve-vacation-request.input'
 import { FindVacationArgs } from './args/findVacation.args'
+import { PubSub } from 'graphql-subscriptions'
+
+const pubSub = new PubSub()
+
 
 @UseGuards(FirebaseGuard, RolesGuard)
 @AllowedRoles(Role.STAFF, Role.ADMIN, Role.SUPER_ADMIN)
@@ -37,6 +44,16 @@ export class VacationRequestResolver {
     createVacationRequestInput: CreateVacationRequestInput,
     @FirebaseUser() user: UserRecord,
   ) {
+    this.vacationRequestService.pendingCount().then(count => {
+      pubSub
+        .publish('vacationRequested', {
+          vacationRequested: new mySubscriptionMessage(count),
+        })
+        .then(() => {
+          console.log('published')
+        })
+    })
+
     return this.vacationRequestService.create(
       createVacationRequestInput,
       user.uid,
@@ -102,5 +119,34 @@ export class VacationRequestResolver {
   @ResolveField()
   staff(@Parent() vacationRequest: VacationRequest): Promise<Staff> {
     return this.staffService.findOneByUid(vacationRequest.staffUId)
+  }
+
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Query(() => Number, { name: 'pendingVacationRequestsCount' })
+  pendingVacationRequestsCount() {
+    return this.vacationRequestService.pendingCount()
+  }
+
+  // @Subscription()
+  // vacationRequestApproved() {
+  //   return pubSub.asyncIterator('vacationRequestApproved')
+  // }
+
+  //
+  @Subscription(() => mySubscriptionMessage, {
+    name: 'vacationRequested',
+  })
+  vacationRequested() {
+    return pubSub.asyncIterator('vacationRequested')
+  }
+}
+
+@ObjectType()
+class mySubscriptionMessage {
+  @Field(() => Number)
+  count: number
+
+  constructor(count: number) {
+    this.count = count
   }
 }
