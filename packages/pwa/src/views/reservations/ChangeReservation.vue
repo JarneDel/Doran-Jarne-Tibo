@@ -398,7 +398,7 @@ export default defineComponent({
           />
         </div>
         <div class="ml-4 flex items-center gap-2 lg:mr-0">
-          <p class="text-xl">€ {{ PriceWhitDiscount }}</p>
+          <p class="text-xl">€ {{ PriceWhitDiscount.toFixed(2) }}</p>
           <StyledButton
             type="button"
             class="h-fit"

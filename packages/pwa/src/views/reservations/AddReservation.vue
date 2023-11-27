@@ -337,7 +337,7 @@ export default defineComponent({
         </StyledButton> -->
         </div>
         <div class="flex items-center gap-2 lg:mr-0">
-          <p class="text-xl">€ {{ PriceWhitDiscount }}</p>
+          <p class="text-xl">€ {{ PriceWhitDiscount.toFixed(2) }}</p>
           <StyledButton type="button" class="h-fit" @click="AddReservation()">
             {{ $t('navigation.addreservation') }}
           </StyledButton>
