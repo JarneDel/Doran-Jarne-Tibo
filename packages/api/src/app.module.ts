@@ -25,6 +25,11 @@ import { VacationRequestModule } from './vacation-request/vacation-request.modul
 
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      subscriptions: {
+        'graphql-ws': true,
+        'subscriptions-transport-ws': true,
+      },
+      // installSubscriptionHandlers: true,
       autoSchemaFile: true,
       // includeStacktraceInErrorResponses: process.env.NODE_ENV != 'production',
       includeStacktraceInErrorResponses: false,

@@ -159,14 +159,12 @@ export const router = createRouter({
           children: [
             {
               path: 'id/:id',
-              component: () =>
-                import('@/views/admin/sportEquipment/Item.vue'),
+              component: () => import('@/views/admin/sportEquipment/Item.vue'),
               props: true,
             },
             {
               path: 'id/:id/edit',
-              component: () =>
-                import('@/views/admin/sportEquipment/Edit.vue'),
+              component: () => import('@/views/admin/sportEquipment/Edit.vue'),
             },
           ],
           meta: {
@@ -175,8 +173,7 @@ export const router = createRouter({
         },
         {
           path: 'sport-equipment/create',
-          component: () =>
-            import('@/views/admin/sportEquipment/Create.vue'),
+          component: () => import('@/views/admin/sportEquipment/Create.vue'),
           meta: {
             shouldBeAuthenticated: true,
           },
@@ -190,6 +187,15 @@ export const router = createRouter({
         },
         {
           path: 'vacation',
+          component: () =>
+            import('@/views/admin/vacation/VacationOverview.vue'),
+          meta: {
+            allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
+            title: SITE_NAME + ' - Vacation Requests',
+          },
+        },
+        {
+          path: 'vacation/:uid',
           component: () =>
             import('@/views/admin/vacation/VacationOverview.vue'),
           meta: {

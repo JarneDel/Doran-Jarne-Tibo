@@ -178,6 +178,16 @@ export class VacationRequestService {
     return this.vacationRequestRepository.clear()
   }
 
+  pendingCount() {
+    return this.vacationRequestRepository.count({
+      $and: [
+        { startDate: { $gte: new Date() } },
+        { $or: [{ isRejected: null }, { isRejected: false }] },
+        { $or: [{ isApproved: null }, { isApproved: false }] },
+      ],
+    })
+  }
+
   private checkVacationDays(
     createVacationRequestInput: CreateVacationRequestInput,
     staffUId: string,
