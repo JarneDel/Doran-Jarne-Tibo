@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, watch } from 'vue'
 import Logo from '@/components/generic/Logo.vue'
 import {
   Box,
@@ -12,14 +12,17 @@ import {
   Warehouse,
   Wrench,
   Dumbbell,
+  Icon,
 } from 'lucide-vue-next'
 import { useLocalStorage } from '@vueuse/core'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import useUser from '@/composables/useUser.ts'
-import { useSubscription } from '@vue/apollo-composable'
+import { useQuery, useSubscription } from '@vue/apollo-composable'
 import {
+  IVacationRequestedCount,
   IVacationRequestedSubscription,
+  VACATION_REQUESTED_COUNT,
   VACATION_REQUESTED_SUBSCRIPTION,
 } from '@/graphql/vacation.request.query.ts'
 // import { useSubscription } from '@vue/apollo-composable'
@@ -27,6 +30,15 @@ import {
 //   IVacationRequestedSubscription,
 //   VACATION_REQUESTED_SUBSCRIPTION,
 // } from '@/graphql/vacation.request.query.ts'
+
+interface page {
+  name: string
+  icon: Icon
+  content: string
+  route: string
+  roles: string[]
+  count?: number
+}
 
 export default defineComponent({
   name: 'Sidenav',
@@ -48,6 +60,9 @@ export default defineComponent({
       useSubscription<IVacationRequestedSubscription>(
         VACATION_REQUESTED_SUBSCRIPTION,
       )
+    const { result: initialResult } = useQuery<IVacationRequestedCount>(
+      VACATION_REQUESTED_COUNT,
+    )
 
     const isClosed = useLocalStorage('isClosed', false)
     const { currentRoute } = useRouter()
@@ -56,7 +71,7 @@ export default defineComponent({
     const { t } = useI18n()
     const section = computed(() => currentRoute.value.path.split('/')[2])
     const pages = computed(() => {
-      return [
+      const p: page[] = [
         {
           name: 'groups',
           icon: Users,
@@ -112,9 +127,12 @@ export default defineComponent({
           content: t('nav.vacation'),
           route: '/admin/vacation',
           roles: ['ADMIN', 'SUPER_ADMIN'],
-          count: result.value?.vacationRequested.count ?? null,
+          count:
+            result.value?.vacationRequested.count ??
+            initialResult.value?.pendingVacationRequestsCount.count,
         },
-      ].filter(page => {
+      ]
+      return p.filter(page => {
         return page.roles.includes(role.value ?? '')
       })
     })
@@ -149,11 +167,17 @@ export default defineComponent({
           'rounded-r-md': section === page.name,
         }"
         :to="page.route"
-        class="px4 flex items-center gap-4 py-2"
+        class="px4 relative flex items-center gap-4 py-2"
       >
         <component :is="page.icon" />
         <h2 v-if="!isClosed" class="font-500">{{ page.content }}</h2>
-        <div v-if="page.count">
+        <div
+          v-if="page.count"
+          :class="{
+            'bg-danger c-white h4 absolute bottom-0 right-2 flex w-4 items-center justify-center rounded':
+              isClosed,
+          }"
+        >
           {{ page.count }}
         </div>
       </RouterLink>

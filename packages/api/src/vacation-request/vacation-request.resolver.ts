@@ -27,8 +27,6 @@ import { PubSub } from 'graphql-subscriptions'
 
 const pubSub = new PubSub()
 
-
-
 @Resolver(() => VacationRequest)
 export class VacationRequestResolver {
   constructor(
@@ -44,20 +42,22 @@ export class VacationRequestResolver {
     createVacationRequestInput: CreateVacationRequestInput,
     @FirebaseUser() user: UserRecord,
   ) {
+    const request = this.vacationRequestService.create(
+      createVacationRequestInput,
+      user.uid,
+    )
+
     this.vacationRequestService.pendingCount().then(count => {
       pubSub
         .publish('vacationRequested', {
-          vacationRequested: new mySubscriptionMessage(count),
+          vacationRequested: new CountSubscriptionMessage(count),
         })
         .then(() => {
           console.log('published')
         })
     })
 
-    return this.vacationRequestService.create(
-      createVacationRequestInput,
-      user.uid,
-    )
+    return request
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
@@ -107,11 +107,22 @@ export class VacationRequestResolver {
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => VacationRequest)
-  approveVacationRequest(
+  async approveVacationRequest(
     @Args('approveVacationRequestInput')
     approveVacationRequestInput: ApproveVacationRequestInput,
   ) {
-    return this.vacationRequestService.approve(approveVacationRequestInput)
+    const approvedRequest = await this.vacationRequestService.approve(
+      approveVacationRequestInput,
+    )
+    const count = await this.vacationRequestService.pendingCount()
+    pubSub
+      .publish('vacationRequested', {
+        vacationRequested: new CountSubscriptionMessage(count, 'new'),
+      })
+      .then(() => {
+        console.debug('published')
+      })
+    return approvedRequest
   }
 
   @AllowedRoles(Role.STAFF)
@@ -131,18 +142,16 @@ export class VacationRequestResolver {
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseGuards(FirebaseGuard, RolesGuard)
-  @Query(() => Number, { name: 'pendingVacationRequestsCount' })
-  pendingVacationRequestsCount() {
-    return this.vacationRequestService.pendingCount()
+  @Query(() => CountSubscriptionMessage, {
+    name: 'pendingVacationRequestsCount',
+  })
+  async pendingVacationRequestsCount() {
+    const count = await this.vacationRequestService.pendingCount()
+    return new CountSubscriptionMessage(count)
   }
 
-  // @Subscription()
-  // vacationRequestApproved() {
-  //   return pubSub.asyncIterator('vacationRequestApproved')
-  // }
-
   //
-  @Subscription(() => mySubscriptionMessage, {
+  @Subscription(() => CountSubscriptionMessage, {
     name: 'vacationRequested',
   })
   vacationRequested() {
@@ -151,11 +160,15 @@ export class VacationRequestResolver {
 }
 
 @ObjectType()
-class mySubscriptionMessage {
+class CountSubscriptionMessage {
   @Field(() => Number)
   count: number
 
-  constructor(count: number) {
+  @Field(() => String, { nullable: true })
+  type?: string
+
+  constructor(count: number, type?: string) {
     this.count = count
+    this.type = type
   }
 }

@@ -171,13 +171,29 @@ export const VACATION_REQUESTED_SUBSCRIPTION = gql`
   subscription VacationRequested {
     vacationRequested {
       count
+      type
     }
   }
 `
 
+export const VACATION_REQUESTED_COUNT = gql`
+  query OpenVacationRequestCount {
+    pendingVacationRequestsCount {
+      count
+    }
+  }
+`
+
+export interface IVacationRequestedCount {
+  pendingVacationRequestsCount: {
+    count: number
+  }
+}
+
 export interface IVacationRequestedSubscription {
   vacationRequested: {
     count: number
+    type?: string
   }
 }
 
