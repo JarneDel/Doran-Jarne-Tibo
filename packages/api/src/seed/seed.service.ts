@@ -94,7 +94,7 @@ export class SeedService {
       g.name = group.name
       g.email = group.email
       g.btwNumber = group.btw_number
-      g.score = group.score
+      g.score = Math.floor(Math.random() * 100)
       g.locale = group.locale
       g.UID = group.uid
       g.role = Role.GROUP
