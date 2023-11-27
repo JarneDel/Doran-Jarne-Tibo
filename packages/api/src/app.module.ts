@@ -18,7 +18,6 @@ import { UsersModule } from './users/users.module'
 import { ReservationModule } from './reservation/reservation.module'
 import { RepairRequestModule } from './repair-request/repair-request.module'
 import { VacationRequestModule } from './vacation-request/vacation-request.module'
-import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -26,6 +25,11 @@ import { NotificationsModule } from './notifications/notifications.module';
 
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      subscriptions: {
+        'graphql-ws': true,
+        'subscriptions-transport-ws': true,
+      },
+      // installSubscriptionHandlers: true,
       autoSchemaFile: true,
       // includeStacktraceInErrorResponses: process.env.NODE_ENV != 'production',
       includeStacktraceInErrorResponses: false,
@@ -54,7 +58,6 @@ import { NotificationsModule } from './notifications/notifications.module';
     ReservationModule,
     RepairRequestModule,
     VacationRequestModule,
-    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
