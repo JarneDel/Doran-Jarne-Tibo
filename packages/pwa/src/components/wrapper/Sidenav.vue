@@ -56,15 +56,20 @@ export default defineComponent({
     Dumbbell,
   },
   setup() {
-    const { onResult } = useSubscription<IVacationRequestedSubscription>(
-      VACATION_REQUESTED_SUBSCRIPTION,
-    )
+    const { result, onResult } =
+      useSubscription<IVacationRequestedSubscription>(
+        VACATION_REQUESTED_SUBSCRIPTION,
+      )
     const { onResult: onInitialResult } = useQuery<IVacationRequestedCount>(
       VACATION_REQUESTED_COUNT,
+      {
+        fetchPolicy: 'cache-and-network',
+      },
     )
     const count = ref<number>(0)
 
     onInitialResult(param => {
+      if (result.value?.vacationRequested.count) return
       count.value = param.data?.pendingVacationRequestsCount.count ?? 0
     })
     onResult(param => {

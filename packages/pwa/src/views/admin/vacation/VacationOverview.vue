@@ -27,6 +27,7 @@ import Modal from '@/components/Modal.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import OptionsModal from '@/components/modal/OptionsModal.vue'
 import FilterOptions from '@/components/generic/FilterOptions.vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'VacationOverview',
@@ -47,6 +48,10 @@ export default defineComponent({
   },
   setup() {
     const filter = ref<string>('open')
+    const { currentRoute } = useRouter()
+    if (currentRoute.value.params.uid) {
+      console.log('ALWAYS' + currentRoute.value.params.uid)
+    }
 
     const { result, refetch, loading } = useQuery<
       VacationRequestQueryAdminAll,
