@@ -5,14 +5,14 @@ import {
   Box,
   CalendarClock,
   Contact2,
+  Dumbbell,
+  Icon,
   Palmtree,
   PanelLeftClose,
   PanelRightClose,
   Users,
   Warehouse,
   Wrench,
-  Dumbbell,
-  Icon,
 } from 'lucide-vue-next'
 import { useLocalStorage } from '@vueuse/core'
 import { useRouter } from 'vue-router'
@@ -25,11 +25,6 @@ import {
   VACATION_REQUESTED_COUNT,
   VACATION_REQUESTED_SUBSCRIPTION,
 } from '@/graphql/vacation.request.query.ts'
-// import { useSubscription } from '@vue/apollo-composable'
-// import {
-//   IVacationRequestedSubscription,
-//   VACATION_REQUESTED_SUBSCRIPTION,
-// } from '@/graphql/vacation.request.query.ts'
 
 interface page {
   name: string

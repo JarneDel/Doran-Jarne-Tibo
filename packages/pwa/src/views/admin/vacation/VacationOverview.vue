@@ -1,11 +1,13 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useMutation, useQuery } from '@vue/apollo-composable'
+import { useMutation, useQuery, useSubscription } from '@vue/apollo-composable'
 import {
   APPROVE_VACATION_REQUEST,
   ApproveVacationRequestInput,
   ApproveVacationRequestResult,
   GET_VACATION_REQUESTS_ADMIN_ALL,
+  IVacationRequestedSubscription,
+  VACATION_REQUESTED_SUBSCRIPTION,
   VacationRequestQueryAdminAll,
   VacationRequestQueryAdminAllVariables,
   VacationRequestWithStaff,
@@ -64,6 +66,15 @@ export default defineComponent({
           : filter.value === 'closed'
           ? false
           : null,
+    })
+
+    const { onResult: onVacationRequestSubscription } =
+      useSubscription<IVacationRequestedSubscription>(
+        VACATION_REQUESTED_SUBSCRIPTION,
+      )
+
+    onVacationRequestSubscription(() => {
+      filterVacationRequests(filter.value)
     })
 
     const { mutate } = useMutation<

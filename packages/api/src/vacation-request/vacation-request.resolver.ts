@@ -42,7 +42,7 @@ export class VacationRequestResolver {
     createVacationRequestInput: CreateVacationRequestInput,
     @FirebaseUser() user: UserRecord,
   ) {
-    const request = this.vacationRequestService.create(
+    const request = await this.vacationRequestService.create(
       createVacationRequestInput,
       user.uid,
     )
