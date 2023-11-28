@@ -17,6 +17,7 @@ import { useRouter } from 'vue-router'
 export default defineComponent({
   setup() {
     const { push } = useRouter()
+    const detail=ref<boolean>(false)
     const { customUser } = useUser()
     const checkboxStatus = ref<any>({})
     const checkboxStatusMaterials = ref<any>({})
@@ -33,34 +34,28 @@ export default defineComponent({
     const wantedMaterials = ref<material[]>([])
     const price = ref(0)
     const PriceWhitDiscount = ref(0)
+    const discount = ref<number>(0)
+    if (customUser.value?.userByUid.score) {
+      if (customUser.value?.userByUid.score > 50) {
+        discount.value = (customUser.value?.userByUid.score - 50) / 100
+      }
+      if (customUser.value?.userByUid.score < 50) {
+        discount.value = ((50 - customUser.value?.userByUid.score) / 100) * -1
+      }
+    }
     const calculatePrice = () => {
       price.value = 0
       PriceWhitDiscount.value = 0
       wantedRoom.value.forEach(room => {
         price.value += room.pricePerHour * reservation.value.timeDivrent
-        PriceWhitDiscount.value +=
-          room.pricePerHour * reservation.value.timeDivrent
       })
       wantedMaterials.value.forEach(material => {
         price.value +=
           material.price *
           checkboxStatusMaterials.value[material.name].amount *
           reservation.value.timeDivrent
-        PriceWhitDiscount.value +=
-          material.price *
-          checkboxStatusMaterials.value[material.name].amount *
-          reservation.value.timeDivrent
       })
-      if (customUser.value?.userByUid.score) {
-        if (customUser.value?.userByUid.score > 50) {
-          const discount = (customUser.value?.userByUid.score-50) /100
-          PriceWhitDiscount.value += (PriceWhitDiscount.value)  * discount
-        }
-        if (customUser.value?.userByUid.score < 50) {
-          const discount = (50 - customUser.value?.userByUid.score) /100
-          PriceWhitDiscount.value -= (PriceWhitDiscount.value ) * discount
-        }
-      }
+      PriceWhitDiscount.value = price.value * discount.value + price.value
     }
     const AddReservation = () => {
       let materials: material[] = []
@@ -293,6 +288,10 @@ export default defineComponent({
       Material,
       AddReservation,
       PriceWhitDiscount,
+      wantedRoom,
+      wantedMaterials,
+      discount,
+      detail
     }
   },
   components: { StyledInputText, StyledButton, Plus, Minus },
@@ -338,95 +337,122 @@ export default defineComponent({
         </div>
         <div class="flex items-center gap-2 lg:mr-0">
           <p class="text-xl">€ {{ PriceWhitDiscount.toFixed(2) }}</p>
-          <StyledButton type="button" class="h-fit" @click="AddReservation()">
-            {{ $t('navigation.addreservation') }}
+          <StyledButton :disabled="!(wantedRoom.length>0)" type="button" class="h-fit" @click=" detail=!detail">
+            {{ $t('reservation.detail') }}
           </StyledButton>
         </div>
       </div>
-      <div class="" v-if="availableRooms.length > 0">
-        <p class="text-xl font-medium">beschikbare ruimtes</p>
-        <div
-          class="mb-4 mt-2 grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4"
-        >
-          <label
-            class="focus-within:ring-secondary h-full rounded-md ring-4 ring-transparent"
-            v-for="room in availableRooms"
-          >
-            <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
-            <input
-              type="checkbox"
-              @click="addRoom(room)"
-              class="peer sr-only"
-              v-model="checkboxStatus[room.name]"
-            />
-            <div
-              class="h-full rounded-md border bg-white p-4 shadow-sm transition-all duration-300 peer-checked:border-2 peer-checked:border-black peer-checked:shadow-lg"
-            >
-              <div class="flex h-full flex-col justify-between gap-2">
-                <p class="text-lg font-medium">{{ room.name }}</p>
-                <div v-if="room.sports.length > 0">
-                  <!-- <p>Sporten :</p> -->
-                  <div class="flex flex-wrap gap-2">
-                    <p
-                      v-for="sport in room.sports"
-                      class="bg-secondary mt-1 rounded-full px-4"
-                    >
-                      {{ sport.name }}
-                    </p>
-                  </div>
-                </div>
-                <p class="font-bold">€ {{ room.pricePerHour }}/h</p>
-              </div>
-            </div>
-          </label>
-        </div>
-      </div>
-      <div class="" v-if="availableMaterials.length > 0">
-        <p class="text-xl font-medium">beschikbare materialen</p>
-        <div
-          class="mb-4 mt-2 grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4"
-        >
+      <div v-if="!detail">
+        <div class="" v-if="availableRooms.length > 0">
+          <p class="text-xl font-medium">beschikbare ruimtes</p>
           <div
-            class="h-full"
-            :key="material.id"
-            v-for="material in availableMaterials"
+            class="mb-4 mt-2 grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4"
           >
-            <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
-            <div
-              class="flex h-full items-center justify-between rounded-md border bg-white p-4 shadow-sm"
+            <label
+              class="focus-within:ring-secondary h-full rounded-md ring-4 ring-transparent"
+              v-for="room in availableRooms"
             >
-              <div class="flex h-full flex-col justify-between gap-2">
-                <p class="text-lg font-medium">{{ material.name }}</p>
-                <div v-if="material.sports.length > 0">
-                  <!-- <p>Sporten :</p> -->
-                  <div class="flex flex-wrap gap-2">
-                    <p
-                      :key="sport.id"
-                      v-for="sport in material.sports"
-                      class="bg-secondary mt-1 rounded-full px-4"
-                    >
-                      {{ sport.name }}
-                    </p>
+              <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
+              <input
+                type="checkbox"
+                @click="addRoom(room)"
+                class="peer sr-only"
+                v-model="checkboxStatus[room.name]"
+              />
+              <div
+                class="h-full rounded-md border bg-white p-4 shadow-sm transition-all duration-300 border-2 peer-checked:border-black peer-checked:shadow-lg"
+              >
+                <div class="flex h-full flex-col justify-between gap-2">
+                  <p class="text-lg font-medium">{{ room.name }}</p>
+                  <div v-if="room.sports.length > 0">
+                    <!-- <p>Sporten :</p> -->
+                    <div class="flex flex-wrap gap-2">
+                      <p
+                        v-for="sport in room.sports"
+                        class="bg-secondary mt-1 rounded-full px-4"
+                      >
+                        {{ sport.name }}
+                      </p>
+                    </div>
                   </div>
+                  <p class="font-bold">€ {{ room.pricePerHour }}/h</p>
                 </div>
-                <p class="font-bold">€ {{ material.price }}/h</p>
               </div>
-              <div class="flex items-center gap-1">
-                <StyledButton @click="() => Material(material, false)">
-                  <Minus />
-                </StyledButton>
-                <p class="text-lg font-medium">
-                  {{ checkboxStatusMaterials[material.name].amount }}/{{
-                    material.totalAmount
-                  }}
-                </p>
-                <StyledButton @click="() => Material(material, true)">
-                  <Plus />
-                </StyledButton>
+            </label>
+          </div>
+        </div>
+        <div class="" v-if="availableMaterials.length > 0">
+          <p class="text-xl font-medium">beschikbare materialen</p>
+          <div
+            class="mb-4 mt-2 grid auto-rows-fr gap-4 lg:grid-cols-3 2xl:grid-cols-4"
+          >
+            <div
+              class="h-full"
+              :key="material.id"
+              v-for="material in availableMaterials"
+            >
+              <!-- if the checkbox is checked it neets to aadd dhe room if not checked remooved -->
+              <div
+                class="flex h-full items-center justify-between rounded-md border bg-white p-4 shadow-sm"
+              >
+                <div class="flex h-full flex-col justify-between gap-2">
+                  <p class="text-lg font-medium">{{ material.name }}</p>
+                  <div v-if="material.sports.length > 0">
+                    <!-- <p>Sporten :</p> -->
+                    <div class="flex flex-wrap gap-2">
+                      <p
+                        :key="sport.id"
+                        v-for="sport in material.sports"
+                        class="bg-secondary mt-1 rounded-full px-4"
+                      >
+                        {{ sport.name }}
+                      </p>
+                    </div>
+                  </div>
+                  <p class="font-bold">€ {{ material.price }}/h</p>
+                </div>
+                <div class="flex items-center gap-1">
+                  <StyledButton @click="() => Material(material, false)">
+                    <Minus />
+                  </StyledButton>
+                  <p class="text-lg font-medium">
+                    {{ checkboxStatusMaterials[material.name].amount }}/{{
+                      material.totalAmount
+                    }}
+                  </p>
+                  <StyledButton @click="() => Material(material, true)">
+                    <Plus />
+                  </StyledButton>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+      <div v-else>
+        <h1>Samenvating</h1>
+        <div v-for="room in wantedRoom">
+          <div class="flex">
+            <p>{{ room.name }}</p>
+            <p>€{{ room.pricePerHour.toFixed(2) }}</p>
+          </div>
+        </div>
+        <div v-for="material in wantedMaterials">
+          <div class="flex">
+            <p>{{ material.name }}</p>
+            <p>€{{ material.price.toFixed(2) }}</p>
+          </div>
+        </div>
+        <div>
+          <p>Totaal</p>
+          <p>€{{ price.toFixed(2) }}</p>
+          <p>Korting</p>
+          <p>{{ discount*100 }}%</p>
+          <p>€{{ PriceWhitDiscount.toFixed(2) }}</p>
+        </div>
+        <StyledButton type="button" class="h-fit" @click="AddReservation()">
+            {{ $t('navigation.addreservation') }}
+          </StyledButton>
       </div>
     </div>
   </div>

@@ -93,6 +93,9 @@ export default defineComponent({
           wantedAmount: material.wantedAmount,
           isComplete: material.isComplete,
           description: material.description,
+          amountReserved: 0,
+          createdAt: material.createdAt,
+          updatedAt: material.updatedAt,
         }
         materials.push(listedmaterial)
       })
@@ -195,7 +198,7 @@ export default defineComponent({
               @change="
                 () => {
                   if (repair.loanableMaterial.includes(material)) {
-                    repair.loanableMaterial.splice(repair.room.indexOf(material), 1)
+                    repair.loanableMaterial.splice(repair.loanableMaterial.indexOf(material), 1)
                   } else {
                     repair.loanableMaterial.push(material)
                   }
