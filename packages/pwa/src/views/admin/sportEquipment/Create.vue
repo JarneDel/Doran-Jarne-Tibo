@@ -3,28 +3,28 @@
 interface ISport {
   GetAllSports: [
     {
-      id: string;
-      name: string;
-      createdAt: Date;
-      updatedAt: Date;
-    }
-  ];
+      id: string
+      name: string
+      createdAt: Date
+      updatedAt: Date
+    },
+  ]
 }
 
 //imports
-import { ALL_SPORTS } from '@/graphql/sport.query.ts';
-import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import StyledInputText from '@/components/generic/StyledInputText.vue';
-import { useMutation, useQuery } from '@vue/apollo-composable';
-import StyledLink from '@/components/generic/StyledLink.vue';
-import StyledButton from '@/components/generic/StyledButton.vue';
+import { ALL_SPORTS } from '@/graphql/sport.query.ts'
+import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import StyledInputText from '@/components/generic/StyledInputText.vue'
+import { useMutation, useQuery } from '@vue/apollo-composable'
+import StyledLink from '@/components/generic/StyledLink.vue'
+import StyledButton from '@/components/generic/StyledButton.vue'
 import {
   CREATE_LOANABLE_MATERIAL,
   createLoanableMaterialInput,
   ICreateLoanableMaterial,
-} from '@/graphql/loanableMaterials.query.ts';
-import Error from '@/components/Error.vue';
+} from '@/graphql/loanableMaterials.query.ts'
+import Error from '@/components/Error.vue'
 
 // todo: error handling
 
@@ -32,50 +32,50 @@ export default defineComponent({
   components: { Error, StyledButton, StyledLink, StyledInputText },
   setup() {
     // refs
-    const name = ref<string>('');
-    const description = ref<string>('');
-    const totalAmount = ref<number>(0);
-    const wantedAmount = ref<number>(0);
-    const price = ref<number>(0);
-    const sportIds = ref<string[]>([]);
-    const errors = ref<string[]>([]);
+    const name = ref<string>('')
+    const description = ref<string>('')
+    const totalAmount = ref<number>(0)
+    const wantedAmount = ref<number>(0)
+    const price = ref<number>(0)
+    const sportIds = ref<string[]>([])
+    const errors = ref<string[]>([])
 
-    const { push } = useRouter();
+    const { push } = useRouter()
 
     const { mutate, onError } = useMutation<ICreateLoanableMaterial>(
-      CREATE_LOANABLE_MATERIAL
-    );
-    onError((e) => {
-      errors.value.push(e.message);
-    });
+      CREATE_LOANABLE_MATERIAL,
+    )
+    onError(e => {
+      errors.value.push(e.message)
+    })
 
     // ALL_SPORTS
     const {
       error: errorSports,
       loading: loadingSports,
       result: resultSports,
-    } = useQuery<ISport>(ALL_SPORTS, {}, { fetchPolicy: 'cache-and-network' });
+    } = useQuery<ISport>(ALL_SPORTS, {}, { fetchPolicy: 'cache-and-network' })
 
     const createNewItem = async () => {
       if (name.value == '') {
-        errors.value.push('Please give a name');
-        return;
+        errors.value.push('Please give a name')
+        return
       }
       if (totalAmount.value == 0) {
-        errors.value.push('Please give a total amount');
-        return;
+        errors.value.push('Please give a total amount')
+        return
       }
       if (wantedAmount.value == 0) {
-        errors.value.push('Please give a wanted amount');
-        return;
+        errors.value.push('Please give a wanted amount')
+        return
       }
       if (price.value == 0) {
-        errors.value.push('Please give a price');
-        return;
+        errors.value.push('Please give a price')
+        return
       }
       if (sportIds.value.length == 0) {
-        errors.value.push('Please select at least one sport');
-        return;
+        errors.value.push('Please select at least one sport')
+        return
       }
 
       const params: createLoanableMaterialInput = {
@@ -86,18 +86,18 @@ export default defineComponent({
         price: Number(price.value),
         SportId: sportIds.value,
         isComplete: true,
-      };
+      }
       const res = await mutate({
         createLoanableMaterialInput: params,
-      });
+      })
 
       // todo: error handling, possible redirect to edit if name already exists
       if (res?.data?.createLoanableMaterial.id) {
         await push(
-          '/admin/sport-equipment/id/' + res.data.createLoanableMaterial.id
-        );
+          '/admin/sport-equipment/id/' + res.data.createLoanableMaterial.id,
+        )
       }
-    };
+    }
     return {
       push,
       createNewItem,
@@ -111,9 +111,9 @@ export default defineComponent({
       resultSports,
       loadingSports,
       errorSports,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
@@ -124,13 +124,13 @@ export default defineComponent({
     :msg="error"
     @update:is-shown="errorMessages[index] = ''"
   />
-  <div class="flex min-h-full flex-col items-center justify-center">
+  <div class="flex min-h-full flex-col items-center justify-center p-8">
     <div class="rounded-2 w-full max-w-md bg-white p-8 shadow-md">
       <form
         class="mx-auto flex max-w-lg flex-col gap-1"
         @submit.prevent="createNewItem"
       >
-        <h2 class="text-primary-text font-bold text-xl">
+        <h2 class="text-primary-text text-xl font-bold">
           {{ $t('item.new.title') }}
         </h2>
         <styled-input-text

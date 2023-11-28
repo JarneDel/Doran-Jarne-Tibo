@@ -1,42 +1,55 @@
 // Graphql
-import { InputType, Field } from "@nestjs/graphql";
+import { InputType, Field } from '@nestjs/graphql'
 // Class Validator
-import { IsString, IsBoolean, IsNumber, IsNotEmpty, MinLength, Max, IsIn, IsPositive, Min } from 'class-validator'
+import {
+  IsString,
+  IsBoolean,
+  IsNumber,
+  IsNotEmpty,
+  MinLength,
+  MaxLength,
+  Max,
+  IsIn,
+  IsPositive,
+  Min,
+} from 'class-validator'
 
 @InputType()
 export class CreateLoanableMaterialInput {
   @IsString()
   @IsNotEmpty()
   @MinLength(4)
+  @MaxLength(40)
   @Field()
-  name: string;
+  name: string
 
   @IsNumber()
   @Min(0)
   @Max(1000)
   @Field()
-  totalAmount: number;
+  totalAmount: number
 
   @IsNumber()
   @Min(0)
   @Max(1000)
   @Field()
-  wantedAmount: number;
+  wantedAmount: number
 
   @Field(() => [String], { nullable: true })
-  SportId: string[];
+  SportId: string[]
 
   @IsNumber()
   @Min(0)
   @Max(1000)
   @Field()
-  price: number;
+  price: number
 
   @IsBoolean()
   @Field()
-  isComplete: boolean;
+  isComplete: boolean
 
   @IsString()
+  @MaxLength(200)
   @Field({ nullable: true })
-  description?: string;
+  description?: string
 }
