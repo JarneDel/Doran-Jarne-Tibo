@@ -30,11 +30,13 @@ import StyledInputText from '@/components/generic/StyledInputText.vue'
 import OptionsModal from '@/components/modal/OptionsModal.vue'
 import FilterOptions from '@/components/generic/FilterOptions.vue'
 import { useRouter } from 'vue-router'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
   name: 'VacationOverview',
   methods: { Grid2x2Icon, CheckIcon, AlarmCheckIcon, CircleDot },
   components: {
+    Error,
     OptionsModal,
     FilterOptions,
     StyledInputText,
@@ -49,6 +51,8 @@ export default defineComponent({
     Grid2x2,
   },
   setup() {
+    const errors = ref<string[]>([])
+
     const filter = ref<string>('open')
     const { currentRoute } = useRouter()
     if (currentRoute.value.params.uid) {
@@ -77,14 +81,17 @@ export default defineComponent({
       filterVacationRequests(filter.value)
     })
 
-    const { mutate } = useMutation<
+    const { mutate, onError } = useMutation<
       ApproveVacationRequestResult,
       ApproveVacationRequestInput
     >(APPROVE_VACATION_REQUEST)
 
+    onError(err => {
+      errors.value.push(err.message)
+    })
     const rejectVacation = async () => {
       if (!reject.value) return
-      await mutate({
+      const res = await mutate({
         approveVacationRequestInput: {
           id: reject.value.id,
           rejectReason: rejectMessage.value,
@@ -92,13 +99,14 @@ export default defineComponent({
           isApproved: false,
         },
       })
+      if (!res) return
       reject.value = undefined
       rejectMessage.value = ''
     }
 
-    const approveVacation = () => {
+    const approveVacation = async () => {
       if (!approve.value) return
-      mutate({
+      const res = await mutate({
         approveVacationRequestInput: {
           id: approve.value.id,
           rejectReason: '',
@@ -106,6 +114,7 @@ export default defineComponent({
           isApproved: true,
         },
       })
+      if (!res) return
       approve.value = undefined
     }
 
@@ -123,6 +132,7 @@ export default defineComponent({
     return {
       approve,
       approveVacation,
+      errors,
       filter,
       filterVacationRequests,
       loading,
@@ -136,6 +146,13 @@ export default defineComponent({
 </script>
 
 <template>
+  <Error
+    v-for="(err, index) in errors"
+    :isShown="!!err"
+    :msg="err ?? undefined"
+    @update:isShown="errors[index] = ''"
+  ></Error>
+
   <Modal v-if="reject" @close="reject = undefined">
     <template v-slot:title>
       <h2 class="font-medium">
