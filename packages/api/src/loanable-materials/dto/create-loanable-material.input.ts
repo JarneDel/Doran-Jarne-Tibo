@@ -49,7 +49,7 @@ export class CreateLoanableMaterialInput {
   isComplete: boolean
 
   @IsString()
-  @MaxLength(200)
+  @MaxLength(250)
   @Field({ nullable: true })
   description?: string
 }
