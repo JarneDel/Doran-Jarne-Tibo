@@ -24,9 +24,7 @@ export const GET_SPORT = gql`
 
 export const DELETE_SPORT = gql`
   mutation removeSportById($id: String!) {
-    removeSportById(id: $id){
-      id
-    }
+    removeSportById(id: $id)
   }
 `
 

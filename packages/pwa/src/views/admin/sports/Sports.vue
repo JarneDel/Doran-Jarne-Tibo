@@ -46,14 +46,15 @@ export default defineComponent({
       loading: loadingSports,
       result: resultSports,
       error: errorSports,
-    } = useQuery<Sports>(ALL_SPORTS);
+      refetch: refetchSports,
+    } = useQuery<Sports>(ALL_SPORTS, {}, { fetchPolicy: 'cache-and-network' });
 
     const { lastRoute } = useLastRoute();
 
     watch(
       lastRoute,
       (value) => {
-        if (value.startsWith('/admin/rooms/id/')) {
+        if (value.startsWith('/admin/sports/id/')) {
           fetchWithFilters();
         }
       },
@@ -61,7 +62,7 @@ export default defineComponent({
     );
 
     const fetchWithFilters = () => {
-      console.log('fetchWithFilters');
+      refetchSports();
     };
 
     return {
