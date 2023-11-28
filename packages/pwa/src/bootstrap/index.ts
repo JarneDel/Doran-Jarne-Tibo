@@ -193,6 +193,13 @@ export const router = createRouter({
           },
         },
         {
+          path: 'sports/create',
+          component: () => import('@/views/admin/sports/Create.vue'),
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
           path: 'staff',
           component: () => import('@/views/admin/staff/Staff.vue'),
           meta: {

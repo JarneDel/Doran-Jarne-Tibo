@@ -1,21 +1,21 @@
 <script lang="ts">
 interface ISport {
-  GetSportById: Sport
+  GetSportById: Sport;
 }
 
 interface Sport {
-  id: string
-  name: string
-  description: string
+  id: string;
+  name: string;
+  description: string;
 }
 
-import { computed, defineComponent } from 'vue'
-import Modal from '@/components/Modal.vue'
-import { useRouter } from 'vue-router'
-import { useMutation, useQuery } from '@vue/apollo-composable'
-import { DELETE_SPORT, GET_SPORT } from '@/graphql/sport.query.ts'
-import { Edit2, Trash2 } from 'lucide-vue-next'
-import StyledButton from '@/components/generic/StyledButton.vue'
+import { computed, defineComponent } from 'vue';
+import Modal from '@/components/Modal.vue';
+import { useRouter } from 'vue-router';
+import { useMutation, useQuery } from '@vue/apollo-composable';
+import { DELETE_SPORT, GET_SPORT } from '@/graphql/sport.query.ts';
+import { Edit2, Trash2 } from 'lucide-vue-next';
+import StyledButton from '@/components/generic/StyledButton.vue';
 
 export default defineComponent({
   components: {
@@ -26,8 +26,8 @@ export default defineComponent({
   },
   name: 'Item',
   setup: () => {
-    const { push, replace, currentRoute } = useRouter()
-    const id = computed(() => currentRoute.value.params.id)
+    const { push, replace, currentRoute } = useRouter();
+    const id = computed(() => currentRoute.value.params.id);
     // region graphql
     const { error, loading, result } = useQuery<ISport>(
       GET_SPORT,
@@ -37,15 +37,15 @@ export default defineComponent({
       {
         fetchPolicy: 'cache-and-network',
       },
-    )
-    const { mutate: deleteItem } = useMutation(DELETE_SPORT)
+    );
+    const { mutate: deleteItem } = useMutation(DELETE_SPORT);
 
-    const deleteItemWithConfirmation = (roomId: string) => {
-      if (!confirm('Are you sure you want to delete this sport?')) return
-      deleteItem({ roomId }).then(() => {
-        replace('/admin/sports')
-      })
-    }
+    const deleteItemWithConfirmation = (id: string) => {
+      if (!confirm('Are you sure you want to delete this sport?')) return;
+      deleteItem({ id }).then(() => {
+        replace('/admin/sports');
+      });
+    };
 
     return {
       push,
@@ -53,9 +53,9 @@ export default defineComponent({
       error,
       loading,
       deleteItemWithConfirmation,
-    }
+    };
   },
-})
+});
 </script>
 
 <template>
