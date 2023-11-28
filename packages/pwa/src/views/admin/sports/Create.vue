@@ -71,7 +71,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex min-h-full flex-col items-center justify-center">
+  <div
+    class="p-2 sm:p-4 md:p-8 flex min-h-full flex-col items-center justify-center"
+  >
     <div class="rounded-2 w-full max-w-md bg-white p-8 shadow-md">
       <form @submit.prevent="handleSubmit" class="flex max-w-md flex-col gap-4">
         <h2 class="text-primary-text text-2xl font-medium">
