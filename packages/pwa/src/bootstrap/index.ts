@@ -187,6 +187,10 @@ export const router = createRouter({
               component: () => import('@/views/admin/sports/Item.vue'),
               props: true,
             },
+            {
+              path: 'id/:id/edit',
+              component: () => import('@/views/admin/sports/Edit.vue'),
+            },
           ],
           meta: {
             shouldBeAuthenticated: true,

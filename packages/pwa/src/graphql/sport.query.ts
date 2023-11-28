@@ -40,6 +40,18 @@ mutation ($createSportInput: CreateSportInput!) {
 }
 `
 
+export const UPDATE_SPORT = gql`
+mutation ($updateSportInput: UpdateSportInput!) {
+  updateSport(
+    updateSportInput: $updateSportInput
+  ) {
+    id
+    name
+    description
+  }
+}
+`
+
 export interface ICreateSport {
   createSport: {
     id: string
