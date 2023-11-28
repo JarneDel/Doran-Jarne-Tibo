@@ -10,14 +10,14 @@ import {
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { Room } from '@/interface/roomInterface'
 import { material } from '@/interface/materialInterface'
-import { Plus, Minus } from 'lucide-vue-next'
+import { Plus, Minus, X } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
   setup() {
     const { push } = useRouter()
-    const detail=ref<boolean>(false)
+    const detail = ref<boolean>(false)
     const { customUser } = useUser()
     const checkboxStatus = ref<any>({})
     const checkboxStatusMaterials = ref<any>({})
@@ -132,11 +132,6 @@ export default defineComponent({
           material.totalAmount
         )
           return
-        if (wantedMaterials.value.includes(material))
-          wantedMaterials.value.splice(
-            wantedMaterials.value.indexOf(material),
-            1,
-          )
         checkboxStatusMaterials.value[material.name].amount++
       } else {
         if (checkboxStatusMaterials.value[material.name].amount == 0) return
@@ -171,19 +166,55 @@ export default defineComponent({
         onResult(result => {
           if (result.loading) return
           availableMaterials.value = result.data.GetAvailableloanableMaterials
-          availableMaterials.value.forEach(material => {
-            checkboxStatusMaterials.value[material.name] = {
-              amount: 0,
-              checked: false,
+          const wantedIds: string[] = []
+          wantedMaterials.value.forEach(material => {
+            wantedIds.push(material.id)
+          })
+          const availableids: string[] = []
+          result.data.GetAvailableloanableMaterials.forEach((material:material) => {
+            availableids.push(material.id)
+          })
+          result.data.GetAvailableloanableMaterials.forEach((material:material) => {
+            if (wantedIds.includes(material.id)) {
+              checkboxStatusMaterials.value[material.name] = {
+                amount: checkboxStatusMaterials.value[material.name].amount,
+                checked: true,
+              }
+            } else {
+              //delete out of the list
+              checkboxStatusMaterials.value[material.name] = {
+                amount: 0,
+                checked: false,
+              }
+            }
+          })
+          //if wanted id is not in the available id list remove it
+          wantedMaterials.value.forEach(material => {
+            console.log(!availableids.includes(material.id))
+            if (!availableids.includes(material.id)) {
+              wantedMaterials.value.splice(
+                wantedMaterials.value.indexOf(material),
+                1,
+              )
+              checkboxStatusMaterials.value[material.name] = {
+                amount: 0,
+                checked: false,
+              }
             }
           })
           resolve()
+          calculatePrice()
         })
       })
     }
     const addRoom = (room: Room) => {
       if (checkboxStatus.value[room.name]) {
         wantedRoom.value.splice(wantedRoom.value.indexOf(room), 1)
+        checkboxStatus.value[room.name] = false
+        if (wantedRoom.value.length == 0) {
+          wantedMaterials.value = []
+          availableMaterials.value = []
+        }
       } else {
         wantedRoom.value.push(room)
       }
@@ -291,10 +322,10 @@ export default defineComponent({
       wantedRoom,
       wantedMaterials,
       discount,
-      detail
+      detail,
     }
   },
-  components: { StyledInputText, StyledButton, Plus, Minus },
+  components: { StyledInputText, StyledButton, Plus, Minus, X },
 })
 </script>
 
@@ -302,12 +333,13 @@ export default defineComponent({
   <div class="m-4">
     <div class="mx-auto max-w-7xl">
       <h1 class="my-4 text-xl font-bold">{{ $t('reservation.title') }}</h1>
-      <p class="text-lg">
+      <p v-if="!detail" class="text-lg">
         {{ $t('reservation.subtitle') }}
       </p>
-      <div class="justify-between lg:flex">
+      <div v-if="!detail" class="justify-between lg:flex">
         <div class="my-4 items-end gap-2 md:flex">
           <styled-input-text
+            :disabled="detail"
             v-model="reservation.date"
             :label="$t('reservation.date')"
             class="w-fit"
@@ -316,6 +348,7 @@ export default defineComponent({
             @change="checkDate"
           />
           <styled-input-text
+            :disabled="detail"
             v-model="reservation.beginTime"
             :label="$t('reservation.begin')"
             class="w-fit"
@@ -324,6 +357,7 @@ export default defineComponent({
             @change="checkStartTime"
           />
           <styled-input-text
+            :disabled="detail"
             v-model="reservation.endTime"
             :label="$t('reservation.end')"
             class="w-fit"
@@ -337,7 +371,12 @@ export default defineComponent({
         </div>
         <div class="flex items-center gap-2 lg:mr-0">
           <p class="text-xl">€ {{ PriceWhitDiscount.toFixed(2) }}</p>
-          <StyledButton :disabled="!(wantedRoom.length>0)" type="button" class="h-fit" @click=" detail=!detail">
+          <StyledButton
+            :disabled="!(wantedRoom.length > 0)"
+            type="button"
+            class="h-fit"
+            @click="detail = !detail"
+          >
             {{ $t('reservation.detail') }}
           </StyledButton>
         </div>
@@ -360,7 +399,7 @@ export default defineComponent({
                 v-model="checkboxStatus[room.name]"
               />
               <div
-                class="h-full rounded-md border bg-white p-4 shadow-sm transition-all duration-300 border-2 peer-checked:border-black peer-checked:shadow-lg"
+                class="h-full rounded-md border-2 bg-white p-4 shadow-sm transition-all duration-300 peer-checked:border-black peer-checked:shadow-lg"
               >
                 <div class="flex h-full flex-col justify-between gap-2">
                   <p class="text-lg font-medium">{{ room.name }}</p>
@@ -429,30 +468,82 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div v-else>
-        <h1>Samenvating</h1>
-        <div v-for="room in wantedRoom">
-          <div class="flex">
-            <p>{{ room.name }}</p>
-            <p>€{{ room.pricePerHour.toFixed(2) }}</p>
+      <div v-else class="w-85 mx-auto rounded-md bg-white p-8 shadow-md">
+        <div class="flex justify-between">
+          <h1 class="mb-2 text-lg font-medium">Samenvating:</h1>
+          <x class="hover:text-red-500" @click="detail = !detail" />
+        </div>
+        <div class="mb-2">
+          <div class="flex justify-between">
+            <p>Datum:</p>
+            <p>{{ reservation.date }}</p>
+          </div>
+          <div class="flex justify-between">
+            <p>Begin tijd:</p>
+            <p>{{ reservation.beginTime }}</p>
+          </div>
+          <div class="flex justify-between">
+            <p>Eind tijd:</p>
+            <p>{{ reservation.endTime }}</p>
+          </div>
+          <div class="flex justify-between">
+            <p>Tijd verschil:</p>
+            <p>{{ reservation.timeDivrent.toFixed(2) }} uur</p>
           </div>
         </div>
-        <div v-for="material in wantedMaterials">
-          <div class="flex">
-            <p>{{ material.name }}</p>
-            <p>€{{ material.price.toFixed(2) }}</p>
+        <div class="mb-2">
+          <div v-for="room in wantedRoom" class="">
+            <div class="flex justify-between">
+              <p>{{ room.name }}</p>
+              <div class="flex items-center gap-2">
+                <p>€{{ room.pricePerHour.toFixed(2) }}/h</p>
+                <button @click="addRoom(room)">
+                  <X :size="20" class="hover:text-red-500" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mb-2">
+          <div v-for="material in wantedMaterials">
+            <div class="flex justify-between">
+              <p>{{ material.name }}</p>
+              <div class="flex gap-2">
+                <p>€{{ material.price.toFixed(2) }}/h</p>
+                <button @click="() => Material(material, true)">
+                  <Plus :size="20" class="hover:text-red-500" />
+                </button>
+                <p>{{ checkboxStatusMaterials[material.name].amount }}</p>
+                <button @click="() => Material(material, false)">
+                  <Minus :size="20" class="hover:text-red-500" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         <div>
-          <p>Totaal</p>
-          <p>€{{ price.toFixed(2) }}</p>
-          <p>Korting</p>
-          <p>{{ discount*100 }}%</p>
-          <p>€{{ PriceWhitDiscount.toFixed(2) }}</p>
+          <div class="flex justify-between">
+            <p>Sub totaal:</p>
+            <p>€{{ price.toFixed(2) }}</p>
+          </div>
+          <div class="flex justify-between">
+            <p>Group score:</p>
+            <p>{{ Math.round(discount * -100) }}%</p>
+          </div>
+          <div class="flex justify-between">
+            <p>Totaal:</p>
+            <p>€{{ PriceWhitDiscount.toFixed(2) }}</p>
+          </div>
+          <div class="flex justify-end">
+            <StyledButton
+              type="button"
+              class="mt-2 h-fit"
+              @click="AddReservation()"
+            >
+              {{ $t('navigation.addreservation') }}
+            </StyledButton>
+          </div>
         </div>
-        <StyledButton type="button" class="h-fit" @click="AddReservation()">
-            {{ $t('navigation.addreservation') }}
-          </StyledButton>
       </div>
     </div>
   </div>

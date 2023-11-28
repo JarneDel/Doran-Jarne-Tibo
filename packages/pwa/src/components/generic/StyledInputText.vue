@@ -29,6 +29,10 @@ export default defineComponent({
       type: Number,
       required: false,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['update:modelValue'],
 })
@@ -39,6 +43,7 @@ export default defineComponent({
     <span class="c-primary-text font-medium">{{ label }}</span>
     <br />
     <input
+    :disabled="disabled"
       :autocomplete="autocomplete"
       :min="min"
       :name="name"
