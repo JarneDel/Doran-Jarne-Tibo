@@ -145,8 +145,8 @@ export default defineComponent({
 
 <template>
   <div class="flex h-full w-full items-center justify-center">
-    <form class="w-1/3 rounded-md bg-white p-8 shadow-md" @submit.prevent="handleSubmit">
-      <h1 class="my-2 text-xl font-medium">
+    <form class="my-4 w-1/3 rounded-md bg-white p-8 shadow-md" @submit.prevent="handleSubmit">
+      <h1 class="mb-2 text-xl font-medium">
         {{ $t('repairRequest.repairRequests') }}
       </h1>
       <styled-input-text
@@ -208,7 +208,7 @@ export default defineComponent({
         </div>
       </div>
       <StyledButton
-        class="w-full mt-2 text-lg "
+        class="w-fit float-right mt-2 text-lg "
         type="submit"
       >
         {{$t('common.save')}}
