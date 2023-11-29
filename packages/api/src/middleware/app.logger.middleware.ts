@@ -30,9 +30,12 @@ export class AppLoggerMiddleware implements NestMiddleware {
         const operation = document.definitions[0].operation
         //@ts-ignore
         const queryName = document.definitions[0].name?.value
+        const timecolor = responseTime > 500 ? '\x1b[31m' : '\x1b[32m'
+        const normalColor = '\x1b[32m'
+
 
         this.logger.log(
-          `${method} ${url} ${statusCode} ${responseTime}ms, ${operation} - ${selectionNames} ${
+          `${method} ${url} ${statusCode}${timecolor} ${responseTime}ms${normalColor}, ${operation} - ${selectionNames} ${
             queryName ? 'queryName:' + queryName : ''
           }`,
         )
