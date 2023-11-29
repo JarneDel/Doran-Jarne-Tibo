@@ -30,6 +30,7 @@ export default defineComponent({
     const availableMaterials = ref<material[]>([])
     const wantedRoom = ref<Room[]>([])
     const wantedMaterials = ref<material[]>([])
+    const reservedMaterials = ref<material[]>([])
     const price = ref(0)
     const PriceWhitDiscount = ref(0)
     const discount = ref<number>(0)
@@ -66,6 +67,7 @@ export default defineComponent({
         price.value += room.pricePerHour * reservation.value.timeDivrent
       })
       wantedMaterials.value.forEach(material => {
+        console.log(material)
         price.value +=
           material.price *
           checkboxStatusMaterials.value[material.name].amount *
@@ -91,6 +93,7 @@ export default defineComponent({
           reservation.value.date = date.toISOString().substr(0, 10)
           reservation.value.beginTime = reservations.value?.startTime
           reservation.value.endTime = reservations.value?.endTime
+          reservedMaterials.value = reservations.value?.reservedMaterials
         }
         timeDivrent()
         check()
@@ -158,7 +161,7 @@ export default defineComponent({
         startTime: reservation.value.beginTime,
         endTime: reservation.value.endTime,
         groupId: customUser.value?.userByUid.id,
-        price: price.value,
+        price: PriceWhitDiscount.value,
         material: materials,
         rooms: roomlist,
         id: id.value,
@@ -218,8 +221,15 @@ export default defineComponent({
         onResult(result => {
           if (result.loading) return
           availableMaterials.value = result.data.GetAvailableloanableMaterials
+          const availableMaterialsIds: string[] = []
+          availableMaterials.value.forEach(material => {
+            availableMaterialsIds.push(material.id)
+          })
           if (reservations.value?.date.substr(0, 10) == reservation.value.date)
             reservations.value?.reservedMaterials.forEach(material => {
+          console.log(material)
+          console.log(availableMaterials.value)
+          if (availableMaterialsIds.includes(material.id))
               wantedMaterials.value.push(material)
             })
           const listIds: string[] = []

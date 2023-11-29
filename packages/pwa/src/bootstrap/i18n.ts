@@ -7,6 +7,8 @@ export const SUPPORTED_LOCALES: Record<string, string> = {
   nl: 'Nederlands',
   zh: 'Chinese',
   es: 'Spaans',
+  fr: 'Frans',
+  de: 'Duits',
 }
 
 export const i18nOptions: I18nOptions = {
