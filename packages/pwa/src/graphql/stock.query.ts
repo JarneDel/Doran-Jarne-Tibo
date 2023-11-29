@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'
 
 export const ALL_STOCK_AND_SERVICES = gql`
-  query (
+  query StockAndServices(
     $orderByField: String
     $orderDirection: String
     $searchName: String
@@ -33,7 +33,7 @@ export const ALL_STOCK_AND_SERVICES = gql`
 `
 
 export const ONE_STOCK = gql`
-  query ($id: String!) {
+  query OneStock($id: String!) {
     stockItem(id: $id) {
       id
       name

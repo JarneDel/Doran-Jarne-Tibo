@@ -42,7 +42,7 @@ export class VacationRequestResolver {
     createVacationRequestInput: CreateVacationRequestInput,
     @FirebaseUser() user: UserRecord,
   ) {
-    const request = this.vacationRequestService.create(
+    const request = await this.vacationRequestService.create(
       createVacationRequestInput,
       user.uid,
     )
@@ -80,13 +80,7 @@ export class VacationRequestResolver {
     if (query.isExpired && query.isOpen !== null) {
       throw new Error('Cannot combine isOpen and isExpired')
     }
-    if (query.isOpen !== null) {
-      return this.vacationRequestService.findByIsOpen(query.isOpen)
-    }
-    if (query.isExpired) {
-      return this.vacationRequestService.findExpired()
-    }
-    return this.vacationRequestService.findAll()
+    return this.vacationRequestService.findBy(query)
   }
 
   @UseGuards(FirebaseGuard, RolesGuard)

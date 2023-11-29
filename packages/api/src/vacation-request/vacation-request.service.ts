@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common'
 import { CreateVacationRequestInput } from './dto/create-vacation-request.input'
 import { VacationRequest } from './entities/vacation-request.entity'
 import { InjectRepository } from '@nestjs/typeorm'
-import { MongoRepository } from 'typeorm'
+import { FilterOperators, MongoRepository } from 'typeorm'
 import { ObjectId } from 'mongodb'
 import { ApproveVacationRequestInput } from './dto/approve-vacation-request.input'
 import { GraphQLError } from 'graphql/error'
 import { StaffService } from '../staff/staff.service'
+import { FindVacationArgs } from './args/findVacation.args'
 
 @Injectable()
 export class VacationRequestService {
@@ -117,29 +118,31 @@ export class VacationRequestService {
     return this.vacationRequestRepository.find()
   }
 
-  findByIsOpen(isOpen: boolean) {
-    if (isOpen) {
-      return this.vacationRequestRepository.find({
-        $and: [
-          { startDate: { $gte: new Date() } },
-          { $or: [{ isRejected: null }, { isRejected: false }] },
-          { $or: [{ isApproved: null }, { isApproved: false }] },
-        ],
-      })
-    }
-    return this.vacationRequestRepository.find({
-      $and: [{ $or: [{ isRejected: true }, { isApproved: true }] }],
-    })
-  }
+  findBy(query: FindVacationArgs) {
+    const { staffUId, isOpen, isExpired } = query
 
-  findExpired() {
-    return this.vacationRequestRepository.find({
-      $and: [
+    const findOptions: FilterOperators<VacationRequest> = {}
+    if (staffUId) {
+      findOptions.staffUId = staffUId
+    }
+    if (isOpen == true) {
+      findOptions.$and = [
+        { startDate: { $gte: new Date() } },
+        { $or: [{ isRejected: null }, { isRejected: false }] },
+        { $or: [{ isApproved: null }, { isApproved: false }] },
+      ]
+    } else if (isOpen == false) {
+      findOptions.$and = [{ $or: [{ isRejected: true }, { isApproved: true }] }]
+    }
+    if (isExpired) {
+      findOptions.$and = [
         { startDate: { $lte: new Date() } },
         { $or: [{ isRejected: null }, { isRejected: false }] },
         { $or: [{ isApproved: null }, { isApproved: false }] },
-      ],
-    })
+      ]
+    }
+
+    return this.vacationRequestRepository.find(findOptions)
   }
 
   findOne(id: string) {

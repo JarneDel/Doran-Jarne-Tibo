@@ -230,6 +230,7 @@ export default defineComponent({
     :show-modal="isSaved"
     title="Your vacation has been requested"
     @button2-click="$router.push('/staff')"
+    @update:show-modal="$router.push('/staff')"
   >
   </OptionsModal>
 
@@ -270,12 +271,11 @@ export default defineComponent({
       </div>
 
       <ExpandPendingRequests
-        :title="openRequests.length + ' pending vacation requests'"
-        :data="openRequests"
         v-if="openRequests"
+        :data="openRequests"
+        :title="openRequests.length + ' pending vacation requests'"
       />
       <expand-pending-requests
-        :title="connectedVacations.length + ' upcoming vacations'"
         :data="
           connectedVacations.map(dates => {
             if (dates.length > 1) {
@@ -292,6 +292,7 @@ export default defineComponent({
             }
           })
         "
+        :title="connectedVacations.length + ' upcoming vacations'"
       ></expand-pending-requests>
 
       <h3 class="mb-1 mt-4 text-lg font-medium">
@@ -303,17 +304,17 @@ export default defineComponent({
           {{ error }}
         </div>
         <StyledInputText
-          :label="$t('common.from')"
-          v-model="startDate"
           :id="'startDate'"
+          v-model="startDate"
+          :label="$t('common.from')"
           class="my-2"
           type="date"
         />
 
         <StyledInputText
-          :label="$t('common.until')"
-          v-model="endDate"
           :id="'End date'"
+          v-model="endDate"
+          :label="$t('common.until')"
           class="my-2"
           type="date"
         />
