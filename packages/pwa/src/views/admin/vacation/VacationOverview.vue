@@ -312,13 +312,13 @@ export default defineComponent({
                     button-type="secondary"
                     @click="approve = vacationRequest"
                   >
-                    Approve
+                    {{ $t('common.approve') }}
                   </StyledButton>
                   <StyledButton
                     button-type="danger"
                     @click="reject = vacationRequest"
                   >
-                    Reject
+                    {{ $t('common.reject') }}
                   </StyledButton>
                 </div>
               </td>
