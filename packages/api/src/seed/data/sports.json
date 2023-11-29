@@ -1,44 +1,43 @@
 [
     {
-        "name": "Voetbal"
+      "name": "Voetbal",
+      "description": "Voetbal is een teamsport die bekend staat om zijn dynamische en snelle spel. Het doel is om de bal in het doel van de tegenstander te schieten, waarbij teamwork, behendigheid en strategie essentieel zijn."
     },
     {
-        "name": "Handbal"
+      "name": "Handbal",
+      "description": "Handbal is een intensieve balsport waarbij twee teams strijden om doelpunten te scoren door de bal in het doel van de tegenpartij te gooien. Het spel combineert fysieke kracht, snelheid en tactische vaardigheden."
     },
     {
-        "name": "Tennis"
+      "name": "Tennis",
+      "description": "Tennis is een individuele of dubbelspel sport waarbij spelers de bal over een net heen en weer slaan met behulp van rackets. Het vereist behendigheid, precisie en strategisch denken."
     },
     {
-        "name": "Basketbal"
+      "name": "Basketbal",
+      "description": "Basketbal is een teamsport waarbij twee teams strijden om punten te scoren door de bal in de basket van de tegenstander te gooien. Snelheid, sprongkracht en coördinatie zijn cruciaal in dit dynamische spel."
     },
     {
-        "name": "Volleybal"
+      "name": "Volleybal",
+      "description": "Volleybal is een teamsport waarbij twee teams proberen de bal over het net te slaan en deze in het veld van de tegenstander te laten landen. Communicatie, timing en behendigheid zijn van groot belang."
     },
     {
-        "name": "Hockey"
+      "name": "Hockey",
+      "description": "Hockey is een teamsport waarbij spelers proberen doelpunten te scoren door de bal in het doel van de tegenstander te slaan of te pushen. Het vereist snelheid, behendigheid en nauwkeurigheid met de stick."
     },
     {
-        "name": "Zwemmen"
+      "name": "Zwemmen",
+      "description": "Zwemmen is een individuele of teamgerichte sport waarbij deelnemers zich voortbewegen door het water. Het omvat verschillende zwemstijlen en vereist uithoudingsvermogen, techniek en snelheid."
     },
     {
-        "name": "Pilates"
+      "name": "Pilates",
+      "description": "Pilates is een vorm van lichaamsbeweging die zich richt op het versterken van de kernspieren, flexibiliteit en lichaamsbewustzijn. Het legt de nadruk op gecontroleerde bewegingen en ademhalingstechnieken."
     },
     {
-        "name": "Duiken"
+      "name": "Duiken",
+      "description": "Duiken is een sport waarbij deelnemers vanaf een platform of plank in het water springen en beoordeeld worden op de uitvoering van acrobatische bewegingen. Het vereist moed, techniek en precisie."
     },
     {
-        "name": "Yoga"
-    },
-    {
-        "name":"Korfbal"
-    },
-    {
-        "name":"Dansen"
-    },
-    {
-        "name":"WaterPolo"
-    },
-    {
-        "name":"Synchroonzwemmen"
+      "name": "Yoga",
+      "description": "Yoga is een fysieke, mentale en spirituele praktijk die zich richt op ademhaling, houdingen en meditatie. Het bevordert ontspanning, flexibiliteit en innerlijke balans."
     }
-]
+  ]
+  

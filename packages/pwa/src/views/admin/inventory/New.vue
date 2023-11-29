@@ -90,7 +90,7 @@ export default defineComponent({
   />
 
   <form
-    class="mx-auto mt-12 flex max-w-lg flex-col"
+    class="mx-auto mt-12 flex h-min w-full max-w-lg flex-col overflow-hidden rounded-xl border bg-white p-4 shadow-md dark:bg-gray-800"
     @submit.prevent="createNewItem"
   >
     <h2 class="font-500 mb-1 text-xl">{{ $t('item.new.title') }}</h2>
@@ -120,7 +120,7 @@ export default defineComponent({
         id="idealAmountInStock"
         v-model="idealAmountInStock"
         class="block w-16"
-        max="200"
+        max="250"
         min="0"
         name="idealAmountInStock"
         step="1"
@@ -134,7 +134,7 @@ export default defineComponent({
         id="inStock"
         v-model="inStock"
         class="block w-16"
-        max="200"
+        max="250"
         min="0"
         name="inStock"
         step="1"

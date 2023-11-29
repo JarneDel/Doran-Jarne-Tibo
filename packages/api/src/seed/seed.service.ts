@@ -54,7 +54,7 @@ export class SeedService {
     private serviceService: ServiceService,
     private reservationService: ReservationService,
     private RepairRequestService: RepairRequestService,
-    private vacationRequestService: VacationRequestService,
+    private vacationRequestService: VacationRequestService
   ) {}
 
   async addStockFromJson(): Promise<Stock[]> {
@@ -66,8 +66,13 @@ export class SeedService {
     }
     for (let stockItem of stock) {
       const s = new Stock()
-      const { name, description, idealStock, amountInStock, needToOrderMore } =
-        stockItem
+      const {
+        name,
+        description,
+        idealStock,
+        amountInStock,
+        needToOrderMore,
+      } = stockItem
 
       const service = services[Math.floor(Math.random() * services.length)]
       s.serviceId = new ObjectId(service.id)
@@ -76,7 +81,7 @@ export class SeedService {
       s.description = description
       s.idealStock = idealStock
       s.amountInStock = amountInStock
-      s.needToOrderMore = needToOrderMore as unknown as boolean
+      s.needToOrderMore = (needToOrderMore as unknown) as boolean
       outStocks.push(s)
     }
 
@@ -163,8 +168,9 @@ export class SeedService {
   async addSportsFromJson(): Promise<Sport[]> {
     let Sports: Sport[] = []
     for (let sport of sports) {
-      const s = new Room()
+      const s = new Sport()
       s.name = sport.name
+      s.description = sport.description
       Sports.push(s)
     }
 
@@ -184,7 +190,7 @@ export class SeedService {
       s.lastName = staffMember.lastName
       s.phone = staffMember.phone
       s.holidaysLeft = staffMember.holidaysleft
-      s.holidayDates = staffMember.holidayDates.map(date => new Date(date))
+      s.holidayDates = staffMember.holidayDates.map((date) => new Date(date))
       s.holidaysTotal = staffMember.holidaysTotal
       const role = staffMember.role
       if (role === 'ADMIN') {
@@ -196,8 +202,7 @@ export class SeedService {
       }
       s.UID = staffMember.UID
       s.locale = staffMember.locale
-      s.workingHours =
-        staffMember.workingHours as unknown as WorkingHoursEntity[]
+      s.workingHours = (staffMember.workingHours as unknown) as WorkingHoursEntity[]
       outStaff.push(s)
     }
 
@@ -214,11 +219,11 @@ export class SeedService {
       throw new Error('No groups found, please seed groups first')
     }
     const rooms = (await this.roomService.findAll()).filter(
-      room =>
+      (room) =>
         room.type === 'Sportzaal' ||
         room.type === 'Kleedkamer' ||
         room.type === 'Zwembad' ||
-        room.type === 'Duikput',
+        room.type === 'Duikput'
     )
     if (rooms.length === 0) {
       throw new Error('No rooms found, please seed rooms first')
@@ -226,7 +231,7 @@ export class SeedService {
     const loanableMaterials = await this.loanableMaterialsService.findAll()
     if (loanableMaterials.length === 0) {
       throw new Error(
-        'No loanable materials found, please seed loanable materials first',
+        'No loanable materials found, please seed loanable materials first'
       )
     }
 
@@ -316,7 +321,7 @@ export class SeedService {
       s.description = service.description
       s.roomId = [
         new ObjectId(
-          rooms[Math.floor(Math.random() * rooms.length)].id,
+          rooms[Math.floor(Math.random() * rooms.length)].id
         ).toString(),
       ]
       s.staffUID = [staff[0].UID]
@@ -362,7 +367,7 @@ export class SeedService {
         let sports: Sport[] = []
         for (let sportId of room.SportId) {
           const s = this.sportService.findOneById(sportId)
-          s.then(sport => {
+          s.then((sport) => {
             sports.push(sport)
           })
         }
@@ -396,7 +401,7 @@ export class SeedService {
           let sports: Sport[] = []
           for (let sportId of loanableMaterial.SportId) {
             const s = this.sportService.findOneById(sportId)
-            s.then(sport => {
+            s.then((sport) => {
               sports.push(sport)
             })
           }
@@ -422,7 +427,7 @@ export class SeedService {
         let sports: Sport[] = []
         for (let sportId of room.SportId) {
           const s = this.sportService.findOneById(sportId)
-          s.then(sport => {
+          s.then((sport) => {
             sports.push(sport)
           })
         }
@@ -439,7 +444,7 @@ export class SeedService {
         let sports2: Sport[] = []
         for (let sportId of loanableMaterial.SportId) {
           const s = this.sportService.findOneById(sportId)
-          s.then(sport => {
+          s.then((sport) => {
             sports2.push(sport)
           })
         }
@@ -459,12 +464,14 @@ export class SeedService {
       const randNumb2 = Math.floor(Math.random() * 2)
       if (randNumb2 === 0) {
         //Group
-        rr.requestUserId =
-          groups[Math.floor(Math.random() * groups.length)].id.toString()
+        rr.requestUserId = groups[
+          Math.floor(Math.random() * groups.length)
+        ].id.toString()
       } else {
         //Staff
-        rr.requestUserId =
-          staff[Math.floor(Math.random() * staff.length)].id.toString()
+        rr.requestUserId = staff[
+          Math.floor(Math.random() * staff.length)
+        ].id.toString()
       }
       outrepairRequests.push(rr)
     }

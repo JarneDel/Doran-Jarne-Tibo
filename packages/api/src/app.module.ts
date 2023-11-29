@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { StockModule } from './stock/stock.module'
@@ -18,6 +18,7 @@ import { UsersModule } from './users/users.module'
 import { ReservationModule } from './reservation/reservation.module'
 import { RepairRequestModule } from './repair-request/repair-request.module'
 import { VacationRequestModule } from './vacation-request/vacation-request.module'
+import { AppLoggerMiddleware } from './middleware/app.logger.middleware'
 
 @Module({
   imports: [
@@ -25,6 +26,11 @@ import { VacationRequestModule } from './vacation-request/vacation-request.modul
 
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      subscriptions: {
+        'graphql-ws': true,
+        'subscriptions-transport-ws': true,
+      },
+      // installSubscriptionHandlers: true,
       autoSchemaFile: true,
       // includeStacktraceInErrorResponses: process.env.NODE_ENV != 'production',
       includeStacktraceInErrorResponses: false,
@@ -57,4 +63,8 @@ import { VacationRequestModule } from './vacation-request/vacation-request.modul
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AppLoggerMiddleware).forRoutes('*')
+  }
+}

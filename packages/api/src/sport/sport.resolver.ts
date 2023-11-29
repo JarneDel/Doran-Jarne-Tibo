@@ -55,7 +55,7 @@ export class SportResolver {
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
   @UseGuards(FirebaseGuard, RolesGuard)
-  @Mutation(() => Sport)
+  @Mutation(() => String)
   async removeSportById(@Args('id', { type: () => String }) id: string) {
     return this.sportService
       .remove(id)

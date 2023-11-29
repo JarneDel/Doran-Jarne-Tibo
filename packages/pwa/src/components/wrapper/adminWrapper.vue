@@ -1,17 +1,19 @@
 <script lang="ts">
 import Sidenav from '@/components/wrapper/Sidenav.vue'
+import Notifications from '@/components/Notifications.vue'
 
 export default {
   name: 'My Component',
-  components: { Sidenav },
+  components: { Sidenav, Notifications },
 }
 </script>
 
 <template>
-  <div class="flex w-full h-full ">
+  <div class="flex h-full w-full">
     <Sidenav />
-    <div class="w-full">
+    <div class="relative w-full">
       <RouterView />
+      <Notifications />
     </div>
   </div>
 </template>

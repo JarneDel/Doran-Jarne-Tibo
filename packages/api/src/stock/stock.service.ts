@@ -110,7 +110,6 @@ export class StockService {
       }
     }
 
-    console.log('options', options)
 
     options.where = {
       ...options.where,
@@ -129,7 +128,6 @@ export class StockService {
       return
     }
 
-    console.log('setting sorting order', orderDirection, orderByField)
 
     const validateOrderDirections = ['ASC', 'DESC', 'asc', 'desc']
     if (!validateOrderDirections.includes(orderDirection)) {

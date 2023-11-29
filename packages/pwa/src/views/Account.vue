@@ -2,7 +2,7 @@
 import { useQuery } from '@vue/apollo-composable'
 import { ALL_GROUPS } from '@/graphql/group.query'
 import { ALL_STOCK_AND_SERVICES } from '@/graphql/stock.query.ts'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import UseFirebase from '@/composables/useFirebase'
 import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
 import UseLanguage from '@/composables/useLanguage.ts'
@@ -29,8 +29,11 @@ export default defineComponent({
     const { setLocale: setLanguage } = UseLanguage()
 
     const getIdToken = async () => {
-      idToken.value = `{
-      "Authorization": "Bearer `+await firebaseUser.value?.getIdToken()+`"
+      idToken.value =
+        `{
+      "Authorization": "Bearer ` +
+        (await firebaseUser.value?.getIdToken()) +
+        `"
     }`
     }
     const setLocale = (event: Event) => {
@@ -40,6 +43,9 @@ export default defineComponent({
     }
 
     getIdToken()
+    const idTokenRaw = computed(() => {
+      return JSON.parse(idToken.value).Authorization.split(' ')[1]
+    })
     const { loading, result, error } = useQuery<Group>(ALL_GROUPS)
     const {
       loading: loadingStock,
@@ -56,6 +62,7 @@ export default defineComponent({
       errorStock,
       setLocale,
       firebaseUser,
+      idTokenRaw,
     }
   },
 })
@@ -73,6 +80,10 @@ export default defineComponent({
     <div class="flex w-max flex-row items-center justify-center gap-2">
       Copy Auth token
       <clipboard-copy v-if="idToken" :text="idToken"></clipboard-copy>
+    </div>
+    <div class="flex w-max flex-row items-center justify-center gap-2">
+      Copy Raw Auth token
+      <clipboard-copy v-if="idTokenRaw" :text="idTokenRaw"></clipboard-copy>
     </div>
 
     <div>

@@ -378,14 +378,16 @@ export default defineComponent({
 
 <template>
   <div class="m-8">
-    <div class="flex flex-col items-center justify-center md:flex-row">
+    <div
+      class="flex flex-col items-center justify-center whitespace-nowrap md:flex-row"
+    >
       <button
         @click="replace('/admin/reservations/type/0'), (typeSelector = 0)"
         :class="{
           'bg-secondary ': typeSelector === 0,
           'bg-primary-light': typeSelector !== 0,
         }"
-        class="w-30 rounded-l-md p-2 hover:text-white"
+        class="w-full p-2 transition-colors duration-100 hover:text-white md:w-auto md:min-w-[120px] md:rounded-l-md"
       >
         {{ $t('rooms.gyms') }}
       </button>
@@ -395,7 +397,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 1,
           'bg-primary-light': typeSelector !== 1,
         }"
-        class="w-30 p-2 hover:text-white"
+        class="w-full p-2 transition-colors duration-100 hover:text-white md:w-auto md:min-w-[120px]"
       >
         {{ $t('rooms.workRooms') }}
       </button>
@@ -405,7 +407,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 2,
           'bg-primary-light': typeSelector !== 2,
         }"
-        class="w-30 p-2 hover:text-white"
+        class="w-full p-2 transition-colors duration-100 hover:text-white md:w-auto md:min-w-[120px]"
       >
         {{ $t('rooms.dressingRooms') }}
       </button>
@@ -415,7 +417,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 3,
           'bg-primary-light': typeSelector !== 3,
         }"
-        class="w-30 p-2 hover:text-white"
+        class="w-full p-2 transition-colors duration-100 hover:text-white md:w-auto md:min-w-[120px]"
       >
         {{ $t('rooms.swimmingPools') }}
       </button>
@@ -425,7 +427,7 @@ export default defineComponent({
           'bg-secondary ': typeSelector === 4,
           'bg-primary-light': typeSelector !== 4,
         }"
-        class="w-30 rounded-r-md p-2 hover:text-white"
+        class="w-full p-2 transition-colors duration-100 hover:text-white md:w-auto md:min-w-[120px] md:rounded-r-md"
       >
         {{ $t('rooms.divingWells') }}
       </button>

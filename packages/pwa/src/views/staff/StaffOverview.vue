@@ -30,7 +30,7 @@ export default defineComponent({
 <template>
   <RouterView />
   <div v-if="!staffAndServices || loading">...</div>
-  <div v-else class="mxa custom-grid mt-8 flex max-w-7xl flex-wrap">
+  <div v-else class="mxa mt-8 flex max-w-7xl flex-wrap gap-4">
     <staff-data-card :data="staffAndServices.staffByUid" />
     <staff-vacation-card :data="staffAndServices.staffByUid" />
     <!--    <div v-for="service of staffAndServices.servicesByStaff" :key="service.id">-->

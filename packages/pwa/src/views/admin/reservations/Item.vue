@@ -152,17 +152,25 @@ export default defineComponent({
         </div>
         <div>
           <h3 class="font-medium">Rooms:</h3>
-          <div v-for="room in result?.GetReservatiounById.rooms">
-            <p>{{ room.name }}</p>
-          </div>
+          <ul>
+            <li
+              class="bg-rooms mt-1 w-fit rounded-full px-4 text-sm font-medium"
+              v-for="room in result?.GetReservatiounById.rooms"
+            >
+              {{ room.name }}
+            </li>
+          </ul>
         </div>
         <div>
           <h3 class="font-medium">Materials:</h3>
-          <div
-            v-for="material in result?.GetReservatiounById.reservedMaterials"
-          >
-            <p>{{ material.name }}</p>
-          </div>
+          <ul>
+            <li
+              class="bg-materials mt-1 w-fit rounded-full px-4 text-sm font-medium"
+              v-for="material in result?.GetReservatiounById.reservedMaterials"
+            >
+              {{ material.name }}
+            </li>
+          </ul>
         </div>
         <div class="flex gap-2">
           <h3 class="font-medium">Price:</h3>
