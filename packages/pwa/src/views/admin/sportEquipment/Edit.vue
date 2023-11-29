@@ -22,7 +22,7 @@ interface ISport {
       name: string;
       createdAt: Date;
       updatedAt: Date;
-    }
+    },
   ];
 }
 
@@ -44,7 +44,7 @@ export interface IUpdateItem {
   description?: string;
 }
 
-import { defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import Modal from '@/components/Modal.vue';
 import { useRouter } from 'vue-router';
 import { useMutation, useQuery } from '@vue/apollo-composable';
@@ -66,7 +66,7 @@ export default defineComponent({
     const { setPageTitle } = useA11y();
     const { result, onResult } = useQuery<ILoanableMaterial>(
       GET_LOANABLE_MATERIAL,
-      { id }
+      { id },
     );
 
     // ALL_SPORTS
@@ -109,7 +109,7 @@ export default defineComponent({
         if (!oldResult.value) return;
         hasChanged.value = compare(value, oldResult.value);
       },
-      { deep: true }
+      { deep: true },
     );
 
     const hasChanged = ref<boolean>(false);
@@ -119,12 +119,12 @@ export default defineComponent({
 
       // Set current item
       currentItem.value = JSON.parse(
-        JSON.stringify(param.data.GetloanableMaterialById)
+        JSON.stringify(param.data.GetloanableMaterialById),
       );
 
       // Set old result
       oldResult.value = JSON.parse(
-        JSON.stringify(param.data.GetloanableMaterialById)
+        JSON.stringify(param.data.GetloanableMaterialById),
       );
     });
 
@@ -152,6 +152,11 @@ export default defineComponent({
       });
     };
 
+    const descriptionLength = computed(() => {
+      if (!currentItem.value.description) return '0/250';
+      return currentItem.value.description.length + '/250';
+    });
+
     const isSportSelected = (sportId: string) => {
       return (
         currentItem.value.sports?.some((sport) => sport.id === sportId) || false
@@ -164,7 +169,7 @@ export default defineComponent({
       if (index === -1) {
         // Sport not found, add it
         const sport = resultSports.value?.GetAllSports.find(
-          (sport) => sport.id === sportId
+          (sport) => sport.id === sportId,
         );
 
         if (!sport) return;
@@ -198,6 +203,7 @@ export default defineComponent({
       hasChanged,
       isSportSelected,
       toggleSportSelection,
+      descriptionLength,
       id,
     };
   },
@@ -220,6 +226,7 @@ export default defineComponent({
         <StyledInputText
           v-model="currentItem.name"
           :label="$t('inventory.name')"
+          :maxlength="20"
         />
         <label
           :title="$t('inventory.description')"
@@ -229,10 +236,23 @@ export default defineComponent({
           <span class="text-primary-text font-medium">{{
             $t('inventory.description')
           }}</span>
-          <textarea
-            v-model="currentItem.description"
-            class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
-          ></textarea>
+          <div class="flex items-end">
+            <textarea
+              v-model="currentItem.description"
+              maxlength="250"
+              class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark h-24 w-full resize-none rounded bg-white px-4 py-1.5 outline-none transition-colors"
+            ></textarea>
+            <div
+              v-if="currentItem.description"
+              class="relative w-0 -left-12 opacity-60"
+              :class="{
+                '-left-14': currentItem.description.length >= 10,
+                '-left-16': currentItem.description.length >= 100,
+              }"
+            >
+              {{ descriptionLength }}
+            </div>
+          </div>
         </label>
         <StyledInputText
           v-model="currentItem.totalAmount"

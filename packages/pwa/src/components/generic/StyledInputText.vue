@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'StyledInputText',
@@ -29,27 +29,58 @@ export default defineComponent({
       type: Number,
       required: false,
     },
+    max: {
+      type: Number,
+      required: false,
+    },
+    maxlength: {
+      type: Number,
+      required: false,
+    },
+    placeholder: {
+      type: String,
+      required: false,
+    },
   },
   emits: ['update:modelValue'],
-})
+
+  computed: {
+    inputLength(): number {
+      const value = this.$props.modelValue as string;
+      try {
+        return value.length;
+      } catch (e) {
+        return 0;
+      }
+    },
+  },
+});
 </script>
 
 <template>
   <label class="block">
     <span class="c-primary-text font-medium">{{ label }}</span>
     <br />
-    <input
-      :autocomplete="autocomplete"
-      :min="min"
-      :name="name"
-      :required="required"
-      :type="type"
-      :value="modelValue"
-      class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
-      @input="
-        e => $emit('update:modelValue', (e.target as HTMLInputElement).value)
-      "
-    />
+    <span class="flex items-center justify-center">
+      <input
+        :autocomplete="autocomplete"
+        :min="min"
+        :max="max"
+        :maxlength="maxlength"
+        :name="name"
+        :required="required"
+        :type="type"
+        :value="modelValue"
+        :placeholder="placeholder"
+        class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
+        @input="
+          e => $emit('update:modelValue', (e.target as HTMLInputElement).value)
+        "
+      />
+      <span class="relative -left-12 right-4 w-0 opacity-60" v-if="maxlength">
+        {{ inputLength }}/{{ maxlength ? maxlength : '∞' }}
+      </span>
+    </span>
   </label>
 </template>
 

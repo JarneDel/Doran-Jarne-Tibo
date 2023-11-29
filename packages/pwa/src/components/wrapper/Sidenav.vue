@@ -13,6 +13,7 @@ import {
   Users,
   Warehouse,
   Wrench,
+  Bike,
 } from 'lucide-vue-next'
 import { useLocalStorage } from '@vueuse/core'
 import { useRouter } from 'vue-router'
@@ -49,6 +50,7 @@ export default defineComponent({
     Palmtree,
     Wrench,
     Dumbbell,
+    Bike,
   },
   setup() {
     const { result, onResult } =
@@ -136,6 +138,13 @@ export default defineComponent({
           route: '/admin/vacation',
           roles: ['ADMIN', 'SUPER_ADMIN'],
           count: count.value,
+        },
+        {
+          name: 'sports',
+          icon: Bike,
+          content: t('nav.sports'),
+          route: '/admin/sports',
+          roles: ['ADMIN', 'SUPER_ADMIN'],
         },
       ]
       return p.filter(page => {

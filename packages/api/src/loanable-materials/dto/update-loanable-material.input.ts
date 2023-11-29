@@ -1,8 +1,19 @@
-import { ObjectIdColumn } from "typeorm";
-import { CreateLoanableMaterialInput } from "./create-loanable-material.input";
-import { InputType, Field, PartialType, ID } from "@nestjs/graphql";
+import { ObjectIdColumn } from 'typeorm'
+import { CreateLoanableMaterialInput } from './create-loanable-material.input'
+import { InputType, Field, PartialType, ID } from '@nestjs/graphql'
 
-import { IsString, IsNumber, IsNotEmpty, MinLength, Max, IsIn, IsPositive, Min, IsBoolean } from 'class-validator'
+import {
+  IsString,
+  IsNumber,
+  IsNotEmpty,
+  MinLength,
+  Max,
+  IsIn,
+  IsPositive,
+  Min,
+  IsBoolean,
+  MaxLength,
+} from 'class-validator'
 
 @InputType()
 export class UpdateLoanableMaterialInput extends PartialType(
@@ -10,41 +21,41 @@ export class UpdateLoanableMaterialInput extends PartialType(
 ) {
   @ObjectIdColumn()
   @Field(() => ID)
-  _id: string;
-  
+  _id: string
+
   @IsString()
   @IsNotEmpty()
   @MinLength(4)
   @Field()
-  name: string;
+  name: string
 
   @IsNumber()
   @Min(0)
   @Max(1000)
   @Field()
-  totalAmount: number;
+  totalAmount: number
 
   @IsNumber()
   @Min(0)
   @Max(1000)
   @Field()
-  wantedAmount: number;
+  wantedAmount: number
 
   @Field(() => [String], { nullable: true })
-  SportId: string[];
+  SportId: string[]
 
   @IsNumber()
   @Min(0)
   @Max(1000)
   @Field()
-  price: number;
+  price: number
 
   @IsBoolean()
   @Field()
-  isComplete: boolean;
+  isComplete: boolean
 
   @IsString()
+  @MaxLength(250)
   @Field({ nullable: true })
-  description?: string;
+  description?: string
 }
-

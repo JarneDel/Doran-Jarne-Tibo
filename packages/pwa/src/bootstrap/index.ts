@@ -179,6 +179,31 @@ export const router = createRouter({
           },
         },
         {
+          path: 'sports',
+          component: () => import('@/views/admin/sports/Sports.vue'),
+          children: [
+            {
+              path: 'id/:id',
+              component: () => import('@/views/admin/sports/Item.vue'),
+              props: true,
+            },
+            {
+              path: 'id/:id/edit',
+              component: () => import('@/views/admin/sports/Edit.vue'),
+            },
+          ],
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'sports/create',
+          component: () => import('@/views/admin/sports/Create.vue'),
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
           path: 'staff',
           component: () => import('@/views/admin/staff/Staff.vue'),
           meta: {
@@ -327,7 +352,7 @@ export const router = createRouter({
 
 const redirectToLogin = (
   to: RouteLocationNormalized,
-  next: NavigationGuardNext,
+  next: NavigationGuardNext
 ) => {
   next('/login?redirect=' + to.path)
 }
@@ -350,7 +375,7 @@ const redirectToHome = (next: NavigationGuardNext) => {
 }
 const unauthorized = (
   to: RouteLocationNormalized,
-  next: NavigationGuardNext,
+  next: NavigationGuardNext
 ) => {
   if (to.path.includes('/admin')) {
     next('/admin/403')
