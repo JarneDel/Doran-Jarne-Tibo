@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import { useMutation, useQuery, useSubscription } from '@vue/apollo-composable'
 import {
   APPROVE_VACATION_REQUEST,
@@ -52,12 +52,27 @@ export default defineComponent({
   },
   setup() {
     const errors = ref<string[]>([])
+    const push = useRouter().push
 
     const filter = ref<string>('open')
     const { currentRoute } = useRouter()
+    const staffUId = ref<null | string>(null)
     if (currentRoute.value.params.uid) {
       console.log('ALWAYS' + currentRoute.value.params.uid)
+      staffUId.value = currentRoute.value.params.uid as string
     }
+    watch(currentRoute, () => {
+      if (currentRoute.value.params.uid) {
+        console.log('ALWAYS' + currentRoute.value.params.uid)
+        staffUId.value = currentRoute.value.params.uid as string
+      } else {
+        staffUId.value = null
+      }
+    })
+
+    watch(staffUId, () => {
+      filterVacationRequests(filter.value)
+    })
 
     const { result, refetch, loading } = useQuery<
       VacationRequestQueryAdminAll,
@@ -70,6 +85,7 @@ export default defineComponent({
           : filter.value === 'closed'
           ? false
           : null,
+      staffUId: staffUId.value,
     })
 
     const { onResult: onVacationRequestSubscription } =
@@ -122,12 +138,20 @@ export default defineComponent({
       refetch({
         isExpired: filter === 'expired',
         isOpen: filter === 'open' ? true : filter === 'closed' ? false : null,
+        staffUId: staffUId.value,
       })
     }
 
     const reject = ref<VacationRequestWithStaff>()
     const approve = ref<VacationRequestWithStaff>()
     const rejectMessage = ref<string>('')
+
+    const filterStaff = (event: Event) => {
+      const target = event.target as HTMLSelectElement
+      if (target.value === staffUId.value) return
+      push(`/admin/vacation/${target.value}`)
+      staffUId.value = target.value
+    }
 
     return {
       approve,
@@ -140,6 +164,8 @@ export default defineComponent({
       rejectMessage,
       rejectVacation,
       result,
+      staffUId,
+      filterStaff,
     }
   },
 })
@@ -195,7 +221,7 @@ export default defineComponent({
     <div class="overflow-x-auto">
       <div class="w-full overflow-auto">
         <!-- Filters-->
-        <div class="my-4">
+        <div class="my-4 flex flex-row gap-4">
           <FilterOptions
             v-model="filter"
             :icons="[CircleDot, CheckIcon, AlarmCheckIcon, Grid2x2Icon]"
@@ -203,7 +229,27 @@ export default defineComponent({
             name="vacation-request-filter"
             @update:model-value="filterVacationRequests"
           />
+          <select
+            v-if="result"
+            id=""
+            :value="staffUId"
+            class="bg-primary-surface b-2 rounded border-neutral-200 px-4"
+            name=""
+            @change="filterStaff"
+          >
+            <option value="" selected>All</option>
+            <option
+              v-for="staff in result.staff"
+              :key="staff.UID"
+              :value="staff.UID"
+            >
+              {{ staff.firstName }} {{ staff.lastName }}
+            </option>
+          </select>
         </div>
+
+        <!--         select staff member-->
+
         <table
           v-if="
             result?.vacationRequestsBy && result.vacationRequestsBy.length > 0

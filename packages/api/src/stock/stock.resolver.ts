@@ -37,7 +37,6 @@ export class StockResolver {
 
   @Query(() => [Stock], { name: 'stock' })
   findAll(@FirebaseUser() user: UserRecord, @Args() args: FilterStockArgs) {
-    console.log(args)
     if (args) {
       return this.stockService.findWithFilter(args)
     }
