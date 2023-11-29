@@ -208,10 +208,13 @@ export default defineComponent({
       text: 'Approve',
       type: 'secondary',
     }"
-    :description="`Are you sure you want to approve the vacation request from
-      ${approve.staff.firstName} ${approve.staff.lastName}?`"
+    :description="
+      $t('request.vacation.approve.description', {
+        name: approve.staff.firstName + ' ' + approve.staff.lastName,
+      })
+    "
     :show-modal="!!approve"
-    :title="'Approve vacation'"
+    :title="$t('request.vacation.approve.title')"
     @update:show-modal="approve = undefined"
     @button1-click="approve = undefined"
     @button2-click="approveVacation"
@@ -259,21 +262,23 @@ export default defineComponent({
           <thead>
             <tr class="border-b transition-colors">
               <th class="h-12 px-4 text-left align-middle font-medium">
-                Status
+                {{ $t('common.status') }}
               </th>
-              <th class="h12 px4 text-left align-middle font-medium">For</th>
+              <th class="h12 px4 text-left align-middle font-medium">
+                {{ $t('common.for') }}
+              </th>
 
               <th class="h-12 px-4 text-left align-middle font-medium">
-                Reject Reason
+                {{ $t('request.reject.reason') }}
               </th>
               <th class="h-12 px-4 text-left align-middle font-medium">
-                Start Date
+                {{ $t('request.date.start') }}
               </th>
               <th class="h-12 px-4 text-left align-middle font-medium">
-                End Date
+                {{ $t('request.date.end') }}
               </th>
               <th class="h-12 px-4 text-left align-middle font-medium">
-                Action
+                {{ $t('common.action') }}
               </th>
             </tr>
           </thead>
@@ -285,7 +290,7 @@ export default defineComponent({
               <td class="p-4 align-middle">
                 <BadgeCheck v-if="vacationRequest.isApproved" />
                 <BadgeAlert v-else-if="vacationRequest.isRejected" />
-                <Badge v-else></Badge>
+                <CircleDot v-else></CircleDot>
               </td>
               <td class="p4 align-middle">
                 {{ vacationRequest.staff.firstName }}
@@ -325,8 +330,8 @@ export default defineComponent({
             </tr>
           </tbody>
         </table>
-        <div v-else-if="loading">Loading</div>
-        <div v-else>No vacation requests found</div>
+        <div v-else-if="loading">{{ $t('common.loading') }}</div>
+        <div v-else>{{ $t('request.vacation.none') }}</div>
       </div>
     </div>
   </div>

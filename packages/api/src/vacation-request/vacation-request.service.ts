@@ -125,13 +125,13 @@ export class VacationRequestService {
     if (staffUId) {
       findOptions.staffUId = staffUId
     }
-    if (isOpen) {
+    if (isOpen == true) {
       findOptions.$and = [
         { startDate: { $gte: new Date() } },
         { $or: [{ isRejected: null }, { isRejected: false }] },
         { $or: [{ isApproved: null }, { isApproved: false }] },
       ]
-    } else {
+    } else if (isOpen == false) {
       findOptions.$and = [{ $or: [{ isRejected: true }, { isApproved: true }] }]
     }
     if (isExpired) {
@@ -141,6 +141,7 @@ export class VacationRequestService {
         { $or: [{ isApproved: null }, { isApproved: false }] },
       ]
     }
+
     return this.vacationRequestRepository.find(findOptions)
   }
 
