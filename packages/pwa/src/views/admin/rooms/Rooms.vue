@@ -51,6 +51,7 @@ import Modal from '@/components/Modal.vue'
 import { useRouter } from 'vue-router'
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
 import useLastRoute from '@/composables/useLastRoute'
+import StyledLable from '@/components/generic/StyledLable.vue'
 
 // Export default
 export default defineComponent({
@@ -58,7 +59,8 @@ export default defineComponent({
     PlusCircle,
     Modal,
     DoubleClickEdit,
-  },
+    StyledLable
+},
   setup() {
     // Router
     const { push, replace, currentRoute } = useRouter()
@@ -329,15 +331,15 @@ export default defineComponent({
                   </h3>
                   <p class="text-lg font-semibold">Sports:</p>
                   <ul class="flex flex-wrap gap-x-2 gap-y-1">
-                    <li
-                      class="bg-sports mt-1 w-fit rounded-full px-4 text-sm font-medium"
+                    <StyledLable
+                      type="sport"
                       v-for="sport in resultGyms?.GetAllGyms[
                         resultGyms?.GetAllGyms.indexOf(gym)
                       ].sports.sort((a, b) => a.name.localeCompare(b.name))"
                       :key="sport.name"
                     >
-                      <p>{{ sport.name }}</p>
-                    </li>
+                      {{ sport.name }}
+                    </StyledLable>
                   </ul>
                 </div>
                 <div class="flex items-center gap-1">
@@ -406,7 +408,7 @@ export default defineComponent({
         >
           {{ $t('rooms.dressingRooms') }}
         </h3>
-        <ul class="grid w-fit gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <ul class="grid auto-rows-fr w-fit gap-6 md:grid-cols-2 lg:grid-cols-3">
           <li
             class="md:w-55 xl:w-70 2xl:w-90 w-fit break-words"
             v-for="changingRoom in resultChangingRooms?.GetAllChangingRooms"
@@ -416,7 +418,7 @@ export default defineComponent({
               class="h-full w-full text-left"
               @click="handleRoomDetail(changingRoom)"
             >
-              <div class="h-full rounded-lg bg-white p-4 shadow-md">
+              <div class="h-full rounded-lg bg-white p-4 shadow-md flex flex-col justify-between">
                 <h3 class="mb-2 text-xl font-bold lg:text-2xl">
                   {{ changingRoom.name }}
                 </h3>
@@ -463,15 +465,15 @@ export default defineComponent({
                 </h3>
                 <p class="text-lg font-semibold">Sports:</p>
                 <ul class="flex flex-wrap gap-x-2 gap-y-1">
-                  <li
-                    class="bg-sports mt-1 w-fit rounded-full px-4 text-sm"
+                  <StyledLable
+                    type="sport"
                     v-for="sport in resultSwimmingPools?.GetAllSwimmingPools[
                       resultSwimmingPools?.GetAllSwimmingPools.indexOf(pool)
                     ].sports.sort((a, b) => a.name.localeCompare(b.name))"
                     :key="sport.name"
                   >
                     <p>{{ sport.name }}</p>
-                  </li>
+                  </StyledLable>
                 </ul>
                 <div class="flex items-center gap-1">
                   <p class="text-lg font-semibold">Price per hour:</p>
@@ -516,15 +518,14 @@ export default defineComponent({
                 </h3>
                 <p class="text-lg font-semibold">Sports:</p>
                 <ul>
-                  <li
+                  <StyledLable
                     class="bg-sports mt-1 w-fit rounded-full px-4 text-sm"
                     v-for="sport in resultDivePools?.GetAllDivePools[
                       resultDivePools?.GetAllDivePools.indexOf(divePool)
                     ].sports.sort((a, b) => a.name.localeCompare(b.name))"
                     :key="sport.name"
-                  >
-                    <p>{{ sport.name }}</p>
-                  </li>
+                  >{{ sport.name }}
+                  </StyledLable>
                 </ul>
                 <div class="flex items-center gap-1">
                   <p class="text-lg font-semibold">Price per hour:</p>

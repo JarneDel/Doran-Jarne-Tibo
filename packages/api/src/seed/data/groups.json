@@ -3,15 +3,12 @@
     "name":"koninklijke zwemclub van Waregem",
     "email":"kzvwaregem@test.test",
     "btw_number":"BE0123456789",
-    "score": 2,
     "uid":"ys97J2CskUQJOarNWmptXvoywb62",
     "locale":"nl"
   },
   {
-    "name":"Doran",
+    "name":"Doran Delfosse",
     "email":"doran.delfosse@gmail.com",
-    "btw_number":"BE0123456789",
-    "score": 2,
     "uid":"sz63Dcf2biXLvw3N2Stg0MCvQdj2",
     "locale":"nl"
   },
@@ -19,7 +16,6 @@
     "name": "Sportclub De Actieve Lopers",
     "email": "deactivelopers@test.test",
     "btw_number": "BE0123456789",
-    "score": 15,
     "uid":"6Ywe5DmQB4gd6aakAc0rJBkKRqA2",
     "locale":"nl"
   },
@@ -27,8 +23,19 @@
     "name": "Voetbalvereniging De Sprinters",
     "email": "desprinters@test.test",
     "btw_number": "BE0987654321",
-    "score": 12,
     "uid":"BqotFU2VmOOz5igIM83iYxgaPXl1",
+    "locale":"nl"
+  },
+  {
+    "name": "Jarne Delarue",
+    "email": "jarne.delarue@hotmail.com",
+    "uid":"XV1UaPHAePYKUjGVZS1eIrUtiO12",
+    "locale":"nl"
+  },
+  {
+    "name": "Jarne Delarue",
+    "email": "delarue.jarne@gmail.com",
+    "uid":"oDsUn2brdieDNfawt8WPDMQe00X2",
     "locale":"nl"
   }
 ]

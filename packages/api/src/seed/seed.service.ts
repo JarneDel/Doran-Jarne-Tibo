@@ -95,7 +95,7 @@ export class SeedService {
       g.name = group.name
       g.email = group.email
       g.btwNumber = group.btw_number
-      g.score = group.score
+      g.score = Math.floor(Math.random() * 100)
       g.locale = group.locale
       g.UID = group.uid
       g.role = Role.GROUP
@@ -240,17 +240,39 @@ export class SeedService {
       r.endTime = reservation.end_time
       r.groupId =
         groups[Math.floor(Math.random() * groups.length)].id.toString()
+      //@ts-ignore
+      const renroom = await rooms[Math.floor(Math.random() * rooms.length)]
+      const room = new Rooms()
+      let sportsroom: Sport[] = []
+      room.id = renroom.id
+      room.name = renroom.name
+      room.pricePerHour = renroom.pricePerHour
+      for (let sportId of renroom.SportId) {
+        const s = await this.sportService.findOneById(sportId)
+        sportsroom.push(s)
+      }
+      room.sports = sportsroom
+      room.type = renroom.type
+      const roomList: [Rooms] = [room]
+      const sportroomsids: string[] = []
+      for (let sport of room.sports) {
+        sportroomsids.push(sport.id.toString())
+      }
+      r.rooms = roomList
+      r.price = reservation.price
+      r.isCancelled = reservation.isCancelled
+      const materials = loanableMaterials.filter(material =>
+        material.SportId.some(sport => sportroomsids.includes(sport)),
+      )
       const loanableMaterial =
-        loanableMaterials[Math.floor(Math.random() * loanableMaterials.length)]
+        await materials[Math.floor(Math.random() * materials.length)]
       const material = new Materials()
-      // give the sport a fake first sport so that the push function works
       let sports: Sport[] = []
       for (let sportId of loanableMaterial.SportId) {
-        const s = this.sportService.findOneById(sportId)
-        s.then(sport => {
-          sports.push(sport)
-        })
+        const s = await this.sportService.findOneById(sportId)
+        sports.push(s)
       }
+      // give the sport a fake first sport so that the push function works
       material.id = loanableMaterial.id
       material.name = loanableMaterial.name
       material.totalAmount = loanableMaterial.totalAmount
@@ -259,28 +281,21 @@ export class SeedService {
       material.sports = sports
       material.isComplete = loanableMaterial.isComplete
       material.description = loanableMaterial.description
-      material.amountReserved = Math.round(Math.random() * 10)
-      r.reservedMaterials = [material]
-      //@ts-ignore
-      const renroom = await rooms[Math.floor(Math.random() * rooms.length)]
-      const room = new Rooms()
-      room.id = renroom.id
-      room.name = renroom.name
-      room.pricePerHour = renroom.pricePerHour
-      for (let sportId of renroom.SportId) {
-        const s = this.sportService.findOneById(sportId)
-        s.then(sport => {
-          sports.push(sport)
-        })
-      }
-      room.sports = sports
-      room.type = renroom.type
-      r.rooms = [room]
-      r.price = reservation.price
-      r.isCancelled = reservation.isCancelled
+      //amaount reserved is a random number between 0 and and total amount and min 1  
+      material.amountReserved = Math.floor(Math.random() * material.totalAmount) + 1
+      const materialList: [Materials] = [material]
+      r.reservedMaterials = materialList
       outReservations.push(r)
     }
-    return this.reservationService.saveAll(outReservations)
+      await Promise.all( outReservations.map(async reservation => {
+        try {
+        await this.reservationService.create(reservation)
+        }
+        catch (e) {
+        }
+      }))
+
+    return outReservations
   }
 
   async deleteAllReservations(): Promise<void> {

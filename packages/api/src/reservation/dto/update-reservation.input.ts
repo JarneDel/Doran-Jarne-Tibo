@@ -5,7 +5,7 @@ import { Room } from 'src/room/entities/room.entity'
 import { Type } from 'class-transformer'
 import { Rooms } from '../entities/room.entity'
 import { Materials } from '../entities/material.entity'
-import { IsBoolean, IsDate, IsInt, IsNotEmpty, IsString, Min } from 'class-validator'
+import { IsBoolean, IsDate, IsInt, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator'
 
 @InputType()
 export class UpdateReservationInput extends PartialType(
@@ -34,7 +34,7 @@ export class UpdateReservationInput extends PartialType(
   @Type(type => Materials)
   @Field(() => [Materials])
   reservedMaterials: [Materials]
-  @IsInt()
+  @IsNumber()
   @Min(0)
   @Field()
   price: number
