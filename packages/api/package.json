@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.9.3",
+    "@nestjs-modules/mailer": "^1.9.1",
     "@nestjs/apollo": "^12.0.9",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
@@ -42,6 +43,7 @@
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.14.2",
     "nestjs-command": "^3.1.4",
+    "nodemailer": "^6.9.7",
     "passport": "^0.6.0",
     "passport-http-bearer": "^1.0.1",
     "reflect-metadata": "^0.1.13",

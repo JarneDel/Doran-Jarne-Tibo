@@ -1,11 +1,17 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { ValidationPipe } from '@nestjs/common'
-import { checkEnv } from './utils/checkEnv'
+import { Logger, ValidationPipe } from '@nestjs/common'
+import { checkEnv, optionalEnv } from './utils/checkEnv'
 
 async function bootstrap() {
-
-  checkEnv(['DB_NAME', 'DB_HOST', 'DB_PORT', 'GOOGLE_APPLICATION_CREDENTIALS'])
+  checkEnv([
+    'DB_NAME',
+    'DB_HOST',
+    'DB_PORT',
+    'GOOGLE_APPLICATION_CREDENTIALS',
+    'URL_FRONTEND',
+  ])
+  optionalEnv(['MAIL_USER', 'MAIL_PASSWORD'])
   const app = await NestFactory.create(AppModule)
   app.enableCors({
     origin: ['http://localhost:5173', process.env.URL_FRONTEND],
@@ -13,7 +19,7 @@ async function bootstrap() {
   })
   app.useGlobalPipes(new ValidationPipe())
   await app.listen(3000)
-  console.info(`Listening on ${await app.getUrl()}`)
-  console.info(`Listening on ${await app.getUrl()}/graphql`)
+  Logger.log(`Listening on ${await app.getUrl()}`)
+  Logger.verbose(`Listening on ${await app.getUrl()}/graphql`)
 }
 bootstrap()

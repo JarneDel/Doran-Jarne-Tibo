@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { Field, ID, ObjectType } from '@nestjs/graphql'
+import { Role } from '../../users/entities/user.entity'
 
 @Entity()
 @ObjectType()
@@ -37,4 +38,12 @@ export class StaffRegister {
   @Field()
   @Column({ type: 'timestamp' })
   expiresAt: Date
+
+  @Field()
+  @Column({ default: Role.STAFF })
+  role: Role
+
+  @Field()
+  @Column({ default: false })
+  isRegistered: boolean
 }
