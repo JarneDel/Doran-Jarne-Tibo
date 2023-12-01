@@ -192,7 +192,7 @@ export default defineComponent({
           </div>
         </div>
         <div class="w-1/2">
-          <h2 class="text-lg font-medium">{{ $t('nav.rooms') }}</h2>
+          <h2 class="text-lg font-medium">{{ $t('repairRequest.materials') }}</h2>
           <div v-for="material in loanableMaterials" class="mb-1">
             <input
               type="checkbox"
