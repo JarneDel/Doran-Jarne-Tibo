@@ -142,7 +142,7 @@ export default defineComponent({
               <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
                 <p
                   v-for="room in reservation.rooms"
-                  class="bg-secondary w-fit rounded-full px-4"
+                  class="bg-rooms w-fit rounded-full px-4"
                 >
                   {{ room.name }}
                 </p>
@@ -150,7 +150,7 @@ export default defineComponent({
               <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
                 <p
                   v-for="material in reservation.reservedMaterials"
-                  class="bg-secondary w-fit rounded-full px-4"
+                  class="bg-materials w-fit rounded-full px-4"
                 >
                   {{ material.amountReserved }} x {{ material.name }}
                 </p>

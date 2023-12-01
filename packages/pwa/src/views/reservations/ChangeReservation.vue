@@ -375,9 +375,6 @@ export default defineComponent({
   <div class="m-4">
     <div class="mx-auto max-w-7xl">
       <h1 class="my-4 text-xl font-bold">{{ $t('reservation.title') }}</h1>
-      <p v-if="!detail" class="text-lg">
-        {{ $t('reservation.subtitle') }}
-      </p>
       <div v-if="!detail" class="justify-between lg:flex">
         <div class="my-4 items-end gap-2 md:flex">
           <styled-input-text
@@ -407,8 +404,8 @@ export default defineComponent({
         </div>
         <div class="ml-4 flex items-center gap-2 lg:mr-0">
           <p class="text-xl">€ {{ PriceWhitDiscount.toFixed(2) }}</p>
-          <StyledButton type="button" class="h-fit" @click="detail = !detail">
-            {{ $t('navigation.addreservation') }}
+          <StyledButton type="button" class="h-fit" @click="detail = !detail" :disabled="!((wantedRoom.length)>0)">
+            {{ $t('reservation.detail') }}
           </StyledButton>
         </div>
       </div>
@@ -439,7 +436,7 @@ export default defineComponent({
                     <div class="flex flex-wrap gap-2">
                       <p
                         v-for="sport in room.sports"
-                        class="bg-secondary mt-1 rounded-full px-4"
+                        class="bg-sports mt-1 rounded-full px-4"
                       >
                         {{ sport.name }}
                       </p>
@@ -473,7 +470,7 @@ export default defineComponent({
                       <p
                         :key="sport.id"
                         v-for="sport in material.sports"
-                        class="bg-secondary mt-1 rounded-full px-4"
+                        class="bg-sports mt-1 rounded-full px-4"
                       >
                         {{ sport.name }}
                       </p>
@@ -541,12 +538,12 @@ export default defineComponent({
               <p>{{ material.name }}</p>
               <div class="flex gap-2">
                 <p>€{{ material.price.toFixed(2) }}/h</p>
-                <button @click="() => Material(material, true)">
-                  <Plus :size="20" class="hover:text-red-500" />
-                </button>
-                <p>{{ checkboxStatusMaterials[material.name].amount }}</p>
                 <button @click="() => Material(material, false)">
                   <Minus :size="20" class="hover:text-red-500" />
+                </button>
+                <p>{{ checkboxStatusMaterials[material.name].amount }}</p>
+                <button @click="() => Material(material, true)">
+                  <Plus :size="20" class="hover:text-red-500" />
                 </button>
               </div>
             </div>
