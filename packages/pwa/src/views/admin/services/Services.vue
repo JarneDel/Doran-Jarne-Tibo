@@ -67,9 +67,35 @@ export default defineComponent({
   <div class="m-8">
     <div>
       <h1>Dit is een test zin!</h1>
-      <ul>
+      <ul
+        class="flex flex-wrap justify-center gap-4 lg:justify-between flex-col lg:flex-row"
+      >
         <li v-if="resultServices" v-for="service in resultServices.services">
-          {{ service.name }}
+          <div
+            class="bg-white rounded-md shadow-md p-2 sm:p-3 md:p-4 lg:p-5 xl:p-6 min-w-sm max-w-md"
+          >
+            <h3 class="font-bold text-primary-text text-xl mb-2">
+              {{ service.name }}
+            </h3>
+            <div>
+              <div class="flex gap-1">
+                <h4 class="font-medium text-primary-text">Rooms:</h4>
+                <p class="">{{ service.rooms.length }}</p>
+              </div>
+              <div>
+                <div class="flex gap-1">
+                  <h4 class="font-medium text-primary-text">Staff:</h4>
+                  <p class="">{{ service.staff.length }}</p>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <h4 class="font-medium text-primary-text">Description:</h4>
+                  <p class="">{{ service.description }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </li>
       </ul>
     </div>

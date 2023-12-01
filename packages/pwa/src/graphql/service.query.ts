@@ -37,7 +37,7 @@ export interface IServiceItem {
   id: string
   name: string
   description: string
-  staff: {
+  staff: [{
     id: string
     UID: string
     locale: string
@@ -47,8 +47,8 @@ export interface IServiceItem {
     lastName: string
     email: string
     phone: string
-  }
-  rooms: {
+  }]
+  rooms: [{
     id: string
     name: string
     sports: {
@@ -59,7 +59,7 @@ export interface IServiceItem {
     pricePerHour: number
     type: string
     canBeUsed: boolean
-  }
+  }]
 }
 
 export interface IServices {
