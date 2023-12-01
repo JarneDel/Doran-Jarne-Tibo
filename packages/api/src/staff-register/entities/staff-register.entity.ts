@@ -46,4 +46,8 @@ export class StaffRegister {
   @Field()
   @Column({ default: false })
   isRegistered: boolean
+
+  @Field({ nullable: true, defaultValue: 25 })
+  @Column({ nullable: true, default: 25 })
+  holidayCount?: number
 }

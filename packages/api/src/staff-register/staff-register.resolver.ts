@@ -7,11 +7,16 @@ import { CreateStaffRegisterInput } from './dto/create-staff-register.input'
 import { StaffRegister } from './entities/staff-register.entity'
 import { StaffRegisterArgs } from './args/staff-register.args'
 import { MailerService } from '@nestjs-modules/mailer'
+import { StaffService } from '../staff/staff.service'
+import { GraphQLError } from 'graphql/error'
+import { Staff } from '../staff/entities/staff.entity'
+import { StaffSignUpInput } from './dto/staff-sign-up.input'
 
 @Resolver()
 export class StaffRegisterResolver {
   constructor(
     private readonly staffRegisterService: StaffRegisterService,
+    private readonly staffService: StaffService,
     private readonly mailerService: MailerService,
   ) {}
 
@@ -68,13 +73,34 @@ export class StaffRegisterResolver {
     }
   }
 
-  @Mutation(() => Boolean)
-  async signUpUser(@Args('id') id: string) {
-    const staffRegister = await this.staffRegisterService.findOne(id)
-    if (!staffRegister) {
-      return false
-    }
+  @Query(() => StaffRegister, { name: 'staffRegisterById', nullable: true })
+  findById(@Args('id') id: string) {
+    return this.staffRegisterService.findOne(id)
+  }
+
+  @Mutation(() => Staff)
+  async signUpUser(@Args('staffSignUpInput') input: StaffSignUpInput) {
+    const staffRegister = await this.staffRegisterService.findOne(input.id)
     staffRegister.isRegistered = true
+    if (!staffRegister) {
+      throw new GraphQLError('404')
+    }
+    const staff = new Staff()
+    staff.email = staffRegister.email
+    staff.firstName = staffRegister.firstName
+    staff.lastName = staffRegister.lastName
+    staff.role = staffRegister.role
+    staff.UID = input.uid
+    staff.locale = input.locale
+    staff.holidayDates = []
+    staff.holidaysLeft = staffRegister.holidayCount || 25
+    staff.holidaysTotal = staffRegister.holidayCount || 25
+    staff.phone = input.phone
+
+    const registeredStaff =
+      await this.staffService.createFromStaffRegister(staff)
+
     await this.staffRegisterService.update(staffRegister)
+    return registeredStaff
   }
 }

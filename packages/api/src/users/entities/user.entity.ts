@@ -1,15 +1,20 @@
 // Grahpql
-import { ObjectType, Field, ID } from '@nestjs/graphql'
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 // Typeorm
-import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm'
-import { IsUrl } from 'class-validator'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ObjectIdColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 
 export enum Role {
   SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
   USER = 'USER',
-  GROUP='GROUP',
-  STAFF='STAFF'
+  GROUP = 'GROUP',
+  STAFF = 'STAFF',
 }
 
 // User entity
@@ -34,11 +39,11 @@ export class User {
 
   @CreateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
-  createdAt: Date
+  createdAt?: Date
 
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
-  updatedAt: Date
+  updatedAt?: Date
 
   @Column({ nullable: true })
   @Field({ nullable: true })

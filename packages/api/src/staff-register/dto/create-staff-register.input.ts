@@ -14,4 +14,7 @@ export class CreateStaffRegisterInput {
 
   @Field()
   role: Role
+
+  @Field({ nullable: true, defaultValue: 25 })
+  holidayCount?: number
 }

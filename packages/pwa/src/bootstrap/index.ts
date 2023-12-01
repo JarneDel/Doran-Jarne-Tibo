@@ -23,6 +23,13 @@ export const router = createRouter({
       },
     },
     {
+      path: '/staff-register/:id',
+      component: () => import('@/views/auth/StaffRegister.vue'),
+      meta: {
+        title: SITE_NAME + ' - Register',
+      },
+    },
+    {
       path: '/repair',
       component: () => import('@/views/CreateRepairRequest.vue'),
     },
