@@ -76,7 +76,6 @@ export default defineComponent({
         :required="required"
         :type="type"
         :value="modelValue"
-        :disabled="disabled"
         :placeholder="placeholder"
         class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
         @input="
