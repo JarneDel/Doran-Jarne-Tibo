@@ -215,6 +215,7 @@ export const router = createRouter({
           component: () => import('@/views/admin/staff/Staff.vue'),
           meta: {
             title: SITE_NAME + ' - Staff',
+            allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
           },
         },
         {

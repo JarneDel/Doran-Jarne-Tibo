@@ -41,6 +41,47 @@ export const STAFF_COMPLETE_REGISTRATION: TypedDocumentNode<
   }
 `
 
+export const ALL_REGISTRATIONS: TypedDocumentNode<{
+  staffRegisterAll: StaffRegister[]
+}> = gql`
+  query staffRegister {
+    staffRegisterAll {
+      id
+      email
+      firstName
+      lastName
+      isRegistered
+      role
+      expiresAt
+      holidayCount
+    }
+  }
+`
+export const CREATE_REGISTRATION: TypedDocumentNode<
+  { staffRegister: StaffRegister },
+  { staffRegisterInput: CreateStaffRegister }
+> = gql`
+  mutation staffRegister($staffRegisterInput: CreateStaffRegisterInput!) {
+    createStaffRegister(createStaffRegisterInput: $staffRegisterInput) {
+      id
+      email
+      firstName
+      lastName
+      isRegistered
+      role
+      expiresAt
+    }
+  }
+`
+
+export interface CreateStaffRegister {
+  email: string
+  firstName: string
+  holidayCount?: number
+  lastName: string
+  role: string
+}
+
 export interface StaffRegister {
   id: string
   email: string
