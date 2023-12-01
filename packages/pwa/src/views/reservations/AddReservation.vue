@@ -13,6 +13,7 @@ import { material } from '@/interface/materialInterface'
 import { Plus, Minus, X } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import { useRouter } from 'vue-router'
+import StyledLable from '@/components/generic/StyledLable.vue'
 
 export default defineComponent({
   setup() {
@@ -171,23 +172,27 @@ export default defineComponent({
             wantedIds.push(material.id)
           })
           const availableids: string[] = []
-          result.data.GetAvailableloanableMaterials.forEach((material:material) => {
-            availableids.push(material.id)
-          })
-          result.data.GetAvailableloanableMaterials.forEach((material:material) => {
-            if (wantedIds.includes(material.id)) {
-              checkboxStatusMaterials.value[material.name] = {
-                amount: checkboxStatusMaterials.value[material.name].amount,
-                checked: true,
+          result.data.GetAvailableloanableMaterials.forEach(
+            (material: material) => {
+              availableids.push(material.id)
+            },
+          )
+          result.data.GetAvailableloanableMaterials.forEach(
+            (material: material) => {
+              if (wantedIds.includes(material.id)) {
+                checkboxStatusMaterials.value[material.name] = {
+                  amount: checkboxStatusMaterials.value[material.name].amount,
+                  checked: true,
+                }
+              } else {
+                //delete out of the list
+                checkboxStatusMaterials.value[material.name] = {
+                  amount: 0,
+                  checked: false,
+                }
               }
-            } else {
-              //delete out of the list
-              checkboxStatusMaterials.value[material.name] = {
-                amount: 0,
-                checked: false,
-              }
-            }
-          })
+            },
+          )
           //if wanted id is not in the available id list remove it
           wantedMaterials.value.forEach(material => {
             console.log(!availableids.includes(material.id))
@@ -325,7 +330,7 @@ export default defineComponent({
       detail,
     }
   },
-  components: { StyledInputText, StyledButton, Plus, Minus, X },
+  components: { StyledInputText, StyledButton, Plus, Minus, X, StyledLable },
 })
 </script>
 
@@ -402,16 +407,15 @@ export default defineComponent({
                 class="h-full rounded-md border-2 bg-white p-4 shadow-sm transition-all duration-300 peer-checked:border-black peer-checked:shadow-lg"
               >
                 <div class="flex h-full flex-col justify-between gap-2">
-                  <p class="text-lg font-medium">{{ room.name }}</p>
-                  <div v-if="room.sports.length > 0">
-                    <!-- <p>Sporten :</p> -->
-                    <div class="flex flex-wrap gap-2">
-                      <p
-                        v-for="sport in room.sports"
-                        class="bg-sports mt-1 rounded-full px-4"
-                      >
-                        {{ sport.name }}
-                      </p>
+                  <div>
+                    <p class="text-lg font-medium">{{ room.name }}</p>
+                    <div v-if="room.sports.length > 0">
+                      <!-- <p>Sporten :</p> -->
+                      <div class="flex flex-wrap gap-2">
+                        <StyledLable v-for="sport in room.sports" type="sport">
+                          {{ sport.name }}
+                        </StyledLable>
+                      </div>
                     </div>
                   </div>
                   <p class="font-bold">€ {{ room.pricePerHour }}/h</p>
@@ -439,13 +443,13 @@ export default defineComponent({
                   <div v-if="material.sports.length > 0">
                     <!-- <p>Sporten :</p> -->
                     <div class="flex flex-wrap gap-2">
-                      <p
+                      <StyledLable
                         :key="sport.id"
                         v-for="sport in material.sports"
-                        class="bg-sports mt-1 rounded-full px-4"
+                        type="sport"
                       >
                         {{ sport.name }}
-                      </p>
+                      </StyledLable>
                     </div>
                   </div>
                   <p class="font-bold">€ {{ material.price }}/h</p>
@@ -506,7 +510,9 @@ export default defineComponent({
           </div>
         </div>
         <div class="mb-2">
-          <p v-if="wantedMaterials.length>0">{{ $t('repairRequest.materials') }}</p>
+          <p v-if="wantedMaterials.length > 0">
+            {{ $t('repairRequest.materials') }}
+          </p>
           <div v-for="material in wantedMaterials">
             <div class="flex justify-between">
               <p>{{ material.name }}</p>

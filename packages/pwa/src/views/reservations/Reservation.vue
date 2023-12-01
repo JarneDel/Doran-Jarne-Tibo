@@ -11,9 +11,10 @@ import {
 } from '@/graphql/reservations.query'
 import { Reservation } from '@/interface/reservation'
 import { Pencil } from 'lucide-vue-next'
+import StyledLable from '@/components/generic/StyledLable.vue'
 
 export default defineComponent({
-  components: { StyledButton, StyledInputText, Pencil },
+  components: { StyledButton, StyledInputText, Pencil, StyledLable },
   computed: {},
   setup() {
     const { mutate: cancelReservation } = useMutation(CANCEL_RESERVATION)
@@ -67,7 +68,6 @@ export default defineComponent({
         reservation => reservation.id !== id,
       )
     }
-    
 
     return {
       reservations,
@@ -140,20 +140,18 @@ export default defineComponent({
                 </router-link>
               </div>
               <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
-                <p
+                <StyledLable
                   v-for="room in reservation.rooms"
-                  class="bg-rooms w-fit rounded-full px-4"
+                  type="room"
                 >
                   {{ room.name }}
-                </p>
+                </StyledLable>
               </div>
               <div class="mt-4 flex flex-wrap gap-x-4 gap-y-2">
-                <p
-                  v-for="material in reservation.reservedMaterials"
-                  class="bg-materials w-fit rounded-full px-4"
-                >
-                  {{ material.amountReserved }} x {{ material.name }}
-                </p>
+                <StyledLable type="material" v-for="material in reservation.reservedMaterials">
+                  {{ material.amountReserved }} x
+                  {{ material.name }}
+                </StyledLable>
               </div>
             </div>
             <div class="mt-4 flex items-center justify-between">

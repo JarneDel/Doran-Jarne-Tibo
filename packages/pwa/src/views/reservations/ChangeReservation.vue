@@ -15,6 +15,7 @@ import { Plus, Minus, X } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import { useRouter } from 'vue-router'
 import { Reservation } from '@/interface/reservation'
+import StyledLable from '@/components/generic/StyledLable.vue'
 
 export default defineComponent({
   setup() {
@@ -227,10 +228,10 @@ export default defineComponent({
           })
           if (reservations.value?.date.substr(0, 10) == reservation.value.date)
             reservations.value?.reservedMaterials.forEach(material => {
-          console.log(material)
-          console.log(availableMaterials.value)
-          if (availableMaterialsIds.includes(material.id))
-              wantedMaterials.value.push(material)
+              console.log(material)
+              console.log(availableMaterials.value)
+              if (availableMaterialsIds.includes(material.id))
+                wantedMaterials.value.push(material)
             })
           const listIds: string[] = []
           wantedMaterials.value.forEach(material => {
@@ -367,7 +368,7 @@ export default defineComponent({
       detail,
     }
   },
-  components: { StyledInputText, StyledButton, Plus, Minus, X },
+  components: { StyledInputText, StyledButton, Plus, Minus, X, StyledLable },
 })
 </script>
 
@@ -404,7 +405,12 @@ export default defineComponent({
         </div>
         <div class="ml-4 flex items-center gap-2 lg:mr-0">
           <p class="text-xl">€ {{ PriceWhitDiscount.toFixed(2) }}</p>
-          <StyledButton type="button" class="h-fit" @click="detail = !detail" :disabled="!((wantedRoom.length)>0)">
+          <StyledButton
+            type="button"
+            class="h-fit"
+            @click="detail = !detail"
+            :disabled="!(wantedRoom.length > 0)"
+          >
             {{ $t('reservation.detail') }}
           </StyledButton>
         </div>
@@ -430,16 +436,19 @@ export default defineComponent({
                 class="h-full rounded-md border bg-white p-4 shadow-sm transition-all duration-300 peer-checked:border-2 peer-checked:border-black peer-checked:shadow-lg"
               >
                 <div class="flex h-full flex-col justify-between gap-2">
-                  <p class="text-lg font-medium">{{ room.name }}</p>
-                  <div v-if="room.sports.length > 0">
-                    <!-- <p>Sporten :</p> -->
-                    <div class="flex flex-wrap gap-2">
-                      <p
-                        v-for="sport in room.sports"
-                        class="bg-sports mt-1 rounded-full px-4"
-                      >
-                        {{ sport.name }}
-                      </p>
+                  <div>
+                    <p class="text-lg font-medium">{{ room.name }}</p>
+                    <div v-if="room.sports.length > 0">
+                      <!-- <p>Sporten :</p> -->
+                      <div class="flex flex-wrap gap-2">
+                        <StyledLable
+                          v-for="sport in room.sports"
+                          type="sport"
+                          class="bg-sports border-sports mt-1 rounded-full border-2 bg-opacity-50 px-4 py-px"
+                        >
+                          {{ sport.name }}
+                        </StyledLable>
+                      </div>
                     </div>
                   </div>
                   <p class="font-bold">€ {{ room.pricePerHour }}/h</p>
@@ -467,13 +476,13 @@ export default defineComponent({
                   <div v-if="material.sports.length > 0">
                     <!-- <p>Sporten :</p> -->
                     <div class="flex flex-wrap gap-2">
-                      <p
+                      <StyledLable
                         :key="sport.id"
                         v-for="sport in material.sports"
-                        class="bg-sports mt-1 rounded-full px-4"
+                        type="sport"
                       >
                         {{ sport.name }}
-                      </p>
+                      </StyledLable>
                     </div>
                   </div>
                   <p class="font-bold">€ {{ material.price }}/h</p>
@@ -534,7 +543,9 @@ export default defineComponent({
           </div>
         </div>
         <div class="mb-2">
-          <p v-if="wantedMaterials.length>0">{{ $t('repairRequest.materials') }}</p>
+          <p v-if="wantedMaterials.length > 0">
+            {{ $t('repairRequest.materials') }}
+          </p>
           <div v-for="material in wantedMaterials">
             <div class="flex justify-between">
               <p>{{ material.name }}</p>
