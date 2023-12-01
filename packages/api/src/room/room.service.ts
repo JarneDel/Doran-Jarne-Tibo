@@ -46,7 +46,7 @@ export class RoomService {
   findAllChangingRooms() {
     const AllRooms = this.roomRepository.find()
     const ChangingRooms = AllRooms.then((rooms) => {
-      return rooms.filter((room) => room.type === 'Kleedrui mte')
+      return rooms.filter((room) => room.type === 'Kleedruimte')
     })
     return ChangingRooms
   }

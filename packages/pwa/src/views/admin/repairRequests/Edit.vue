@@ -1,71 +1,71 @@
 <script lang="ts">
 // Interfaces
 interface IRepairRequest {
-  GetRepairRequestById: RepairRequest;
+  GetRepairRequestById: RepairRequest
 }
 
 interface ICurrentRepairRequestCanBeEmpty {
-  id?: string;
-  title?: string;
-  description?: string;
-  isRepaired?: boolean;
-  requestUser?: RequestUser;
-  room?: Room[];
-  loanableMaterial?: material[];
-  urgency?: number;
+  id?: string
+  title?: string
+  description?: string
+  isRepaired?: boolean
+  requestUser?: RequestUser
+  room?: Room[]
+  loanableMaterial?: material[]
+  urgency?: number
 }
 
 interface IconvertedRooms {
-  id?: string;
-  name?: string;
-  pricePerHour?: number;
-  type?: string;
+  id?: string
+  name?: string
+  pricePerHour?: number
+  type?: string
 }
 
 interface IRooms {
-  GetAllRooms: [Room];
+  GetAllRooms: [Room]
 }
 
 interface IconvertedLoanableMaterials {
-  id?: string;
-  name?: string;
-  totalAmount?: number;
-  wantedAmount?: number;
-  price?: number;
-  sports?: Sport[];
-  isComplete?: boolean;
-  description?: string;
+  id?: string
+  name?: string
+  totalAmount?: number
+  wantedAmount?: number
+  price?: number
+  sports?: Sport[]
+  isComplete?: boolean
+  description?: string
 }
 
 interface Sport {
-  id: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
+  id: string
+  name: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 interface ILoanableMaterials {
-  GetAllLoanableMaterials: material[];
+  GetAllLoanableMaterials: material[]
 }
 
-import { computed, defineComponent, ref } from 'vue';
-import { ShieldAlert, BadgeCheck } from 'lucide-vue-next';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import { useQuery, useMutation } from '@vue/apollo-composable';
+import { computed, defineComponent, ref } from 'vue'
+import { ShieldAlert, BadgeCheck } from 'lucide-vue-next'
+import Modal from '@/components/Modal.vue'
+import { useRouter } from 'vue-router'
+import { useQuery, useMutation } from '@vue/apollo-composable'
 import {
   GET_ONE_REPAIR_REQUEST,
   UPDATE_REPAIR_REQUEST,
-} from '@/graphql/repairRequests.query.ts';
-import { ALL_LOANABLE_MATERIALS } from '@/graphql/loanableMaterials.query.ts';
-import { ALL_ROOMS } from '@/graphql/room.query.ts';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import StyledInputText from '@/components/generic/StyledInputText.vue';
-import { onBeforeMount } from 'vue';
-import { RepairRequest } from '@/interface/repairRequestInterface';
-import { RequestUser } from '@/interface/requestUserInterface';
-import { Room } from '@/interface/roomInterface';
-import { material } from '@/interface/materialInterface';
+} from '@/graphql/repairRequests.query.ts'
+import { ALL_LOANABLE_MATERIALS } from '@/graphql/loanableMaterials.query.ts'
+import { ALL_ROOMS } from '@/graphql/room.query.ts'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import StyledInputText from '@/components/generic/StyledInputText.vue'
+import { onBeforeMount } from 'vue'
+import { RepairRequest } from '@/interface/repairRequestInterface'
+import { RequestUser } from '@/interface/requestUserInterface'
+import { Room } from '@/interface/roomInterface'
+import { material } from '@/interface/materialInterface'
 
 export default defineComponent({
   name: 'Edit',
@@ -77,80 +77,80 @@ export default defineComponent({
     BadgeCheck,
   },
   setup: () => {
-    const { push, currentRoute } = useRouter();
-    const id = computed(() => currentRoute.value.params.id);
+    const { push, currentRoute } = useRouter()
+    const id = computed(() => currentRoute.value.params.id)
 
-    const { mutate: mutateUpdateItem } = useMutation(UPDATE_REPAIR_REQUEST);
+    const { mutate: mutateUpdateItem } = useMutation(UPDATE_REPAIR_REQUEST)
 
     // GET_ONE_REPAIR_REQUEST
     const { error, loading, result } = useQuery<IRepairRequest>(
       GET_ONE_REPAIR_REQUEST,
       {
         repairRequestId: id.value,
-      }
-    );
+      },
+    )
 
     // ALL_ROOMS
     const {
       error: errorRooms,
       loading: loadingRooms,
       result: resultRooms,
-    } = useQuery<IRooms>(ALL_ROOMS, {});
+    } = useQuery<IRooms>(ALL_ROOMS, {})
 
     // ALL_LOANABLE_MATERIALS
     const {
       error: errorMaterials,
       loading: loadingMaterials,
       result: resultMaterials,
-    } = useQuery<ILoanableMaterials>(ALL_LOANABLE_MATERIALS, {});
+    } = useQuery<ILoanableMaterials>(ALL_LOANABLE_MATERIALS, {})
 
-    const currentRepairRequest = ref<ICurrentRepairRequestCanBeEmpty>({});
+    const currentRepairRequest = ref<ICurrentRepairRequestCanBeEmpty>({})
 
     // Set currentRepairRequest based on result
     onBeforeMount(() => {
       if (result.value?.GetRepairRequestById) {
-        currentRepairRequest.value = { ...result.value?.GetRepairRequestById };
+        currentRepairRequest.value = { ...result.value?.GetRepairRequestById }
       }
-    });
+    })
 
     const handleSubmit = () => {
-      const convertedRooms: IconvertedRooms[] = [];
+      const convertedRooms: IconvertedRooms[] = []
       if (currentRepairRequest.value.room) {
-        currentRepairRequest.value.room.forEach((room) => {
-          const tempRoom: IconvertedRooms = {};
-          tempRoom.id = room.id;
-          tempRoom.name = room.name;
-          tempRoom.pricePerHour = room.pricePerHour;
-          tempRoom.type = room.type;
-          convertedRooms.push(tempRoom);
-        });
+        currentRepairRequest.value.room.forEach(room => {
+          const tempRoom: IconvertedRooms = {}
+          tempRoom.id = room.id
+          tempRoom.name = room.name
+          tempRoom.pricePerHour = room.pricePerHour
+          tempRoom.type = room.type
+          convertedRooms.push(tempRoom)
+        })
       }
 
-      const convertedLoanableMaterials: IconvertedLoanableMaterials[] = [];
+      const convertedLoanableMaterials: IconvertedLoanableMaterials[] = []
       if (currentRepairRequest.value.loanableMaterial) {
-        currentRepairRequest.value.loanableMaterial.forEach((material) => {
-          const Sports = material.sports?.map((sport) => {
+        currentRepairRequest.value.loanableMaterial.forEach(material => {
+          const Sports = material.sports?.map(sport => {
             return {
               id: sport.id,
               name: sport.name,
               createdAt: sport.createdAt,
               updatedAt: sport.updatedAt,
-            };
-          });
+            }
+          })
 
-          const tempMaterial: IconvertedLoanableMaterials = {};
-          tempMaterial.id = material.id;
-          tempMaterial.name = material.name;
-          tempMaterial.totalAmount = material.totalAmount;
-          tempMaterial.wantedAmount = material.wantedAmount;
-          tempMaterial.price = material.price;
-          tempMaterial.sports = Sports;
-          tempMaterial.isComplete = material.isComplete;
-          tempMaterial.description = material.description;
-          convertedLoanableMaterials.push(tempMaterial);
-        });
+          const tempMaterial: IconvertedLoanableMaterials = {}
+          tempMaterial.id = material.id
+          tempMaterial.name = material.name
+          tempMaterial.totalAmount = material.totalAmount
+          tempMaterial.wantedAmount = material.wantedAmount
+          tempMaterial.price = material.price
+          tempMaterial.sports = Sports
+          tempMaterial.isComplete = material.isComplete
+          tempMaterial.description = material.description
+          convertedLoanableMaterials.push(tempMaterial)
+        })
       }
-      console.log('convertedLoanableMaterials', convertedLoanableMaterials);
+      console.log('convertedLoanableMaterials', convertedLoanableMaterials)
 
       // Save changes
       mutateUpdateItem({
@@ -163,10 +163,10 @@ export default defineComponent({
           loanableMaterial: convertedLoanableMaterials,
           urgency: Number(currentRepairRequest.value.urgency),
         },
-      }).then((e) => {
-        push('/admin/repair-requests');
-      });
-    };
+      }).then(e => {
+        push('/admin/repair-requests')
+      })
+    }
 
     return {
       push,
@@ -181,25 +181,23 @@ export default defineComponent({
       errorMaterials,
       loadingMaterials,
       currentRepairRequest,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
   <Modal max-width="max-w-xl" @close="push('/admin/repair-requests')">
     <template v-slot:title>
       <div class="flex w-full flex-row items-center justify-between">
-        <h2 v-if="loading" class="mr-2 w-full text-lg font-bold">
-          Loading...
-        </h2>
+        <h2 v-if="loading" class="mr-2 w-full text-lg font-bold">Loading...</h2>
         <h2
           v-if="!result?.GetRepairRequestById && !loading"
           class="mr-2 w-full text-lg font-bold"
         >
           No item found with this id
         </h2>
-        <h3 class="mb-2 mr-2 text-primary-text text-2xl font-bold">
+        <h3 class="text-primary-text mb-2 mr-2 text-2xl font-bold">
           {{ result?.GetRepairRequestById.title }}
         </h3>
         <div></div>
@@ -214,9 +212,9 @@ export default defineComponent({
               id="name"
               :label="$t('repairRequest.title')"
             />
-            <div class="flex justify-between mt-4">
+            <div class="mt-4 flex justify-between items-center">
               <ShieldAlert
-                class="w-8 h-8 mx-2"
+                class="mr-2 min-h-[2rem] min-w-[2rem]"
                 :class="{
                   'text-yellow-300': currentRepairRequest.urgency == 1,
                   'text-orange-500': currentRepairRequest.urgency == 2,
@@ -226,20 +224,20 @@ export default defineComponent({
               />
               <select
                 id="urgency"
-                class="bg-primary-surface b-2 border-neutral-200 px-4 mb-2 xl:mb-4 2xl:mb-6"
+                class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
                 name="urgency"
                 v-model="currentRepairRequest.urgency"
               >
                 <option value="1">{{ $t('repairRequest.notUrgent') }}</option>
-                <option value="2">{{
-                  $t('repairRequest.mildlyUrgent')
-                }}</option>
+                <option value="2">
+                  {{ $t('repairRequest.mildlyUrgent') }}
+                </option>
                 <option value="3">{{ $t('repairRequest.veryUrgent') }}</option>
               </select>
             </div>
-            <div class="flex justify-between items-center">
+            <div class="flex items-center justify-between">
               <BadgeCheck
-                class="w-8 h-8 mx-2 text-green-600"
+                class="mr-2 min-h-[2rem] min-w-[2rem] text-green-600"
                 :class="{
                   'opacity-40': !currentRepairRequest.isRepaired,
                 }"
@@ -315,28 +313,39 @@ export default defineComponent({
                     :checked="
                       (console.log(currentRepairRequest.loanableMaterial),
                       currentRepairRequest.loanableMaterial.some(
-                        (s) => s.id === material.id
+                        s => s.id === material.id,
                       )
                         ? true
                         : false)
                     "
                     @change="
-                        (e: any) => {
-                            if (e.target?.checked) {
-                            currentRepairRequest = {
-                                ...currentRepairRequest,
-                                loanableMaterial: Array.isArray(currentRepairRequest.loanableMaterial) ? [...currentRepairRequest.loanableMaterial, material] : [material],
-                            };
-                            } else {
-                            currentRepairRequest = {
-                                ...currentRepairRequest,
-                                loanableMaterial: Array.isArray(currentRepairRequest.loanableMaterial)
-                                ? currentRepairRequest.loanableMaterial.filter((s) => s.id !== material.id)
-                                : [],
-                            };
-                            }
+                      (e: any) => {
+                        if (e.target?.checked) {
+                          currentRepairRequest = {
+                            ...currentRepairRequest,
+                            loanableMaterial: Array.isArray(
+                              currentRepairRequest.loanableMaterial,
+                            )
+                              ? [
+                                  ...currentRepairRequest.loanableMaterial,
+                                  material,
+                                ]
+                              : [material],
+                          }
+                        } else {
+                          currentRepairRequest = {
+                            ...currentRepairRequest,
+                            loanableMaterial: Array.isArray(
+                              currentRepairRequest.loanableMaterial,
+                            )
+                              ? currentRepairRequest.loanableMaterial.filter(
+                                  s => s.id !== material.id,
+                                )
+                              : [],
+                          }
                         }
-                        "
+                      }
+                    "
                   />
                   <label :for="material.id" class="select-none">{{
                     material.name
@@ -362,27 +371,31 @@ export default defineComponent({
                     :name="room.id"
                     :id="room.id"
                     :checked="
-                      currentRepairRequest.room.some((s) => s.id === room.id)
+                      currentRepairRequest.room.some(s => s.id === room.id)
                         ? true
                         : false
                     "
                     @change="
-                        (e: any) => {
-                            if (e.target?.checked) {
-                            currentRepairRequest = {
-                                ...currentRepairRequest,
-                                room: Array.isArray(currentRepairRequest.room) ? [...currentRepairRequest.room, room] : [room],
-                            };
-                            } else {
-                            currentRepairRequest = {
-                                ...currentRepairRequest,
-                                room: Array.isArray(currentRepairRequest.room)
-                                ? currentRepairRequest.room.filter((s) => s.id !== room.id)
-                                : [],
-                            };
-                            }
+                      (e: any) => {
+                        if (e.target?.checked) {
+                          currentRepairRequest = {
+                            ...currentRepairRequest,
+                            room: Array.isArray(currentRepairRequest.room)
+                              ? [...currentRepairRequest.room, room]
+                              : [room],
+                          }
+                        } else {
+                          currentRepairRequest = {
+                            ...currentRepairRequest,
+                            room: Array.isArray(currentRepairRequest.room)
+                              ? currentRepairRequest.room.filter(
+                                  s => s.id !== room.id,
+                                )
+                              : [],
+                          }
                         }
-                        "
+                      }
+                    "
                   />
                   <label :for="room.id" class="select-none">{{
                     room.name

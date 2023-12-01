@@ -186,7 +186,7 @@ export default defineComponent({
         <div class="flex gap-2">
           <select
             id="sorting"
-            class="bg-primary-surface b-2 focus-within:border-primary-medium border-primary-light mb-2 bg-white px-4 outline-none xl:mb-4 2xl:mb-6"
+                class="h-fit mb-2 b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark rounded bg-white px-4 py-1.5 outline-none transition-colors"
             name="sorting"
             @change="changeSorting"
           >
@@ -196,7 +196,7 @@ export default defineComponent({
           </select>
           <select
             id="sortingReverse"
-            class="bg-primary-surface b-2 focus-within:border-primary-medium border-primary-light mb-2 bg-white px-4 outline-none xl:mb-4 2xl:mb-6"
+                class="h-fit mb-2 b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark rounded bg-white px-4 py-1.5 outline-none transition-colors"
             name="sortingReverse"
             @change="changeReverseSorting"
           >
@@ -225,7 +225,7 @@ export default defineComponent({
                 </h3>
                 <div class="flex items-center justify-center gap-2">
                   <ShieldAlert
-                    class="mr-2 h-8 w-8"
+                    class="mr-2 min-h-[2rem] min-w-[2rem]"
                     :class="{
                       'text-yellow-300': repairRequest.urgency == 1,
                       'text-orange-500': repairRequest.urgency == 2,
@@ -242,28 +242,30 @@ export default defineComponent({
                   <div class="flex flex-col">
                     <div class="flex items-center">
                       <Box
-                        class="mr-2 h-8 w-8 opacity-10"
+                        class="mr-2 min-h-[2rem] min-w-[2rem] opacity-10"
                         :class="{
                           'opacity-100': repairRequest.loanableMaterial,
                         }"
                       />
                       <ul class="flex flex-wrap">
                         <li
+                          class="flex flex-wrap"
                           v-if="Array.isArray(repairRequest.loanableMaterial)"
                         >
                           <template
                             v-for="(
                               loanableMaterial, index
                             ) in repairRequest.loanableMaterial"
-                          >
-                            {{ loanableMaterial.name }}
-                            <span
-                              v-if="
-                                index !==
-                                repairRequest.loanableMaterial.length - 1
-                              "
-                              class="mr-1"
-                              >,</span
+                            ><span>
+                              {{ loanableMaterial.name }}
+                              <span
+                                v-if="
+                                  index !==
+                                  repairRequest.loanableMaterial.length - 1
+                                "
+                                class="mr-1"
+                                >,</span
+                              ></span
                             >
                           </template>
                         </li>
@@ -274,10 +276,13 @@ export default defineComponent({
                     </div>
                     <div class="flex items-center">
                       <Warehouse
-                        class="mr-2 h-8 w-8 opacity-10"
+                        class="mr-2 min-h-[2rem] min-w-[2rem] opacity-10"
                         :class="{ 'opacity-100': repairRequest.room }"
                       />
-                      <ul v-if="Array.isArray(repairRequest.room)">
+                      <ul
+                        v-if="Array.isArray(repairRequest.room)"
+                        class="flex flex-wrap"
+                      >
                         <li
                           v-for="(room, index) in repairRequest.room"
                           :key="index"

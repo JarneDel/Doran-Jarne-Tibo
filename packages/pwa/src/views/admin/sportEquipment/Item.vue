@@ -26,6 +26,7 @@ import {
 import { Edit2, Trash2 } from 'lucide-vue-next';
 import StyledButton from '@/components/generic/StyledButton.vue';
 import useA11y from '@/composables/useA11y.ts';
+import StyledLable from '@/components/generic/StyledLable.vue';
 
 export default defineComponent({
   components: {
@@ -33,7 +34,8 @@ export default defineComponent({
     Modal,
     Edit2,
     Trash: Trash2,
-  },
+    StyledLable
+},
   name: 'Item',
   setup: () => {
     const progressbar = ref<HTMLDivElement | null>(null);
@@ -147,13 +149,13 @@ export default defineComponent({
             {{ $t('sportEquipment.sports') }}
           </h4>
           <ul class="flex flex-wrap gap-x-2 gap-y-1">
-            <li
-              class="bg-sports mt-1 w-fit rounded-full px-4 text-sm font-medium"
+            <StyledLable
+              type="sport"
               v-for="sport in result?.GetloanableMaterialById.sports"
               :key="sport.name"
             >
-              <p>{{ sport.name }}</p>
-            </li>
+              {{ sport.name }}
+            </StyledLable>
           </ul>
         </div>
 

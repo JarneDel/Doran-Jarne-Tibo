@@ -63,6 +63,7 @@ import {
 } from '@/graphql/reservations.query.ts'
 import { Edit2, Trash2 } from 'lucide-vue-next'
 import StyledButton from '@/components/generic/StyledButton.vue'
+import StyledLable from '@/components/generic/StyledLable.vue'
 
 export default defineComponent({
   components: {
@@ -70,7 +71,8 @@ export default defineComponent({
     Modal,
     Edit2,
     Trash: Trash2,
-  },
+    StyledLable
+},
   name: 'Item',
   setup: () => {
     const { push, replace, currentRoute } = useRouter()
@@ -123,7 +125,7 @@ export default defineComponent({
         >
           <Trash :size="20" />
         </button>
-        <button
+        <!-- <button
           v-if="result?.GetReservatiounById"
           class="bg-primary-surface hover:bg-primary-surface/80 active:bg-primary-surface/60 mr-2 self-end rounded-full p-2"
           @click="
@@ -135,8 +137,8 @@ export default defineComponent({
           "
         >
           <Edit2 :size="20" />
-        </button>
-        <div></div>
+        </button> -->
+        <!-- <div></div> -->
       </div>
     </template>
     <template v-slot:default>
@@ -152,29 +154,29 @@ export default defineComponent({
         </div>
         <div>
           <h3 class="font-medium">Rooms:</h3>
-          <ul>
-            <li
-              class="bg-rooms mt-1 w-fit rounded-full px-4 text-sm font-medium"
+          <div class=" flex gap-x-4 gap-y-1 flex-wrap">
+            <StyledLable
+              type="room"
               v-for="room in result?.GetReservatiounById.rooms"
             >
               {{ room.name }}
-            </li>
-          </ul>
+            </StyledLable>
+          </div>
         </div>
         <div>
           <h3 class="font-medium">Materials:</h3>
-          <ul>
-            <li
-              class="bg-materials mt-1 w-fit rounded-full px-4 text-sm font-medium"
+          <div class=" flex gap-x-4 gap-y-1 flex-wrap">
+            <StyledLable
+              type="material"
               v-for="material in result?.GetReservatiounById.reservedMaterials"
             >
               {{ material.name }}
-            </li>
-          </ul>
+            </StyledLable>
+          </div>
         </div>
         <div class="flex gap-2">
           <h3 class="font-medium">Price:</h3>
-          <p>€ {{ result?.GetReservatiounById.price }}</p>
+          <p>€ {{ result?.GetReservatiounById.price.toFixed(2) }}</p>
         </div>
       </div>
     </template>
