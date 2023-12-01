@@ -65,6 +65,6 @@ export default defineComponent({
 }
 
 button:disabled {
-  @apply bg-gray-1 active:bg-gray-1 hover:b-transparent;
+  @apply bg-gray-2 active:bg-gray-1 hover:b-transparent;
 }
 </style>
