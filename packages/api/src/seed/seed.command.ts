@@ -24,7 +24,8 @@ export class DatabaseSeedCommand {
 
     //LoanableMaterials (after sports because of foreign key)
     console.info('🌱 Start seeding of loanableMaterials')
-    const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
+    const loanableMaterials =
+      await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
 
     //Staff
@@ -56,7 +57,7 @@ export class DatabaseSeedCommand {
     console.info('🌱 Start seeding of repairRequests')
     const repairRequests = await this.seedService.addRepairRequestsFromJson()
     console.info(
-      `added ${repairRequests.length} repairRequests to the database`
+      `added ${repairRequests.length} repairRequests to the database`,
     )
 
     // Reservations (after loanableMaterials, rooms, groups, sports and staff because of foreign key)
@@ -109,6 +110,11 @@ export class DatabaseSeedCommand {
     console.info('Deleting vacation requests')
     await this.seedService.deleteAllVacationRequests()
     console.info('Deleted all vacation requests')
+
+    // delete all staff register
+    console.info('Deleting all staff register')
+    await this.seedService.deleteAllStaffRegister()
+    console.log('removed staff register')
   }
 
   //Stocks
@@ -163,7 +169,8 @@ export class DatabaseSeedCommand {
   })
   async seedLoanableMaterials() {
     console.info('🌱 Start seeding of loanableMaterials')
-    const loanableMaterials = await this.seedService.addLoanableMaterialsFromJson()
+    const loanableMaterials =
+      await this.seedService.addLoanableMaterialsFromJson()
     console.info(`${loanableMaterials.length} loanableMaterials are added`)
   }
   //Delete
@@ -297,7 +304,7 @@ export class DatabaseSeedCommand {
     console.info('🌱 Start seeding of repairRequests')
     const repairRequests = await this.seedService.addRepairRequestsFromJson()
     console.info(
-      `added ${repairRequests.length} repairRequests to the database`
+      `added ${repairRequests.length} repairRequests to the database`,
     )
   }
   //Delete

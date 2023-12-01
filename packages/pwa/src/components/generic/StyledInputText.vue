@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'StyledInputText',
@@ -50,15 +50,15 @@ export default defineComponent({
 
   computed: {
     inputLength(): number {
-      const value = this.$props.modelValue as string;
+      const value = this.$props.modelValue as string
       try {
-        return value.length;
+        return value.length
       } catch (e) {
-        return 0;
+        return 0
       }
     },
   },
-});
+})
 </script>
 
 <template>
@@ -67,6 +67,7 @@ export default defineComponent({
     <br />
     <span class="flex items-center justify-center">
       <input
+        :disabled="disabled"
         :autocomplete="autocomplete"
         :min="min"
         :max="max"
