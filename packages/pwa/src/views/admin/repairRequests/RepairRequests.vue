@@ -186,7 +186,7 @@ export default defineComponent({
         <div class="flex gap-2">
           <select
             id="sorting"
-                class="h-fit mb-2 b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark rounded bg-white px-4 py-1.5 outline-none transition-colors"
+            class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark mb-2 h-fit rounded bg-white px-4 py-1.5 outline-none transition-colors"
             name="sorting"
             @change="changeSorting"
           >
@@ -196,7 +196,7 @@ export default defineComponent({
           </select>
           <select
             id="sortingReverse"
-                class="h-fit mb-2 b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark rounded bg-white px-4 py-1.5 outline-none transition-colors"
+            class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark mb-2 h-fit rounded bg-white px-4 py-1.5 outline-none transition-colors"
             name="sortingReverse"
             @change="changeReverseSorting"
           >
