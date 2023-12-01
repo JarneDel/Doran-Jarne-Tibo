@@ -23,6 +23,7 @@ export default defineComponent({
     },
 
     isWorkingFromSchedule() {
+      if (!this.data.workingHours) return false
       const day = new Date().getDay()
       if (this.data.workingHours.length === 0) return false
       const workingHoursToday = this.data.workingHours.find((wh: any) => {

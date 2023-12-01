@@ -5,8 +5,10 @@ export const DEFAULT_LOCALE = 'nl'
 export const SUPPORTED_LOCALES: Record<string, string> = {
   en: 'English',
   nl: 'Nederlands',
-  zh: 'Chinese',
-  es: 'Spaans',
+  zh: '中文',
+  es: 'Español',
+  fr: 'Francais',
+  de: 'Doitsch',
 }
 
 export const i18nOptions: I18nOptions = {

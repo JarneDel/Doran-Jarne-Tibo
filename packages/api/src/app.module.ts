@@ -19,6 +19,9 @@ import { ReservationModule } from './reservation/reservation.module'
 import { RepairRequestModule } from './repair-request/repair-request.module'
 import { VacationRequestModule } from './vacation-request/vacation-request.module'
 import { AppLoggerMiddleware } from './middleware/app.logger.middleware'
+import { StaffRegisterModule } from './staff-register/staff-register.module'
+import { MailerModule } from '@nestjs-modules/mailer'
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter'
 
 @Module({
   imports: [
@@ -46,6 +49,28 @@ import { AppLoggerMiddleware } from './middleware/app.logger.middleware'
       useUnifiedTopology: true, // Disable deprecated warnings
       directConnection: true,
     }),
+    MailerModule.forRoot({
+      transport: {
+        service: 'outlook',
+        auth: {
+          user: process.env['MAIL_USER'],
+          pass: process.env['MAIL_PASSWORD'],
+        },
+      },
+      defaults: {
+        from: `"No Reply" <${process.env['MAIL_USER']}>`,
+      },
+      template: {
+        dir:
+          process.env.NODE_ENV == 'production'
+            ? __dirname + '/templates'
+            : 'templates',
+        adapter: new PugAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
     StockModule,
     GroupsModule,
     SeedModule,
@@ -59,6 +84,7 @@ import { AppLoggerMiddleware } from './middleware/app.logger.middleware'
     ReservationModule,
     RepairRequestModule,
     VacationRequestModule,
+    StaffRegisterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

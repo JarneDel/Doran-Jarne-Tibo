@@ -16,8 +16,7 @@ import { RoomModule } from 'src/room/room.module'
 import { ReservationModule } from 'src/reservation/reservation.module'
 import { RepairRequestModule } from 'src/repair-request/repair-request.module'
 import { VacationRequestModule } from '../vacation-request/vacation-request.module'
-
-
+import { StaffRegisterModule } from '../staff-register/staff-register.module'
 
 @Module({
   imports: [
@@ -33,6 +32,7 @@ import { VacationRequestModule } from '../vacation-request/vacation-request.modu
     ReservationModule,
     RepairRequestModule,
     VacationRequestModule,
+    StaffRegisterModule,
   ],
   providers: [DatabaseSeedCommand, SeedService],
 })

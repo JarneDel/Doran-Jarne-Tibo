@@ -23,6 +23,20 @@ export const router = createRouter({
       },
     },
     {
+      path: '/staff-register/:id',
+      component: () => import('@/views/auth/StaffRegister.vue'),
+      meta: {
+        title: SITE_NAME + ' - Register',
+      },
+    },
+    {
+      path: '/staff-register/logged-in',
+      component: () => import('@/views/auth/StaffRegisterLoggedIn.vue'),
+      meta: {
+        title: SITE_NAME + ' - Already registered',
+      },
+    },
+    {
       path: '/repair',
       component: () => import('@/views/CreateRepairRequest.vue'),
     },
@@ -208,6 +222,7 @@ export const router = createRouter({
           component: () => import('@/views/admin/staff/Staff.vue'),
           meta: {
             title: SITE_NAME + ' - Staff',
+            allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
           },
         },
         {
@@ -352,7 +367,7 @@ export const router = createRouter({
 
 const redirectToLogin = (
   to: RouteLocationNormalized,
-  next: NavigationGuardNext
+  next: NavigationGuardNext,
 ) => {
   next('/login?redirect=' + to.path)
 }
@@ -375,7 +390,7 @@ const redirectToHome = (next: NavigationGuardNext) => {
 }
 const unauthorized = (
   to: RouteLocationNormalized,
-  next: NavigationGuardNext
+  next: NavigationGuardNext,
 ) => {
   if (to.path.includes('/admin')) {
     next('/admin/403')
@@ -384,10 +399,20 @@ const unauthorized = (
   next('/403')
 }
 
-const logoutUser = (next: NavigationGuardNext) => {
+const logoutUser = (
+  from: RouteLocationNormalized,
+  to: RouteLocationNormalized,
+  next: NavigationGuardNext,
+) => {
   const { userLogout } = useUser()
+  console.log(from.query)
+  const redirect = to.query.redirect as string | undefined
   logout().then(() => {
     userLogout()
+    if (redirect) {
+      next(redirect)
+      return
+    }
     next('/login')
   })
 }
@@ -404,7 +429,7 @@ const setPageTitle = (to: RouteLocationNormalized) => {
   })
 }
 
-router.beforeEach((to, _, next) => {
+router.beforeEach((to, from, next) => {
   console.debug('Meta', to.meta)
   setPageTitle(to)
   // get user from database
@@ -422,7 +447,7 @@ router.beforeEach((to, _, next) => {
       break
     // logout user
     case to.path === '/logout':
-      logoutUser(next)
+      logoutUser(from, to, next)
       break
     // when route is not allowed for user role redirect to 403
     case customUser.value &&
