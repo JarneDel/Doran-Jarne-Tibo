@@ -41,4 +41,8 @@ export class StaffRegisterService {
   async update(staffRegister: StaffRegister) {
     return this.staffRegisterRepository.save(staffRegister)
   }
+
+  async truncate() {
+    return this.staffRegisterRepository.clear()
+  }
 }

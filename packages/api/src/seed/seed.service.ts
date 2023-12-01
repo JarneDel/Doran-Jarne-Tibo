@@ -40,6 +40,7 @@ import { StaffService } from 'src/staff/staff.service'
 import { ServiceService } from '../service/service.service'
 import { RepairRequestService } from '../repair-request/repair-request.service'
 import { VacationRequestService } from '../vacation-request/vacation-request.service'
+import { StaffRegisterService } from '../staff-register/staff-register.service'
 
 @Injectable()
 export class SeedService {
@@ -54,6 +55,7 @@ export class SeedService {
     private reservationService: ReservationService,
     private RepairRequestService: RepairRequestService,
     private vacationRequestService: VacationRequestService,
+    private StaffRegisterService: StaffRegisterService,
   ) {}
 
   async addStockFromJson(): Promise<Stock[]> {
@@ -258,8 +260,7 @@ export class SeedService {
       material.isComplete = loanableMaterial.isComplete
       material.description = loanableMaterial.description
       material.amountReserved = Math.round(Math.random() * 10)
-      const materialList: [Materials] = [material]
-      r.reservedMaterials = materialList
+      r.reservedMaterials = [material]
       //@ts-ignore
       const renroom = await rooms[Math.floor(Math.random() * rooms.length)]
       const room = new Rooms()
@@ -274,8 +275,7 @@ export class SeedService {
       }
       room.sports = sports
       room.type = renroom.type
-      const roomList: [Rooms] = [room]
-      r.rooms = roomList
+      r.rooms = [room]
       r.price = reservation.price
       r.isCancelled = reservation.isCancelled
       outReservations.push(r)
@@ -330,11 +330,7 @@ export class SeedService {
       rr.description = repairRequest.description
       rr.urgency = Math.floor(Math.random() * 3) + 1
       const randNumb = Math.floor(Math.random() * 2)
-      if (randNumb === 0) {
-        rr.isRepaired = false
-      } else {
-        rr.isRepaired = true
-      }
+      rr.isRepaired = randNumb !== 0
 
       const randNumb1 = Math.floor(Math.random() * 3)
       if (randNumb1 === 0) {
@@ -488,4 +484,11 @@ export class SeedService {
   }
 
   // endregion
+
+  // region staff-register
+  async deleteAllStaffRegister(): Promise<void> {
+    return this.StaffRegisterService.truncate()
+  }
+
+  //endregion
 }
