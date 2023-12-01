@@ -19,6 +19,7 @@ import { ReservationModule } from './reservation/reservation.module'
 import { RepairRequestModule } from './repair-request/repair-request.module'
 import { VacationRequestModule } from './vacation-request/vacation-request.module'
 import { AppLoggerMiddleware } from './middleware/app.logger.middleware'
+import { StaffRegisterModule } from './staff-register/staff-register.module'
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { AppLoggerMiddleware } from './middleware/app.logger.middleware'
     ReservationModule,
     RepairRequestModule,
     VacationRequestModule,
+    StaffRegisterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
