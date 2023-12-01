@@ -34,7 +34,7 @@ export default defineComponent({
         phone: customUser.value?.userByUid.phone,
       })
     }
-    return { customUser, saveGroup, SaveStaff, setLocale,SUPPORTED_LOCALES }
+    return { customUser, saveGroup, SaveStaff, setLocale, SUPPORTED_LOCALES }
   },
   components: { ProfilePicture, StyledButton, StyledInputText },
 })
@@ -47,18 +47,21 @@ export default defineComponent({
         class="w-full max-w-sm rounded-lg bg-white p-4 shadow-sm"
       >
         <h1 class="font-600 text-xl">{{ $t('nav.profile') }}</h1>
+        <div class="flex justify-center">
         <ProfilePicture />
-
+</div>
         <styled-input-text
+          class="my-1"
           v-model="customUser.userByUid.name"
           :label="$t('profile.name')"
         />
         <styled-input-text
+          class="my-1"
           v-model="customUser.userByUid.btwNumber"
           :label="$t('profile.btw')"
         />
 
-        <label class="my-3 block">
+        <label class="my-1 mb-3 block">
           <span class="c-primary-text font-medium">{{
             $t('profile.taal')
           }}</span>
@@ -82,26 +85,31 @@ export default defineComponent({
         class="w-full max-w-sm rounded-lg bg-white p-4 shadow-sm"
       >
         <h1 class="font-600 text-xl">{{ $t('nav.profile') }}</h1>
-        <ProfilePicture editable />
-
+        <div class="flex justify-center">
+          <ProfilePicture editable />
+        </div>
         <styled-input-text
+          class="my-1"
           v-model="customUser.userByUid.firstName"
           :label="$t('staff.firstname')"
         />
         <styled-input-text
+          class="my-1"
           v-model="customUser.userByUid.lastName"
           :label="$t('staff.lastname')"
         />
         <styled-input-text
+          class="my-1"
           v-model="customUser.userByUid.email"
           :label="$t('staff.email')"
         />
         <styled-input-text
+          class="my-1"
           v-model="customUser.userByUid.lastName"
           :label="$t('staff.phone')"
         />
 
-        <label class="my-3 block">
+        <label class="my-1 mb-3 block">
           <span class="c-primary-text font-medium">{{
             $t('profile.taal')
           }}</span>
