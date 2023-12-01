@@ -475,23 +475,24 @@ export default defineComponent({
         </div>
         <div class="mb-2">
           <div class="flex justify-between">
-            <p>Datum:</p>
+            <p>{{ $t('repairRequest.date') }}</p>
             <p>{{ reservation.date }}</p>
           </div>
           <div class="flex justify-between">
-            <p>Begin tijd:</p>
+            <p>{{ $t('reservation.begin') }}</p>
             <p>{{ reservation.beginTime }}</p>
           </div>
           <div class="flex justify-between">
-            <p>Eind tijd:</p>
+            <p>{{ $t('reservation.end') }}</p>
             <p>{{ reservation.endTime }}</p>
           </div>
           <div class="flex justify-between">
-            <p>Tijd verschil:</p>
+            <p>{{ $t('reservation.timedifrents') }}</p>
             <p>{{ reservation.timeDivrent.toFixed(2) }} uur</p>
           </div>
         </div>
         <div class="mb-2">
+          <p>{{ $t('nav.rooms') }}</p>
           <div v-for="room in wantedRoom" class="">
             <div class="flex justify-between">
               <p>{{ room.name }}</p>
@@ -505,6 +506,7 @@ export default defineComponent({
           </div>
         </div>
         <div class="mb-2">
+          <p v-if="wantedMaterials.length>0">{{ $t('repairRequest.materials') }}</p>
           <div v-for="material in wantedMaterials">
             <div class="flex justify-between">
               <p>{{ material.name }}</p>
@@ -523,15 +525,15 @@ export default defineComponent({
         </div>
         <div>
           <div class="flex justify-between">
-            <p>Sub totaal:</p>
+            <p>{{ $t('reservation.subtotal') }}</p>
             <p>€{{ price.toFixed(2) }}</p>
           </div>
           <div class="flex justify-between">
-            <p>Group score:</p>
+            <p>{{ $t('reservation.score') }}</p>
             <p>{{ Math.round(discount * -100) }}%</p>
           </div>
           <div class="flex justify-between">
-            <p>Totaal:</p>
+            <p>{{ $t('reservation.total') }}</p>
             <p>€{{ PriceWhitDiscount.toFixed(2) }}</p>
           </div>
           <div class="flex justify-end">
