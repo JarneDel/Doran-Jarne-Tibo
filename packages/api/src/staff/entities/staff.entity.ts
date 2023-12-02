@@ -36,13 +36,13 @@ export class Staff extends User {
 
   @CreateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
-  createdAt: Date
+  createdAt?: Date
 
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
-  updatedAt: Date
+  updatedAt?: Date
 
   @Field(() => [WorkingHoursEntity], { nullable: true })
   @Column('jsonb', { nullable: true })
-  workingHours: WorkingHoursEntity[]
+  workingHours?: WorkingHoursEntity[]
 }

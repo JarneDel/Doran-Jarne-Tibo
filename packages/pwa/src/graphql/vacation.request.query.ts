@@ -1,6 +1,20 @@
-import gql from 'graphql-tag'
+import { gql, TypedDocumentNode } from '@apollo/client/core'
+import {
+  VacationRequest,
+  VacationRequestedSubscription,
+  VacationRequestWithStaff,
+} from '@/interface/vacation-request.interface.ts'
+import { StaffShort } from '@/interface/staff.interface.ts'
 
-export const CREATE_VACATION_REQUEST = gql`
+export const CREATE_VACATION_REQUEST: TypedDocumentNode<
+  { createVacationRequest: VacationRequest },
+  {
+    input: {
+      startDate: Date
+      endDate: Date
+    }
+  }
+> = gql`
   mutation CreateVacationRequest($input: CreateVacationRequestInput!) {
     createVacationRequest(createVacationRequestInput: $input) {
       id
@@ -15,18 +29,17 @@ export const CREATE_VACATION_REQUEST = gql`
   }
 `
 
-export interface CreateVacationRequestInput {
-  input: {
-    startDate: Date
-    endDate: Date
+export const APPROVE_VACATION_REQUEST: TypedDocumentNode<
+  { approveVacationRequest: VacationRequest },
+  {
+    approveVacationRequestInput: {
+      id: string
+      isApproved: boolean
+      isRejected: boolean
+      rejectReason: string
+    }
   }
-}
-
-export interface CreateVacationRequest {
-  createVacationRequest: VacationRequest
-}
-
-export const APPROVE_VACATION_REQUEST = gql`
+> = gql`
   mutation ApproveVacationRequest(
     $approveVacationRequestInput: ApproveVacationRequestInput!
   ) {
@@ -45,20 +58,9 @@ export const APPROVE_VACATION_REQUEST = gql`
   }
 `
 
-export interface ApproveVacationRequestInput {
-  approveVacationRequestInput: {
-    id: string
-    isApproved: boolean
-    isRejected: boolean
-    rejectReason: string
-  }
-}
-
-export interface ApproveVacationRequestResult {
-  approveVacationRequest: VacationRequest
-}
-
-export const GET_VACATION_REQUESTS = gql`
+export const GET_VACATION_REQUESTS: TypedDocumentNode<{
+  vacationRequestLoggedIn: VacationRequest[]
+}> = gql`
   query GetVacationRequests {
     vacationRequestLoggedIn {
       id
@@ -72,31 +74,17 @@ export const GET_VACATION_REQUESTS = gql`
     }
   }
 `
-
-export interface VacationRequestQuery {
-  vacationRequestLoggedIn: VacationRequest[]
-}
-
-export const GET_VACATION_REQUESTS_ADMIN = gql`
-  query GetVacationRequestsAdmin($staffUId: String!) {
-    vacationRequestByStaff(staffId: $staffUId) {
-      id
-      isApproved
-      isRejected
-      rejectReason
-      createdAt
-      updatedAt
-      startDate
-      endDate
-    }
+export const GET_VACATION_REQUESTS_ADMIN_ALL: TypedDocumentNode<
+  {
+    vacationRequestsBy: VacationRequestWithStaff[]
+    staff: StaffShort[]
+  },
+  {
+    isExpired: boolean | null
+    isOpen: boolean | null
+    staffUId: string | null
   }
-`
-
-export interface VacationRequestQueryAdmin {
-  vacationRequestByStaff: VacationRequest[]
-}
-
-export const GET_VACATION_REQUESTS_ADMIN_ALL = gql`
+> = gql`
   query GetVacationRequestsAdminAll(
     $isExpired: Boolean
     $isOpen: Boolean
@@ -117,6 +105,7 @@ export const GET_VACATION_REQUESTS_ADMIN_ALL = gql`
       endDate
       staff {
         id
+        UID
         firstName
         lastName
         email
@@ -132,24 +121,10 @@ export const GET_VACATION_REQUESTS_ADMIN_ALL = gql`
   }
 `
 
-export interface VacationRequestQueryAdminAll {
-  vacationRequestsBy: VacationRequestWithStaff[]
-  staff: {
-    id: string
-    UID: string
-    firstName: string
-    lastName: string
-    email: string
-  }[]
-}
-
-export interface VacationRequestQueryAdminAllVariables {
-  isExpired: boolean | null
-  isOpen: boolean | null
-  staffUId: string | null
-}
-
-export const CANCEL_VACATION_REQUEST = gql`
+export const CANCEL_VACATION_REQUEST: TypedDocumentNode<
+  { cancelVacationRequest: VacationRequest },
+  { id: string }
+> = gql`
   mutation CancelVacationRequest($id: String!) {
     cancelVacationRequest(id: $id) {
       id
@@ -164,33 +139,9 @@ export const CANCEL_VACATION_REQUEST = gql`
   }
 `
 
-export interface CancelVacationRequestInput {
-  id: string
-}
-
-
-export interface VacationRequest {
-  id: string
-  isApproved: boolean
-  isRejected: boolean
-  rejectReason: string
-  createdAt: Date
-  updatedAt: Date
-  startDate: Date
-  endDate: Date
-}
-
-export interface VacationRequestWithStaff extends VacationRequest {
-  staff: {
-    id: string
-    firstName: string
-    lastName: string
-    email: string
-  }
-}
-
-
-export const VACATION_REQUESTED_SUBSCRIPTION = gql`
+export const VACATION_REQUESTED_SUBSCRIPTION: TypedDocumentNode<{
+  vacationRequested: VacationRequestedSubscription
+}> = gql`
   subscription VacationRequested {
     vacationRequested {
       count
@@ -201,26 +152,14 @@ export const VACATION_REQUESTED_SUBSCRIPTION = gql`
   }
 `
 
-export const VACATION_REQUESTED_COUNT = gql`
+export const VACATION_REQUESTED_COUNT: TypedDocumentNode<
+  { pendingVacationRequestsCount: { count: number } },
+  {}
+> = gql`
   query OpenVacationRequestCount {
     pendingVacationRequestsCount {
       count
     }
   }
 `
-
-export interface IVacationRequestedCount {
-  pendingVacationRequestsCount: {
-    count: number
-  }
-}
-
-export interface IVacationRequestedSubscription {
-  vacationRequested: {
-    count: number
-    type?: string
-    fromUid?: string
-    fromName?: string
-  }
-}
 

@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import { gql, TypedDocumentNode } from '@apollo/client/core'
 
 export const ALL_SERVICES = gql`
 query {

@@ -3,13 +3,13 @@ import { Field, InputType, ObjectType } from '@nestjs/graphql'
 @ObjectType()
 export class WorkingHoursEntity {
   @Field({ nullable: true })
-  day: number
+  day?: number
 
   @Field({ nullable: true })
-  startTime: string
+  startTime?: string
 
   @Field({ nullable: true })
-  endTime: string
+  endTime?: string
 }
 
 @InputType()

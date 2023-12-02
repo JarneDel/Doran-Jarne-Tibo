@@ -1,4 +1,5 @@
-import gql from 'graphql-tag'
+import { gql, TypedDocumentNode } from '@apollo/client/core'
+import { Service, StaffMember } from '@/interface/staff.interface.ts'
 
 export const ALL_STAFF = gql`
 query {
@@ -16,7 +17,10 @@ query {
 }
 `
 
-export const STAFF_AND_SERVICES_BY_UID = gql`
+export const STAFF_AND_SERVICES_BY_UID: TypedDocumentNode<{
+  staffByUid: StaffMember
+  servicesByStaff: Service[]
+}> = gql`
   query {
     staffByUid {
       UID
@@ -50,7 +54,9 @@ export const STAFF_AND_SERVICES_BY_UID = gql`
     }
   }
 `
-export const STAFF = gql`
+export const STAFF: TypedDocumentNode<{
+  staffByUid: StaffMember
+}> = gql`
   query {
     staffByUid {
       UID
@@ -89,7 +95,15 @@ export interface Staff {
   staffByUid: StaffMember
 }
 
-export const UPDATE_PROFILE_PICTURE_STAFF = gql`
+export const UPDATE_PROFILE_PICTURE_STAFF: TypedDocumentNode<
+  {
+    updateGroupProfilePictureUrl: {
+      profilePictureUrl: string
+      id: string
+    }
+  },
+  { profilePictureUrl: string }
+> = gql`
   mutation updateProfilePictureStaff($profilePictureUrl: String!) {
     updateStaffProfilePictureUrl(ProfilePictureUrl: $profilePictureUrl) {
       profilePictureUrl
@@ -97,48 +111,3 @@ export const UPDATE_PROFILE_PICTURE_STAFF = gql`
     }
   }
 `
-
-export interface UpdateProfilePictureStaff {
-  updateGroupProfilePictureUrl: {
-    profilePictureUrl: string
-    id: string
-  }
-}
-
-export interface StaffMemberQuery {
-  staffByUid: StaffMember
-  servicesByStaff: Service[]
-}
-
-export interface Service {
-  id: string
-  description: string
-  name: string
-  rooms: {
-    name: string
-    id: string
-  }[]
-  staff: {
-    firstName: string
-    lastName: string
-    id: string
-  }[]
-}
-
-export interface StaffMember {
-  UID: string
-  createdAt: Date
-  email: string
-  firstName: string
-  holidayDates: Date[]
-  holidaysLeft: number
-  holidaysTotal: number
-  id: string
-  lastName: string
-  phone: string
-  workingHours: {
-    day: number
-    endTime: string
-    startTime: string
-  }[]
-}

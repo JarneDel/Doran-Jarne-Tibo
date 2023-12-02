@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 import { computed, PropType, ref } from 'vue'
-import {
-  CANCEL_VACATION_REQUEST,
-  CancelVacationRequestInput,
-  VacationRequest,
-} from '@/graphql/vacation.request.query.ts'
+import { CANCEL_VACATION_REQUEST } from '@/graphql/vacation.request.query.ts'
 import { BadgeAlert, BadgeCheck, CircleDashed, Trash2 } from 'lucide-vue-next'
 import { useDates } from '@/composables/useDates.ts'
 import { useMutation } from '@vue/apollo-composable'
 import OptionsModal from '@/components/modal/OptionsModal.vue'
+import { VacationRequest } from '@/interface/vacation-request.interface.ts'
 
 const props = defineProps({
   data: {
@@ -23,9 +20,7 @@ const vacationLength = computed(() => {
 
 const { getDates } = useDates()
 const isCancelling = ref<boolean>(false)
-const { mutate } = useMutation<VacationRequest, CancelVacationRequestInput>(
-  CANCEL_VACATION_REQUEST,
-)
+const { mutate } = useMutation(CANCEL_VACATION_REQUEST)
 
 const cancelRequest = () => {
   mutate({

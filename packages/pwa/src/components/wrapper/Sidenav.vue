@@ -2,6 +2,7 @@
 import { computed, defineComponent, ref } from 'vue';
 import Logo from '@/components/generic/Logo.vue';
 import {
+  Bike,
   Box,
   CalendarClock,
   Contact2,
@@ -22,8 +23,6 @@ import { useI18n } from 'vue-i18n';
 import useUser from '@/composables/useUser.ts';
 import { useQuery, useSubscription } from '@vue/apollo-composable';
 import {
-  IVacationRequestedCount,
-  IVacationRequestedSubscription,
   VACATION_REQUESTED_COUNT,
   VACATION_REQUESTED_SUBSCRIPTION,
 } from '@/graphql/vacation.request.query.ts';
@@ -55,16 +54,13 @@ export default defineComponent({
     Tractor,
   },
   setup() {
-    const { result, onResult } = useSubscription<
-      IVacationRequestedSubscription
-    >(VACATION_REQUESTED_SUBSCRIPTION);
-    const { onResult: onInitialResult } = useQuery<IVacationRequestedCount>(
-      VACATION_REQUESTED_COUNT,
-      {
-        fetchPolicy: 'cache-and-network',
-      },
-    );
-    const count = ref<number>(0);
+    const { result, onResult } = useSubscription(
+      VACATION_REQUESTED_SUBSCRIPTION,
+    )
+    const { onResult: onInitialResult } = useQuery(VACATION_REQUESTED_COUNT, {
+      fetchPolicy: 'cache-and-network',
+    })
+    const count = ref<number>(0)
 
     onInitialResult((param) => {
       if (result.value?.vacationRequested.count) return;

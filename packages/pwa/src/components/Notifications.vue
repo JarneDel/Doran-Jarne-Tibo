@@ -2,10 +2,7 @@
 import { defineComponent, ref } from 'vue'
 import { Bell } from 'lucide-vue-next'
 import { useSubscription } from '@vue/apollo-composable'
-import {
-  IVacationRequestedSubscription,
-  VACATION_REQUESTED_SUBSCRIPTION,
-} from '@/graphql/vacation.request.query.ts'
+import { VACATION_REQUESTED_SUBSCRIPTION } from '@/graphql/vacation.request.query.ts'
 
 interface notification {
   msg: string
@@ -29,10 +26,9 @@ export default defineComponent({
       }, 10000)
     }
 
-    const { onResult: onNewVacationRequest } =
-      useSubscription<IVacationRequestedSubscription>(
-        VACATION_REQUESTED_SUBSCRIPTION,
-      )
+    const { onResult: onNewVacationRequest } = useSubscription(
+      VACATION_REQUESTED_SUBSCRIPTION,
+    )
     onNewVacationRequest(param => {
       if (param.data?.vacationRequested.type !== 'new') return
       addNotification(

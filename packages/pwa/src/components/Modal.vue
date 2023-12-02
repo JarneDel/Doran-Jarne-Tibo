@@ -47,7 +47,7 @@ export default defineComponent({
           :class="[maxWidth, minWidth]"
           class="m-a fixed inset-0 z-50 h-fit w-fit max-w-lg transform-none rounded-lg bg-white p-6 shadow"
         >
-          <div class="mb-1 flex flex-row items-baseline justify-between">
+          <div class="mb-1 flex flex-row items-center justify-between">
             <!--        <h2 class="text-2xl font-bold">{{ title }}</h2>-->
             <slot name="title"></slot>
             <button

@@ -110,7 +110,6 @@ export default defineComponent({
         type="password"
       />
 
-      <div v-if="form.error" class="text-red">{{ form.error }}</div>
       <StyledButton class="w-full" type="submit">
         {{ $t('auth.register') }}</StyledButton
       >
