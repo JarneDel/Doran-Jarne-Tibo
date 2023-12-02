@@ -54,6 +54,7 @@ export default defineComponent({
     watch(
       lastRoute,
       (value) => {
+        console.log(value);
         if (value.startsWith('/admin/sports/id/')) {
           fetchWithFilters();
         }
@@ -80,7 +81,9 @@ export default defineComponent({
   <div class="m-8">
     <div class="m-auto max-w-4xl">
       <div class="flex justify-between">
-        <h1 class="text-3xl font-bold xl:text-4xl">Sports</h1>
+        <h1 class="text-3xl text-primary-text font-bold xl:text-4xl">
+          {{ $t('sports.sports') }}
+        </h1>
         <StyledButton type="button" @click="push('/admin/sports/create')">
           {{ $t('inventory.new') }}
         </StyledButton>

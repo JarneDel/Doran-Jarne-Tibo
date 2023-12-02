@@ -63,9 +63,19 @@ export class ServiceResolver {
     return this.serviceService.update(updateServiceInput.id, updateServiceInput)
   }
 
-  @Mutation(() => Service)
+  @Mutation(() => String)
   removeService(@Args('id', { type: () => String }) id: string) {
-    return this.serviceService.remove(id)
+    return this.serviceService.remove(id).then((res) => {
+      const obj = JSON.parse(JSON.stringify(res))
+      if(obj.raw.deletedCount > 0) {
+        return 'Deleted service with id: ' + id + ' successfully'
+      } else{
+        return 'No service with id: ' + id + ' found'
+      }
+    }).catch((err) => {
+      console.log(err)
+      return err
+    })
   }
 
   @ResolveField()

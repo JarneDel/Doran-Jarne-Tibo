@@ -17,6 +17,8 @@ export class ServiceService {
     const s = new Service()
     s.description = createServiceInput.description
     s.name = createServiceInput.name
+    s.roomId = createServiceInput.roomId
+    s.staffUID = createServiceInput.staffUID
     return this.serviceRepository.save(s)
   }
 
@@ -45,13 +47,17 @@ export class ServiceService {
   }
 
   update(id: string, updateServiceInput: UpdateServiceInput) {
-    //@ts-ignore
-    return this.serviceRepository.findOneByOrFail({ _id: new ObjectId(id) })
-    // todo
+    const s = new Service()
+    s.name = updateServiceInput.name
+    s.description = updateServiceInput.description
   }
 
   remove(id: string) {
-    return this.serviceRepository.delete(id)
+    return this.serviceRepository.delete(id).then((res) => {
+      return res
+    }).catch((err) => {
+      return err
+    })
   }
 
   saveAll(services: Service[]): Promise<Service[]> {

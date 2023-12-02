@@ -224,6 +224,13 @@ export const router = createRouter({
           },
         },
         {
+          path: 'services/create',
+          component: () => import('@/views/admin/services/Create.vue'),
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
           path: 'staff',
           component: () => import('@/views/admin/staff/Staff.vue'),
           meta: {

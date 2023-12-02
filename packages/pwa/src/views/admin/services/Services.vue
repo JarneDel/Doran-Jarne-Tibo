@@ -9,6 +9,7 @@ import Modal from '@/components/Modal.vue';
 import { useRouter } from 'vue-router';
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
 import useLastRoute from '@/composables/useLastRoute';
+import StyledButton from '@/components/generic/StyledButton.vue';
 
 // Export default
 export default defineComponent({
@@ -16,6 +17,7 @@ export default defineComponent({
     PlusCircle,
     Modal,
     DoubleClickEdit,
+    StyledButton,
   },
   setup() {
     // Router
@@ -32,13 +34,19 @@ export default defineComponent({
       loading: loadingServices,
       result: resultServices,
       error: errorServices,
-    } = useQuery<IServices>(ALL_SERVICES);
+      refetch: refetchServices,
+    } = useQuery<IServices>(
+      ALL_SERVICES,
+      {},
+      { fetchPolicy: 'cache-and-network' },
+    );
 
     const { lastRoute } = useLastRoute();
 
     watch(
       lastRoute,
       (value) => {
+        console.log(value);
         if (value.startsWith('/admin/services/id/')) {
           fetchWithFilters();
         }
@@ -47,7 +55,7 @@ export default defineComponent({
     );
 
     const fetchWithFilters = () => {
-      console.log('fetching with filters');
+      refetchServices();
     };
 
     return {
@@ -65,37 +73,56 @@ export default defineComponent({
 
 <template>
   <div class="m-8">
-    <div>
-      <h1>Dit is een test zin!</h1>
+    <div class="m-auto max-w-4xl 2xl:max-w-6xl">
+      <div class="flex justify-between mb-4">
+        <h1
+          class="font-bold text-center lg:text-left text-primary-text text-3xl xl:text-4xl"
+        >
+          {{ $t('service.services') }}
+        </h1>
+        <StyledButton type="button" @click="push('/admin/services/create')">
+          {{ $t('inventory.new') }}
+        </StyledButton>
+      </div>
       <ul
-        class="flex flex-wrap justify-center gap-4 lg:justify-between flex-col lg:flex-row"
+        class="grid lg:grid-cols-2 2xl:grid-cols-3 grid-content-around justify-center gap-4 lg:gap-6 xl:gap-8"
       >
-        <li v-if="resultServices" v-for="service in resultServices.services">
-          <div
-            class="bg-white rounded-md shadow-md p-2 sm:p-3 md:p-4 lg:p-5 xl:p-6 min-w-sm max-w-md"
+        <li
+          class="h-full"
+          v-if="resultServices"
+          v-for="service in resultServices.services"
+        >
+          <button
+            class="flex flex-col bg-white text-left rounded-md w-full shadow-md p-2 lg:p-3 xl:p-4 h-full max-w-md"
           >
             <h3 class="font-bold text-primary-text text-xl mb-2">
               {{ service.name }}
             </h3>
             <div>
               <div class="flex gap-1">
-                <h4 class="font-medium text-primary-text">Rooms:</h4>
+                <h4 class="font-medium text-primary-text">
+                  {{ $t('service.rooms') }}:
+                </h4>
                 <p class="">{{ service.rooms.length }}</p>
               </div>
               <div>
                 <div class="flex gap-1">
-                  <h4 class="font-medium text-primary-text">Staff:</h4>
+                  <h4 class="font-medium text-primary-text">
+                    {{ $t('service.staff') }}:
+                  </h4>
                   <p class="">{{ service.staff.length }}</p>
                 </div>
               </div>
               <div>
                 <div>
-                  <h4 class="font-medium text-primary-text">Description:</h4>
+                  <h4 class="font-medium text-primary-text">
+                    {{ $t('service.description') }}:
+                  </h4>
                   <p class="">{{ service.description }}</p>
                 </div>
               </div>
             </div>
-          </div>
+          </button>
         </li>
       </ul>
     </div>
