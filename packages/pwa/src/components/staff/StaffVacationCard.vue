@@ -3,10 +3,7 @@ import { defineComponent, PropType, ref } from 'vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { StaffMember } from '@/graphql/staff.query.ts'
 import { useQuery } from '@vue/apollo-composable'
-import {
-  GET_VACATION_REQUESTS,
-  VacationRequestQuery,
-} from '@/graphql/vacation.request.query.ts'
+import { GET_VACATION_REQUESTS } from '@/graphql/vacation.request.query.ts'
 import VacationRow from '@/components/staff/VacationRow.vue'
 import { Badge, BadgeCheck } from 'lucide-vue-next'
 import FilterOptions from '@/components/generic/FilterOptions.vue'
@@ -21,7 +18,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { result } = useQuery<VacationRequestQuery>(GET_VACATION_REQUESTS)
+    const { result } = useQuery(GET_VACATION_REQUESTS)
     const filter = ref<string>('open')
     return { result, filter }
   },
