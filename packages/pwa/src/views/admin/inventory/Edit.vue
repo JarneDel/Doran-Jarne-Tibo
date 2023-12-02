@@ -9,7 +9,7 @@ import {
   UPDATE_STOCK,
 } from '@/graphql/stock.query.ts'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
-import { ALL_SERVICES, IServices } from '@/graphql/service.query.ts'
+import { ALL_SERVICES } from '@/graphql/service.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import useA11y from '@/composables/useA11y.ts'
 import { IOneStockItem } from '@/interface/stock.interface.ts'
@@ -22,7 +22,7 @@ export default defineComponent({
     const id = currentRoute.value.params.id as string
     const { setPageTitle } = useA11y()
     const { result, onResult } = useQuery(ONE_STOCK, { id })
-    const { result: services } = useQuery<IServices>(ALL_SERVICES)
+    const { result: services } = useQuery(ALL_SERVICES)
     const { mutate: mutateUpdateItem } = useMutation(UPDATE_STOCK)
 
     const hasChanged = ref<boolean>(false)

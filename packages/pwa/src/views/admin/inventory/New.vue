@@ -3,7 +3,7 @@ import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
-import { ALL_SERVICES, IServices } from '@/graphql/service.query.ts'
+import { ALL_SERVICES } from '@/graphql/service.query.ts'
 import StyledLink from '@/components/generic/StyledLink.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { CREATE_STOCK } from '@/graphql/stock.query.ts'
@@ -29,7 +29,7 @@ export default defineComponent({
       result: services,
       loading: loadingServices,
       error: servicesError,
-    } = useQuery<IServices>(ALL_SERVICES)
+    } = useQuery(ALL_SERVICES)
 
     const { mutate, onError } = useMutation(CREATE_STOCK)
     onError(e => {
