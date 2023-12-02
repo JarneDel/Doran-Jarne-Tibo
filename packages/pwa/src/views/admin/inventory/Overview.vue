@@ -3,9 +3,7 @@ import { defineComponent, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   ALL_STOCK_AND_SERVICES,
-  AllStockAndServices,
   getUpdatedStockItem,
-  IUpdateItemOptional,
   UPDATE_STOCK,
 } from '@/graphql/stock.query.ts'
 import {
@@ -25,6 +23,7 @@ import useLastRoute from '@/composables/useLastRoute.ts'
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
 import DoubleClickSelect from '@/components/generic/DoubleClickSelect.vue'
 import Error from '@/components/Error.vue'
+import { IUpdateItemOptional } from '@/interface/stock.interface.ts'
 
 export default defineComponent({
   name: 'Overview',
@@ -54,7 +53,7 @@ export default defineComponent({
     const { push } = useRouter()
 
     // graphql
-    const { error, loading, result, refetch } = useQuery<AllStockAndServices>(
+    const { error, loading, result, refetch } = useQuery(
       ALL_STOCK_AND_SERVICES,
       {
         searchName: search.value,

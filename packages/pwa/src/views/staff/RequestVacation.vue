@@ -3,13 +3,10 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   CREATE_VACATION_REQUEST,
-  CreateVacationRequest,
-  CreateVacationRequestInput,
   GET_VACATION_REQUESTS,
-  VacationRequestQuery,
 } from '@/graphql/vacation.request.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { STAFF, Staff } from '@/graphql/staff.query.ts'
+import { STAFF } from '@/graphql/staff.query.ts'
 import useVacation from '@/composables/useVacation.ts'
 import Modal from '@/components/Modal.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
@@ -70,10 +67,7 @@ export default defineComponent({
     })
 
     // create vacation request mutation
-    const { mutate, error, loading } = useMutation<
-      CreateVacationRequest,
-      CreateVacationRequestInput
-    >(CREATE_VACATION_REQUEST)
+    const { mutate, error, loading } = useMutation(CREATE_VACATION_REQUEST)
 
     // your user query
     const {
@@ -81,7 +75,7 @@ export default defineComponent({
       loading: loadingStaff,
       refetch: reFetchStaff,
       onResult,
-    } = useQuery<Staff>(
+    } = useQuery(
       STAFF,
       {},
       {
@@ -90,7 +84,7 @@ export default defineComponent({
     )
 
     // your vacation requests query
-    const { result: requests } = useQuery<VacationRequestQuery>(
+    const { result: requests } = useQuery(
       GET_VACATION_REQUESTS,
       {},
       {

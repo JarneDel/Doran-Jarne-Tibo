@@ -4,10 +4,7 @@ import useFirebase from '@/composables/useFirebase.ts'
 import { Upload, User } from 'lucide-vue-next'
 import { useMutation } from '@vue/apollo-composable'
 import { UPDATE_PROFILE_PICTURE_GROUP } from '@/graphql/group.query.ts'
-import {
-  UPDATE_PROFILE_PICTURE_STAFF,
-  UpdateProfilePictureStaff,
-} from '@/graphql/staff.query.ts'
+import { UPDATE_PROFILE_PICTURE_STAFF } from '@/graphql/staff.query.ts'
 import useUser from '@/composables/useUser.ts'
 
 export default defineComponent({
@@ -32,9 +29,7 @@ export default defineComponent({
     const { uploadProfilePicture, getProfilePictureUrl } = useFirebase()
     const { customUser } = useUser()
     const { mutate: mutateGroup } = useMutation(UPDATE_PROFILE_PICTURE_GROUP)
-    const { mutate: mutateStaff } = useMutation<UpdateProfilePictureStaff>(
-      UPDATE_PROFILE_PICTURE_STAFF,
-    )
+    const { mutate: mutateStaff } = useMutation(UPDATE_PROFILE_PICTURE_STAFF)
 
     const pfpUrl = ref<string | null>()
     const isHovering = ref<boolean>(false)

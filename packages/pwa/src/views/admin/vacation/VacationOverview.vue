@@ -3,14 +3,8 @@ import { defineComponent, ref, watch } from 'vue'
 import { useMutation, useQuery, useSubscription } from '@vue/apollo-composable'
 import {
   APPROVE_VACATION_REQUEST,
-  ApproveVacationRequestInput,
-  ApproveVacationRequestResult,
   GET_VACATION_REQUESTS_ADMIN_ALL,
-  IVacationRequestedSubscription,
   VACATION_REQUESTED_SUBSCRIPTION,
-  VacationRequestQueryAdminAll,
-  VacationRequestQueryAdminAllVariables,
-  VacationRequestWithStaff,
 } from '@/graphql/vacation.request.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import {
@@ -31,6 +25,7 @@ import OptionsModal from '@/components/modal/OptionsModal.vue'
 import FilterOptions from '@/components/generic/FilterOptions.vue'
 import { useRouter } from 'vue-router'
 import Error from '@/components/Error.vue'
+import { VacationRequestWithStaff } from '@/interface/vacation-request.interface.ts'
 
 export default defineComponent({
   name: 'VacationOverview',
@@ -74,33 +69,29 @@ export default defineComponent({
       filterVacationRequests(filter.value)
     })
 
-    const { result, refetch, loading } = useQuery<
-      VacationRequestQueryAdminAll,
-      VacationRequestQueryAdminAllVariables
-    >(GET_VACATION_REQUESTS_ADMIN_ALL, {
-      isExpired: filter.value === 'expired',
-      isOpen:
-        filter.value === 'open'
-          ? true
-          : filter.value === 'closed'
-          ? false
-          : null,
-      staffUId: staffUId.value,
-    })
+    const { result, refetch, loading } = useQuery(
+      GET_VACATION_REQUESTS_ADMIN_ALL,
+      {
+        isExpired: filter.value === 'expired',
+        isOpen:
+          filter.value === 'open'
+            ? true
+            : filter.value === 'closed'
+            ? false
+            : null,
+        staffUId: staffUId.value,
+      },
+    )
 
-    const { onResult: onVacationRequestSubscription } =
-      useSubscription<IVacationRequestedSubscription>(
-        VACATION_REQUESTED_SUBSCRIPTION,
-      )
+    const { onResult: onVacationRequestSubscription } = useSubscription(
+      VACATION_REQUESTED_SUBSCRIPTION,
+    )
 
     onVacationRequestSubscription(() => {
       filterVacationRequests(filter.value)
     })
 
-    const { mutate, onError } = useMutation<
-      ApproveVacationRequestResult,
-      ApproveVacationRequestInput
-    >(APPROVE_VACATION_REQUEST)
+    const { mutate, onError } = useMutation(APPROVE_VACATION_REQUEST)
 
     onError(err => {
       errors.value.push(err.message)
@@ -240,7 +231,7 @@ export default defineComponent({
             name=""
             @change="filterStaff"
           >
-            <option value="" selected>All</option>
+            <option selected value="">All</option>
             <option
               v-for="staff in result.staff"
               :key="staff.UID"

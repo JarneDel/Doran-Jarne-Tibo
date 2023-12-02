@@ -1,6 +1,6 @@
-import gql from 'graphql-tag'
+import { gql, TypedDocumentNode } from '@apollo/client/core'
 
-export const ALL_SERVICES = gql`
+export const ALL_SERVICES: TypedDocumentNode<{ services: serviceItem[] }> = gql`
   query {
     services {
       id
@@ -10,12 +10,3 @@ export const ALL_SERVICES = gql`
   }
 `
 
-export interface IServiceItem {
-  id: string
-  name: string
-  description: string
-}
-
-export interface IServices {
-  services: IServiceItem[]
-}
