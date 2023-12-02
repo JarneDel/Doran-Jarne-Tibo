@@ -48,17 +48,17 @@ export default defineComponent({
       >
         <h1 class="font-600 text-xl">{{ $t('nav.profile') }}</h1>
         <div class="flex justify-center">
-        <ProfilePicture />
-</div>
+          <ProfilePicture editable />
+        </div>
         <styled-input-text
-          class="my-1"
           v-model="customUser.userByUid.name"
           :label="$t('profile.name')"
+          class="my-1"
         />
         <styled-input-text
-          class="my-1"
           v-model="customUser.userByUid.btwNumber"
           :label="$t('profile.btw')"
+          class="my-1"
         />
 
         <label class="my-1 mb-3 block">
@@ -89,24 +89,24 @@ export default defineComponent({
           <ProfilePicture editable />
         </div>
         <styled-input-text
-          class="my-1"
           v-model="customUser.userByUid.firstName"
           :label="$t('staff.firstname')"
+          class="my-1"
         />
         <styled-input-text
-          class="my-1"
           v-model="customUser.userByUid.lastName"
           :label="$t('staff.lastname')"
+          class="my-1"
         />
         <styled-input-text
-          class="my-1"
           v-model="customUser.userByUid.email"
           :label="$t('staff.email')"
+          class="my-1"
         />
         <styled-input-text
-          class="my-1"
           v-model="customUser.userByUid.lastName"
           :label="$t('staff.phone')"
+          class="my-1"
         />
 
         <label class="my-1 mb-3 block">
