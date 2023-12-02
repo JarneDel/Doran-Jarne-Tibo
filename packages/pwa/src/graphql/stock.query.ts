@@ -1,6 +1,24 @@
-import gql from 'graphql-tag'
+import { gql, TypedDocumentNode } from '@apollo/client/core'
+import {
+  CreateStockInput,
+  IUpdateItemOptional,
+  IUpdateStock,
+  StockItem,
+} from '@/interface/stock.interface.ts'
+import { ServiceItem } from '@/interface/service.interface.ts'
 
-export const ALL_STOCK_AND_SERVICES = gql`
+export const ALL_STOCK_AND_SERVICES: TypedDocumentNode<
+  {
+    stock: StockItem[]
+    services: ServiceItem[]
+  },
+  {
+    orderByField?: string
+    orderDirection?: string
+    searchName?: string
+    searchServiceId?: string
+  }
+> = gql`
   query StockAndServices(
     $orderByField: String
     $orderDirection: String
@@ -32,7 +50,10 @@ export const ALL_STOCK_AND_SERVICES = gql`
   }
 `
 
-export const ONE_STOCK = gql`
+export const ONE_STOCK: TypedDocumentNode<
+  { stockItem: StockItem },
+  { id: string }
+> = gql`
   query OneStock($id: String!) {
     stockItem(id: $id) {
       id
@@ -49,7 +70,10 @@ export const ONE_STOCK = gql`
   }
 `
 
-export const CREATE_STOCK = gql`
+export const CREATE_STOCK: TypedDocumentNode<
+  { createStock: { id: string } },
+  { createStockInput: CreateStockInput }
+> = gql`
   mutation ($createStockInput: CreateStockInput!) {
     createStock(createStockInput: $createStockInput) {
       id
@@ -67,7 +91,10 @@ export const CREATE_STOCK = gql`
   }
 `
 
-export const UPDATE_STOCK = gql`
+export const UPDATE_STOCK: TypedDocumentNode<
+  { updateStock: { id: string } },
+  { updateStockInput: IUpdateStock }
+> = gql`
   mutation ($updateStockInput: UpdateStockInput!) {
     updateStock(updateStockInput: $updateStockInput) {
       id
@@ -75,7 +102,10 @@ export const UPDATE_STOCK = gql`
   }
 `
 
-export const DELETE_STOCK = gql`
+export const DELETE_STOCK: TypedDocumentNode<
+  { removeStock: boolean },
+  { id: string }
+> = gql`
   mutation ($id: String!) {
     removeStock(id: $id)
   }
@@ -97,66 +127,3 @@ export const getUpdatedStockItem = (
   return { ...updatedItem, ...update }
 }
 
-export interface IUpdateItemOptional {
-  amountInStock?: number
-  description?: string
-  idealStock?: number
-  name?: string
-  needToOrderMore?: boolean
-  serviceId?: string
-}
-
-export interface IUpdateStock {
-  // input UpdateStockInput {
-  amountInStock: number
-  description: string
-  id: string
-  idealStock: number
-  name: string
-  needToOrderMore: boolean
-  serviceId?: string
-}
-
-export interface ICreateStock {
-  createStock: {
-    id: string
-  }
-}
-
-export interface AllStockAndServices {
-  stock: StockItem[]
-  services: ServiceItem[]
-}
-
-export interface IOneStockItem {
-  stockItem: StockItem
-}
-
-export interface ServiceItem {
-  id: string
-  name: string
-  description: string
-}
-
-export interface StockItem {
-  id: string
-  name: string
-  description: string
-  amountInStock: number
-  idealStock: number
-  needToOrderMore: boolean
-  service: {
-    id: string
-    name: string
-    description: string
-  }
-}
-
-export interface CreateStockInput {
-  amountInStock?: number
-  description: String
-  idealStock: number
-  name: string
-  needToOrderMore: boolean
-  serviceId: string
-}

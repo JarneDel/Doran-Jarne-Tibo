@@ -1,71 +1,71 @@
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import { useMutation, useQuery } from '@vue/apollo-composable';
+import { defineComponent, ref, watch } from 'vue'
+import Modal from '@/components/Modal.vue'
+import { useRouter } from 'vue-router'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   getUpdatedStockItem,
-  IOneStockItem,
   ONE_STOCK,
   UPDATE_STOCK,
-} from '@/graphql/stock.query.ts';
-import StyledInputText from '@/components/generic/StyledInputText.vue';
-import { ALL_SERVICES, IServices } from '@/graphql/service.query.ts';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import useA11y from '@/composables/useA11y.ts';
+} from '@/graphql/stock.query.ts'
+import StyledInputText from '@/components/generic/StyledInputText.vue'
+import { ALL_SERVICES, IServices } from '@/graphql/service.query.ts'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import useA11y from '@/composables/useA11y.ts'
+import { IOneStockItem } from '@/interface/stock.interface.ts'
 
 export default defineComponent({
   name: 'Edit',
   components: { StyledButton, StyledInputText, Modal },
   setup() {
-    const { push, currentRoute } = useRouter();
-    const id = currentRoute.value.params.id as string;
-    const { setPageTitle } = useA11y();
-    const { result, onResult } = useQuery<IOneStockItem>(ONE_STOCK, { id });
-    const { result: services } = useQuery<IServices>(ALL_SERVICES);
-    const { mutate: mutateUpdateItem } = useMutation(UPDATE_STOCK);
+    const { push, currentRoute } = useRouter()
+    const id = currentRoute.value.params.id as string
+    const { setPageTitle } = useA11y()
+    const { result, onResult } = useQuery(ONE_STOCK, { id })
+    const { result: services } = useQuery<IServices>(ALL_SERVICES)
+    const { mutate: mutateUpdateItem } = useMutation(UPDATE_STOCK)
 
-    const hasChanged = ref<boolean>(false);
-    const oldResult = ref<IOneStockItem>();
-    onResult((param) => {
-      oldResult.value = JSON.parse(JSON.stringify(param.data));
+    const hasChanged = ref<boolean>(false)
+    const oldResult = ref<IOneStockItem>()
+    onResult(param => {
+      oldResult.value = JSON.parse(JSON.stringify(param.data))
       setPageTitle(
         'Edit ' +
           param.data.stockItem.name +
           ' - ' +
-          param.data.stockItem.service.name
-      );
-    });
+          param.data.stockItem.service.name,
+      )
+    })
     const compare = (
       val?: IOneStockItem,
-      oldValue?: IOneStockItem
+      oldValue?: IOneStockItem,
     ): boolean => {
-      if (!val?.stockItem) return false;
-      if (!oldValue?.stockItem) return false;
+      if (!val?.stockItem) return false
+      if (!oldValue?.stockItem) return false
       return (
         val.stockItem.amountInStock !== oldValue.stockItem.amountInStock ||
         val.stockItem.idealStock !== oldValue.stockItem.idealStock ||
         val.stockItem.name !== oldValue.stockItem.name ||
         val.stockItem.description !== oldValue.stockItem.description ||
         val.stockItem.service.id !== oldValue.stockItem.service.id
-      );
-    };
+      )
+    }
 
     watch(
       result,
-      (value) => {
-        hasChanged.value = compare(value, oldResult.value);
+      value => {
+        hasChanged.value = compare(value, oldResult.value)
       },
-      { deep: true }
-    );
+      { deep: true },
+    )
 
     const submit = () => {
       mutateUpdateItem({
         updateStockInput: getUpdatedStockItem(result.value?.stockItem!, {}),
       }).then(() => {
-        push(`/admin/inventory/${id}`);
-      });
-    };
+        push(`/admin/inventory/${id}`)
+      })
+    }
 
     return {
       push,
@@ -74,9 +74,9 @@ export default defineComponent({
       services,
       hasChanged,
       id,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>

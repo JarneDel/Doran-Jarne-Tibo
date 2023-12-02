@@ -6,12 +6,9 @@ import { useMutation, useQuery } from '@vue/apollo-composable'
 import { ALL_SERVICES, IServices } from '@/graphql/service.query.ts'
 import StyledLink from '@/components/generic/StyledLink.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import {
-  CREATE_STOCK,
-  CreateStockInput,
-  ICreateStock,
-} from '@/graphql/stock.query.ts'
+import { CREATE_STOCK } from '@/graphql/stock.query.ts'
 import Error from '@/components/Error.vue'
+import { CreateStockInput } from '@/interface/stock.interface.ts'
 
 // todo: error handling
 
@@ -34,7 +31,7 @@ export default defineComponent({
       error: servicesError,
     } = useQuery<IServices>(ALL_SERVICES)
 
-    const { mutate, onError } = useMutation<ICreateStock>(CREATE_STOCK)
+    const { mutate, onError } = useMutation(CREATE_STOCK)
     onError(e => {
       errors.value.push(e.message)
     })
