@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { ChevronDown } from 'lucide-vue-next'
+import { ChevronDown, ChevronUp } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import firebase from '@/composables/useFirebase'
 import logo from '@/components/generic/Logo.vue'
@@ -21,7 +21,7 @@ export default defineComponent({
   setup() {
     const { firebaseUser } = firebase()
     const { setLocale, locale } = useLanguage()
-    let options = ref(false)
+    const options = ref<Boolean>(false)
     const { customUser } = useUser()
     const { push } = useRouter()
     const { t } = useI18n()
@@ -29,7 +29,9 @@ export default defineComponent({
       push('/logout')
     }
     const toggleOptions = () => {
+      console.log('Toggle Options Called')
       options.value = !options.value
+      console.log('Options:', options.value)
     }
 
     const topNavItems = computed(() => {
@@ -82,6 +84,7 @@ export default defineComponent({
     ChevronDown,
     logo,
     OnClickOutside,
+    ChevronUp,
   },
 })
 </script>
@@ -119,17 +122,20 @@ export default defineComponent({
         </label>
       </div>
       <div>
-        <button v-if="customUser" class="mx-2" @click="toggleOptions()">
-          <ProfilePicture v-if="firebaseUser?.photoURL" :size="48" />
-          <span v-else class="gap2 flex flex-row items-center justify-center">
-            <span
-              :title="username"
-              class="inline-block max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap"
-            >
-              {{ username }}
-            </span>
-            <ChevronDown />
+        <button
+          v-if="customUser"
+          class="gap2 mx-2 flex flex-row items-center justify-center"
+          @click="toggleOptions()"
+        >
+          <span
+            :title="username"
+            class="hidden max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap sm:inline-block"
+          >
+            {{ username }}
           </span>
+          <ChevronDown v-if="!options" />
+          <ChevronUp v-else />
+          <ProfilePicture v-if="firebaseUser?.photoURL" :size="48" />
         </button>
         <router-link
           v-if="!customUser"
@@ -138,10 +144,9 @@ export default defineComponent({
         >
           {{ $t('auth.login') }}
         </router-link>
-        <OnClickOutside @trigger="options = false">
+        <OnClickOutside v-if="options" @trigger="options = false">
           <div
-            v-if="options"
-            class="top-21 z-100 absolute right-0 flex flex-col items-center rounded-md bg-white p-4 shadow-md"
+            class="top-19 z-100 absolute right-4 flex flex-col rounded-md bg-white p-4 shadow-md"
           >
             <router-link class="styled-link" to="/profile">{{
               $t('nav.profile')
