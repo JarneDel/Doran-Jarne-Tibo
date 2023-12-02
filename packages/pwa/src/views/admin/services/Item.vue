@@ -10,6 +10,7 @@ import {
 } from '@/graphql/service.query.ts';
 import { Edit2, Trash2 } from 'lucide-vue-next';
 import StyledButton from '@/components/generic/StyledButton.vue';
+import StyledLable from '@/components/generic/StyledLable.vue';
 
 export default defineComponent({
   components: {
@@ -17,6 +18,7 @@ export default defineComponent({
     Modal,
     Edit2,
     Trash: Trash2,
+    StyledLable,
   },
   name: 'Item',
   setup: () => {
@@ -86,17 +88,32 @@ export default defineComponent({
     </template>
     <template v-slot:default>
       <div>
-        <div>
-          <h4>Kamers:</h4>
-          <ul>
-            <li v-for="room in result?.service.rooms">
+        <div class="flex flex-col gap-1">
+          <h4 class="font-medium text-primary-text">
+            {{ $t('service.rooms') }}:
+          </h4>
+          <ul class="flex flex-wrap gap-x-2 gap-y-1">
+            <StyledLable type="room" v-for="room in result?.service.rooms">
               {{ room.name }}
-            </li>
+            </StyledLable>
           </ul>
         </div>
-      </div>
-      <div>
-        {{ result?.service.description }}
+        <div>
+          <div class="flex gap-1">
+            <h4 class="font-medium text-primary-text">
+              {{ $t('service.staff') }}:
+            </h4>
+            <p class="">{{ result?.service.staff.length }}</p>
+          </div>
+        </div>
+        <div>
+          <div>
+            <h4 class="font-medium text-primary-text">
+              {{ $t('service.description') }}:
+            </h4>
+            <p class="">{{ result?.service.description }}</p>
+          </div>
+        </div>
       </div>
     </template>
   </Modal>

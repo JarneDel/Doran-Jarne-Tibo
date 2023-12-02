@@ -10,6 +10,7 @@ import { useRouter } from 'vue-router';
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
 import useLastRoute from '@/composables/useLastRoute';
 import StyledButton from '@/components/generic/StyledButton.vue';
+import StyledLable from '@/components/generic/StyledLable.vue';
 
 // Export default
 export default defineComponent({
@@ -18,6 +19,7 @@ export default defineComponent({
     Modal,
     DoubleClickEdit,
     StyledButton,
+    StyledLable,
   },
   setup() {
     // Router
@@ -100,11 +102,15 @@ export default defineComponent({
               {{ service.name }}
             </h3>
             <div>
-              <div class="flex gap-1">
+              <div class="flex flex-col gap-1">
                 <h4 class="font-medium text-primary-text">
                   {{ $t('service.rooms') }}:
                 </h4>
-                <p class="">{{ service.rooms.length }}</p>
+                <ul class="flex flex-wrap gap-x-2 gap-y-1">
+                  <StyledLable type="room" v-for="room in service.rooms">
+                    {{ room.name }}
+                  </StyledLable>
+                </ul>
               </div>
               <div>
                 <div class="flex gap-1">

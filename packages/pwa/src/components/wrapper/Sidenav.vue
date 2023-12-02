@@ -14,7 +14,6 @@ import {
   Users,
   Warehouse,
   Wrench,
-  Bike,
   Tractor,
 } from 'lucide-vue-next';
 import { useLocalStorage } from '@vueuse/core';
@@ -56,11 +55,11 @@ export default defineComponent({
   setup() {
     const { result, onResult } = useSubscription(
       VACATION_REQUESTED_SUBSCRIPTION,
-    )
+    );
     const { onResult: onInitialResult } = useQuery(VACATION_REQUESTED_COUNT, {
       fetchPolicy: 'cache-and-network',
-    })
-    const count = ref<number>(0)
+    });
+    const count = ref<number>(0);
 
     onInitialResult((param) => {
       if (result.value?.vacationRequested.count) return;
