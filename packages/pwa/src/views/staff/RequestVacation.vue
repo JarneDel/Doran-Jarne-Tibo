@@ -6,7 +6,7 @@ import {
   GET_VACATION_REQUESTS,
 } from '@/graphql/vacation.request.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { STAFF, Staff } from '@/graphql/staff.query.ts'
+import { STAFF } from '@/graphql/staff.query.ts'
 import useVacation from '@/composables/useVacation.ts'
 import Modal from '@/components/Modal.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
@@ -75,7 +75,7 @@ export default defineComponent({
       loading: loadingStaff,
       refetch: reFetchStaff,
       onResult,
-    } = useQuery<Staff>(
+    } = useQuery(
       STAFF,
       {},
       {

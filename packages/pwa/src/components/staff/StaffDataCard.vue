@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { StaffMember } from '@/graphql/staff.query.ts'
 import ProfilePicture from '@/components/staff/ProfilePicture.vue'
 import { LucidePencil } from 'lucide-vue-next'
+import { StaffMember } from '@/interface/staff.interface.ts'
 
 export default defineComponent({
   name: 'StaffDataCard',
