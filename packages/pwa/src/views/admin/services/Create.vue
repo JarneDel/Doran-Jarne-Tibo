@@ -1,12 +1,14 @@
 <script lang="ts">
 // Imports
-import { useMutation } from '@vue/apollo-composable';
+import { useQuery, useMutation } from '@vue/apollo-composable';
 import { useRouter } from 'vue-router';
 import {
   CREATE_SERVICE,
   createServiceInput,
   ICreateService,
 } from '@/graphql/service.query';
+import { ALL_ROOMS, IRoom } from '@/graphql/room.query';
+import { ALL_STAFF, IStaff } from '@/graphql/staff.query';
 import { computed, defineComponent, ref } from 'vue';
 import StyledInputText from '@/components/generic/StyledInputText.vue';
 import UseFirebase from '../../../composables/useFirebase';
@@ -29,22 +31,74 @@ export default defineComponent({
     getIdToken();
     const { push } = useRouter();
 
+    // All ROOMS
+    const {
+      loading: loadingRooms,
+      result: resultRooms,
+      error: errorRooms,
+      onResult: onResultRooms,
+    } = useQuery<IRoom>(ALL_ROOMS);
+
+    // All STAFF
+    const {
+      loading: loadingStaff,
+      result: resultStaff,
+      error: errorStaff,
+      onResult: onResultStaff,
+    } = useQuery<IStaff>(ALL_STAFF);
+
     // CREATE ROOM
     const { mutate } = useMutation<ICreateService>(CREATE_SERVICE);
 
     // Variables
     const name = ref('');
     const description = ref('');
+    const roomList = ref();
     const roomIds = ref<Array<string>>();
-    const staffUIDs = ref();
+    const staffList = ref();
+    const staffUIDs = ref<Array<string>>();
 
     const descriptionLength = computed(() => {
       return description.value.length + '/250';
     });
 
+    onResultRooms((result) => {
+      roomList.value = result.data.GetAllRooms.map((room: any) => {
+        return {
+          ...room,
+          selected: false,
+        };
+      });
+    });
+
+    onResultStaff((result) => {
+      staffList.value = result.data.staff.map((staff: any) => {
+        return {
+          ...staff,
+          selected: false,
+        };
+      });
+    });
+
+    const staffCount = computed(() => {
+      return staffList.value?.filter((s: any) => s.selected).length;
+    });
+
+    const roomCount = computed(() => {
+      return roomList.value?.filter((s: any) => s.selected).length;
+    });
+
     const handleSubmit = async (e: Event) => {
       //prevent default submit behaviour
       e.preventDefault();
+
+      roomIds.value = roomList.value
+        ?.filter((s: any) => s.selected)
+        .map((s: any) => s.id);
+
+      staffUIDs.value = staffList.value
+        ?.filter((s: any) => s.selected)
+        .map((s: any) => s.UID);
 
       const params: createServiceInput = {
         name: name.value,
@@ -73,6 +127,18 @@ export default defineComponent({
       staffUIDs,
       handleSubmit,
       descriptionLength,
+      resultRooms,
+      loadingRooms,
+      errorRooms,
+      onResultRooms,
+      resultStaff,
+      loadingStaff,
+      errorStaff,
+      onResultStaff,
+      staffList,
+      roomList,
+      staffCount,
+      roomCount,
     };
   },
 });
@@ -114,6 +180,82 @@ export default defineComponent({
               }"
             >
               {{ descriptionLength }}
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2 lg:gap-4">
+            <div class="w-full max-w-[50%]">
+              <div class="flex justify-between">
+                <span class="text-primary-text font-medium">{{
+                  $t('service.rooms')
+                }}</span>
+                <span>{{ roomCount }}</span>
+              </div>
+              <ul
+                class="border-2 hover:border-primary focus-within:border-primary-dark rounded-md h-40 border-primary-light w-full overflow-y-scroll p-1"
+              >
+                <li
+                  class="flex gap-1 items-center"
+                  v-if="roomList"
+                  v-for="room in roomList"
+                >
+                  <input
+                    class="cursor-pointer"
+                    type="checkbox"
+                    :name="room.id"
+                    :id="room.id"
+                    @change="
+                      () => {
+                        room.selected = !room.selected;
+                        if (room.selected) {
+                            staffList.find((s:any) => s.id === room.id).selected = true;
+                        } else {
+                            staffList.find((s:any) => s.id === room.id).selected = false;
+                        }
+                      }
+                    "
+                  />
+                  <label class="cursor-pointer" :for="room.id"
+                    >{{ room.name }}
+                  </label>
+                </li>
+              </ul>
+            </div>
+            <div class="w-full max-w-[50%]">
+              <div class="flex justify-between">
+                <span class="text-primary-text font-medium">{{
+                  $t('service.staff')
+                }}</span>
+                <span>{{ staffCount }}</span>
+              </div>
+              <ul
+                class="border-2 hover:border-primary focus-within:border-primary-dark h-40 border-primary-light rounded-md w-full overflow-y-scroll p-1"
+              >
+                <li
+                  class="flex gap-1 items-center"
+                  v-if="staffList"
+                  v-for="staff in staffList"
+                >
+                  <input
+                    class="cursor-pointer"
+                    type="checkbox"
+                    :name="staff.id"
+                    :id="staff.id"
+                    @change="
+                      () => {
+                        staff.selected = !staff.selected;
+                        if (staff.selected) {
+                            staffList.find((s:any) => s.id === staff.id).selected = true;
+                        } else {
+                            staffList.find((s:any) => s.id === staff.id).selected = false;
+                        }
+                      }
+                    "
+                  />
+                  <label class="cursor-pointer" :for="staff.id"
+                    >{{ staff.firstName }}
+                  </label>
+                </li>
+              </ul>
             </div>
           </div>
         </div>

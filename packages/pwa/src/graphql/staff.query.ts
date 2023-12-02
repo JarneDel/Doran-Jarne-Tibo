@@ -1,5 +1,21 @@
 import gql from 'graphql-tag'
 
+export const ALL_STAFF = gql`
+query {
+  staff {
+    id
+    UID
+    locale
+    role
+    profilePictureUrl
+    firstName
+    lastName
+    email
+    phone
+  }
+}
+`
+
 export const STAFF_AND_SERVICES_BY_UID = gql`
   query {
     staffByUid {
@@ -54,6 +70,20 @@ export const STAFF = gql`
     }
   }
 `
+
+export interface IStaff {
+  staff: [{
+    id: string
+    UID: string
+    locale: string
+    role: string
+    profilePictureUrl: string
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+  }]
+}
 
 export interface Staff {
   staffByUid: StaffMember

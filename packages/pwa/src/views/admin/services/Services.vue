@@ -94,6 +94,7 @@ export default defineComponent({
         >
           <button
             class="flex flex-col bg-white text-left rounded-md w-full shadow-md p-2 lg:p-3 xl:p-4 h-full max-w-md"
+            @click="push('/admin/services/id/' + service.id)"
           >
             <h3 class="font-bold text-primary-text text-xl mb-2">
               {{ service.name }}

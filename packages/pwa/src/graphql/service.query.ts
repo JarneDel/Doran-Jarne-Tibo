@@ -67,8 +67,8 @@ export const GET_SERVICE = gql`
 `
 
 export const DELETE_SERVICE = gql`
-  mutation removeServiceById($id: String!) {
-    removeServiceById(id: $id)
+  mutation removeService($id: String!) {
+    removeService(id: $id)
   }
 `
 
@@ -173,6 +173,10 @@ export interface IServiceItem {
 
 export interface IServices {
   services: IServiceItem[]
+}
+
+export interface IGetService {
+  service: IServiceItem
 }
 
 export interface ICreateService {

@@ -206,17 +206,17 @@ export const router = createRouter({
         {
           path: 'services',
           component: () => import('@/views/admin/services/Services.vue'),
-          // children: [
-          //   {
-          //     path: 'id/:id',
-          //     component: () => import('@/views/admin/services/Item.vue'),
-          //     props: true,
-          //   },
-          //   {
-          //     path: 'id/:id/edit',
-          //     component: () => import('@/views/admin/services/Edit.vue'),
-          //   },
-          // ],
+          children: [
+            {
+              path: 'id/:id',
+              component: () => import('@/views/admin/services/Item.vue'),
+              props: true,
+            },
+            // {
+            //   path: 'id/:id/edit',
+            //   component: () => import('@/views/admin/services/Edit.vue'),
+            // },
+          ],
           meta: {
             title: SITE_NAME + ' - Services',
             allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
