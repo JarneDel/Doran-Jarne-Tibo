@@ -42,6 +42,7 @@ import {
   UPDATE_SERVICE,
 } from '@/graphql/service.query.ts';
 import { ALL_ROOMS, IRoom } from '@/graphql/room.query.ts';
+import { ALL_STAFF, IStaff } from '@/graphql/staff.query';
 import StyledInputText from '@/components/generic/StyledInputText.vue';
 import StyledButton from '@/components/generic/StyledButton.vue';
 import useA11y from '@/composables/useA11y.ts';
@@ -53,8 +54,24 @@ export default defineComponent({
     const { push, currentRoute } = useRouter();
     const id = currentRoute.value.params.id as string;
     const { setPageTitle } = useA11y();
-    const { result, onResult } = useQuery<IGetService>(GET_SERVICE, {
+    const { result: resultService, onResult: onResultService } = useQuery<
+      IGetService
+    >(GET_SERVICE, {
       id,
+    });
+
+    // Variables
+    const staffList = ref();
+    const staffListOld = ref();
+    const roomList = ref();
+    const roomListOld = ref();
+
+    const staffCount = computed(() => {
+      return staffList.value?.filter((s: any) => s.selected).length;
+    });
+
+    const roomCount = computed(() => {
+      return roomList.value?.filter((s: any) => s.selected).length;
     });
 
     // ALL_ROOMS
@@ -62,7 +79,16 @@ export default defineComponent({
       error: errorRooms,
       loading: loadingRooms,
       result: resultRooms,
+      onResult: onResultRooms,
     } = useQuery<IRoom>(ALL_ROOMS, {}, { fetchPolicy: 'cache-and-network' });
+
+    // All STAFF
+    const {
+      loading: loadingStaff,
+      result: resultStaff,
+      error: errorStaff,
+      onResult: onResultStaff,
+    } = useQuery<IStaff>(ALL_STAFF);
 
     const currentItem = ref<IUpdateItem>({});
     const oldResult = ref<IUpdateItem>();
@@ -71,24 +97,114 @@ export default defineComponent({
 
     const compare = (val?: IUpdateItem, oldValue?: IUpdateItem): boolean => {
       if (!val || !oldValue) return false;
+      if (!roomList.value || !roomListOld.value) return false;
+
+      const equalRooms = roomList.value.every((room: any) => {
+        return (
+          roomListOld.value.find((r: any) => r.id === room.id)?.selected ===
+          room.selected
+        );
+      });
+
+      const equalStaff = staffList.value.every((staff: any) => {
+        return (
+          staffListOld.value.find((s: any) => s.UID === staff.UID)?.selected ===
+          staff.selected
+        );
+      });
 
       return (
-        val.name !== oldValue.name || val.description !== oldValue.description
+        val.name !== oldValue.name ||
+        val.description !== oldValue.description ||
+        !equalRooms ||
+        !equalStaff
       );
     };
+
+    // Recreate the room list with a selected property
+    onResultRooms((result) => {
+      roomList.value = result.data.GetAllRooms.map((room: any) => {
+        return {
+          ...room,
+          selected: resultService.value?.service.rooms?.find(
+            (r) => r.id === room.id,
+          )
+            ? true
+            : false,
+        };
+      });
+      roomListOld.value = result.data.GetAllRooms.map((room: any) => {
+        return {
+          ...room,
+          selected: resultService.value?.service.rooms?.find(
+            (r) => r.id === room.id,
+          )
+            ? true
+            : false,
+        };
+      });
+    });
+
+    // Recreate the staff list with a selected property
+    onResultStaff((result) => {
+      staffList.value = result.data.staff.map((staff: any) => {
+        return {
+          ...staff,
+          selected: resultService.value?.service.staff?.find(
+            (s) => s.UID === staff.UID,
+          )
+            ? true
+            : false,
+        };
+      });
+      staffListOld.value = result.data.staff.map((staff: any) => {
+        return {
+          ...staff,
+          selected: resultService.value?.service.staff?.find(
+            (s) => s.UID === staff.UID,
+          )
+            ? true
+            : false,
+        };
+      });
+    });
 
     // Watch the current item for changes
     watch(
       currentItem,
       (value) => {
         if (!oldResult.value) return;
-        hasChanged.value = compare(value, oldResult.value);
+        checkChanged();
       },
       { deep: true },
     );
 
+    watch(
+      roomList,
+      (value) => {
+        if (!oldResult.value) return;
+        checkChanged();
+      },
+      { deep: true },
+    );
+
+    watch(
+      staffList,
+      (value) => {
+        if (!oldResult.value) return;
+        checkChanged();
+      },
+      { deep: true },
+    );
+
+    const checkChanged = () => {
+      if (!oldResult.value) return;
+      hasChanged.value = compare(currentItem.value, oldResult.value);
+    };
+
     const hasChanged = ref<boolean>(false);
-    onResult((param) => {
+
+    onResultService((param) => {
       // Set page title
       setPageTitle('Edit ' + param.data.service.name);
 
@@ -110,8 +226,12 @@ export default defineComponent({
           id: id,
           name: currentItem.value.name,
           description: currentItem.value.description,
-          staffUID: currentItem.value.staff?.map((staff) => staff.UID),
-          roomId: currentItem.value.rooms?.map((room) => room.id),
+          staffUID: staffList.value
+            ?.filter((s: any) => s.selected)
+            .map((s: any) => s.UID),
+          roomId: roomList.value
+            ?.filter((s: any) => s.selected)
+            .map((s: any) => s.id),
         },
       }).then((e) => {
         push(`/admin/services`);
@@ -123,17 +243,44 @@ export default defineComponent({
       return currentItem.value.description.length + '/250';
     });
 
+    const handleRoomChange = (room: any) => {
+      room.selected = !room.selected;
+      if (room.selected) {
+        roomList.value.find((r: any) => r.id === room.id).selected = true;
+      } else {
+        roomList.value.find((r: any) => r.id === room.id).selected = false;
+      }
+    };
+
+    const handleStaffChange = (staff: any) => {
+      staff.selected = !staff.selected;
+      if (staff.selected) {
+        staffList.value.find((s: any) => s.id === staff.id).selected = true;
+      } else {
+        staffList.value.find((s: any) => s.id === staff.id).selected = false;
+      }
+    };
+
     return {
       push,
       submit,
-      result,
+      resultService,
       errorRooms,
       resultRooms,
       loadingRooms,
+      errorStaff,
+      resultStaff,
+      loadingStaff,
       currentItem,
       hasChanged,
       descriptionLength,
       id,
+      staffList,
+      roomList,
+      staffCount,
+      roomCount,
+      handleRoomChange,
+      handleStaffChange,
     };
   },
 });
@@ -141,17 +288,17 @@ export default defineComponent({
 
 <template>
   <!--  Todo: popup to discard changes-->
-  <Modal min-width="min-w-md" @close="push(`/admin/sports`)">
+  <Modal min-width="min-w-md" @close="push(`/admin/services`)">
     <template v-slot:title>
       <h2
-        v-if="result?.service"
+        v-if="resultService?.service"
         class="mr-2 w-full text-2xl font-bold text-primary-text"
       >
-        {{ result.service.name }}
+        {{ resultService.service.name }}
       </h2>
     </template>
     <template v-slot:default>
-      <form v-if="result?.service" @submit.prevent="submit">
+      <form v-if="resultService?.service" @submit.prevent="submit">
         <StyledInputText
           v-model="currentItem.name"
           :label="$t('inventory.name')"
@@ -183,6 +330,66 @@ export default defineComponent({
             </div>
           </div>
         </label>
+        <div class="flex flex-col sm:flex-row gap-2 lg:gap-4">
+          <div class="w-full max-w-[50%]">
+            <div class="flex justify-between">
+              <span class="text-primary-text font-medium">{{
+                $t('service.rooms')
+              }}</span>
+              <span>{{ roomCount }}</span>
+            </div>
+            <ul
+              class="border-2 hover:border-primary focus-within:border-primary-dark rounded-md h-40 border-primary-light w-full overflow-y-scroll p-1"
+            >
+              <li
+                class="flex gap-1 items-center select-none"
+                v-if="roomList"
+                v-for="room in roomList"
+              >
+                <input
+                  class="cursor-pointer"
+                  type="checkbox"
+                  :name="room.id"
+                  :id="room.id"
+                  :checked="room.selected"
+                  @change="handleRoomChange(room)"
+                />
+                <label class="cursor-pointer" :for="room.id"
+                  >{{ room.name }}
+                </label>
+              </li>
+            </ul>
+          </div>
+          <div class="w-full max-w-[50%]">
+            <div class="flex justify-between">
+              <span class="text-primary-text font-medium">{{
+                $t('service.staff')
+              }}</span>
+              <span>{{ staffCount }}</span>
+            </div>
+            <ul
+              class="border-2 hover:border-primary focus-within:border-primary-dark h-40 border-primary-light rounded-md w-full overflow-y-scroll p-1"
+            >
+              <li
+                class="flex gap-1 items-center select-none"
+                v-if="staffList"
+                v-for="staff in staffList"
+              >
+                <input
+                  class="cursor-pointer"
+                  type="checkbox"
+                  :name="staff.id"
+                  :id="staff.id"
+                  :checked="staff.selected"
+                  @change="handleStaffChange(staff)"
+                />
+                <label class="cursor-pointer" :for="staff.id"
+                  >{{ staff.firstName }}
+                </label>
+              </li>
+            </ul>
+          </div>
+        </div>
         <div class="flex justify-end">
           <StyledButton
             :disabled="!hasChanged"
