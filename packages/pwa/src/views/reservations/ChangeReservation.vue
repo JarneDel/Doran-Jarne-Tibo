@@ -16,6 +16,7 @@ import useUser from '@/composables/useUser'
 import { useRouter } from 'vue-router'
 import { Reservation } from '@/interface/reservation'
 import StyledLable from '@/components/generic/StyledLable.vue'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
   setup() {
@@ -26,7 +27,7 @@ export default defineComponent({
     const { customUser } = useUser()
     const checkboxStatus = ref<any>({})
     const checkboxStatusMaterials = ref<any>({})
-    const { mutate: updateReservation } = useMutation(UPDATE_RESEVATION)
+    const { mutate: updateReservation} = useMutation(UPDATE_RESEVATION)
     const availableRooms = ref<Room[]>([])
     const availableMaterials = ref<material[]>([])
     const wantedRoom = ref<Room[]>([])
@@ -35,6 +36,7 @@ export default defineComponent({
     const price = ref(0)
     const PriceWhitDiscount = ref(0)
     const discount = ref<number>(0)
+    const errors = ref<string[]>([])
     if (customUser.value?.userByUid.score) {
       if (customUser.value?.userByUid.score > 50) {
         discount.value = (customUser.value?.userByUid.score - 50) / 100
@@ -169,6 +171,8 @@ export default defineComponent({
         canceld: false,
       }).then(() => {
         push('/reservation')
+      }).catch((e) => {
+        errors.value.push(e.message)
       })
     }
     const Material = (material: material, plus: boolean) => {
@@ -366,13 +370,22 @@ export default defineComponent({
       wantedMaterials,
       discount,
       detail,
+      errorMessages: errors,
     }
   },
-  components: { StyledInputText, StyledButton, Plus, Minus, X, StyledLable },
+  components: { StyledInputText, StyledButton, Plus, Minus, X, StyledLable, Error },
 })
 </script>
 
 <template>
+  <Error
+    :translate="true"
+    v-for="(error, index) of errorMessages"
+    :key="index"
+    :is-shown="errorMessages[index] !== ''"
+    :msg="error"
+    @update:is-shown="errorMessages[index] = ''"
+  />
   <div class="m-4">
     <div class="mx-auto max-w-7xl">
       <h1 class="my-4 text-xl font-bold">{{ $t('reservation.title') }}</h1>

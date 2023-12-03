@@ -104,10 +104,10 @@ export class ReservationService {
 
   async create(createReservationInput: CreateReservationInput) {
     if (createReservationInput.date < getToday()) {
-      throw new Error('Date is in the pas')
+      throw new Error('error.dateInPast')
     }
     if ((createReservationInput.rooms.length as number) === 0) {
-      throw new Error('No rooms in reservation')
+      throw new Error('error.noRoom')
     }
 
     const availableRooms = await this.getAvailableRooms(
@@ -121,7 +121,7 @@ export class ReservationService {
         createReservationInput.rooms,
       ))
     )
-      throw new Error('Room is not available')
+      throw new Error('error.roomNotAvailable')
     const sportid: string[] = []
     availableRooms.forEach(room => {
       room.SportId.forEach(sport => {
@@ -140,7 +140,7 @@ export class ReservationService {
     if (
       !(await checkIfMaterialIsAvailable(availableMaterials, reservedMaterials))
     )
-      throw new Error('Material is not available')
+      throw new Error('error.materialNotAvailable')
     const group = await this.groupsService.findOne(
       createReservationInput.groupId,
     )
@@ -187,14 +187,14 @@ export class ReservationService {
   async update(id: string, updateReservationInput: UpdateReservationInput) {
     let r = await this.findOne(id)
     if (r.isCancelled) {
-      throw new Error('Reservation is cancelled')
+      throw new Error('error.reservationCancelled')
     }
     if (r.date < getToday() || updateReservationInput.date < getToday()) {
-      throw new Error('Reservation is in the past')
+      throw new Error('error.dateInPast')
     }
 
     if ((updateReservationInput.rooms.length as number) === 0) {
-      throw new Error('No rooms in reservation')
+      throw new Error('error.noRoom')
     }
     r.id = id
     const availableRooms = await this.getAvailableRooms(
@@ -209,7 +209,7 @@ export class ReservationService {
         updateReservationInput.rooms,
       ))
     )
-      throw new Error('Room is not available')
+      throw new Error('error.roomNotAvailable')
     const sportid: string[] = []
     availableRooms.forEach(room => {
       room.SportId.forEach(sport => {
@@ -231,7 +231,7 @@ export class ReservationService {
         updateReservationInput.reservedMaterials,
       ))
     )
-      throw new Error('Material is not available')
+      throw new Error('error.materialNotAvailable')
     //check if the room is available
     const date = updateReservationInput.date
     //check if the material is available
@@ -463,7 +463,7 @@ export class ReservationService {
   async cancelReservation(id: string) {
     const reservation = await this.findOne(id)
     if (reservation.date < getToday()) {
-      throw new Error('Reservation is in the past')
+      throw new Error('error.dateInPast')
     }
     reservation.isCancelled = true
     return this.reservationRepository.save(reservation)

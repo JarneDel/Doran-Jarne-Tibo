@@ -420,7 +420,7 @@ const unauthorized = (
   next: NavigationGuardNext,
 ) => {
   if (to.path.includes('/admin')) {
-    next('/admin/403')
+    next('/403')
     return
   }
   next('/403')

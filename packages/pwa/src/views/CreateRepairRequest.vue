@@ -10,9 +10,11 @@ import { Room } from '@/interface/roomInterface'
 import { ALL_LOANABLE_MATERIALS } from '@/graphql/loanableMaterials.query'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { CREATE_REPAIR_REQUEST } from '@/graphql/repairRequests.query'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
   setup() {
+    const errorMessages = ref<string[]>([])
     const { mutate: createRepairRequest } = useMutation(CREATE_REPAIR_REQUEST)
     const { customUser } = useUser()
     const repair = ref<RepairRequest>({
@@ -68,7 +70,9 @@ export default defineComponent({
       }
     })
     const handleSubmit = () => {
-      let materials: material[] = []
+      let materials: material[]
+      if ((repair.value.loanableMaterial.length)>0){
+      materials=[]
       repair.value.loanableMaterial.forEach(material => {
         let sportsist: any = []
         material.sports.forEach(sportt => {
@@ -99,32 +103,36 @@ export default defineComponent({
         }
         materials.push(listedmaterial)
       })
-      let roomlist: Room[] = []
-      repair.value.room.forEach(room => {
-        let sportsist: any = []
-        room.sports.forEach(sportt => {
-          let sport: any = {
-            id: '',
-            name: '',
-            createdAt: new Date(),
-            updatedAt: new Date(),
+      }
+      let roomlist: Room[]
+      if (repair.value.room.length > 0) {
+        roomlist = []
+        repair.value.room.forEach(room => {
+          let sportsist: any = []
+          room.sports.forEach(sportt => {
+            let sport: any = {
+              id: '',
+              name: '',
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            }
+            sport.id = sportt.id
+            sport.name = sportt.name
+            sport.createdAt = sportt.createdAt
+            sport.updatedAt = sportt.updatedAt
+            sportsist.push(sport)
+          })
+          // @ts-ignore
+          let listedroom: Room = {
+            id: room.id,
+            name: room.name,
+            pricePerHour: room.pricePerHour,
+            sports: sportsist,
+            type: room.type,
           }
-          sport.id = sportt.id
-          sport.name = sportt.name
-          sport.createdAt = sportt.createdAt
-          sport.updatedAt = sportt.updatedAt
-          sportsist.push(sport)
+          roomlist.push(listedroom)
         })
-        // @ts-ignore
-        let listedroom: Room = {
-          id: room.id,
-          name: room.name,
-          pricePerHour: room.pricePerHour,
-          sports: sportsist,
-          type: room.type,
-        }
-        roomlist.push(listedroom)
-      })
+      }
       createRepairRequest({
         requestUserId: repair.value.requestUser.id,
         room: roomlist,
@@ -133,6 +141,16 @@ export default defineComponent({
         description: repair.value.description,
       }).then(() => {
         location.reload()
+      }).catch((e) => {
+        const originalError = e.graphQLErrors[0].extensions.originalError as any
+      if (!originalError || !originalError.message)
+        return console.log('no message')
+
+      console.log({ originalError })
+      originalError.message.forEach((message: string) => {
+        errorMessages.value.push(message)
+      })
+        
       })
     }
     return {
@@ -140,13 +158,22 @@ export default defineComponent({
       rooms,
       loanableMaterials,
       handleSubmit,
+      errorMessages,
     }
   },
-  components: { StyledInputText, StyledButton },
+  components: { StyledInputText, StyledButton,Error },
 })
 </script>
 
 <template>
+  <Error
+  :translate="true"
+    v-for="(error, index) of errorMessages"
+    :key="index"
+    :is-shown="errorMessages[index] !== ''"
+    :msg="error"
+    @update:is-shown="errorMessages[index] = ''"
+  />
   <div class="flex h-full w-full items-center justify-center">
     <form
       class="my-4 w-1/3 rounded-md bg-white p-8 shadow-md"
@@ -192,7 +219,9 @@ export default defineComponent({
           </div>
         </div>
         <div class="w-1/2">
-          <h2 class="text-lg font-medium">{{ $t('repairRequest.materials') }}</h2>
+          <h2 class="text-lg font-medium">
+            {{ $t('repairRequest.materials') }}
+          </h2>
           <div v-for="material in loanableMaterials" class="mb-1">
             <input
               type="checkbox"

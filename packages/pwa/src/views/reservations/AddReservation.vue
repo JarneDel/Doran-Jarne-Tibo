@@ -14,6 +14,7 @@ import { Plus, Minus, X } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import { useRouter } from 'vue-router'
 import StyledLable from '@/components/generic/StyledLable.vue'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
   setup() {
@@ -22,6 +23,7 @@ export default defineComponent({
     const { customUser } = useUser()
     const checkboxStatus = ref<any>({})
     const checkboxStatusMaterials = ref<any>({})
+    const errorMessages = ref<string[]>([])
     const { mutate: addReservarion } = useMutation(CREATERESEVATION)
     const reservation = ref({
       date: new Date().toISOString().substr(0, 10),
@@ -124,6 +126,8 @@ export default defineComponent({
         rooms: roomlist,
       }).then(() => {
         push('/reservation')
+      }).catch((error) => {
+        errorMessages.value.push(error.message)
       })
     }
     const Material = (material: material, plus: boolean) => {
@@ -328,13 +332,22 @@ export default defineComponent({
       wantedMaterials,
       discount,
       detail,
+      errorMessages,
     }
   },
-  components: { StyledInputText, StyledButton, Plus, Minus, X, StyledLable },
+  components: { StyledInputText, StyledButton, Plus, Minus, X, StyledLable, Error },
 })
 </script>
 
 <template>
+  <Error
+  :translate="true"
+    v-for="(error, index) of errorMessages"
+    :key="index"
+    :is-shown="errorMessages[index] !== ''"
+    :msg="error"
+    @update:is-shown="errorMessages[index] = ''"
+  />
   <div class="m-4">
     <div class="mx-auto max-w-7xl">
       <h1 class="my-4 text-xl font-bold">{{ $t('reservation.title') }}</h1>
