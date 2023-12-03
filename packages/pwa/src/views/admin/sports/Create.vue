@@ -79,7 +79,7 @@ export default defineComponent({
         <h2 class="text-primary-text text-2xl font-medium">
           {{ $t('sports.create') }}
         </h2>
-        <div>
+        <div class="flex flex-col gap-2">
           <StyledInputText
             v-model="name"
             :label="$t('sports.name')"
@@ -88,24 +88,26 @@ export default defineComponent({
             :placeholder="$t('sports.namePlaceholder')"
             type="text"
           />
-          <span class="text-primary-text font-medium">{{
-            $t('inventory.description')
-          }}</span>
-          <div class="flex items-end">
-            <textarea
-              v-model="description"
-              maxlength="250"
-              class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full resize-none rounded bg-white px-4 py-1.5 outline-none transition-colors"
-              :placeholder="$t('sports.descriptionPlaceholder')"
-            ></textarea>
-            <div
-              class="relative w-0 -left-12 opacity-60"
-              :class="{
-                '-left-14': description.length >= 10,
-                '-left-16': description.length >= 100,
-              }"
-            >
-              {{ descriptionLength }}
+          <div>
+            <span class="text-primary-text font-medium">{{
+              $t('inventory.description')
+            }}</span>
+            <div class="flex items-end">
+              <textarea
+                v-model="description"
+                maxlength="250"
+                class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full resize-none rounded bg-white px-4 py-1.5 outline-none transition-colors"
+                :placeholder="$t('sports.descriptionPlaceholder')"
+              ></textarea>
+              <div
+                class="relative w-0 -left-12 opacity-60"
+                :class="{
+                  '-left-14': description.length >= 10,
+                  '-left-16': description.length >= 100,
+                }"
+              >
+                {{ descriptionLength }}
+              </div>
             </div>
           </div>
         </div>

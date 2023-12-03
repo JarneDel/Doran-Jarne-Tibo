@@ -147,19 +147,25 @@ export const DELETE_ROOM = gql`
   }
 `
 
-export interface ICreateRoom {
-  createRoom: {
+export interface Room {
+  id: string
+  name: string
+  sports: {
     id: string
     name: string
-    sports: {
-      id: string
-      name: string
-      createdAt: string
-      updatedAt: string
-    }[]
-    pricePerHour: number
-    type: string
-  }
+    createdAt: string
+    updatedAt: string
+  }[]
+  pricePerHour: number
+  type: string
+}
+
+export interface IRoom {
+  GetAllRooms: Room[]
+}
+
+export interface ICreateRoom {
+  createRoom: Room
 }
 
 export interface createRoomInput {

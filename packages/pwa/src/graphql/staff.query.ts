@@ -1,6 +1,22 @@
 import { gql, TypedDocumentNode } from '@apollo/client/core'
 import { Service, StaffMember } from '@/interface/staff.interface.ts'
 
+export const ALL_STAFF = gql`
+query {
+  staff {
+    id
+    UID
+    locale
+    role
+    profilePictureUrl
+    firstName
+    lastName
+    email
+    phone
+  }
+}
+`
+
 export const STAFF_AND_SERVICES_BY_UID: TypedDocumentNode<{
   staffByUid: StaffMember
   servicesByStaff: Service[]
@@ -60,6 +76,24 @@ export const STAFF: TypedDocumentNode<{
     }
   }
 `
+
+export interface IStaff {
+  staff: [{
+    id: string
+    UID: string
+    locale: string
+    role: string
+    profilePictureUrl: string
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+  }]
+}
+
+export interface Staff {
+  staffByUid: StaffMember
+}
 
 export const UPDATE_PROFILE_PICTURE_STAFF: TypedDocumentNode<
   {

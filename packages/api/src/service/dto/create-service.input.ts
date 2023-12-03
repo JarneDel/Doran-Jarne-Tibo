@@ -11,4 +11,10 @@ export class CreateServiceInput {
   @Field()
   @IsString()
   description: string
+
+  @Field(() => [String], { nullable: true })
+  roomId: string[]
+
+  @Field(() => [String], { nullable: true })
+  staffUID: string[]
 }

@@ -7,7 +7,7 @@ interface Sports {
       name: string;
       createdAt: string;
       updatedAt: string;
-    }
+    },
   ];
 }
 
