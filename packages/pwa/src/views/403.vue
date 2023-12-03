@@ -21,15 +21,16 @@ export default defineComponent({
           <Medal class="h-16 w-16" />
         </div>
         <h1 class="mb-2 text-4xl font-bold text-gray-800">
-          403 - Geen toegang
+          {{$t('403.title')}}
         </h1>
         <p class="mb-6 text-lg text-gray-600">
-          Sorry, je hebt geen toestemming voor deze medaille!
+          {{$t('403.subtitle')}}
         </p>
         <StyledButton
           class="text-base transition duration-300 ease-in-out"
           @click="$router.back()"
-          >Terug naar de overwinning
+          >
+          {{$t('403.button')}}
         </StyledButton>
       </div>
     </div>
