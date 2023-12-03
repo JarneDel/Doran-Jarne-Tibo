@@ -1,5 +1,5 @@
 // Common
-import { Module } from '@nestjs/common'
+import { Logger, Module } from '@nestjs/common'
 // Commands
 import { CommandModule } from 'nestjs-command'
 import { DatabaseSeedCommand } from './seed.command'
@@ -17,6 +17,7 @@ import { ReservationModule } from 'src/reservation/reservation.module'
 import { RepairRequestModule } from 'src/repair-request/repair-request.module'
 import { VacationRequestModule } from '../vacation-request/vacation-request.module'
 import { StaffRegisterModule } from '../staff-register/staff-register.module'
+import { FirebaseUserModule } from '../firebase-user/firebase-user.module'
 
 @Module({
   imports: [
@@ -33,7 +34,22 @@ import { StaffRegisterModule } from '../staff-register/staff-register.module'
     RepairRequestModule,
     VacationRequestModule,
     StaffRegisterModule,
+    FirebaseUserModule,
   ],
   providers: [DatabaseSeedCommand, SeedService],
 })
-export class SeedModule {}
+export class SeedModule {
+  constructor(private readonly seedService: SeedService) {
+    if (process.env.FIREBASE_AUTH_EMULATOR_HOST) {
+      this.seedE2ETestDB().then(r => Logger.log('seeded E2E test db'))
+    }
+  }
+
+  private async seedE2ETestDB() {
+    // await this.seedService.deleteAllStaff()
+    // await this.seedService.deleteAllGroups()
+    await this.seedService.addStaffFromJson()
+    await this.seedService.addGroupsFromJson()
+    await this.seedService.addFirebaseUsers()
+  }
+}

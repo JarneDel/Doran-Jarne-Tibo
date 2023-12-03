@@ -26,3 +26,7 @@ dist-ssr
 
 **/oauthsecret.json
 **/token.json
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

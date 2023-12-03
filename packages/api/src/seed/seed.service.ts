@@ -41,6 +41,10 @@ import { ServiceService } from '../service/service.service'
 import { RepairRequestService } from '../repair-request/repair-request.service'
 import { VacationRequestService } from '../vacation-request/vacation-request.service'
 import { StaffRegisterService } from '../staff-register/staff-register.service'
+import { FirebaseUserService } from '../firebase-user/firebase-user.service'
+
+// models
+import { FirebaseUser } from '../firebase-user/models/firebase-user.model'
 
 @Injectable()
 export class SeedService {
@@ -56,6 +60,7 @@ export class SeedService {
     private RepairRequestService: RepairRequestService,
     private vacationRequestService: VacationRequestService,
     private StaffRegisterService: StaffRegisterService,
+    private firebaseService: FirebaseUserService,
   ) {}
 
   async addStockFromJson(): Promise<Stock[]> {
@@ -281,19 +286,20 @@ export class SeedService {
       material.sports = sports
       material.isComplete = loanableMaterial.isComplete
       material.description = loanableMaterial.description
-      //amaount reserved is a random number between 0 and and total amount and min 1  
-      material.amountReserved = Math.floor(Math.random() * material.totalAmount) + 1
+      //amaount reserved is a random number between 0 and and total amount and min 1
+      material.amountReserved =
+        Math.floor(Math.random() * material.totalAmount) + 1
       const materialList: [Materials] = [material]
       r.reservedMaterials = materialList
       outReservations.push(r)
     }
-      await Promise.all( outReservations.map(async reservation => {
+    await Promise.all(
+      outReservations.map(async reservation => {
         try {
-        await this.reservationService.create(reservation)
-        }
-        catch (e) {
-        }
-      }))
+          await this.reservationService.create(reservation)
+        } catch (e) {}
+      }),
+    )
 
     return outReservations
   }
@@ -506,4 +512,23 @@ export class SeedService {
   }
 
   //endregion
+
+  // seeding firebase users
+  async addFirebaseUsers(): Promise<FirebaseUser[]> {
+    const users: FirebaseUser[] = []
+    for (let staffMember of staff) {
+      const user = new FirebaseUser()
+      user.email = staffMember.email
+      user.password = 'Test1234'
+      user.uid = staffMember.UID
+
+      users.push(user)
+    }
+
+    await Promise.all(
+      users.map(user => this.firebaseService.createFirebaseUser(user)),
+    )
+    return users
+  }
 }
+

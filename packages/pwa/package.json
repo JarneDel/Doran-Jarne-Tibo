@@ -8,7 +8,8 @@
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "language": "npx tsx ./src/utils/sheet.ts",
-    "run:pwa": "npm run build && npx serve dist"
+    "run:pwa": "npm run build && npx serve dist",
+    "dev:emulate": "VITE_EMULATION=true npm run dev | npx firebase-tools emulators:start --only auth"
   },
   "dependencies": {
     "@google-cloud/local-auth": "2.1.0",
@@ -26,6 +27,8 @@
     "vue-i18n": "^9.5.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.40.1",
+    "@types/node": "^20.10.2",
     "@vitejs/plugin-vue": "^4.2.3",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.4",
