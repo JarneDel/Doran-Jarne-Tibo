@@ -30,7 +30,7 @@ export default defineComponent({
           class="text-base transition duration-300 ease-in-out"
           @click="$router.back()"
           >
-          {{$t('403.button')}}
+          {{$t('403.404.button')}}
         </StyledButton>
       </div>
     </div>
