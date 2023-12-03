@@ -140,7 +140,7 @@ export default defineComponent({
             <div
               class="top-19 z-100 absolute right-4 flex flex-col rounded-md bg-white p-4 shadow-md"
             >
-              <router-link class="styled-link" to="/profile">{{
+              <router-link class="styled-link w-fit" to="/profile">{{
                 $t('nav.profile')
               }}</router-link>
               <StyledButton class="mt-2" @click="logoutButton()">
