@@ -146,8 +146,8 @@ mutation RemoveRepairRequestById($repairRequestId: String!) {
 export const CREATE_REPAIR_REQUEST = gql`
   mutation createRepairRequestInput(
     $requestUserId: String!
-    $room: [RoomsInput!]!
-    $loanableMaterial: [MaterialsInput!]!
+    $room: [RoomsInput!]
+    $loanableMaterial: [MaterialsInput!]
     $title: String!
     $description: String!
   ) {

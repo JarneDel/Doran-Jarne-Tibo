@@ -10,6 +10,11 @@ export default defineComponent({
       default: 'Error',
       required: false,
     },
+    translate: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
     duration: {
       type: Number,
       default: 5000,
@@ -54,7 +59,8 @@ export default defineComponent({
           class="moving-line relative mb-4 flex flex-row gap-2 rounded border-0 bg-red-500 px-6 py-4 text-white"
         >
           <Bell class="animate-bell"></Bell>
-          <span class="mr-8 inline-block align-middle">{{ msg }}</span>
+          <span v-if="translate" class="mr-8 inline-block align-middle">{{ $t(msg) }}</span>
+          <span v-else class="mr-8 inline-block align-middle">{{ msg }}</span>
           <button
             class="absolute right-0 top-0 mr-6 mt-4 bg-transparent text-2xl font-semibold leading-none outline-none focus:outline-none"
             @click="$emit('update:isShown', false)"
