@@ -10,9 +10,11 @@ import { Room } from '@/interface/roomInterface'
 import { ALL_LOANABLE_MATERIALS } from '@/graphql/loanableMaterials.query'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { CREATE_REPAIR_REQUEST } from '@/graphql/repairRequests.query'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
   setup() {
+    const errorMessages = ref<string[]>([])
     const { mutate: createRepairRequest } = useMutation(CREATE_REPAIR_REQUEST)
     const { customUser } = useUser()
     const repair = ref<RepairRequest>({
@@ -139,6 +141,16 @@ export default defineComponent({
         description: repair.value.description,
       }).then(() => {
         location.reload()
+      }).catch((e) => {
+        const originalError = e.graphQLErrors[0].extensions.originalError as any
+      if (!originalError || !originalError.message)
+        return console.log('no message')
+
+      console.log({ originalError })
+      originalError.message.forEach((message: string) => {
+        errorMessages.value.push(message)
+      })
+        
       })
     }
     return {
@@ -146,13 +158,22 @@ export default defineComponent({
       rooms,
       loanableMaterials,
       handleSubmit,
+      errorMessages,
     }
   },
-  components: { StyledInputText, StyledButton },
+  components: { StyledInputText, StyledButton,Error },
 })
 </script>
 
 <template>
+  <Error
+  :translate="true"
+    v-for="(error, index) of errorMessages"
+    :key="index"
+    :is-shown="errorMessages[index] !== ''"
+    :msg="error"
+    @update:is-shown="errorMessages[index] = ''"
+  />
   <div class="flex h-full w-full items-center justify-center">
     <form
       class="my-4 w-1/3 rounded-md bg-white p-8 shadow-md"

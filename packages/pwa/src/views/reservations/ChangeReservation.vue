@@ -378,7 +378,6 @@ export default defineComponent({
 </script>
 
 <template>
-  {{errorMessages}}
   <Error
     :translate="true"
     v-for="(error, index) of errorMessages"
