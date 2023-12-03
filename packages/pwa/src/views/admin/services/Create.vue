@@ -153,7 +153,7 @@ export default defineComponent({
         <h2 class="text-primary-text text-2xl font-medium">
           {{ $t('service.create') }}
         </h2>
-        <div>
+        <div class="flex flex-col gap-2">
           <StyledInputText
             v-model="name"
             :label="$t('service.name')"
@@ -162,24 +162,26 @@ export default defineComponent({
             :placeholder="$t('service.namePlaceholder')"
             type="text"
           />
-          <span class="text-primary-text font-medium">{{
-            $t('inventory.description')
-          }}</span>
-          <div class="flex items-end">
-            <textarea
-              v-model="description"
-              maxlength="250"
-              class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full resize-none rounded bg-white px-4 py-1.5 outline-none transition-colors"
-              :placeholder="$t('service.descriptionPlaceholder')"
-            ></textarea>
-            <div
-              class="relative w-0 -left-12 opacity-60"
-              :class="{
-                '-left-14': description.length >= 10,
-                '-left-16': description.length >= 100,
-              }"
-            >
-              {{ descriptionLength }}
+          <div>
+            <span class="text-primary-text font-medium">{{
+              $t('inventory.description')
+            }}</span>
+            <div class="flex items-end">
+              <textarea
+                v-model="description"
+                maxlength="250"
+                class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full resize-none rounded bg-white px-4 py-1.5 outline-none transition-colors"
+                :placeholder="$t('service.descriptionPlaceholder')"
+              ></textarea>
+              <div
+                class="relative w-0 -left-12 opacity-60"
+                :class="{
+                  '-left-14': description.length >= 10,
+                  '-left-16': description.length >= 100,
+                }"
+              >
+                {{ descriptionLength }}
+              </div>
             </div>
           </div>
           <div class="flex flex-col sm:flex-row gap-2 lg:gap-4">
@@ -194,7 +196,7 @@ export default defineComponent({
                 class="border-2 hover:border-primary focus-within:border-primary-dark rounded-md h-40 border-primary-light w-full overflow-y-scroll p-1"
               >
                 <li
-                  class="flex gap-1 items-center"
+                  class="flex gap-1 items-center select-none"
                   v-if="roomList"
                   v-for="room in roomList"
                 >
@@ -231,7 +233,7 @@ export default defineComponent({
                 class="border-2 hover:border-primary focus-within:border-primary-dark h-40 border-primary-light rounded-md w-full overflow-y-scroll p-1"
               >
                 <li
-                  class="flex gap-1 items-center"
+                  class="flex gap-1 items-center select-none"
                   v-if="staffList"
                   v-for="staff in staffList"
                 >

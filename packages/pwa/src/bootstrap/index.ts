@@ -226,10 +226,10 @@ export const router = createRouter({
               component: () => import('@/views/admin/services/Item.vue'),
               props: true,
             },
-            // {
-            //   path: 'id/:id/edit',
-            //   component: () => import('@/views/admin/services/Edit.vue'),
-            // },
+            {
+              path: 'id/:id/edit',
+              component: () => import('@/views/admin/services/Edit.vue'),
+            },
           ],
           meta: {
             title: SITE_NAME + ' - Services',

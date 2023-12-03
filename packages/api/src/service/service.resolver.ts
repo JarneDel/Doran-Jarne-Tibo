@@ -33,6 +33,8 @@ export class ServiceResolver {
     private readonly roomService: RoomService,
   ) {}
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Service)
   createService(
     @Args('createServiceInput') createServiceInput: CreateServiceInput,
@@ -40,22 +42,30 @@ export class ServiceResolver {
     return this.serviceService.create(createServiceInput)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [Service], { name: 'services' })
   findAll() {
     return this.serviceService.findAll()
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => Service, { name: 'service' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.serviceService.findOne(id)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [Service], { name: 'servicesByStaff' })
   findByStaffId(@FirebaseUser() user: UserRecord) {
     console.log(user.uid, 'getting services by staff id')
     return this.serviceService.findByStaffUId(user.uid)
   }
 
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Service)
   updateService(
     @Args('updateServiceInput') updateServiceInput: UpdateServiceInput,

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Service } from './entities/service.entity'
 import { Repository } from 'typeorm'
 import { ObjectId } from 'mongodb'
+import { UUID } from 'typeorm/driver/mongodb/bson.typings'
 
 @Injectable()
 export class ServiceService {
@@ -46,10 +47,13 @@ export class ServiceService {
     })
   }
 
-  update(id: string, updateServiceInput: UpdateServiceInput) {
-    const s = new Service()
+  async update(id: string, updateServiceInput: UpdateServiceInput) {
+    const s = await this.findOne(id)
     s.name = updateServiceInput.name
     s.description = updateServiceInput.description
+    s.roomId = updateServiceInput.roomId
+    s.staffUID = updateServiceInput.staffUID
+    return this.serviceRepository.save(s)
   }
 
   remove(id: string) {

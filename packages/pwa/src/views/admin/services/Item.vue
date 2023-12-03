@@ -37,7 +37,7 @@ export default defineComponent({
     const { mutate: deleteItem } = useMutation(DELETE_SERVICE);
 
     const deleteItemWithConfirmation = (id: string) => {
-      if (!confirm('Are you sure you want to delete this sport?')) return;
+      if (!confirm('Are you sure you want to delete this service?')) return;
       deleteItem({ id }).then(() => {
         replace('/admin/services');
       });
@@ -79,7 +79,7 @@ export default defineComponent({
           <button
             v-if="result?.service"
             class="bg-primary-surface hover:bg-primary-surface/80 active:bg-primary-surface/60 mr-2 self-end rounded-full p-2"
-            @click="push('/admin/sports/id/' + result?.service.id + '/edit')"
+            @click="push('/admin/services/id/' + result?.service.id + '/edit')"
           >
             <Edit2 :size="20" />
           </button>
