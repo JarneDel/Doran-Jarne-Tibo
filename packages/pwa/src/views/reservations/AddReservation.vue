@@ -341,6 +341,7 @@ export default defineComponent({
 
 <template>
   <Error
+  :translate="true"
     v-for="(error, index) of errorMessages"
     :key="index"
     :is-shown="errorMessages[index] !== ''"

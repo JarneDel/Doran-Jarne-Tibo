@@ -380,6 +380,7 @@ export default defineComponent({
 <template>
   {{errorMessages}}
   <Error
+    :translate="true"
     v-for="(error, index) of errorMessages"
     :key="index"
     :is-shown="errorMessages[index] !== ''"
