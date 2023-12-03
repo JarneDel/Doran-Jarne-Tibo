@@ -7,7 +7,8 @@
     "pwa": "npm run dev --workspace=pwa",
     "api": "npm run dev --workspace=api",
     "build:pwa": "npm run build --workspace=pwa",
-    "language": "npm run language --workspace=pwa -y"
+    "language": "npm run language --workspace=pwa -y",
+    "dev:emulate": "npx lerna run --scope={pwa,api} dev:emulate --stream"
   },
   "repository": {
     "type": "git",

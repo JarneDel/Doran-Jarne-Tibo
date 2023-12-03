@@ -1,7 +1,8 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { Logger, ValidationPipe } from '@nestjs/common'
-import { checkEnv, optionalEnv } from './utils/checkEnv'
+import { checkEnv, optionalEnv, testEnv } from './utils/checkEnv'
+import { CustomLogger } from './logger/customLogger'
 
 async function bootstrap() {
   checkEnv([
@@ -12,7 +13,10 @@ async function bootstrap() {
     'URL_FRONTEND',
   ])
   optionalEnv(['MAIL_USER', 'MAIL_PASSWORD'])
-  const app = await NestFactory.create(AppModule)
+  testEnv()
+  const app = await NestFactory.create(AppModule, {
+    logger: new CustomLogger(),
+  })
   app.enableCors({
     origin: ['http://localhost:5173', process.env.URL_FRONTEND],
     credentials: true,
@@ -20,6 +24,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
   await app.listen(3000)
   Logger.log(`Listening on ${await app.getUrl()}`)
-  Logger.verbose(`Listening on ${await app.getUrl()}/graphql`)
+  Logger.log(`Listening on ${await app.getUrl()}/graphql`)
 }
 bootstrap()
