@@ -28,19 +28,19 @@ export class CreateRepairRequestInput {
   @IsNotEmpty()
   @MinLength(4)
   @Field()
-  title: string;
+  title: string
 
   @IsString()
   @Field({ nullable: true })
   description?: string
 
   // Either room or loanableMaterial should be filled in (validateIf)
-  @ValidateIf((o) => o.loanableMaterial == undefined)
+  @ValidateIf(o => o.loanableMaterial == undefined)
   @IsNotEmpty()
   @Field(() => [Rooms], { nullable: true })
   room: Rooms[]
 
-  @ValidateIf((o) => o.room == undefined)
+  @ValidateIf(o => o.room == undefined)
   @IsNotEmpty()
   @Field(() => [Materials], { nullable: true })
   loanableMaterial: Materials[]
