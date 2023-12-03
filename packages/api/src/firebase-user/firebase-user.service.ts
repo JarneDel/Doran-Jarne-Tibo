@@ -15,4 +15,16 @@ export class FirebaseUserService {
       email: userRecord.email,
     }
   }
+
+  async deleteFirebaseUser(uid: string) {
+    await getAuth().deleteUser(uid)
+  }
+
+  async getFirebaseUsers() {
+    const listUsersResult = await getAuth().listUsers()
+    return listUsersResult.users.map(user => ({
+      uid: user.uid,
+      email: user.email,
+    }))
+  }
 }

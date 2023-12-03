@@ -41,13 +41,14 @@ import { FirebaseUserModule } from '../firebase-user/firebase-user.module'
 export class SeedModule {
   constructor(private readonly seedService: SeedService) {
     if (process.env.FIREBASE_AUTH_EMULATOR_HOST) {
-      this.seedE2ETestDB().then(r => Logger.log('seeded E2E test db'))
+      this.seedE2ETestDB().then(r =>
+        Logger.log('seeded E2E test db', 'SeedModule'),
+      )
     }
   }
 
   private async seedE2ETestDB() {
-    // await this.seedService.deleteAllStaff()
-    // await this.seedService.deleteAllGroups()
+    await this.seedService.deleteAllFirebaseUsers()
     await this.seedService.addStaffFromJson()
     await this.seedService.addGroupsFromJson()
     await this.seedService.addFirebaseUsers()

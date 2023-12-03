@@ -1,5 +1,5 @@
 // external
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { ObjectId } from 'mongodb'
 
 // entities
@@ -529,6 +529,21 @@ export class SeedService {
       users.map(user => this.firebaseService.createFirebaseUser(user)),
     )
     return users
+  }
+
+  async deleteAllFirebaseUsers(): Promise<void> {
+    const usersFromFirebase = await this.firebaseService.getFirebaseUsers()
+    Logger.warn(
+      'Deleting all firebase users: ' + usersFromFirebase.length,
+      'SeedService',
+    )
+    for (const user of usersFromFirebase) {
+      try {
+        await this.firebaseService.deleteFirebaseUser(user.uid)
+      } catch (e) {
+        Logger.debug(e, user.uid, 'SeedService')
+      }
+    }
   }
 }
 
