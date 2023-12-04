@@ -10,6 +10,7 @@
     "build:pwa": "npm run build --workspace=pwa",
     "language": "npm run language --workspace=pwa -y",
     "dev:emulate": "npx lerna run --scope={pwa,api} dev:emulate --stream"
+    "dev:emulate:windows": "npx lerna run --scope={pwa,api} dev:emulate:windows --stream"
   },
   "repository": {
     "type": "git",
