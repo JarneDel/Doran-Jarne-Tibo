@@ -4,6 +4,7 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
+    "dev": "npx lerna run --scope={pwa,api} dev",
     "pwa": "npm run dev --workspace=pwa",
     "api": "npm run dev --workspace=api",
     "build:pwa": "npm run build --workspace=pwa",
@@ -37,6 +38,8 @@
     ]
   },
   "devDependencies": {
+    "lerna": "^8.0.0",
     "prettier": "^3.0.3"
-  }
+  },
+  "dependencies": {}
 }
