@@ -1,6 +1,6 @@
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue'
-import { useMutation, useQuery } from '@vue/apollo-composable'
+import { computed, defineComponent, ref } from 'vue'
+import { useLazyQuery, useMutation, useQuery } from '@vue/apollo-composable'
 import {
   ALL_REGISTRATIONS,
   CREATE_REGISTRATION,
@@ -8,11 +8,29 @@ import {
 import Modal from '@/components/Modal.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
-import { BadgeAlert, BadgeCheck, CircleDot, Trash } from 'lucide-vue-next'
+import {
+  BadgeAlert,
+  BadgeCheck,
+  CircleDashed,
+  CircleDot,
+  Contact,
+  Trash,
+  Trash2,
+  UserPlus2,
+} from 'lucide-vue-next'
+import FilterOptions from '@/components/generic/FilterOptions.vue'
+import useTime from '@/composables/useTime'
+import { ALL_STAFF } from '@/graphql/staff.query.ts'
+import AdminStaffCard from '@/components/staff/AdminStaffCard.vue'
 
 export default defineComponent({
   name: 'Staff',
+  methods: { UserPlus2, Contact },
   components: {
+    AdminStaffCard,
+    CircleDashed,
+    Trash2,
+    FilterOptions,
     BadgeCheck,
     CircleDot,
     BadgeAlert,
@@ -29,13 +47,17 @@ export default defineComponent({
       lastName: '',
       role: 'STAFF',
     })
+    const filter = ref<'staff' | 'staffRegister'>('staff')
 
-    const { result, refetch } = useQuery(ALL_REGISTRATIONS)
+    const {
+      result: registrationsResult,
+      refetch,
+      load,
+    } = useLazyQuery(ALL_REGISTRATIONS)
+    const { result: staffResult } = useQuery(ALL_STAFF)
     const { mutate } = useMutation(CREATE_REGISTRATION)
 
-    watch(result, () => {
-      console.log(result.value)
-    })
+    const { getIsExpired, timeToExpiry } = useTime()
 
     const addStaff = async () => {
       await mutate({
@@ -50,37 +72,23 @@ export default defineComponent({
       await refetch()
     }
 
-    const getIsExpired = (date: Date) => {
-      const now = new Date()
-      return date < now
-    }
-    const timeToExpiry = (date: Date): string => {
-      const now = new Date()
-      const diff = date.getTime() - now.getTime()
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-      const hours = Math.floor(
-        (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-      )
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000)
-      if (days) {
-        return `${days} d ${hours} h`
+    const loadData = () => {
+      if (filter.value === 'staffRegister') {
+        load()
       }
-      if (hours) {
-        return `${hours} h ${minutes} m`
-      }
-      if (minutes) {
-        return `${minutes} m ${seconds} s`
-      }
-      return `${seconds} s`
     }
 
     return {
       addStaff,
+      filter,
+      loadData,
       adding,
       form,
       getIsExpired,
-      registrations: computed(() => result.value?.staffRegisterAll),
+      registrations: computed(
+        () => registrationsResult.value?.staffRegisterAll,
+      ),
+      staff: computed(() => staffResult.value?.staff),
       timeToExpiry,
     }
   },
@@ -113,7 +121,16 @@ export default defineComponent({
       </form>
     </template>
   </Modal>
-  <div class="mx-a mt-8 max-w-7xl">
+  <!--  Filters -->
+  <FilterOptions
+    v-model="filter"
+    :icons="[Contact, UserPlus2]"
+    :options="['staff', 'staffRegister']"
+    name="staff-page-select"
+    @update:model-value="loadData"
+  />
+
+  <div v-if="filter == 'staffRegister'" class="mx-a mt-8 max-w-7xl">
     <div class="flex w-full justify-end">
       <styled-button @click="adding = true"> Add staff member</styled-button>
     </div>
@@ -162,6 +179,19 @@ export default defineComponent({
         </tr>
       </tbody>
     </table>
+  </div>
+  <div
+    v-else-if="filter == 'staff'"
+    class="mx-a relative mt-8 h-min w-full max-w-7xl overflow-hidden rounded-xl bg-white p-4 shadow-md dark:bg-gray-800"
+  >
+    <div class="gap4 flex flex-row flex-row flex-wrap">
+      <AdminStaffCard
+        v-for="staffMember in staff"
+        :key="staffMember.id"
+        :data="staffMember"
+        @click="$router.push('/admin/staff/' + staffMember.id)"
+      />
+    </div>
   </div>
 </template>
 

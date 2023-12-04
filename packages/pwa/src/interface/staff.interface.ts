@@ -6,6 +6,19 @@ export interface StaffShort {
   email: string
 }
 
+export interface StaffBasics {
+  id: string
+  UID: string
+  locale: string
+  role: string
+  profilePictureUrl: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+}
+
+
 export interface Service {
   id: string
   description: string
