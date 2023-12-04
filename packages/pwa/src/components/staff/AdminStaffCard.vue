@@ -2,45 +2,19 @@
 import { PropType } from 'vue'
 import { StaffBasics } from '@/interface/staff.interface.ts'
 
-const props = defineProps({
+defineProps({
   data: {
     type: Object as PropType<StaffBasics>,
     required: true,
   },
 })
-
-// const { customUser } = useUser()
-// const { push } = useRouter()
-//
-// const getRoleValue = (role: string) => {
-//   switch (role) {
-//     case 'SUPER_ADMIN':
-//       return 3
-//     case 'ADMIN':
-//       return 2
-//     case 'STAFF':
-//       return 1
-//     default:
-//       return 0
-//   }
-// }
-//
-// const yourRoleValue = computed(() => {
-//   if (!customUser.value) push('/login')
-//   return getRoleValue(customUser.value?.userByUid.role!)
-// })
-// const staffRoleValue = computed(() => {
-//   return getRoleValue(props.data.role)
-// })
-//
-// const canSetRole = computed(() => {
-//   if (yourRoleValue.value === 3) return true
-//   return yourRoleValue.value > staffRoleValue.value
-// })
 </script>
 
 <template>
-  <div class="py.5 p1 rounded bg-gray-100 shadow-md">
+  <router-link
+    :to="'/admin/staff/' + data.id"
+    class="py.5 p1 rounded bg-gray-100 shadow-md transition-all duration-300 ease-in-out hover:bg-gray-200 hover:shadow-xl"
+  >
     <div class="min-w-xs p1">
       <div class="flex flex-col justify-between">
         <div class="gap4 flex flex-row justify-between">
@@ -54,7 +28,7 @@ const props = defineProps({
         </div>
       </div>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <style scoped></style>

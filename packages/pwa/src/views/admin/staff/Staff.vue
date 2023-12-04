@@ -122,75 +122,77 @@ export default defineComponent({
     </template>
   </Modal>
   <!--  Filters -->
-  <FilterOptions
-    v-model="filter"
-    :icons="[Contact, UserPlus2]"
-    :options="['staff', 'staffRegister']"
-    name="staff-page-select"
-    @update:model-value="loadData"
-  />
+  <div class="mxa mt8 max-w-7xl">
+    <FilterOptions
+      v-model="filter"
+      :icons="[Contact, UserPlus2]"
+      :options="['staff', 'staffRegister']"
+      name="staff-page-select"
+      @update:model-value="loadData"
+    />
 
-  <div v-if="filter == 'staffRegister'" class="mx-a mt-8 max-w-7xl">
-    <div class="flex w-full justify-end">
-      <styled-button @click="adding = true"> Add staff member</styled-button>
+    <div v-if="filter == 'staffRegister'" class="mt4">
+      <div class="flex w-full justify-end">
+        <styled-button @click="adding = true"> Add staff member</styled-button>
+      </div>
+      <table
+        v-if="registrations && registrations.length > 0"
+        class="w-full text-sm"
+      >
+        <thead>
+          <tr class="border-b transition-colors">
+            <th>status</th>
+            <th>Email</th>
+            <th>Full name</th>
+            <th>Role</th>
+            <th>Expires in</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="registration in registrations"
+            class="border-b transition-colors"
+          >
+            <td>
+              <BadgeCheck v-if="registration.isRegistered" />
+              <BadgeAlert v-else-if="getIsExpired(registration.expiresAt)" />
+              <CircleDot v-else></CircleDot>
+            </td>
+            <td>
+              {{ registration.email }}
+            </td>
+            <td class="case-capital">
+              {{ registration.firstName }}
+              {{ registration.lastName }}
+            </td>
+            <td class="case-capital">
+              {{ registration.role.toLocaleLowerCase() }}
+            </td>
+            <td>
+              {{ timeToExpiry(new Date(registration.expiresAt)) }}
+            </td>
+            <td>
+              <button class="text-danger" @click="console.log(registration)">
+                <Trash :size="20" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <table
-      v-if="registrations && registrations.length > 0"
-      class="w-full text-sm"
+    <div
+      v-else-if="filter == 'staff'"
+      class="mt4 relative h-min w-full overflow-hidden rounded-xl bg-white p-4 shadow-md dark:bg-gray-800"
     >
-      <thead>
-        <tr class="border-b transition-colors">
-          <th>status</th>
-          <th>Email</th>
-          <th>Full name</th>
-          <th>Role</th>
-          <th>Expires in</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="registration in registrations"
-          class="border-b transition-colors"
-        >
-          <td>
-            <BadgeCheck v-if="registration.isRegistered" />
-            <BadgeAlert v-else-if="getIsExpired(registration.expiresAt)" />
-            <CircleDot v-else></CircleDot>
-          </td>
-          <td>
-            {{ registration.email }}
-          </td>
-          <td class="case-capital">
-            {{ registration.firstName }}
-            {{ registration.lastName }}
-          </td>
-          <td class="case-capital">
-            {{ registration.role.toLocaleLowerCase() }}
-          </td>
-          <td>
-            {{ timeToExpiry(new Date(registration.expiresAt)) }}
-          </td>
-          <td>
-            <button class="text-danger" @click="console.log(registration)">
-              <Trash :size="20" />
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div
-    v-else-if="filter == 'staff'"
-    class="mx-a relative mt-8 h-min w-full max-w-7xl overflow-hidden rounded-xl bg-white p-4 shadow-md dark:bg-gray-800"
-  >
-    <div class="gap4 flex flex-row flex-row flex-wrap">
-      <AdminStaffCard
-        v-for="staffMember in staff"
-        :key="staffMember.id"
-        :data="staffMember"
-        @click="$router.push('/admin/staff/' + staffMember.id)"
-      />
+      <div class="gap4 flex flex-row flex-row flex-wrap">
+        <AdminStaffCard
+          v-for="staffMember in staff"
+          :key="staffMember.id"
+          :data="staffMember"
+          @click="$router.push('/admin/staff/' + staffMember.id)"
+        />
+      </div>
     </div>
   </div>
 </template>

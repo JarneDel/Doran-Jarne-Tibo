@@ -81,6 +81,32 @@ export const STAFF: TypedDocumentNode<{
   }
 `
 
+export const STAFF_BY_ID: TypedDocumentNode<
+  {
+    staffItem: StaffMember
+  },
+  { id: string }
+> = gql`
+  query staffByUid($id: String!) {
+    staffItem(id: $id) {
+      UID
+      id
+      email
+      phone
+      firstName
+      lastName
+      holidayDates
+      holidaysLeft
+      holidaysTotal
+      workingHours {
+        day
+        endTime
+        startTime
+      }
+    }
+  }
+`
+
 export interface Staff {
   staffByUid: StaffMember
 }

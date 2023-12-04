@@ -253,6 +253,14 @@ export const router = createRouter({
           },
         },
         {
+          path: 'staff/:id',
+          component: () => import('@/views/admin/staff/StaffDetail.vue'),
+          meta: {
+            title: SITE_NAME + ' - Staff',
+            allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
+          },
+        },
+        {
           path: 'vacation',
           component: () =>
             import('@/views/admin/vacation/VacationOverview.vue'),
