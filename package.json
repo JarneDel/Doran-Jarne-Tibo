@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "npx lerna run --scope={pwa,api} dev",
+    "dev:api": "npx lerna run --scope=api dev",
+    "dev:pwa": "npx lerna run --scope=pwa dev",
     "pwa": "npm run dev --workspace=pwa",
     "api": "npm run dev --workspace=api",
     "build:pwa": "npm run build --workspace=pwa",
