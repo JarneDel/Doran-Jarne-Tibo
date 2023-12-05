@@ -2,8 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ReservationResolver } from './reservation.resolver';
 import { ReservationService } from './reservation.service';
 
-jest.mock('./reservation.service')
-
 describe('ReservationResolver', () => {
   let resolver: ReservationResolver;
 
