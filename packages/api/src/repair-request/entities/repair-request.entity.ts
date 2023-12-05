@@ -39,7 +39,7 @@ export class RepairRequest {
 
   @Column()
   @Field({ nullable: true })
-  description?: string
+  description: string
 
   @Column()
   @Field(() => [Rooms], { nullable: true })
@@ -47,10 +47,10 @@ export class RepairRequest {
 
   @Column()
   @Field(() => [Materials], { nullable: true })
-  loanableMaterial:  Materials[]
+  loanableMaterial: Materials[]
 
   @Column()
-  @Field( {defaultValue: 1})
+  @Field({ defaultValue: 1 })
   urgency: number
 
   @Column()
