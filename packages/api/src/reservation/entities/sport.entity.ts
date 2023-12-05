@@ -1,7 +1,13 @@
 // GraphQL
-import { ObjectType, Field, ID, InputType } from '@nestjs/graphql';
+import { ObjectType, Field, ID, InputType } from '@nestjs/graphql'
 // Typeorm
-import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ObjectIdColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 
 @ObjectType() // Graphql
 @InputType('SportInput')
@@ -14,6 +20,10 @@ export class Sports {
   @Column() // Database link - Typeorm
   @Field() // Graphql
   name: string
+
+  @Column() // Database link - Typeorm
+  @Field() // Graphql
+  description: string
 
   @CreateDateColumn({ type: 'timestamp', nullable: true })
   @Field({ nullable: true })
