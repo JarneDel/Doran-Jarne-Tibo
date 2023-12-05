@@ -253,6 +253,14 @@ export const router = createRouter({
           },
         },
         {
+          path: 'staff/:id',
+          component: () => import('@/views/admin/staff/StaffDetail.vue'),
+          meta: {
+            title: SITE_NAME + ' - Staff',
+            allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
+          },
+        },
+        {
           path: 'vacation',
           component: () =>
             import('@/views/admin/vacation/VacationOverview.vue'),
@@ -464,25 +472,19 @@ router.beforeEach((to, from, next) => {
   // @ts-ignore
   const allowedRoles: string[] = to.meta.allowedRoles || []
   // when user is not logged in and route requires authentication redirect to login
-  switch (true) {
-    case to.meta.shouldBeAuthenticated && !firebaseUser.value:
-      redirectToLogin(to, next)
-      break
-    // when user is logged in and route should be avoided redirect to home
-    case to.meta.avoidAuth && firebaseUser.value:
-      redirectToHome(next)
-      break
-    // logout user
-    case to.path === '/logout':
-      logoutUser(from, to, next)
-      break
-    // when route is not allowed for user role redirect to 403
-    case customUser.value &&
-      !isRoleAllowed(customUser.value.userByUid.role, allowedRoles):
-      unauthorized(to, next)
-      break
-    default:
-      next()
+  if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
+    redirectToLogin(to, next)
+  } else if (to.meta.avoidAuth && firebaseUser.value) {
+    redirectToHome(next)
+  } else if (to.path === '/logout') {
+    logoutUser(from, to, next)
+  } else if (
+    customUser.value &&
+    !isRoleAllowed(customUser.value.userByUid.role, allowedRoles)
+  ) {
+    unauthorized(to, next)
+  } else {
+    next()
   }
 })
 

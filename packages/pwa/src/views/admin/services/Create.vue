@@ -1,18 +1,18 @@
 <script lang="ts">
 // Imports
-import { useQuery, useMutation } from '@vue/apollo-composable';
-import { useRouter } from 'vue-router';
+import { useMutation, useQuery } from '@vue/apollo-composable'
+import { useRouter } from 'vue-router'
 import {
   CREATE_SERVICE,
   createServiceInput,
   ICreateService,
-} from '@/graphql/service.query';
-import { ALL_ROOMS, IRoom } from '@/graphql/room.query';
-import { ALL_STAFF, IStaff } from '@/graphql/staff.query';
-import { computed, defineComponent, ref } from 'vue';
-import StyledInputText from '@/components/generic/StyledInputText.vue';
-import UseFirebase from '../../../composables/useFirebase';
-import StyledButton from '@/components/generic/StyledButton.vue';
+} from '@/graphql/service.query'
+import { ALL_ROOMS, IRoom } from '@/graphql/room.query'
+import { ALL_STAFF } from '@/graphql/staff.query'
+import { computed, defineComponent, ref } from 'vue'
+import StyledInputText from '@/components/generic/StyledInputText.vue'
+import UseFirebase from '../../../composables/useFirebase'
+import StyledButton from '@/components/generic/StyledButton.vue'
 
 // Export default
 export default defineComponent({
@@ -23,13 +23,13 @@ export default defineComponent({
   },
 
   setup: function () {
-    const { firebaseUser } = UseFirebase();
-    const idToken = ref();
+    const { firebaseUser } = UseFirebase()
+    const idToken = ref()
     const getIdToken = async () => {
-      idToken.value = await firebaseUser.value?.getIdToken();
-    };
-    getIdToken();
-    const { push } = useRouter();
+      idToken.value = await firebaseUser.value?.getIdToken()
+    }
+    getIdToken()
+    const { push } = useRouter()
 
     // All ROOMS
     const {
@@ -37,7 +37,7 @@ export default defineComponent({
       result: resultRooms,
       error: errorRooms,
       onResult: onResultRooms,
-    } = useQuery<IRoom>(ALL_ROOMS);
+    } = useQuery<IRoom>(ALL_ROOMS)
 
     // All STAFF
     const {
@@ -45,79 +45,79 @@ export default defineComponent({
       result: resultStaff,
       error: errorStaff,
       onResult: onResultStaff,
-    } = useQuery<IStaff>(ALL_STAFF);
+    } = useQuery(ALL_STAFF)
 
     // CREATE ROOM
-    const { mutate } = useMutation<ICreateService>(CREATE_SERVICE);
+    const { mutate } = useMutation<ICreateService>(CREATE_SERVICE)
 
     // Variables
-    const name = ref('');
-    const description = ref('');
-    const roomList = ref();
-    const roomIds = ref<Array<string>>();
-    const staffList = ref();
-    const staffUIDs = ref<Array<string>>();
+    const name = ref('')
+    const description = ref('')
+    const roomList = ref()
+    const roomIds = ref<Array<string>>()
+    const staffList = ref()
+    const staffUIDs = ref<Array<string>>()
 
     const descriptionLength = computed(() => {
-      return description.value.length + '/250';
-    });
+      return description.value.length + '/250'
+    })
 
-    onResultRooms((result) => {
+    onResultRooms(result => {
       roomList.value = result.data.GetAllRooms.map((room: any) => {
         return {
           ...room,
           selected: false,
-        };
-      });
-    });
+        }
+      })
+    })
 
-    onResultStaff((result) => {
+    onResultStaff(result => {
       staffList.value = result.data.staff.map((staff: any) => {
         return {
           ...staff,
           selected: false,
-        };
-      });
-    });
+        }
+      })
+    })
 
     const staffCount = computed(() => {
-      return staffList.value?.filter((s: any) => s.selected).length;
-    });
+      return staffList.value?.filter((s: any) => s.selected).length
+    })
 
     const roomCount = computed(() => {
-      return roomList.value?.filter((s: any) => s.selected).length;
-    });
+      return roomList.value?.filter((s: any) => s.selected).length
+    })
 
     const handleSubmit = async (e: Event) => {
       //prevent default submit behaviour
-      e.preventDefault();
+      e.preventDefault()
 
       roomIds.value = roomList.value
         ?.filter((s: any) => s.selected)
-        .map((s: any) => s.id);
+        .map((s: any) => s.id)
 
       staffUIDs.value = staffList.value
         ?.filter((s: any) => s.selected)
-        .map((s: any) => s.UID);
+        .map((s: any) => s.UID)
 
       const params: createServiceInput = {
         name: name.value,
         description: description.value,
         roomId: roomIds.value || [],
         staffUID: staffUIDs.value || [],
-      };
+      }
 
-      console.log(params);
+      console.log(params)
 
       //Create a new room in the database
       const res = await mutate({
         createServiceInput: params,
-      });
-      console.info(res);
+      })
+      console.info(res)
 
       //Redirect to the admin sports page
-      push('/admin/services/');
-    };
+      push('/admin/services/')
+    }
 
     return {
       idToken,
@@ -139,14 +139,14 @@ export default defineComponent({
       roomList,
       staffCount,
       roomCount,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
   <div
-    class="p-2 sm:p-4 md:p-8 flex min-h-full flex-col items-center justify-center"
+    class="flex min-h-full flex-col items-center justify-center p-2 sm:p-4 md:p-8"
   >
     <div class="rounded-2 w-full max-w-md bg-white p-8 shadow-md">
       <form @submit.prevent="handleSubmit" class="flex max-w-md flex-col gap-4">
@@ -174,7 +174,7 @@ export default defineComponent({
                 :placeholder="$t('service.descriptionPlaceholder')"
               ></textarea>
               <div
-                class="relative w-0 -left-12 opacity-60"
+                class="relative -left-12 w-0 opacity-60"
                 :class="{
                   '-left-14': description.length >= 10,
                   '-left-16': description.length >= 100,
@@ -184,7 +184,7 @@ export default defineComponent({
               </div>
             </div>
           </div>
-          <div class="flex flex-col sm:flex-row gap-2 lg:gap-4">
+          <div class="flex flex-col gap-2 sm:flex-row lg:gap-4">
             <div class="w-full max-w-[50%]">
               <div class="flex justify-between">
                 <span class="text-primary-text font-medium">{{
@@ -193,10 +193,10 @@ export default defineComponent({
                 <span>{{ roomCount }}</span>
               </div>
               <ul
-                class="border-2 hover:border-primary focus-within:border-primary-dark rounded-md h-40 border-primary-light w-full overflow-y-scroll p-1"
+                class="hover:border-primary focus-within:border-primary-dark border-primary-light h-40 w-full overflow-y-scroll rounded-md border-2 p-1"
               >
                 <li
-                  class="flex gap-1 items-center select-none"
+                  class="flex select-none items-center gap-1"
                   v-if="roomList"
                   v-for="room in roomList"
                 >
@@ -207,11 +207,15 @@ export default defineComponent({
                     :id="room.id"
                     @change="
                       () => {
-                        room.selected = !room.selected;
+                        room.selected = !room.selected
                         if (room.selected) {
-                            staffList.find((s:any) => s.id === room.id).selected = true;
+                          staffList.find(
+                            (s: any) => s.id === room.id,
+                          ).selected = true
                         } else {
-                            staffList.find((s:any) => s.id === room.id).selected = false;
+                          staffList.find(
+                            (s: any) => s.id === room.id,
+                          ).selected = false
                         }
                       }
                     "
@@ -230,10 +234,10 @@ export default defineComponent({
                 <span>{{ staffCount }}</span>
               </div>
               <ul
-                class="border-2 hover:border-primary focus-within:border-primary-dark h-40 border-primary-light rounded-md w-full overflow-y-scroll p-1"
+                class="hover:border-primary focus-within:border-primary-dark border-primary-light h-40 w-full overflow-y-scroll rounded-md border-2 p-1"
               >
                 <li
-                  class="flex gap-1 items-center select-none"
+                  class="flex select-none items-center gap-1"
                   v-if="staffList"
                   v-for="staff in staffList"
                 >
@@ -244,11 +248,15 @@ export default defineComponent({
                     :id="staff.id"
                     @change="
                       () => {
-                        staff.selected = !staff.selected;
+                        staff.selected = !staff.selected
                         if (staff.selected) {
-                            staffList.find((s:any) => s.id === staff.id).selected = true;
+                          staffList.find(
+                            (s: any) => s.id === staff.id,
+                          ).selected = true
                         } else {
-                            staffList.find((s:any) => s.id === staff.id).selected = false;
+                          staffList.find(
+                            (s: any) => s.id === staff.id,
+                          ).selected = false
                         }
                       }
                     "

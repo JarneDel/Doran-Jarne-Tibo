@@ -1,78 +1,77 @@
 <script lang="ts">
 export interface IUpdateItem {
-  id?: string;
-  name?: string;
-  description?: string;
+  id?: string
+  name?: string
+  description?: string
   staff?: [
     {
-      id?: string;
-      UID?: string;
-      locale?: string;
-      role?: string;
-      profilePictureUrl?: string;
-      firstName?: string;
-      lastName?: string;
-      email?: string;
-      phone?: string;
+      id?: string
+      UID?: string
+      locale?: string
+      role?: string
+      profilePictureUrl?: string
+      firstName?: string
+      lastName?: string
+      email?: string
+      phone?: string
     },
-  ];
+  ]
   rooms?: [
     {
-      id?: string;
-      name?: string;
+      id?: string
+      name?: string
       sports?: {
-        id?: string;
-        name?: string;
-        description?: string;
-      };
-      pricePerHour?: number;
-      type?: string;
-      canBeUsed?: boolean;
+        id?: string
+        name?: string
+        description?: string
+      }
+      pricePerHour?: number
+      type?: string
+      canBeUsed?: boolean
     },
-  ];
+  ]
 }
 
-import { computed, defineComponent, ref, watch } from 'vue';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import { useMutation, useQuery } from '@vue/apollo-composable';
+import { computed, defineComponent, ref, watch } from 'vue'
+import Modal from '@/components/Modal.vue'
+import { useRouter } from 'vue-router'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   GET_SERVICE,
   IGetService,
   UPDATE_SERVICE,
-} from '@/graphql/service.query.ts';
-import { ALL_ROOMS, IRoom } from '@/graphql/room.query.ts';
-import { ALL_STAFF, IStaff } from '@/graphql/staff.query';
-import StyledInputText from '@/components/generic/StyledInputText.vue';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import useA11y from '@/composables/useA11y.ts';
+} from '@/graphql/service.query.ts'
+import { ALL_ROOMS, IRoom } from '@/graphql/room.query.ts'
+import { ALL_STAFF } from '@/graphql/staff.query'
+import StyledInputText from '@/components/generic/StyledInputText.vue'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import useA11y from '@/composables/useA11y.ts'
 
 export default defineComponent({
   name: 'Edit',
   components: { StyledButton, StyledInputText, Modal },
   setup() {
-    const { push, currentRoute } = useRouter();
-    const id = currentRoute.value.params.id as string;
-    const { setPageTitle } = useA11y();
-    const { result: resultService, onResult: onResultService } = useQuery<
-      IGetService
-    >(GET_SERVICE, {
-      id,
-    });
+    const { push, currentRoute } = useRouter()
+    const id = currentRoute.value.params.id as string
+    const { setPageTitle } = useA11y()
+    const { result: resultService, onResult: onResultService } =
+      useQuery<IGetService>(GET_SERVICE, {
+        id,
+      })
 
     // Variables
-    const staffList = ref();
-    const staffListOld = ref();
-    const roomList = ref();
-    const roomListOld = ref();
+    const staffList = ref()
+    const staffListOld = ref()
+    const roomList = ref()
+    const roomListOld = ref()
 
     const staffCount = computed(() => {
-      return staffList.value?.filter((s: any) => s.selected).length;
-    });
+      return staffList.value?.filter((s: any) => s.selected).length
+    })
 
     const roomCount = computed(() => {
-      return roomList.value?.filter((s: any) => s.selected).length;
-    });
+      return roomList.value?.filter((s: any) => s.selected).length
+    })
 
     // ALL_ROOMS
     const {
@@ -80,7 +79,7 @@ export default defineComponent({
       loading: loadingRooms,
       result: resultRooms,
       onResult: onResultRooms,
-    } = useQuery<IRoom>(ALL_ROOMS, {}, { fetchPolicy: 'cache-and-network' });
+    } = useQuery<IRoom>(ALL_ROOMS, {}, { fetchPolicy: 'cache-and-network' })
 
     // All STAFF
     const {
@@ -88,136 +87,136 @@ export default defineComponent({
       result: resultStaff,
       error: errorStaff,
       onResult: onResultStaff,
-    } = useQuery<IStaff>(ALL_STAFF);
+    } = useQuery(ALL_STAFF)
 
-    const currentItem = ref<IUpdateItem>({});
-    const oldResult = ref<IUpdateItem>();
+    const currentItem = ref<IUpdateItem>({})
+    const oldResult = ref<IUpdateItem>()
 
-    const { mutate: mutateUpdateItem } = useMutation(UPDATE_SERVICE);
+    const { mutate: mutateUpdateItem } = useMutation(UPDATE_SERVICE)
 
     const compare = (val?: IUpdateItem, oldValue?: IUpdateItem): boolean => {
-      if (!val || !oldValue) return false;
-      if (!roomList.value || !roomListOld.value) return false;
+      if (!val || !oldValue) return false
+      if (!roomList.value || !roomListOld.value) return false
 
       const equalRooms = roomList.value.every((room: any) => {
         return (
           roomListOld.value.find((r: any) => r.id === room.id)?.selected ===
           room.selected
-        );
-      });
+        )
+      })
 
       const equalStaff = staffList.value.every((staff: any) => {
         return (
           staffListOld.value.find((s: any) => s.UID === staff.UID)?.selected ===
           staff.selected
-        );
-      });
+        )
+      })
 
       return (
         val.name !== oldValue.name ||
         val.description !== oldValue.description ||
         !equalRooms ||
         !equalStaff
-      );
-    };
+      )
+    }
 
     // Recreate the room list with a selected property
-    onResultRooms((result) => {
+    onResultRooms(result => {
       roomList.value = result.data.GetAllRooms.map((room: any) => {
         return {
           ...room,
           selected: resultService.value?.service.rooms?.find(
-            (r) => r.id === room.id,
+            r => r.id === room.id,
           )
             ? true
             : false,
-        };
-      });
+        }
+      })
       roomListOld.value = result.data.GetAllRooms.map((room: any) => {
         return {
           ...room,
           selected: resultService.value?.service.rooms?.find(
-            (r) => r.id === room.id,
+            r => r.id === room.id,
           )
             ? true
             : false,
-        };
-      });
-    });
+        }
+      })
+    })
 
     // Recreate the staff list with a selected property
-    onResultStaff((result) => {
+    onResultStaff(result => {
       staffList.value = result.data.staff.map((staff: any) => {
         return {
           ...staff,
           selected: resultService.value?.service.staff?.find(
-            (s) => s.UID === staff.UID,
+            s => s.UID === staff.UID,
           )
             ? true
             : false,
-        };
-      });
+        }
+      })
       staffListOld.value = result.data.staff.map((staff: any) => {
         return {
           ...staff,
           selected: resultService.value?.service.staff?.find(
-            (s) => s.UID === staff.UID,
+            s => s.UID === staff.UID,
           )
             ? true
             : false,
-        };
-      });
-    });
+        }
+      })
+    })
 
     // Watch the current item for changes
     watch(
       currentItem,
-      (value) => {
-        if (!oldResult.value) return;
-        checkChanged();
+      value => {
+        if (!oldResult.value) return
+        checkChanged()
       },
       { deep: true },
-    );
+    )
 
     watch(
       roomList,
-      (value) => {
-        if (!oldResult.value) return;
-        checkChanged();
+      value => {
+        if (!oldResult.value) return
+        checkChanged()
       },
       { deep: true },
-    );
+    )
 
     watch(
       staffList,
-      (value) => {
-        if (!oldResult.value) return;
-        checkChanged();
+      value => {
+        if (!oldResult.value) return
+        checkChanged()
       },
       { deep: true },
-    );
+    )
 
     const checkChanged = () => {
-      if (!oldResult.value) return;
-      hasChanged.value = compare(currentItem.value, oldResult.value);
-    };
+      if (!oldResult.value) return
+      hasChanged.value = compare(currentItem.value, oldResult.value)
+    }
 
-    const hasChanged = ref<boolean>(false);
+    const hasChanged = ref<boolean>(false)
 
-    onResultService((param) => {
+    onResultService(param => {
       // Set page title
-      setPageTitle('Edit ' + param.data.service.name);
+      setPageTitle('Edit ' + param.data.service.name)
 
       // Set current item
-      currentItem.value = JSON.parse(JSON.stringify(param.data.service));
+      currentItem.value = JSON.parse(JSON.stringify(param.data.service))
 
       // Set old result
-      oldResult.value = JSON.parse(JSON.stringify(param.data.service));
-    });
+      oldResult.value = JSON.parse(JSON.stringify(param.data.service))
+    })
 
     const submit = () => {
-      updateItem(id);
-    };
+      updateItem(id)
+    }
 
     const updateItem = (id: string) => {
       // Update the item in the database
@@ -233,33 +232,33 @@ export default defineComponent({
             ?.filter((s: any) => s.selected)
             .map((s: any) => s.id),
         },
-      }).then((e) => {
-        push(`/admin/services`);
-      });
-    };
+      }).then(e => {
+        push(`/admin/services`)
+      })
+    }
 
     const descriptionLength = computed(() => {
-      if (!currentItem.value.description) return '0/250';
-      return currentItem.value.description.length + '/250';
-    });
+      if (!currentItem.value.description) return '0/250'
+      return currentItem.value.description.length + '/250'
+    })
 
     const handleRoomChange = (room: any) => {
-      room.selected = !room.selected;
+      room.selected = !room.selected
       if (room.selected) {
-        roomList.value.find((r: any) => r.id === room.id).selected = true;
+        roomList.value.find((r: any) => r.id === room.id).selected = true
       } else {
-        roomList.value.find((r: any) => r.id === room.id).selected = false;
+        roomList.value.find((r: any) => r.id === room.id).selected = false
       }
-    };
+    }
 
     const handleStaffChange = (staff: any) => {
-      staff.selected = !staff.selected;
+      staff.selected = !staff.selected
       if (staff.selected) {
-        staffList.value.find((s: any) => s.id === staff.id).selected = true;
+        staffList.value.find((s: any) => s.id === staff.id).selected = true
       } else {
-        staffList.value.find((s: any) => s.id === staff.id).selected = false;
+        staffList.value.find((s: any) => s.id === staff.id).selected = false
       }
-    };
+    }
 
     return {
       push,
@@ -281,9 +280,9 @@ export default defineComponent({
       roomCount,
       handleRoomChange,
       handleStaffChange,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
@@ -292,7 +291,7 @@ export default defineComponent({
     <template v-slot:title>
       <h2
         v-if="resultService?.service"
-        class="mr-2 w-full text-2xl font-bold text-primary-text"
+        class="text-primary-text mr-2 w-full text-2xl font-bold"
       >
         {{ resultService.service.name }}
       </h2>
@@ -320,7 +319,7 @@ export default defineComponent({
             ></textarea>
             <div
               v-if="currentItem.description"
-              class="relative w-0 -left-12 opacity-60"
+              class="relative -left-12 w-0 opacity-60"
               :class="{
                 '-left-14': currentItem.description.length >= 10,
                 '-left-16': currentItem.description.length >= 100,
@@ -330,7 +329,7 @@ export default defineComponent({
             </div>
           </div>
         </label>
-        <div class="flex flex-col sm:flex-row gap-2 lg:gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row lg:gap-4">
           <div class="w-full max-w-[50%]">
             <div class="flex justify-between">
               <span class="text-primary-text font-medium">{{
@@ -339,10 +338,10 @@ export default defineComponent({
               <span>{{ roomCount }}</span>
             </div>
             <ul
-              class="border-2 hover:border-primary focus-within:border-primary-dark rounded-md h-40 border-primary-light w-full overflow-y-scroll p-1"
+              class="hover:border-primary focus-within:border-primary-dark border-primary-light h-40 w-full overflow-y-scroll rounded-md border-2 p-1"
             >
               <li
-                class="flex gap-1 items-center select-none"
+                class="flex select-none items-center gap-1"
                 v-if="roomList"
                 v-for="room in roomList"
               >
@@ -368,10 +367,10 @@ export default defineComponent({
               <span>{{ staffCount }}</span>
             </div>
             <ul
-              class="border-2 hover:border-primary focus-within:border-primary-dark h-40 border-primary-light rounded-md w-full overflow-y-scroll p-1"
+              class="hover:border-primary focus-within:border-primary-dark border-primary-light h-40 w-full overflow-y-scroll rounded-md border-2 p-1"
             >
               <li
-                class="flex gap-1 items-center select-none"
+                class="flex select-none items-center gap-1"
                 v-if="staffList"
                 v-for="staff in staffList"
               >

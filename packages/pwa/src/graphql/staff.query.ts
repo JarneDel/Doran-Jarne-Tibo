@@ -1,20 +1,24 @@
 import { gql, TypedDocumentNode } from '@apollo/client/core'
-import { Service, StaffMember } from '@/interface/staff.interface.ts'
+import {
+  Service,
+  StaffBasics,
+  StaffMember,
+} from '@/interface/staff.interface.ts'
 
-export const ALL_STAFF = gql`
-query {
-  staff {
-    id
-    UID
-    locale
-    role
-    profilePictureUrl
-    firstName
-    lastName
-    email
-    phone
+export const ALL_STAFF: TypedDocumentNode<{ staff: StaffBasics[] }> = gql`
+  query {
+    staff {
+      id
+      UID
+      locale
+      role
+      profilePictureUrl
+      firstName
+      lastName
+      email
+      phone
+    }
   }
-}
 `
 
 export const STAFF_AND_SERVICES_BY_UID: TypedDocumentNode<{
@@ -77,19 +81,31 @@ export const STAFF: TypedDocumentNode<{
   }
 `
 
-export interface IStaff {
-  staff: [{
-    id: string
-    UID: string
-    locale: string
-    role: string
-    profilePictureUrl: string
-    firstName: string
-    lastName: string
-    email: string
-    phone: string
-  }]
-}
+export const STAFF_BY_ID: TypedDocumentNode<
+  {
+    staffItem: StaffMember
+  },
+  { id: string }
+> = gql`
+  query staffByUid($id: String!) {
+    staffItem(id: $id) {
+      UID
+      id
+      email
+      phone
+      firstName
+      lastName
+      holidayDates
+      holidaysLeft
+      holidaysTotal
+      workingHours {
+        day
+        endTime
+        startTime
+      }
+    }
+  }
+`
 
 export interface Staff {
   staffByUid: StaffMember

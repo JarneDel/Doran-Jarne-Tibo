@@ -77,8 +77,8 @@ export default defineComponent({
           filter.value === 'open'
             ? true
             : filter.value === 'closed'
-            ? false
-            : null,
+              ? false
+              : null,
         staffUId: staffUId.value,
       },
     )
@@ -101,6 +101,7 @@ export default defineComponent({
       const res = await mutate({
         approveVacationRequestInput: {
           id: reject.value.id,
+
           rejectReason: rejectMessage.value,
           isRejected: true,
           isApproved: false,

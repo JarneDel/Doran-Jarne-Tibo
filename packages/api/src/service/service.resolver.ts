@@ -33,8 +33,6 @@ export class ServiceResolver {
     private readonly roomService: RoomService,
   ) {}
 
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
-  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Service)
   createService(
     @Args('createServiceInput') createServiceInput: CreateServiceInput,
@@ -42,22 +40,16 @@ export class ServiceResolver {
     return this.serviceService.create(createServiceInput)
   }
 
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
-  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [Service], { name: 'services' })
   findAll() {
     return this.serviceService.findAll()
   }
 
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
-  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => Service, { name: 'service' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.serviceService.findOne(id)
   }
 
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
-  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [Service], { name: 'servicesByStaff' })
   findByStaffId(@FirebaseUser() user: UserRecord) {
     console.log(user.uid, 'getting services by staff id')
@@ -65,7 +57,6 @@ export class ServiceResolver {
   }
 
   @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
-  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Service)
   updateService(
     @Args('updateServiceInput') updateServiceInput: UpdateServiceInput,
@@ -75,17 +66,20 @@ export class ServiceResolver {
 
   @Mutation(() => String)
   removeService(@Args('id', { type: () => String }) id: string) {
-    return this.serviceService.remove(id).then((res) => {
-      const obj = JSON.parse(JSON.stringify(res))
-      if(obj.raw.deletedCount > 0) {
-        return 'Deleted service with id: ' + id + ' successfully'
-      } else{
-        return 'No service with id: ' + id + ' found'
-      }
-    }).catch((err) => {
-      console.log(err)
-      return err
-    })
+    return this.serviceService
+      .remove(id)
+      .then(res => {
+        const obj = JSON.parse(JSON.stringify(res))
+        if (obj.raw.deletedCount > 0) {
+          return 'Deleted service with id: ' + id + ' successfully'
+        } else {
+          return 'No service with id: ' + id + ' found'
+        }
+      })
+      .catch(err => {
+        console.log(err)
+        return err
+      })
   }
 
   @ResolveField()
