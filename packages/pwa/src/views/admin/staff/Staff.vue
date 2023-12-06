@@ -22,11 +22,13 @@ import FilterOptions from '@/components/generic/FilterOptions.vue'
 import useTime from '@/composables/useTime'
 import { ALL_STAFF } from '@/graphql/staff.query.ts'
 import AdminStaffCard from '@/components/staff/AdminStaffCard.vue'
+import StaffDetail from '@/components/admin/StaffDetail.vue'
 
 export default defineComponent({
   name: 'Staff',
   methods: { UserPlus2, Contact },
   components: {
+    StaffDetail,
     AdminStaffCard,
     CircleDashed,
     Trash2,
@@ -96,6 +98,7 @@ export default defineComponent({
 </script>
 
 <template>
+  <StaffDetail v-if="$route.params.id" :id="$route.params.id as string" />
   <Modal v-if="adding" @close="adding = false">
     <template v-slot:title> Add staff member</template>
     <template v-slot:default>

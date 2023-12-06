@@ -97,6 +97,8 @@ export const STAFF_BY_ID: TypedDocumentNode<
       lastName
       holidayDates
       holidaysLeft
+      role
+      profilePictureUrl
       holidaysTotal
       workingHours {
         day
@@ -124,6 +126,23 @@ export const UPDATE_PROFILE_PICTURE_STAFF: TypedDocumentNode<
     updateStaffProfilePictureUrl(ProfilePictureUrl: $profilePictureUrl) {
       profilePictureUrl
       id
+    }
+  }
+`
+
+export const UPDATE_STAFF_ROLE: TypedDocumentNode<
+  {
+    updateRole: {
+      id: string
+      role: string
+    }
+  },
+  { id: string; role: string }
+> = gql`
+  mutation updateStaffRole($id: String!, $role: String!) {
+    updateRole(id: $id, role: $role) {
+      id
+      role
     }
   }
 `

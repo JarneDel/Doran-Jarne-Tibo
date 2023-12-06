@@ -18,7 +18,6 @@ export interface StaffBasics {
   phone: string
 }
 
-
 export interface Service {
   id: string
   description: string
@@ -42,9 +41,11 @@ export interface StaffMember {
   holidayDates: Date[]
   holidaysLeft: number
   holidaysTotal: number
+  role: string
   id: string
   lastName: string
   phone: string
+  profilePictureUrl: string
   workingHours: {
     day: number
     endTime: string
