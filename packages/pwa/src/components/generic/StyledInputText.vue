@@ -67,26 +67,25 @@ export default defineComponent({
     <br />
     <span class="flex items-center justify-center">
       <input
-        :disabled="disabled"
         :autocomplete="autocomplete"
-        :min="min"
+        :disabled="disabled"
         :max="max"
         :maxlength="maxlength"
+        :min="min"
         :name="name"
+        :placeholder="placeholder"
         :required="required"
         :type="type"
         :value="modelValue"
-        :placeholder="placeholder"
-        class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
+        class="b-2 b-secondary-400 hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
         @input="
           e => $emit('update:modelValue', (e.target as HTMLInputElement).value)
         "
       />
-      <span class="relative -left-12 right-4 w-0 opacity-60" v-if="maxlength">
+      <span v-if="maxlength" class="relative -left-12 right-4 w-0 opacity-60">
         {{ inputLength }}/{{ maxlength ? maxlength : '∞' }}
       </span>
     </span>
-    
   </label>
 </template>
 
