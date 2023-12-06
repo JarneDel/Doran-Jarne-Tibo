@@ -116,7 +116,12 @@ export default defineComponent({
           type="email"
         />
         <label for="role">Role</label>
-        <select id="role" v-model="form.role" class="block" name="">
+        <select
+          id="role"
+          v-model="form.role"
+          class="b-2 b-secondary-400 hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark mb-2 block w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
+          name=""
+        >
           <option value="STAFF">Staff</option>
           <option value="ADMIN">Admin</option>
         </select>
@@ -126,18 +131,18 @@ export default defineComponent({
   </Modal>
   <!--  Filters -->
   <div class="mxa mt8 max-w-7xl">
-    <FilterOptions
-      v-model="filter"
-      :icons="[Contact, UserPlus2]"
-      :options="['staff', 'staffRegister']"
-      name="staff-page-select"
-      @update:model-value="loadData"
-    />
+    <div class="flex flex-row justify-between">
+      <FilterOptions
+        v-model="filter"
+        :icons="[Contact, UserPlus2]"
+        :options="['staff', 'staffRegister']"
+        name="staff-page-select"
+        @update:model-value="loadData"
+      />
+      <styled-button @click="adding = true"> Add staff member</styled-button>
+    </div>
 
     <div v-if="filter == 'staffRegister'" class="mt4">
-      <div class="flex w-full justify-end">
-        <styled-button @click="adding = true"> Add staff member</styled-button>
-      </div>
       <table
         v-if="registrations && registrations.length > 0"
         class="w-full text-sm"

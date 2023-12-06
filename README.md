@@ -50,7 +50,7 @@ VUE_APP_FIREBASE_MEASUREMENT_ID=<measurementId>
 VITE_API_URL=http://localhost:3000
 ```
 
-## prod env files
+### prod env files
 
 ```dotenv
 # /packages/api/.env.production
@@ -84,6 +84,9 @@ VITE_API_URL=http://localhost:3000
 
 ## language utils
 
+[Spreadsheet](https://docs.google.com/spreadsheets/d/16GYXaVcVnrA_K-XOY9DYLto1OKcnRWxJVT9WsYIdWz8/edit#gid=0)
+
+
 ### secret
 
 [Google](https://console.cloud.google.com/apis/credentials/)
@@ -105,49 +108,11 @@ npm run language
 ## [seeding and clearing database](packages/api/seeding.md)
 
 Seed database with all data
-```shell
- cd ./packages/api
- npx nestjs-command seed:database:all   
+```bash
+npm run seed -w packages/api
 ```
 
-Seed database with stock data
-```shell
- cd ./packages/api
- npx nestjs-command seed:database:stock    
-```
-
-Seed database with groups data
-```shell
- cd ./packages/api
- npx nestjs-command seed:database:groups    
-```
-
-Seed database with loanableMaterials data
-```shell
- cd ./packages/api
- npx nestjs-command seed:database:loanableMaterials   
-```
-
-clear All containers
-```shell
- cd ./packages/api
- npx nestjs-command seed:reset:all
-```
-
-clear stock container
-```shell
- cd ./packages/api
- npx nestjs-command seed:reset:stock    
-```
-
-clear groups container
-```shell
- cd ./packages/api
- npx nestjs-command seed:reset:groups    
-```
-
-clear loanableMaterials container
-```shell
- cd ./packages/api
- npx nestjs-command seed:reset:loanableMaterials    
-```
+Reset database 
+```bash
+npm run reset -w packages/pwa
+``` 
