@@ -22,6 +22,7 @@ import {
   Box,
 } from 'lucide-vue-next'
 import StyledButton from '@/components/generic/StyledButton.vue'
+import StyledLable from '@/components/generic/StyledLable.vue'
 
 export default defineComponent({
   components: {
@@ -33,7 +34,8 @@ export default defineComponent({
     ShieldAlert,
     Warehouse,
     Box,
-  },
+    StyledLable
+},
   name: 'Item',
   setup: () => {
     const { push, replace, currentRoute } = useRouter()
@@ -124,34 +126,27 @@ export default defineComponent({
     <template v-slot:default>
       <div class="flex flex-col gap-4">
         <div class="flex flex-col">
-          <div class="flex items-center">
+          <div class="flex items-center mb-1">
             <Box
-              class="mr-2 h-8 w-8 opacity-10"
+              class="mr-2 min-h-[2rem] min-w-[2rem] opacity-10"
               :class="{
                 'opacity-100': result?.GetRepairRequestById.loanableMaterial,
               }"
             />
-            <ul class="flex flex-wrap">
-              <li
+            <ul >
+              <li class="flex flex-wrap gap-x-4 gap-y-1"
                 v-if="
                   Array.isArray(result?.GetRepairRequestById.loanableMaterial)
                 "
               >
-                <template
+                <StyledLable
+                type="material"
                   v-if="result?.GetRepairRequestById.loanableMaterial.length"
-                  v-for="(loanableMaterial, index) in result
+                  v-for="(loanableMaterial) in result
                     ?.GetRepairRequestById.loanableMaterial"
                 >
                   {{ loanableMaterial.name }}
-                  <span
-                    v-if="
-                      index !==
-                      result?.GetRepairRequestById.loanableMaterial.length - 1
-                    "
-                    class="mr-1"
-                    >,</span
-                  >
-                </template>
+                </StyledLable>
               </li>
               <li v-else>
                 {{ result?.GetRepairRequestById.loanableMaterial }}
@@ -160,22 +155,17 @@ export default defineComponent({
           </div>
           <div class="flex items-center">
             <Warehouse
-              class="mr-2 h-8 w-8 opacity-10"
+              class="mr-2 min-h-[2rem] min-w-[2rem] opacity-10"
               :class="{ 'opacity-100': result?.GetRepairRequestById.room }"
             />
-            <ul v-if="Array.isArray(result?.GetRepairRequestById.room)">
-              <li
+            <ul class="flex flex-wrap gap-x-4 gap-y-1" v-if="Array.isArray(result?.GetRepairRequestById.room)">
+              <StyledLable
                 v-if="result?.GetRepairRequestById.room.length"
                 v-for="(room, index) in result?.GetRepairRequestById.room"
                 :key="index"
               >
                 {{ room.name }}
-                <span
-                  v-if="index !== result?.GetRepairRequestById.room.length - 1"
-                  class="mr-1"
-                  >,</span
-                >
-              </li>
+              </StyledLable>
             </ul>
             <p v-else>{{ result?.GetRepairRequestById.room }}</p>
           </div>

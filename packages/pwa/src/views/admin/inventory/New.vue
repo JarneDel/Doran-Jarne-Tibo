@@ -3,15 +3,12 @@ import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
-import { ALL_SERVICES, IServices } from '@/graphql/service.query.ts'
+import { ALL_SERVICES } from '@/graphql/service.query.ts'
 import StyledLink from '@/components/generic/StyledLink.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import {
-  CREATE_STOCK,
-  CreateStockInput,
-  ICreateStock,
-} from '@/graphql/stock.query.ts'
+import { CREATE_STOCK } from '@/graphql/stock.query.ts'
 import Error from '@/components/Error.vue'
+import { CreateStockInput } from '@/interface/stock.interface.ts'
 
 // todo: error handling
 
@@ -32,9 +29,9 @@ export default defineComponent({
       result: services,
       loading: loadingServices,
       error: servicesError,
-    } = useQuery<IServices>(ALL_SERVICES)
+    } = useQuery(ALL_SERVICES)
 
-    const { mutate, onError } = useMutation<ICreateStock>(CREATE_STOCK)
+    const { mutate, onError } = useMutation(CREATE_STOCK)
     onError(e => {
       errors.value.push(e.message)
     })
@@ -120,7 +117,7 @@ export default defineComponent({
         id="idealAmountInStock"
         v-model="idealAmountInStock"
         class="block w-16"
-        max="200"
+        max="250"
         min="0"
         name="idealAmountInStock"
         step="1"
@@ -134,7 +131,7 @@ export default defineComponent({
         id="inStock"
         v-model="inStock"
         class="block w-16"
-        max="200"
+        max="250"
         min="0"
         name="inStock"
         step="1"

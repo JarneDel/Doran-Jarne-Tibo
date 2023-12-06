@@ -6,6 +6,7 @@ import StyledInputText from '@/components/generic/StyledInputText.vue'
 import { useMutation } from '@vue/apollo-composable'
 import { UPDATE_GROUP, UPDATE_STAFF } from '@/graphql/user.query.ts'
 import useLanguage from '@/composables/useLanguage'
+import { SUPPORTED_LOCALES } from '@/bootstrap/i18n'
 import ProfilePicture from '@/components/staff/ProfilePicture.vue'
 
 export default defineComponent({
@@ -33,7 +34,7 @@ export default defineComponent({
         phone: customUser.value?.userByUid.phone,
       })
     }
-    return { customUser, saveGroup, SaveStaff, setLocale }
+    return { customUser, saveGroup, SaveStaff, setLocale, SUPPORTED_LOCALES }
   },
   components: { ProfilePicture, StyledButton, StyledInputText },
 })
@@ -46,18 +47,21 @@ export default defineComponent({
         class="w-full max-w-sm rounded-lg bg-white p-4 shadow-sm"
       >
         <h1 class="font-600 text-xl">{{ $t('nav.profile') }}</h1>
-        <ProfilePicture />
-
+        <div class="flex justify-center">
+          <ProfilePicture editable />
+        </div>
         <styled-input-text
           v-model="customUser.userByUid.name"
           :label="$t('profile.name')"
+          class="my-1"
         />
         <styled-input-text
           v-model="customUser.userByUid.btwNumber"
           :label="$t('profile.btw')"
+          class="my-1"
         />
 
-        <label class="my-3 block">
+        <label class="my-1 mb-3 block">
           <span class="c-primary-text font-medium">{{
             $t('profile.taal')
           }}</span>
@@ -67,10 +71,9 @@ export default defineComponent({
             class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
             @change="setLocale(customUser.userByUid.locale)"
           >
-            <option value="nl">Nederland</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="zh">中文</option>
+            <option v-for="(locale, key) in SUPPORTED_LOCALES" :value="key">
+              {{ locale }}
+            </option>
           </select>
         </label>
         <StyledButton @click="saveGroup">
@@ -82,26 +85,31 @@ export default defineComponent({
         class="w-full max-w-sm rounded-lg bg-white p-4 shadow-sm"
       >
         <h1 class="font-600 text-xl">{{ $t('nav.profile') }}</h1>
-        <ProfilePicture editable />
-
+        <div class="flex justify-center">
+          <ProfilePicture editable />
+        </div>
         <styled-input-text
           v-model="customUser.userByUid.firstName"
           :label="$t('staff.firstname')"
+          class="my-1"
         />
         <styled-input-text
           v-model="customUser.userByUid.lastName"
           :label="$t('staff.lastname')"
+          class="my-1"
         />
         <styled-input-text
           v-model="customUser.userByUid.email"
           :label="$t('staff.email')"
+          class="my-1"
         />
         <styled-input-text
           v-model="customUser.userByUid.lastName"
           :label="$t('staff.phone')"
+          class="my-1"
         />
 
-        <label class="my-3 block">
+        <label class="my-1 mb-3 block">
           <span class="c-primary-text font-medium">{{
             $t('profile.taal')
           }}</span>
@@ -111,10 +119,9 @@ export default defineComponent({
             class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
             @change="setLocale(customUser.userByUid.locale)"
           >
-            <option value="nl">Nederland</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="zh">中文</option>
+            <option v-for="(locale, key) in SUPPORTED_LOCALES" :value="key">
+              {{ locale }}
+            </option>
           </select>
         </label>
         <StyledButton @click="SaveStaff">

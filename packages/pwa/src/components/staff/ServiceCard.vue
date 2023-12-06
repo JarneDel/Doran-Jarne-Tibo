@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { Service } from '@/graphql/staff.query.ts'
+
+import { Service } from '@/interface/staff.interface.ts'
 
 export default defineComponent({
   name: 'ServiceCard',

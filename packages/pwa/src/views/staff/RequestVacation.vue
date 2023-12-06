@@ -3,13 +3,10 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   CREATE_VACATION_REQUEST,
-  CreateVacationRequest,
-  CreateVacationRequestInput,
   GET_VACATION_REQUESTS,
-  VacationRequestQuery,
 } from '@/graphql/vacation.request.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { STAFF, Staff } from '@/graphql/staff.query.ts'
+import { STAFF } from '@/graphql/staff.query.ts'
 import useVacation from '@/composables/useVacation.ts'
 import Modal from '@/components/Modal.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
@@ -70,10 +67,7 @@ export default defineComponent({
     })
 
     // create vacation request mutation
-    const { mutate, error, loading } = useMutation<
-      CreateVacationRequest,
-      CreateVacationRequestInput
-    >(CREATE_VACATION_REQUEST)
+    const { mutate, error, loading } = useMutation(CREATE_VACATION_REQUEST)
 
     // your user query
     const {
@@ -81,7 +75,7 @@ export default defineComponent({
       loading: loadingStaff,
       refetch: reFetchStaff,
       onResult,
-    } = useQuery<Staff>(
+    } = useQuery(
       STAFF,
       {},
       {
@@ -90,7 +84,7 @@ export default defineComponent({
     )
 
     // your vacation requests query
-    const { result: requests } = useQuery<VacationRequestQuery>(
+    const { result: requests } = useQuery(
       GET_VACATION_REQUESTS,
       {},
       {
@@ -230,6 +224,7 @@ export default defineComponent({
     :show-modal="isSaved"
     title="Your vacation has been requested"
     @button2-click="$router.push('/staff')"
+    @update:show-modal="$router.push('/staff')"
   >
   </OptionsModal>
 
@@ -270,12 +265,11 @@ export default defineComponent({
       </div>
 
       <ExpandPendingRequests
-        :title="openRequests.length + ' pending vacation requests'"
-        :data="openRequests"
         v-if="openRequests"
+        :data="openRequests"
+        :title="openRequests.length + ' pending vacation requests'"
       />
       <expand-pending-requests
-        :title="connectedVacations.length + ' upcoming vacations'"
         :data="
           connectedVacations.map(dates => {
             if (dates.length > 1) {
@@ -292,6 +286,7 @@ export default defineComponent({
             }
           })
         "
+        :title="connectedVacations.length + ' upcoming vacations'"
       ></expand-pending-requests>
 
       <h3 class="mb-1 mt-4 text-lg font-medium">
@@ -303,17 +298,17 @@ export default defineComponent({
           {{ error }}
         </div>
         <StyledInputText
-          :label="$t('common.from')"
-          v-model="startDate"
           :id="'startDate'"
+          v-model="startDate"
+          :label="$t('common.from')"
           class="my-2"
           type="date"
         />
 
         <StyledInputText
-          :label="$t('common.until')"
-          v-model="endDate"
           :id="'End date'"
+          v-model="endDate"
+          :label="$t('common.until')"
           class="my-2"
           type="date"
         />

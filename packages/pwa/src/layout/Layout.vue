@@ -6,11 +6,11 @@ import AppHeader from '@/components/AppHeader.vue'
 <template>
   <div class="">
     <div
-      class="bg-primary-surface grid min-h-screen grid-rows-[min-content_1fr]"
+      class="bg-secondary-surface grid min-h-screen grid-rows-[min-content_1fr]"
     >
       <AppHeader />
       <div class="relative h-full">
-        <div id="error" class="left-4/6 absolute right-4 top-2"></div>
+        <div id="error" class="left-4/6 z-100 absolute right-4 top-2"></div>
         <slot />
       </div>
     </div>

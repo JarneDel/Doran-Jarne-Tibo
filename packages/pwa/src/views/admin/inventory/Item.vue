@@ -3,11 +3,7 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import Modal from '@/components/Modal.vue'
 import { useRouter } from 'vue-router'
 import { useMutation, useQuery } from '@vue/apollo-composable'
-import {
-  DELETE_STOCK,
-  IOneStockItem,
-  ONE_STOCK,
-} from '@/graphql/stock.query.ts'
+import { DELETE_STOCK, ONE_STOCK } from '@/graphql/stock.query.ts'
 import { Edit2, Trash2 } from 'lucide-vue-next'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import useA11y from '@/composables/useA11y.ts'
@@ -27,12 +23,9 @@ export default defineComponent({
     const { setPageTitle } = useA11y()
     const id = computed(() => currentRoute.value.params.id)
     // region graphql
-    const { error, loading, result, onResult } = useQuery<IOneStockItem>(
-      ONE_STOCK,
-      {
-        id: id.value,
-      },
-    )
+    const { error, loading, result, onResult } = useQuery(ONE_STOCK, {
+      id: id.value as string,
+    })
     const { mutate: deleteItem } = useMutation(DELETE_STOCK)
 
     const widthPercentage = computed(() => {
@@ -62,6 +55,7 @@ export default defineComponent({
       if (!confirm('Are you sure you want to delete this item?')) return
       deleteItem({ id }).then(e => {
         if (e?.data && e.data.removeStock) {
+          // @ts-ignore
           if (e.data.removeStock === id) {
             replace('/admin/inventory')
           }

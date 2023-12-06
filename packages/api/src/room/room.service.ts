@@ -25,9 +25,6 @@ export class RoomService {
     r.SportId = createRoomInput.SportId
     r.type = createRoomInput.type
     r.canBeUsed = createRoomInput.canBeUsed
-
-    console.log('Created: ' + r.name)
-
     return this.roomRepository.save(r)
   }
 

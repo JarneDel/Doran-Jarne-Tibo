@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { ChevronDown } from 'lucide-vue-next'
+import { ChevronDown, ChevronUp } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import firebase from '@/composables/useFirebase'
 import logo from '@/components/generic/Logo.vue'
@@ -21,7 +21,7 @@ export default defineComponent({
   setup() {
     const { firebaseUser } = firebase()
     const { setLocale, locale } = useLanguage()
-    let options = ref(false)
+    const options = ref<Boolean>(false)
     const { customUser } = useUser()
     const { push } = useRouter()
     const { t } = useI18n()
@@ -82,6 +82,7 @@ export default defineComponent({
     ChevronDown,
     logo,
     OnClickOutside,
+    ChevronUp,
   },
 })
 </script>
@@ -119,18 +120,35 @@ export default defineComponent({
         </label>
       </div>
       <div>
-        <button v-if="customUser" class="mx-2" @click="toggleOptions()">
-          <ProfilePicture v-if="firebaseUser?.photoURL" :size="48" />
-          <span v-else class="gap2 flex flex-row items-center justify-center">
+        <OnClickOutside @trigger="options = false">
+          <button
+            v-if="customUser"
+            class="gap2 mx-2 flex flex-row items-center justify-center"
+            @click="toggleOptions()"
+          >
             <span
               :title="username"
-              class="inline-block max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap"
+              class="hidden max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap sm:inline-block"
             >
               {{ username }}
             </span>
-            <ChevronDown />
-          </span>
-        </button>
+            <ChevronDown v-if="!options" />
+            <ChevronUp v-else />
+            <ProfilePicture v-if="firebaseUser?.photoURL" :size="48" />
+          </button>
+          <div v-if="options">
+            <div
+              class="top-19 z-100 absolute right-4 flex flex-col rounded-md bg-white p-4 shadow-md"
+            >
+              <router-link class="styled-link w-fit" to="/profile">{{
+                $t('nav.profile')
+              }}</router-link>
+              <StyledButton class="mt-2" @click="logoutButton()">
+                {{ $t('account.log.out') }}
+              </StyledButton>
+            </div>
+          </div>
+        </OnClickOutside>
         <router-link
           v-if="!customUser"
           class="px4 bg-secondary hover:border-secondary-lighter active:border-secondary-lighter active:bg-secondary-400 focus-visible-outline-none transition-color rounded border-2 border-transparent py-2 focus:border-black focus:outline-none focus-visible:border-black"
@@ -138,19 +156,6 @@ export default defineComponent({
         >
           {{ $t('auth.login') }}
         </router-link>
-        <OnClickOutside @trigger="options = false">
-          <div
-            v-if="options"
-            class="top-21 z-100 absolute right-0 flex flex-col items-center rounded-md bg-white p-4 shadow-md"
-          >
-            <router-link class="styled-link" to="/profile">{{
-              $t('nav.profile')
-            }}</router-link>
-            <StyledButton class="mt-2" @click="logoutButton()">
-              {{ $t('account.log.out') }}
-            </StyledButton>
-          </div>
-        </OnClickOutside>
       </div>
     </div>
   </div>

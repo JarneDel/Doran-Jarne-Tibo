@@ -3,7 +3,7 @@ import { CreateStaffInput } from './dto/create-staff.input'
 import { UpdateStaffInput } from './dto/update-staff.input'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Staff } from './entities/staff.entity'
-import { Repository } from 'typeorm'
+import { FilterOperators, MongoRepository } from 'typeorm'
 import { ObjectId } from 'mongodb'
 import { Role } from 'src/users/entities/user.entity'
 import { GraphQLError } from 'graphql/error'
@@ -12,7 +12,7 @@ import { GraphQLError } from 'graphql/error'
 export class StaffService {
   constructor(
     @InjectRepository(Staff)
-    private readonly staffRepository: Repository<Staff>,
+    private readonly staffRepository: MongoRepository<Staff>,
   ) {}
 
   create(uid: string, createStaffInput: CreateStaffInput) {
@@ -27,6 +27,28 @@ export class StaffService {
     s.role = Role.STAFF
     s.UID = uid
     return this.staffRepository.save(s)
+  }
+
+  /**
+   * This method is used to create a new staff member from a staff register with email.
+   * If no staff member exists, it saves the new staff member to the repository.
+   *
+   * @param {Staff} staffRegister - The staff register object from which to create the new staff member.
+   * @returns  The newly created staff member.
+   * @throws {GraphQLError} - Throws an error if a staff member with the same email or UID already exists.
+   */
+  async createFromStaffRegister(staffRegister: Staff) {
+    const options: FilterOperators<Staff> = {
+      $or: [{ email: staffRegister.email }, { UID: staffRegister.UID }],
+    }
+    const existingStaff = await this.staffRepository.find(options)
+    if (existingStaff.length > 0) {
+      throw new GraphQLError('Staff already exists')
+    }
+
+    staffRegister.holidayDates = []
+
+    return this.staffRepository.save(staffRegister)
   }
 
   findAll() {
@@ -67,7 +89,7 @@ export class StaffService {
         s.holidayDates = updateStaffInput.holidayDates
       s.locale = updateStaffInput.locale
     }
-    return this.staffRepository.save( s)
+    return this.staffRepository.save(s)
   }
 
   remove(id: string) {
@@ -94,7 +116,8 @@ export class StaffService {
       profilePictureUrl = url.toString()
 
       const user = await this.staffRepository.findOneByOrFail({ UID: uid })
-      return this.staffRepository.merge(user, { profilePictureUrl })
+      const newUser = this.staffRepository.merge(user, { profilePictureUrl })
+      return this.staffRepository.save(newUser)
     } catch (e) {
       if (e instanceof TypeError) {
         throw new GraphQLError('Invalid URL')
@@ -124,7 +147,11 @@ export class StaffService {
     return this.staffRepository.save(staff)
   }
 
-  async removeVacation(uid: string, startDate: Date, endDate: Date) {
+  async removeVacation(
+    uid: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<Staff> {
     const staff = await this.findOneByUid(uid)
     const days = Math.ceil(
       (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24),
@@ -142,5 +169,35 @@ export class StaffService {
     }
 
     return this.staffRepository.save(staff)
+  }
+
+  async updateRole(id: string, newRole: Role, adminUid: string) {
+    const admin = await this.findOneByUid(adminUid)
+    const staffMember = await this.findOne(id)
+    if (!staffMember) {
+      throw new GraphQLError('Staff member not found')
+    }
+    if (!admin) {
+      throw new GraphQLError('Your account was not found')
+    }
+    if (
+      this.getRoleValue(admin.role) < this.getRoleValue(newRole) &&
+      admin.role !== Role.SUPER_ADMIN
+    ) {
+      throw new GraphQLError('You cannot assign this role')
+    }
+
+    staffMember.role = newRole
+    return this.staffRepository.save(staffMember)
+  }
+
+  private getRoleValue(role: Role) {
+    const roleValues = {
+      [Role.SUPER_ADMIN]: 3,
+      [Role.ADMIN]: 2,
+      [Role.STAFF]: 1,
+    }
+
+    return roleValues[role] || 0
   }
 }

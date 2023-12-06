@@ -1,19 +1,29 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { ValidationPipe } from '@nestjs/common'
-import { checkEnv } from './utils/checkEnv'
+import { Logger, ValidationPipe } from '@nestjs/common'
+import { checkEnv, optionalEnv, testEnv } from './utils/checkEnv'
+import { CustomLogger } from './logger/customLogger'
 
 async function bootstrap() {
-
-  checkEnv(['DB_NAME', 'DB_HOST', 'DB_PORT', 'GOOGLE_APPLICATION_CREDENTIALS'])
-  const app = await NestFactory.create(AppModule)
+  checkEnv([
+    'DB_NAME',
+    'DB_HOST',
+    'DB_PORT',
+    'GOOGLE_APPLICATION_CREDENTIALS',
+    'URL_FRONTEND',
+  ])
+  optionalEnv(['MAIL_USER', 'MAIL_PASSWORD'])
+  testEnv()
+  const app = await NestFactory.create(AppModule, {
+    logger: new CustomLogger(),
+  })
   app.enableCors({
     origin: ['http://localhost:5173', process.env.URL_FRONTEND],
     credentials: true,
   })
   app.useGlobalPipes(new ValidationPipe())
   await app.listen(3000)
-  console.info(`Listening on ${await app.getUrl()}`)
-  console.info(`Listening on ${await app.getUrl()}/graphql`)
+  Logger.log(`Listening on ${await app.getUrl()}`)
+  Logger.log(`Listening on ${await app.getUrl()}/graphql`)
 }
 bootstrap()

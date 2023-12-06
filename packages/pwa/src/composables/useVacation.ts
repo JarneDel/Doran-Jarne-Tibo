@@ -1,5 +1,6 @@
 import { useDates } from '@/composables/useDates.ts'
-import { VacationRequest } from '@/graphql/vacation.request.query.ts'
+
+import { VacationRequest } from '@/interface/vacation-request.interface.ts'
 
 const { getDates } = useDates()
 

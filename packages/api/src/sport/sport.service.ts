@@ -15,12 +15,13 @@ import { Sport } from './entities/sport.entity'
 export class SportService {
   constructor(
     @InjectRepository(Sport)
-    private readonly sportRepository: Repository<Sport>,
+    private readonly sportRepository: Repository<Sport>
   ) {}
   create(createSportInput: CreateSportInput) {
     const s = new Sport()
-    const { name } = createSportInput
+    const { name, description } = createSportInput
     s.name = name
+    s.description = description
     return this.sportRepository.save(s)
   }
 
@@ -41,16 +42,17 @@ export class SportService {
   async update(id: string, updateSportInput: UpdateSportInput) {
     const s = await this.findOneById(id)
     s.name = updateSportInput.name
+    s.description = updateSportInput.description
     return this.sportRepository.save(s)
   }
 
   remove(id: string): Promise<string> {
     return this.sportRepository
       .delete(id)
-      .then(res => {
+      .then((res) => {
         return res
       })
-      .catch(err => {
+      .catch((err) => {
         return err
       })
   }

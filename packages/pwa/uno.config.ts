@@ -13,25 +13,26 @@ export default defineConfig({
     },
     colors: {
       sports: {
-        DEFAULT: '#d379e7',
+        DEFAULT: '#BE95C4',
       },
       rooms: {
-        DEFAULT: '#0FA3B1',
+        DEFAULT: '#7EBDC3',
       },
       materials: {
-        DEFAULT: '#979741',
+        DEFAULT: '#98B195',
       },
       secondary: {
         DEFAULT: '#F5CB5C',
         100: '#FAE8B8',
         300: '#FAE7B2',
         400: '#f5db93', // active
+        500: '#F0B719',
         600: '#F0B719',
 
         light: '#FAE7B2',
         lighter: '#FAE8B8',
         dark: '#F0B719',
-        surface: '#fcfcf7',
+        surface: '#f7f7ed',
       },
       primary: {
         DEFAULT: '#386FA4',

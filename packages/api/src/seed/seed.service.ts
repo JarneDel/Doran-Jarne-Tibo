@@ -1,5 +1,5 @@
 // external
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { ObjectId } from 'mongodb'
 
 // entities
@@ -40,7 +40,11 @@ import { StaffService } from 'src/staff/staff.service'
 import { ServiceService } from '../service/service.service'
 import { RepairRequestService } from '../repair-request/repair-request.service'
 import { VacationRequestService } from '../vacation-request/vacation-request.service'
-import { Sports } from 'src/reservation/entities/sport.entity'
+import { StaffRegisterService } from '../staff-register/staff-register.service'
+import { FirebaseUserService } from '../firebase-user/firebase-user.service'
+
+// models
+import { FirebaseUser } from '../firebase-user/models/firebase-user.model'
 
 @Injectable()
 export class SeedService {
@@ -55,6 +59,8 @@ export class SeedService {
     private reservationService: ReservationService,
     private RepairRequestService: RepairRequestService,
     private vacationRequestService: VacationRequestService,
+    private StaffRegisterService: StaffRegisterService,
+    private firebaseService: FirebaseUserService,
   ) {}
 
   async addStockFromJson(): Promise<Stock[]> {
@@ -94,7 +100,7 @@ export class SeedService {
       g.name = group.name
       g.email = group.email
       g.btwNumber = group.btw_number
-      g.score = group.score
+      g.score = Math.floor(Math.random() * 100)
       g.locale = group.locale
       g.UID = group.uid
       g.role = Role.GROUP
@@ -163,8 +169,9 @@ export class SeedService {
   async addSportsFromJson(): Promise<Sport[]> {
     let Sports: Sport[] = []
     for (let sport of sports) {
-      const s = new Room()
+      const s = new Sport()
       s.name = sport.name
+      s.description = sport.description
       Sports.push(s)
     }
 
@@ -236,20 +243,41 @@ export class SeedService {
       r.date = new Date(reservation.date)
       r.startTime = reservation.start_time
       r.endTime = reservation.end_time
-      r.groupId = groups[Math.floor(Math.random() * groups.length)].id.toString()
-      const loanableMaterial =
-        await loanableMaterials[
-          Math.floor(Math.random() * loanableMaterials.length)
-        ]
-      const material = new Materials()
-      // give the sport a fake first sport so that the push function works
-      let sports:Sport[] = []
-      for (let sportId of loanableMaterial.SportId) {
-        const s = this.sportService.findOneById(sportId)
-        s.then(sport => {
-          sports.push(sport)
-        })
+      r.groupId =
+        groups[Math.floor(Math.random() * groups.length)].id.toString()
+      //@ts-ignore
+      const renroom = await rooms[Math.floor(Math.random() * rooms.length)]
+      const room = new Rooms()
+      let sportsroom: Sport[] = []
+      room.id = renroom.id
+      room.name = renroom.name
+      room.pricePerHour = renroom.pricePerHour
+      for (let sportId of renroom.SportId) {
+        const s = await this.sportService.findOneById(sportId)
+        sportsroom.push(s)
       }
+      room.sports = sportsroom
+      room.type = renroom.type
+      const roomList: [Rooms] = [room]
+      const sportroomsids: string[] = []
+      for (let sport of room.sports) {
+        sportroomsids.push(sport.id.toString())
+      }
+      r.rooms = roomList
+      r.price = reservation.price
+      r.isCancelled = reservation.isCancelled
+      const materials = loanableMaterials.filter(material =>
+        material.SportId.some(sport => sportroomsids.includes(sport)),
+      )
+      const loanableMaterial =
+        await materials[Math.floor(Math.random() * materials.length)]
+      const material = new Materials()
+      let sports: Sport[] = []
+      for (let sportId of loanableMaterial.SportId) {
+        const s = await this.sportService.findOneById(sportId)
+        sports.push(s)
+      }
+      // give the sport a fake first sport so that the push function works
       material.id = loanableMaterial.id
       material.name = loanableMaterial.name
       material.totalAmount = loanableMaterial.totalAmount
@@ -258,30 +286,22 @@ export class SeedService {
       material.sports = sports
       material.isComplete = loanableMaterial.isComplete
       material.description = loanableMaterial.description
-      material.amountReserved = Math.round(Math.random() * 10)
+      //amaount reserved is a random number between 0 and and total amount and min 1
+      material.amountReserved =
+        Math.floor(Math.random() * material.totalAmount) + 1
       const materialList: [Materials] = [material]
       r.reservedMaterials = materialList
-      //@ts-ignore
-      const renroom = await rooms[Math.floor(Math.random() * rooms.length)]
-      const room = new Rooms()
-      room.id = renroom.id
-      room.name = renroom.name
-      room.pricePerHour = renroom.pricePerHour
-      for (let sportId of renroom.SportId) {
-        const s = this.sportService.findOneById(sportId)
-        s.then(sport => {
-          sports.push(sport)
-        })
-      }
-      room.sports = sports
-      room.type = renroom.type
-      const roomList: [Rooms] = [room]
-      r.rooms = roomList
-      r.price = reservation.price
-      r.isCancelled = reservation.isCancelled
       outReservations.push(r)
     }
-    return this.reservationService.saveAll(outReservations)
+    await Promise.all(
+      outReservations.map(async reservation => {
+        try {
+          await this.reservationService.create(reservation)
+        } catch (e) {}
+      }),
+    )
+
+    return outReservations
   }
 
   async deleteAllReservations(): Promise<void> {
@@ -331,12 +351,7 @@ export class SeedService {
       rr.description = repairRequest.description
       rr.urgency = Math.floor(Math.random() * 3) + 1
       const randNumb = Math.floor(Math.random() * 2)
-      if(randNumb === 0){
-        rr.isRepaired = false
-      }
-      else{
-        rr.isRepaired = true
-      }
+      rr.isRepaired = randNumb !== 0
 
       const randNumb1 = Math.floor(Math.random() * 3)
       if (randNumb1 === 0) {
@@ -365,19 +380,18 @@ export class SeedService {
         rr.room = null // Set to null because it's a loanable material
         const materialList: Materials[] = []
         const materialIds: string[] = []
-        for(let i = 0; i < numberOfLoanableMaterials; i++)
-        {
+        for (let i = 0; i < numberOfLoanableMaterials; i++) {
           let loanableMaterial =
-          loanableMaterials[
-            Math.floor(Math.random() * loanableMaterials.length)
-          ]
-          // check if the id is already in the list
-          // if so, get a new one
-          while(materialIds.includes(loanableMaterial.id)){
-            loanableMaterial =
             loanableMaterials[
               Math.floor(Math.random() * loanableMaterials.length)
             ]
+          // check if the id is already in the list
+          // if so, get a new one
+          while (materialIds.includes(loanableMaterial.id)) {
+            loanableMaterial =
+              loanableMaterials[
+                Math.floor(Math.random() * loanableMaterials.length)
+              ]
           }
           // save id to check if it's already in the list
           materialIds.push(loanableMaterial.id)
@@ -401,7 +415,7 @@ export class SeedService {
           materialList.push(material)
         }
         rr.loanableMaterial = materialList
-      } else{
+      } else {
         //Room
         const room = rooms[Math.floor(Math.random() * rooms.length)]
         const roomList: Rooms[] = []
@@ -491,4 +505,45 @@ export class SeedService {
   }
 
   // endregion
+
+  // region staff-register
+  async deleteAllStaffRegister(): Promise<void> {
+    return this.StaffRegisterService.truncate()
+  }
+
+  //endregion
+
+  // seeding firebase users
+  async addFirebaseUsers(): Promise<FirebaseUser[]> {
+    const users: FirebaseUser[] = []
+    for (let staffMember of staff) {
+      const user = new FirebaseUser()
+      user.email = staffMember.email
+      user.password = 'Test1234'
+      user.uid = staffMember.UID
+
+      users.push(user)
+    }
+
+    await Promise.all(
+      users.map(user => this.firebaseService.createFirebaseUser(user)),
+    )
+    return users
+  }
+
+  async deleteAllFirebaseUsers(): Promise<void> {
+    const usersFromFirebase = await this.firebaseService.getFirebaseUsers()
+    Logger.warn(
+      'Deleting all firebase users: ' + usersFromFirebase.length,
+      'SeedService',
+    )
+    for (const user of usersFromFirebase) {
+      try {
+        await this.firebaseService.deleteFirebaseUser(user.uid)
+      } catch (e) {
+        Logger.debug(e, user.uid, 'SeedService')
+      }
+    }
+  }
 }
+

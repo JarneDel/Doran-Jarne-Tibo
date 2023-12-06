@@ -23,6 +23,20 @@ export const router = createRouter({
       },
     },
     {
+      path: '/staff-register/:id',
+      component: () => import('@/views/auth/StaffRegister.vue'),
+      meta: {
+        title: SITE_NAME + ' - Register',
+      },
+    },
+    {
+      path: '/staff-register/logged-in',
+      component: () => import('@/views/auth/StaffRegisterLoggedIn.vue'),
+      meta: {
+        title: SITE_NAME + ' - Already registered',
+      },
+    },
+    {
       path: '/repair',
       component: () => import('@/views/CreateRepairRequest.vue'),
     },
@@ -159,14 +173,12 @@ export const router = createRouter({
           children: [
             {
               path: 'id/:id',
-              component: () =>
-                import('@/views/admin/sportEquipment/Item.vue'),
+              component: () => import('@/views/admin/sportEquipment/Item.vue'),
               props: true,
             },
             {
               path: 'id/:id/edit',
-              component: () =>
-                import('@/views/admin/sportEquipment/Edit.vue'),
+              component: () => import('@/views/admin/sportEquipment/Edit.vue'),
             },
           ],
           meta: {
@@ -175,8 +187,59 @@ export const router = createRouter({
         },
         {
           path: 'sport-equipment/create',
-          component: () =>
-            import('@/views/admin/sportEquipment/Create.vue'),
+          component: () => import('@/views/admin/sportEquipment/Create.vue'),
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'sports',
+          component: () => import('@/views/admin/sports/Sports.vue'),
+          children: [
+            {
+              path: 'id/:id',
+              component: () => import('@/views/admin/sports/Item.vue'),
+              props: true,
+            },
+            {
+              path: 'id/:id/edit',
+              component: () => import('@/views/admin/sports/Edit.vue'),
+            },
+          ],
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'sports/create',
+          component: () => import('@/views/admin/sports/Create.vue'),
+          meta: {
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'services',
+          component: () => import('@/views/admin/services/Services.vue'),
+          children: [
+            {
+              path: 'id/:id',
+              component: () => import('@/views/admin/services/Item.vue'),
+              props: true,
+            },
+            {
+              path: 'id/:id/edit',
+              component: () => import('@/views/admin/services/Edit.vue'),
+            },
+          ],
+          meta: {
+            title: SITE_NAME + ' - Services',
+            allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
+            shouldBeAuthenticated: true,
+          },
+        },
+        {
+          path: 'services/create',
+          component: () => import('@/views/admin/services/Create.vue'),
           meta: {
             shouldBeAuthenticated: true,
           },
@@ -186,10 +249,28 @@ export const router = createRouter({
           component: () => import('@/views/admin/staff/Staff.vue'),
           meta: {
             title: SITE_NAME + ' - Staff',
+            allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
+          },
+        },
+        {
+          path: 'staff/:id',
+          component: () => import('@/views/admin/staff/Staff.vue'),
+          meta: {
+            title: SITE_NAME + ' - Staff',
+            allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
           },
         },
         {
           path: 'vacation',
+          component: () =>
+            import('@/views/admin/vacation/VacationOverview.vue'),
+          meta: {
+            allowedRoles: ['ADMIN', 'SUPER_ADMIN'],
+            title: SITE_NAME + ' - Vacation Requests',
+          },
+        },
+        {
+          path: 'vacation/:uid',
           component: () =>
             import('@/views/admin/vacation/VacationOverview.vue'),
           meta: {
@@ -347,16 +428,26 @@ const unauthorized = (
   next: NavigationGuardNext,
 ) => {
   if (to.path.includes('/admin')) {
-    next('/admin/403')
+    next('/403')
     return
   }
   next('/403')
 }
 
-const logoutUser = (next: NavigationGuardNext) => {
+const logoutUser = (
+  from: RouteLocationNormalized,
+  to: RouteLocationNormalized,
+  next: NavigationGuardNext,
+) => {
   const { userLogout } = useUser()
+  console.log(from.query)
+  const redirect = to.query.redirect as string | undefined
   logout().then(() => {
     userLogout()
+    if (redirect) {
+      next(redirect)
+      return
+    }
     next('/login')
   })
 }
@@ -373,7 +464,7 @@ const setPageTitle = (to: RouteLocationNormalized) => {
   })
 }
 
-router.beforeEach((to, _, next) => {
+router.beforeEach((to, from, next) => {
   console.debug('Meta', to.meta)
   setPageTitle(to)
   // get user from database
@@ -381,25 +472,19 @@ router.beforeEach((to, _, next) => {
   // @ts-ignore
   const allowedRoles: string[] = to.meta.allowedRoles || []
   // when user is not logged in and route requires authentication redirect to login
-  switch (true) {
-    case to.meta.shouldBeAuthenticated && !firebaseUser.value:
-      redirectToLogin(to, next)
-      break
-    // when user is logged in and route should be avoided redirect to home
-    case to.meta.avoidAuth && firebaseUser.value:
-      redirectToHome(next)
-      break
-    // logout user
-    case to.path === '/logout':
-      logoutUser(next)
-      break
-    // when route is not allowed for user role redirect to 403
-    case customUser.value &&
-      !isRoleAllowed(customUser.value.userByUid.role, allowedRoles):
-      unauthorized(to, next)
-      break
-    default:
-      next()
+  if (to.meta.shouldBeAuthenticated && !firebaseUser.value) {
+    redirectToLogin(to, next)
+  } else if (to.meta.avoidAuth && firebaseUser.value) {
+    redirectToHome(next)
+  } else if (to.path === '/logout') {
+    logoutUser(from, to, next)
+  } else if (
+    customUser.value &&
+    !isRoleAllowed(customUser.value.userByUid.role, allowedRoles)
+  ) {
+    unauthorized(to, next)
+  } else {
+    next()
   }
 })
 

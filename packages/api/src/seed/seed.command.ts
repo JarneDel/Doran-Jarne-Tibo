@@ -11,6 +11,7 @@ export class DatabaseSeedCommand {
     describe: 'Seed the database with stocks',
   })
   async seedAll() {
+    await this.deleteAll()
     //Groups
     console.info('🌱 Start seeding of groups')
     const groups = await this.seedService.addGroupsFromJson()
@@ -109,6 +110,11 @@ export class DatabaseSeedCommand {
     console.info('Deleting vacation requests')
     await this.seedService.deleteAllVacationRequests()
     console.info('Deleted all vacation requests')
+
+    // delete all staff register
+    console.info('Deleting all staff register')
+    await this.seedService.deleteAllStaffRegister()
+    console.log('removed staff register')
   }
 
   //Stocks

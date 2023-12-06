@@ -1,26 +1,352 @@
 [
   {
-    "date": "2024-01-01T00:00:00.000Z",
-    "start_time": "10:00",
-    "end_time": "10:30",
-    "groupId": "6526b87005382b4c7441a810",
-    "price": 10,
-    "isCancelled": true
-  },
-  {
-    "date": "2024-01-01T00:00:00.000Z",
-    "start_time": "14:30",
-    "end_time": "15:00",
-    "groupId": "6526b87005382b4c7441a811",
-    "price": 12,
+    "date": "2024-01-02T00:00:00.000Z",
+    "start_time": "11:30",
+    "end_time": "12:15",
+    "price": 15,
     "isCancelled": false
   },
   {
-    "date": "2024-01-01T00:00:00.000Z",
+    "date": "2024-01-02T00:00:00.000Z",
+    "start_time": "15:45",
+    "end_time": "16:30",
+    "price": 20,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-03T00:00:00.000Z",
+    "start_time": "09:30",
+    "end_time": "10:00",
+    "price": 18,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-03T00:00:00.000Z",
+    "start_time": "13:00",
+    "end_time": "13:45",
+    "price": 12,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-04T00:00:00.000Z",
+    "start_time": "14:15",
+    "end_time": "15:00",
+    "price": 25,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-04T00:00:00.000Z",
+    "start_time": "10:45",
+    "end_time": "11:30",
+    "price": 22,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-05T00:00:00.000Z",
+    "start_time": "08:00",
+    "end_time": "08:45",
+    "price": 14,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-05T00:00:00.000Z",
+    "start_time": "12:30",
+    "end_time": "13:15",
+    "price": 30,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-06T00:00:00.000Z",
+    "start_time": "16:00",
+    "end_time": "16:45",
+    "price": 17,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-06T00:00:00.000Z",
+    "start_time": "09:15",
+    "end_time": "10:00",
+    "price": 19,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-07T00:00:00.000Z",
+    "start_time": "10:30",
+    "end_time": "11:15",
+    "price": 23,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-07T00:00:00.000Z",
+    "start_time": "14:45",
+    "end_time": "15:30",
+    "price": 16,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-08T00:00:00.000Z",
     "start_time": "09:00",
     "end_time": "09:45",
-    "groupId": "6526b87005382b4c7441a812",
-    "price": 8,
+    "price": 21,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-08T00:00:00.000Z",
+    "start_time": "13:30",
+    "end_time": "14:15",
+    "price": 28,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-09T00:00:00.000Z",
+    "start_time": "15:00",
+    "end_time": "15:45",
+    "price": 25,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-09T00:00:00.000Z",
+    "start_time": "11:15",
+    "end_time": "12:00",
+    "price": 14,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-10T00:00:00.000Z",
+    "start_time": "12:45",
+    "end_time": "13:30",
+    "price": 18,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-10T00:00:00.000Z",
+    "start_time": "09:30",
+    "end_time": "10:15",
+    "price": 22,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-11T00:00:00.000Z",
+    "start_time": "08:15",
+    "end_time": "09:00",
+    "price": 20,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-11T00:00:00.000Z",
+    "start_time": "14:00",
+    "end_time": "14:45",
+    "price": 16,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-12T00:00:00.000Z",
+    "start_time": "16:30",
+    "end_time": "17:15",
+    "price": 30,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-12T00:00:00.000Z",
+    "start_time": "10:45",
+    "end_time": "11:30",
+    "price": 24,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-13T00:00:00.000Z",
+    "start_time": "09:00",
+    "end_time": "09:45",
+    "price": 19,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-13T00:00:00.000Z",
+    "start_time": "13:15",
+    "end_time": "14:00",
+    "price": 26,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-14T00:00:00.000Z",
+    "start_time": "14:45",
+    "end_time": "15:30",
+    "price": 22,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-14T00:00:00.000Z",
+    "start_time": "10:00",
+    "end_time": "10:45",
+    "price": 17,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-15T00:00:00.000Z",
+    "start_time": "11:30",
+    "end_time": "12:15",
+    "price": 21,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-15T00:00:00.000Z",
+    "start_time": "15:15",
+    "end_time": "16:00",
+    "price": 28,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-16T00:00:00.000Z",
+    "start_time": "09:45",
+    "end_time": "10:30",
+    "price": 16,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-16T00:00:00.000Z",
+    "start_time": "13:00",
+    "end_time": "13:45",
+    "price": 25,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-17T00:00:00.000Z",
+    "start_time": "15:30",
+    "end_time": "16:15",
+    "price": 23,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-17T00:00:00.000Z",
+    "start_time": "11:00",
+    "end_time": "11:45",
+    "price": 18,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-18T00:00:00.000Z",
+    "start_time": "12:15",
+    "end_time": "13:00",
+    "price": 20,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-18T00:00:00.000Z",
+    "start_time": "09:30",
+    "end_time": "10:15",
+    "price": 14,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-19T00:00:00.000Z",
+    "start_time": "08:45",
+    "end_time": "09:30",
+    "price": 26,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-19T00:00:00.000Z",
+    "start_time": "14:30",
+    "end_time": "15:15",
+    "price": 18,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-20T00:00:00.000Z",
+    "start_time": "16:00",
+    "end_time": "16:45",
+    "price": 24,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-20T00:00:00.000Z",
+    "start_time": "10:45",
+    "end_time": "11:30",
+    "price": 19,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-21T00:00:00.000Z",
+    "start_time": "09:00",
+    "end_time": "09:45",
+    "price": 15,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-21T00:00:00.000Z",
+    "start_time": "13:30",
+    "end_time": "14:15",
+    "price": 22,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-22T00:00:00.000Z",
+    "start_time": "15:15",
+    "end_time": "16:00",
+    "price": 28,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-22T00:00:00.000Z",
+    "start_time": "11:30",
+    "end_time": "12:15",
+    "price": 20,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-23T00:00:00.000Z",
+    "start_time": "12:45",
+    "end_time": "13:30",
+    "price": 16,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-23T00:00:00.000Z",
+    "start_time": "09:30",
+    "end_time": "10:15",
+    "price": 25,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-24T00:00:00.000Z",
+    "start_time": "14:00",
+    "end_time": "14:45",
+    "price": 22,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-24T00:00:00.000Z",
+    "start_time": "10:15",
+    "end_time": "11:00",
+    "price": 17,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-25T00:00:00.000Z",
+    "start_time": "11:45",
+    "end_time": "12:30",
+    "price": 21,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-25T00:00:00.000Z",
+    "start_time": "15:30",
+    "end_time": "16:15",
+    "price": 28,
+    "isCancelled": true
+  },
+  {
+    "date": "2024-01-26T00:00:00.000Z",
+    "start_time": "10:00",
+    "end_time": "10:45",
+    "price": 16,
+    "isCancelled": false
+  },
+  {
+    "date": "2024-01-26T00:00:00.000Z",
+    "start_time": "13:15",
+    "end_time": "14:00",
+    "price": 25,
     "isCancelled": true
   }
 ]

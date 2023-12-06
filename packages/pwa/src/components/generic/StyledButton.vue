@@ -40,7 +40,7 @@ export default defineComponent({
     :disabled="disabled"
     :style="`padding: ${py / 4}rem ${px / 4}rem;`"
     :type="type"
-    class="focus-visible-outline-none transition-color rounded border-2 border-transparent hover:border-black focus:outline-none focus-visible:border-black focus-visible:border-black"
+    class="focus-visible-outline-none transition-color rounded border-2 border-transparent hover:border-black focus:outline-none focus-visible:border-black"
     @click="$emit('click')"
   >
     <slot></slot>
@@ -65,6 +65,6 @@ export default defineComponent({
 }
 
 button:disabled {
-  @apply bg-gray-1 active:bg-gray-1 hover:b-transparent;
+  @apply bg-gray-2 active:bg-gray-1 hover:b-transparent;
 }
 </style>

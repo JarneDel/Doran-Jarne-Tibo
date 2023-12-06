@@ -7,7 +7,7 @@ interface Sports {
       name: string;
       createdAt: string;
       updatedAt: string;
-    }
+    },
   ];
 }
 
@@ -146,7 +146,7 @@ export default defineComponent({
           }}</label>
           <select
             id="roomType"
-            class="bg-primary-surface b-2 border-neutral-200 px-4"
+            class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
             name="service"
             v-model="typeSelector"
             @change="typeSelectorChange"
@@ -179,18 +179,16 @@ export default defineComponent({
           </div>
         </div>
         <div
-          v-if="typeSelector != -1 && typeSelector != 1"
-          class="flex flex-col"
+        v-if="typeSelector != -1 && typeSelector != 1"
+        class="flex flex-col"
         >
-          <label for="price">Price Per Hour</label>
-          <input
+        <StyledInputText
             type="number"
-            name="price"
-            id="price"
-            min="0"
-            max="1000"
-            class="bg-primary-surface b-2 border-neutral-200 px-4"
-          />
+            id="pricePerHour"
+            :label="$t('inventory.pricePerHour')"
+            :min="0"
+          >
+          </StyledInputText>
         </div>
         <div v-if="typeSelector >= 0">
           <button

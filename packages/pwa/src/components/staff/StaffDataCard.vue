@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { StaffMember } from '@/graphql/staff.query.ts'
 import ProfilePicture from '@/components/staff/ProfilePicture.vue'
 import { LucidePencil } from 'lucide-vue-next'
+import { StaffMember } from '@/interface/staff.interface.ts'
 
 export default defineComponent({
   name: 'StaffDataCard',
@@ -23,6 +23,7 @@ export default defineComponent({
     },
 
     isWorkingFromSchedule() {
+      if (!this.data.workingHours) return false
       const day = new Date().getDay()
       if (this.data.workingHours.length === 0) return false
       const workingHoursToday = this.data.workingHours.find((wh: any) => {

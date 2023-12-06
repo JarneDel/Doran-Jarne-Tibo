@@ -24,6 +24,7 @@ import { useMutation, useQuery } from '@vue/apollo-composable'
 import { DELETE_ROOM, GET_ONE_ROOM } from '@/graphql/room.query.ts'
 import { Edit2, Trash2 } from 'lucide-vue-next'
 import StyledButton from '@/components/generic/StyledButton.vue'
+import StyledLable from '@/components/generic/StyledLable.vue'
 
 export default defineComponent({
   components: {
@@ -31,7 +32,8 @@ export default defineComponent({
     Modal,
     Edit2,
     Trash: Trash2,
-  },
+    StyledLable
+},
   name: 'Item',
   setup: () => {
     const { push, replace, currentRoute } = useRouter()
@@ -108,13 +110,13 @@ export default defineComponent({
       >
         <p class="text-lg font-semibold">Sports:</p>
         <ul class="flex flex-wrap gap-x-2 gap-y-1">
-          <li
-            class="bg-sports mt-1 w-fit rounded-full px-4 text-sm font-medium"
+          <StyledLable
+            type="sport"
             v-for="sport in result?.GetRoomById.sports"
             :key="sport.name"
           >
-            <p>{{ sport.name }}</p>
-          </li>
+            {{ sport.name }}
+          </StyledLable>
         </ul>
         <div class="flex items-center gap-1">
           <p class="text-lg font-semibold">Price per hour:</p>
