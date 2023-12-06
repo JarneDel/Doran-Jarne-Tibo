@@ -25,6 +25,7 @@ describe('RepairRequestService', () => {
             save: jest.fn().mockResolvedValue(repairRequestStub()),
             find: jest.fn().mockResolvedValue([repairRequestStub()]),
             findOneByOrFail: jest.fn().mockResolvedValue(repairRequestStub()),
+            delete: jest.fn().mockResolvedValue('6536630b07fc7efb0be2114a'),
           },
         },
       ],
@@ -102,6 +103,22 @@ describe('RepairRequestService', () => {
         )
         expect(saveSpy).toBeCalledTimes(1)
         expect(result).toEqual(repairRequest)
+      })
+    })
+  })
+
+  // Test remove
+  describe('remove()', () => {
+    describe('when remove is called', () => {
+      it('should call repairRequest.delete() exactly once', async () => {
+        const deleteSpy = jest.spyOn(mockRepository, 'delete')
+
+        await service.remove('6536630b07fc7efb0be2114a')
+        expect(deleteSpy).toBeCalledTimes(1)
+      })
+      it('should return a string', async () => {
+        const result = await service.remove('6536630b07fc7efb0be2114a')
+        expect(result).toEqual('6536630b07fc7efb0be2114a')
       })
     })
   })
