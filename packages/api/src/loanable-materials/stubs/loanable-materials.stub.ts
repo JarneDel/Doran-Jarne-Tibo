@@ -10,29 +10,29 @@ export const createLoanableMaterialInputStub = (): CreateLoanableMaterialInput =
   LoanableMaterial.wantedAmount = 5
   LoanableMaterial.totalAmount = 3
   LoanableMaterial.isComplete = true
-  LoanableMaterial.SportId = ['Voetbal', 'Tennis', 'Basketbal']
+  LoanableMaterial.SportId = ['656a1085a90f2e4962ae915a']
   return LoanableMaterial
 }
 
 export const loanableMaterialStub = (): LoanableMaterial => {
   const loanableMaterial = new LoanableMaterial()
-  loanableMaterial.id = 'abc123'
+  loanableMaterial.id = '656a1085a90f2e4962ae915a'
   loanableMaterial.name = 'Test'
   loanableMaterial.description = 'Test'
   loanableMaterial.price = 100
   loanableMaterial.wantedAmount = 5
   loanableMaterial.totalAmount = 3
   loanableMaterial.isComplete = true
-  loanableMaterial.SportId = ['Voetbal', 'Tennis', 'Basketbal']
-  loanableMaterial.createdAt = new Date()
-  loanableMaterial.updatedAt = new Date()
+  loanableMaterial.SportId = ['656a1085a90f2e4962ae915a']
+  loanableMaterial.createdAt = new Date('2023-12-07T15:04:51.996Z')
+  loanableMaterial.updatedAt = new Date('2023-12-07T15:04:51.996Z')
   loanableMaterial.sports = [
     {
-      id: '1',
+      id: '656a1085a90f2e4962ae915a',
       name: 'Voetbal',
       description: 'Test',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: new Date('2023-12-07T15:04:51.996Z'),
+      updatedAt: new Date('2023-12-07T15:04:51.996Z'),
     },
   ]
   return loanableMaterial

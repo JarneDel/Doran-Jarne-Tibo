@@ -7,27 +7,29 @@ export const createRoomInputStub = (): CreateRoomInput=>{
   room.name = 'Room 1'
   room.pricePerHour = 100
   room.type = 'Sportzaal'
-  room.SportId=['abc123']
+  room.SportId = ['656a1085a90f2e4962ae915a']
   room.canBeUsed=true
   return room
 }
 
 export const roomStub=():Room=>{
   const room = new Room()
-  room.SportId=["abc123"]
-  room.sports=[{
-    id:'abc123',
-    name:'test',
-    description:'test',
-    createdAt:new Date(),
-    updatedAt:new Date()
-  }]
-  room.canBeUsed=true
-  room.id='abc123'
+  room.id = '656a1085a90f2e4962ae915a'
   room.name='Room 1'
   room.pricePerHour=100
   room.type='Sportzaal'
-  room.createdAt=new Date()
-  room.updatedAt=new Date()
+  room.SportId = ['656a1085a90f2e4962ae915a']
+  room.sports = [
+    {
+      id: '656a1085a90f2e4962ae915a',
+      name: 'test',
+      description: 'test',
+      createdAt: new Date('2023-12-07T15:04:51.996Z'),
+      updatedAt: new Date('2023-12-07T15:04:51.996Z'),
+    },
+  ]
+  room.canBeUsed=true
+  room.createdAt = new Date('2023-12-07T15:04:51.996Z')
+  room.updatedAt = new Date('2023-12-07T15:04:51.996Z')
   return room
 }

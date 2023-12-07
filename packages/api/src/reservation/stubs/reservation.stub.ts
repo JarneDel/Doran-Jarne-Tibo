@@ -7,17 +7,17 @@ export const createReservationsInputStub = (): CreateReservationInput => {
   //Room
   const rooms: [Rooms] = [
     {
-      id: 'abc123',
+      id: '656a1085a90f2e4962ae915a',
       name: 'Room 1',
       pricePerHour: 100,
       type: 'Sportzaal',
       sports: [
         {
-          id: '1',
+          id: '656a1085a90f2e4962ae915a',
           name: 'Voetbal',
           description: 'Test',
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date('2023-12-07T15:04:51.996Z'),
+          updatedAt: new Date('2023-12-07T15:04:51.996Z'),
         },
       ],
     },
@@ -26,7 +26,7 @@ export const createReservationsInputStub = (): CreateReservationInput => {
   //LoanableMeterial
   const materials: [Materials] = [
     {
-      id: 'test',
+      id: '656a1085a90f2e4962ae915a',
       name: 'Test',
       description: 'Test',
       price: 100,
@@ -38,22 +38,21 @@ export const createReservationsInputStub = (): CreateReservationInput => {
       // l.sports = ['Voetbal', 'Tennis', 'Basketbal']
       sports: [
         {
-          id: '1',
+          id: '656a1085a90f2e4962ae915a',
           name: 'Voetbal',
           description: 'Test',
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date('2023-12-07T15:04:51.996Z'),
+          updatedAt: new Date('2023-12-07T15:04:51.996Z'),
         },
       ],
     },
   ]
-
   //reservation
   const reservation = new CreateReservationInput()
-  reservation.date = new Date()
+  reservation.date = new Date('2023-12-09T15:04:51.996Z')
   reservation.endTime = '18:00'
   reservation.startTime = '08:00'
-  reservation.groupId = 'abc123'
+  reservation.groupId = '656a1085a90f2e4962ae915a'
   reservation.price = 12
   reservation.reservedMaterials = materials
   reservation.rooms = rooms
@@ -62,15 +61,16 @@ export const createReservationsInputStub = (): CreateReservationInput => {
 
 export const reservationStub = (): Reservation => {
   const reservation = new Reservation()
-  reservation.id = 'abc123'
-  reservation.date = new Date()
+  reservation.id = '656a1086a90f2e4962ae91b1'
+  reservation.date = new Date('2024-01-13T00:00:00.000+00:00')
   reservation.endTime = '18:00'
   reservation.startTime = '08:00'
-  reservation.groupId = 'abc123'
-  reservation.price = 12
+  reservation.groupId = '656a1085a90f2e4962ae915a'
+  reservation.price = 2000
+  reservation.isCancelled = false
   reservation.reservedMaterials = [
     {
-      id: 'test',
+      id: '656a1085a90f2e4962ae915a',
       name: 'Test',
       description: 'Test',
       price: 100,
@@ -82,28 +82,28 @@ export const reservationStub = (): Reservation => {
       // l.sports = ['Voetbal', 'Tennis', 'Basketbal']
       sports: [
         {
-          id: '1',
+          id: '656a1085a90f2e4962ae915a',
           name: 'Voetbal',
           description: 'Test',
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date('2023-12-07T15:04:51.996Z'),
+          updatedAt: new Date('2023-12-07T15:04:51.996Z'),
         },
       ],
     },
   ]
   reservation.rooms = [
     {
-      id: 'abc123',
+      id: '656a1085a90f2e4962ae915a',
       name: 'Room 1',
       pricePerHour: 100,
       type: 'Sportzaal',
       sports: [
         {
-          id: '1',
+          id: '656a1085a90f2e4962ae915a',
           name: 'Voetbal',
           description: 'Test',
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date('2023-12-07T15:04:51.996Z'),
+          updatedAt: new Date('2023-12-07T15:04:51.996Z'),
         },
       ],
     },
