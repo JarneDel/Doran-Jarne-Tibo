@@ -52,7 +52,6 @@ export class VacationRequestService {
   }
 
   async approve(approveVacationRequestInput: ApproveVacationRequestInput) {
-    console.log(approveVacationRequestInput)
     /// verify id
     try {
       new ObjectId(approveVacationRequestInput.id)
@@ -85,7 +84,6 @@ export class VacationRequestService {
     }
 
     if (approveVacationRequestInput.isApproved) {
-      console.log('approved')
       try {
         await this.staffService.saveVacation(
           vacationRequest.staffUId,
@@ -107,7 +105,6 @@ export class VacationRequestService {
       }
     }
 
-    console.log('saving', approveVacationRequestInput)
     vacationRequest.isApproved = approveVacationRequestInput.isApproved
     vacationRequest.isRejected = approveVacationRequestInput.isRejected
     vacationRequest.rejectReason = approveVacationRequestInput.rejectReason
