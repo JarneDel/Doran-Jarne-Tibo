@@ -65,16 +65,20 @@ describe('ReservationService', () => {
         // const reservation = createReservationsInputStub()
 
         const saveSpy = jest.spyOn(mockRepository, 'save')
-        const findSpy = jest.spyOn(mockRepository, 'find').mockResolvedValue(new Promise((resolve, reject) => {
-          resolve([])
-        }))
+        const findSpy = jest.spyOn(mockRepository, 'find').mockResolvedValue(
+          new Promise((resolve, reject) => {
+            resolve([])
+          }),
+        )
         await service.create(createReservationsInputStub())
         expect(saveSpy).toBeCalledTimes(1)
       })
       it('should return a reservation', async () => {
-        const findSpy = jest.spyOn(mockRepository, 'find').mockResolvedValue(new Promise((resolve, reject) => {
-          resolve([])
-        }))
+        const findSpy = jest.spyOn(mockRepository, 'find').mockResolvedValue(
+          new Promise((resolve, reject) => {
+            resolve([])
+          }),
+        )
         const reservation = await service.create(createReservationsInputStub())
         expect(reservation).toEqual(reservationStub())
       })
@@ -126,6 +130,59 @@ describe('ReservationService', () => {
         const result = await service.update(
           '656a1086a90f2e4962ae91b1',
           reservationStub(),
+        )
+        expect(result).toEqual(reservationStub())
+      })
+    })
+  })
+
+  // Test findbydate
+  describe('findByDate()', () => {
+    describe('when findByDate is called', () => {
+      it('should call reservation.find() once', async () => {
+        const findSpy = jest.spyOn(mockRepository, 'find')
+
+        await service.findByDate(new Date())
+        expect(findSpy).toBeCalledTimes(1)
+      })
+      it('should return an array of reservations', async () => {
+        const reservations = await service.findByDate(new Date())
+        expect(reservations).toEqual([reservationStub()])
+      })
+    })
+  })
+
+  // Test findByDateAndUser
+  describe('findByDateAndUser()', () => {
+    describe('when findByDateAndUser is called', () => {
+      it('should call reservation.find() once', async () => {
+        const findSpy = jest.spyOn(mockRepository, 'find')
+
+        await service.findByDateAndUser(new Date(), '656a1086a90f2e4962ae91b1')
+        expect(findSpy).toBeCalledTimes(1)
+      })
+      it('should return an array of reservations', async () => {
+        const reservations = await service.findByDateAndUser(
+          new Date(),
+          '656a1086a90f2e4962ae91b1',
+        )
+        expect(reservations).toEqual([reservationStub()])
+      })
+    })
+  })
+
+  // Test cancelReservation
+  describe('cancelReservation()', () => {
+    describe('when cancelReservation is called', () => {
+      it('should call reservation.update() once', async () => {
+        const updateSpy = jest.spyOn(mockRepository, 'save')
+
+        await service.cancelReservation('656a1086a90f2e4962ae91b1')
+        expect(updateSpy).toBeCalledTimes(1)
+      })
+      it('should return a result object', async () => {
+        const result = await service.cancelReservation(
+          '656a1086a90f2e4962ae91b1',
         )
         expect(result).toEqual(reservationStub())
       })

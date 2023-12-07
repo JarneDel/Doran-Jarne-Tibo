@@ -6,4 +6,5 @@ export const GroupsService = jest.fn().mockReturnValue({
   findOne: jest.fn().mockResolvedValue(groupStub()),
   update: jest.fn().mockResolvedValue(groupStub()),
   remove: jest.fn().mockResolvedValue(groupStub()),
+  findOneByUid: jest.fn().mockResolvedValue(groupStub()),
 })
