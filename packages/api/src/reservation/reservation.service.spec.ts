@@ -16,10 +16,6 @@ import { LoanableMaterialsService } from 'src/loanable-materials/__mocks__/loana
 
 describe('ReservationService', () => {
   let service: ReservationService
-  // jest.mock('./reservation.service')
-  // jest.mock('../room/room.service')
-  // jest.mock('../loanable-materials/loanable-materials.service')
-  // jest.mock('../groups/groups.service')
   let mockRepository: Repository<Reservation>
 
   beforeEach(async () => {
