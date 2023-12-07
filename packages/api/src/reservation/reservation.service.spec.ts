@@ -21,11 +21,19 @@ describe('ReservationService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        GroupsService,
         RoomService,
         LoanableMaterialsService,
-        GroupsService,
-        
         ReservationService,
+        {
+          provide: getRepositoryToken(Reservation),
+          useValue: {
+            save: jest.fn().mockResolvedValue(reservationStub()),
+            find: jest.fn().mockResolvedValue([reservationStub()]),
+            findOneByOrFail: jest.fn().mockResolvedValue(reservationStub()),
+            update: jest.fn().mockResolvedValue({ raw: '', affected: 1 }),
+          },
+        },
       ],
     }).compile()
 
