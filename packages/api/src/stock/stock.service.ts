@@ -55,7 +55,6 @@ export class StockService {
   }
 
   async update(id: string, updateStockInput: UpdateStockInput) {
-
     const s = await this.stockRepository
       .findOneByOrFail({
         //@ts-ignoregl sta
@@ -74,10 +73,8 @@ export class StockService {
   }
 
   async remove(id: string): Promise<string> {
-    console.log('deleting')
     const result = await this.stockRepository.delete(id)
     if (result.affected === 1) {
-      console.log('deleted item with id', id)
       return id
     }
   }
@@ -113,7 +110,6 @@ export class StockService {
       }
     }
 
-
     options.where = {
       ...options.where,
     }
@@ -131,7 +127,6 @@ export class StockService {
       return
     }
 
-
     const validateOrderDirections = ['ASC', 'DESC', 'asc', 'desc']
     if (!validateOrderDirections.includes(orderDirection)) {
       throw new GraphQLError(
@@ -147,7 +142,7 @@ export class StockService {
       'service',
     ]
     if (!validateOrderFields.includes(orderByField)) {
-      throw new GraphQLError(`Invalid orderByField ${orderByField} for Stock`)
+      throw new GraphQLError(`Invalid orderByField for Stock`)
     }
 
     if (orderByField === 'service') {

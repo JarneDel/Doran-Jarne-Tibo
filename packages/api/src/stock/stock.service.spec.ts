@@ -2,16 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { StockService } from './stock.service'
 import { getRepositoryToken } from '@nestjs/typeorm/dist/common/typeorm.utils'
 import { Stock } from './entities/stock.entity'
-import { Repository } from 'typeorm/repository/Repository'
 import { ServiceService } from '../service/service.service'
 import { CreateStockInput } from './dto/create-stock.input'
 import { createStockStub, StockStub, UpdateStockStub } from './stubs/stock.stub'
 import { GraphQLError } from 'graphql/error'
 import { ObjectId } from 'mongodb'
+import { FilterStockArgs } from './args/filter.stock.args'
+import { MongoRepository } from 'typeorm'
 
 describe('StockService', () => {
   let service: StockService
-  let mockStockRepository: Repository<Stock>
+  let mockStockRepository: MongoRepository<Stock>
   let mockServiceService: StockService
 
   beforeEach(async () => {
@@ -32,13 +33,14 @@ describe('StockService', () => {
             save: jest.fn().mockResolvedValue(StockStub()),
             find: jest.fn().mockResolvedValue(createStockStub()),
             findOneByOrFail: jest.fn().mockResolvedValue(createStockStub()),
+            delete: jest.fn().mockResolvedValue({ result: { affected: 1 } }),
           },
         },
       ],
     }).compile()
 
     service = module.get<StockService>(StockService)
-    mockStockRepository = module.get<Repository<Stock>>(
+    mockStockRepository = module.get<MongoRepository<Stock>>(
       getRepositoryToken(Stock),
     )
   })
@@ -127,6 +129,37 @@ describe('StockService', () => {
     })
   })
   describe('find with filter', () => {
-    // todo
+    it('should return stocks based on the provided filter', async () => {
+      const filterArgs: FilterStockArgs = {
+        orderDirection: 'ASC',
+        orderByField: 'name',
+      }
+      const stock1 = new Stock()
+      stock1.name = 'stock1'
+      const stock2 = new Stock()
+      stock2.name = 'stock2'
+      jest
+        .spyOn(mockStockRepository, 'find')
+        .mockResolvedValueOnce([stock1, stock2])
+
+      const result = await service.findWithFilter(filterArgs)
+      expect(result).toEqual([stock1, stock2])
+    })
+    it('should return an empty array if no stocks match the filter', async () => {
+      const filterArgs: FilterStockArgs = {
+        searchName: 'test',
+      }
+      jest.spyOn(mockStockRepository, 'find').mockResolvedValueOnce([])
+      const result = await service.findWithFilter(filterArgs)
+      expect(result).toEqual([])
+    })
+  })
+  describe('remove stock item', () => {
+    it('should call stockRepository.remove', async () => {
+      const mockSpy = jest.spyOn(mockStockRepository, 'delete')
+      const testId = '6537e4b4de3a65536d4751fb'
+      await service.remove(testId)
+      expect(mockSpy).toBeCalledTimes(1)
+    })
   })
 })
