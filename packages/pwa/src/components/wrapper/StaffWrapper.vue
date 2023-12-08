@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Sidenav from '@/components/wrapper/Sidenav.vue'
+import Sidenav from '@/components/layout/Sidenav.vue'
 
 export default defineComponent({
   name: 'StaffWrapper',

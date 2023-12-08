@@ -1,4 +1,5 @@
 import { nextTick, ref } from 'vue'
+import { useLocalStorage } from '@vueuse/core'
 
 const setPageTitle = (title: string) => {
   nextTick(() => {
@@ -6,10 +7,13 @@ const setPageTitle = (title: string) => {
   })
 }
 
-const MOBILE_VIEWPORT_SIZE = ref(768)
+const MOBILE_VIEWPORT_SIZE = ref(640)
+
+const sidebarIsOpen = useLocalStorage('isOpen', false)
 
 
 export default () => ({
   setPageTitle,
   MOBILE_VIEWPORT_SIZE,
+  sidebarIsOpen,
 })
