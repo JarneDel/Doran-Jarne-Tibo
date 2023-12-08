@@ -21,7 +21,6 @@ const typeList = [
 @InputType()
 export class CreateRoomInput {
   @IsString()
-  @IsNotEmpty()
   @MinLength(4)
   @Field() // Graphql
   name: string

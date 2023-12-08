@@ -86,7 +86,6 @@ export default defineComponent({
         {{ inputLength }}/{{ maxlength ? maxlength : '∞' }}
       </span>
     </span>
-    
   </label>
 </template>
 
