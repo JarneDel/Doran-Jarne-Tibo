@@ -4,13 +4,13 @@ import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import {
   AVAILABLEMATERAILS,
-  GET_AVAILABLE_ROOMS,
   CREATERESEVATION,
+  GET_AVAILABLE_ROOMS,
 } from '@/graphql/reservations.query'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { Room } from '@/interface/roomInterface'
 import { material } from '@/interface/materialInterface'
-import { Plus, Minus, X } from 'lucide-vue-next'
+import { Minus, Plus, X } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import { useRouter } from 'vue-router'
 import StyledLable from '@/components/generic/StyledLable.vue'
@@ -38,12 +38,12 @@ export default defineComponent({
     const price = ref(0)
     const PriceWhitDiscount = ref(0)
     const discount = ref<number>(0)
-    if (customUser.value?.userByUid.score) {
-      if (customUser.value?.userByUid.score > 50) {
-        discount.value = (customUser.value?.userByUid.score - 50) / 100
+    if (customUser.value?.score) {
+      if (customUser.value?.score > 50) {
+        discount.value = (customUser.value?.score - 50) / 100
       }
-      if (customUser.value?.userByUid.score < 50) {
-        discount.value = ((50 - customUser.value?.userByUid.score) / 100) * -1
+      if (customUser.value?.score < 50) {
+        discount.value = ((50 - customUser.value?.score) / 100) * -1
       }
     }
     const calculatePrice = () => {
@@ -120,15 +120,17 @@ export default defineComponent({
         date: reservation.value.date,
         startTime: reservation.value.beginTime,
         endTime: reservation.value.endTime,
-        groupId: customUser.value?.userByUid.id,
+        groupId: customUser.value?.id,
         price: price.value,
         material: materials,
         rooms: roomlist,
-      }).then(() => {
-        push('/reservation')
-      }).catch((error) => {
-        errorMessages.value.push(error.message)
       })
+        .then(() => {
+          push('/reservation')
+        })
+        .catch(error => {
+          errorMessages.value.push(error.message)
+        })
     }
     const Material = (material: material, plus: boolean) => {
       if (plus) {
@@ -335,13 +337,21 @@ export default defineComponent({
       errorMessages,
     }
   },
-  components: { StyledInputText, StyledButton, Plus, Minus, X, StyledLable, Error },
+  components: {
+    StyledInputText,
+    StyledButton,
+    Plus,
+    Minus,
+    X,
+    StyledLable,
+    Error,
+  },
 })
 </script>
 
 <template>
   <Error
-  :translate="true"
+    :translate="true"
     v-for="(error, index) of errorMessages"
     :key="index"
     :is-shown="errorMessages[index] !== ''"

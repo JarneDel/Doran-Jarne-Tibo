@@ -11,6 +11,8 @@ import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
 import { useI18n } from 'vue-i18n'
 import ProfilePicture from '@/components/staff/ProfilePicture.vue'
 import { useRouter } from 'vue-router'
+import { useWindowSize } from '@vueuse/core'
+import useA11y from '@/composables/useA11y.ts'
 
 export default defineComponent({
   computed: {
@@ -19,6 +21,8 @@ export default defineComponent({
     },
   },
   setup() {
+    const { width } = useWindowSize()
+    const { MOBILE_VIEWPORT_SIZE } = useA11y()
     const { firebaseUser } = firebase()
     const { setLocale, locale } = useLanguage()
     const options = ref<Boolean>(false)
@@ -54,12 +58,12 @@ export default defineComponent({
           url: '/staff',
           roles: ['STAFF'],
         },
-      ].filter(item =>
-        item.roles.includes(customUser.value?.userByUid.role ?? ''),
-      )
+      ].filter(item => item.roles.includes(customUser.value?.role ?? ''))
     })
 
     return {
+      windowWidth: width,
+      MOBILE_VIEWPORT_SIZE,
       options,
       toggleOptions,
       customUser,
@@ -69,9 +73,9 @@ export default defineComponent({
       locale,
       topNavItems,
       username: computed(() =>
-        customUser.value?.userByUid.__typename == 'Staff'
-          ? customUser.value?.userByUid.firstName
-          : customUser.value?.userByUid.name,
+        customUser.value?.__typename == 'Staff'
+          ? customUser.value?.firstName
+          : customUser.value?.name,
       ),
     }
   },

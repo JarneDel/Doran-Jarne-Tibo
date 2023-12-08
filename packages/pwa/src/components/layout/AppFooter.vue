@@ -1,13 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import {
-  Phone,
-  Mail,
   FacebookIcon,
-  TwitchIcon,
   InstagramIcon,
-  YoutubeIcon,
   LinkedinIcon,
+  Mail,
+  Phone,
+  TwitchIcon,
+  YoutubeIcon,
 } from 'lucide-vue-next'
 
 export default defineComponent({

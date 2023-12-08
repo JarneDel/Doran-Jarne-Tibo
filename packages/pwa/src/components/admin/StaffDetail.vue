@@ -50,16 +50,15 @@ export default defineComponent({
     }
 
     const isAllowedToSetRole = computed(() => {
-      if (customUser.value?.userByUid.role == 'SUPER_ADMIN') {
+      if (customUser.value?.role == 'SUPER_ADMIN') {
         return true
       }
       if (!staff.value) {
         return false
       }
-      if (customUser.value?.userByUid.role) {
+      if (customUser.value?.role) {
         return (
-          getRoleValue(customUser.value.userByUid.role) >
-          getRoleValue(staff.value.role)
+          getRoleValue(customUser.value.role) > getRoleValue(staff.value.role)
         )
       } else {
         return false
@@ -69,10 +68,10 @@ export default defineComponent({
       if (!staff.value) {
         return []
       }
-      if (customUser.value?.userByUid.role) {
-        if (getRoleValue(customUser.value.userByUid.role) == 3) {
+      if (customUser.value?.role) {
+        if (getRoleValue(customUser.value.role) == 3) {
           return ['ADMIN', 'STAFF', 'SUPER_ADMIN']
-        } else if (getRoleValue(customUser.value.userByUid.role) == 2) {
+        } else if (getRoleValue(customUser.value.role) == 2) {
           return ['STAFF']
         } else {
           return []

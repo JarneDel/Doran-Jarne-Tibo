@@ -16,22 +16,22 @@ export default defineComponent({
     const { mutate: mutadeStaff } = useMutation(UPDATE_STAFF)
     const { setLocale } = useLanguage()
     const saveGroup = () => {
-      if (customUser.value?.userByUid.locale)
+      if (customUser.value?.locale)
         mutadeGroup({
-          _id: customUser.value?.userByUid.id,
-          name: customUser.value?.userByUid.name,
-          locale: customUser.value?.userByUid.locale,
-          btwNumber: customUser.value?.userByUid.btwNumber,
+          _id: customUser.value?.id,
+          name: customUser.value?.name,
+          locale: customUser.value?.locale,
+          btwNumber: customUser.value?.btwNumber,
         })
     }
     const SaveStaff = () => {
       mutadeStaff({
-        id: customUser.value?.userByUid.id,
-        firstName: customUser.value?.userByUid.firstName,
-        lastName: customUser.value?.userByUid.lastName,
-        email: customUser.value?.userByUid.email,
-        locale: customUser.value?.userByUid.locale,
-        phone: customUser.value?.userByUid.phone,
+        id: customUser.value?.id,
+        firstName: customUser.value?.firstName,
+        lastName: customUser.value?.lastName,
+        email: customUser.value?.email,
+        locale: customUser.value?.locale,
+        phone: customUser.value?.phone,
       })
     }
     return { customUser, saveGroup, SaveStaff, setLocale, SUPPORTED_LOCALES }
@@ -43,7 +43,7 @@ export default defineComponent({
   <div class="h-full">
     <div class="mx-auto flex h-full w-1/2 items-center justify-center">
       <div
-        v-if="customUser?.userByUid.__typename == 'Group'"
+        v-if="customUser?.__typename == 'Group'"
         class="w-full max-w-sm rounded-lg bg-white p-4 shadow-sm"
       >
         <h1 class="font-600 text-xl">{{ $t('nav.profile') }}</h1>
@@ -51,12 +51,12 @@ export default defineComponent({
           <ProfilePicture editable />
         </div>
         <styled-input-text
-          v-model="customUser.userByUid.name"
+          v-model="customUser.name"
           :label="$t('profile.name')"
           class="my-1"
         />
         <styled-input-text
-          v-model="customUser.userByUid.btwNumber"
+          v-model="customUser.btwNumber"
           :label="$t('profile.btw')"
           class="my-1"
         />
@@ -67,9 +67,9 @@ export default defineComponent({
           }}</span>
           <br />
           <select
-            v-model="customUser.userByUid.locale"
+            v-model="customUser.locale"
             class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
-            @change="setLocale(customUser.userByUid.locale)"
+            @change="setLocale(customUser.locale)"
           >
             <option v-for="(locale, key) in SUPPORTED_LOCALES" :value="key">
               {{ locale }}
@@ -81,7 +81,7 @@ export default defineComponent({
         </StyledButton>
       </div>
       <div
-        v-if="customUser?.userByUid.__typename == 'Staff'"
+        v-if="customUser?.__typename == 'Staff'"
         class="w-full max-w-sm rounded-lg bg-white p-4 shadow-sm"
       >
         <h1 class="font-600 text-xl">{{ $t('nav.profile') }}</h1>
@@ -89,22 +89,22 @@ export default defineComponent({
           <ProfilePicture editable />
         </div>
         <styled-input-text
-          v-model="customUser.userByUid.firstName"
+          v-model="customUser.firstName"
           :label="$t('staff.firstname')"
           class="my-1"
         />
         <styled-input-text
-          v-model="customUser.userByUid.lastName"
+          v-model="customUser.lastName"
           :label="$t('staff.lastname')"
           class="my-1"
         />
         <styled-input-text
-          v-model="customUser.userByUid.email"
+          v-model="customUser.email"
           :label="$t('staff.email')"
           class="my-1"
         />
         <styled-input-text
-          v-model="customUser.userByUid.lastName"
+          v-model="customUser.lastName"
           :label="$t('staff.phone')"
           class="my-1"
         />
@@ -115,9 +115,9 @@ export default defineComponent({
           }}</span>
           <br />
           <select
-            v-model="customUser.userByUid.locale"
+            v-model="customUser.locale"
             class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
-            @change="setLocale(customUser.userByUid.locale)"
+            @change="setLocale(customUser.locale)"
           >
             <option v-for="(locale, key) in SUPPORTED_LOCALES" :value="key">
               {{ locale }}

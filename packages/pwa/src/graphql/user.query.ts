@@ -1,6 +1,7 @@
-import gql from 'graphql-tag'
+import { gql, TypedDocumentNode } from '@apollo/client/core'
+import { Staff } from '@/interface/staff.interface.ts'
 
-export const USER_BY_UID = gql`
+export const USER_BY_UID: TypedDocumentNode<{ userByUid: Group | Staff }> = gql`
   query {
     userByUid {
       __typename
@@ -34,6 +35,7 @@ export const USER_BY_UID = gql`
     }
   }
 `
+
 
 export const UPDATE_GROUP = gql`
   mutation updateGroup(

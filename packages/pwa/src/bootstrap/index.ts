@@ -412,11 +412,11 @@ const redirectToHome = (next: NavigationGuardNext) => {
     next('/login')
     return
   }
-  if (['ADMIN', 'SUPER_ADMIN'].includes(customUser.value.userByUid.role)) {
+  if (['ADMIN', 'SUPER_ADMIN'].includes(customUser.value.role)) {
     next('/admin')
     return
   }
-  if (customUser.value.userByUid.role === 'STAFF') {
+  if (customUser.value.role === 'STAFF') {
     next('/staff')
     return
   }
@@ -478,10 +478,7 @@ router.beforeEach((to, from, next) => {
     redirectToHome(next)
   } else if (to.path === '/logout') {
     logoutUser(from, to, next)
-  } else if (
-    customUser.value &&
-    !isRoleAllowed(customUser.value.userByUid.role, allowedRoles)
-  ) {
+  } else if (customUser.value && !isRoleAllowed(customUser.value.role, allowedRoles)) {
     unauthorized(to, next)
   } else {
     next()

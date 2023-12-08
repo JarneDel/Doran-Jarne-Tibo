@@ -1,4 +1,4 @@
-import { nextTick } from 'vue'
+import { nextTick, ref } from 'vue'
 
 const setPageTitle = (title: string) => {
   nextTick(() => {
@@ -6,6 +6,10 @@ const setPageTitle = (title: string) => {
   })
 }
 
+const MOBILE_VIEWPORT_SIZE = ref(768)
+
+
 export default () => ({
   setPageTitle,
+  MOBILE_VIEWPORT_SIZE,
 })

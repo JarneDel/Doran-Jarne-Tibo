@@ -1,6 +1,6 @@
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
-import Logo from '@/components/generic/Logo.vue';
+import { computed, defineComponent, ref } from 'vue'
+import Logo from '@/components/generic/Logo.vue'
 import {
   Bike,
   Box,
@@ -11,28 +11,28 @@ import {
   Palmtree,
   PanelLeftClose,
   PanelRightClose,
+  Tractor,
   Users,
   Warehouse,
   Wrench,
-  Tractor,
-} from 'lucide-vue-next';
-import { useLocalStorage } from '@vueuse/core';
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import useUser from '@/composables/useUser.ts';
-import { useQuery, useSubscription } from '@vue/apollo-composable';
+} from 'lucide-vue-next'
+import { useLocalStorage } from '@vueuse/core'
+import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import useUser from '@/composables/useUser.ts'
+import { useQuery, useSubscription } from '@vue/apollo-composable'
 import {
   VACATION_REQUESTED_COUNT,
   VACATION_REQUESTED_SUBSCRIPTION,
-} from '@/graphql/vacation.request.query.ts';
+} from '@/graphql/vacation.request.query.ts'
 
 interface page {
-  name: string;
-  icon: Icon;
-  content: string;
-  route: string;
-  roles: string[];
-  count?: number;
+  name: string
+  icon: Icon
+  content: string
+  route: string
+  roles: string[]
+  count?: number
 }
 
 export default defineComponent({
@@ -55,27 +55,27 @@ export default defineComponent({
   setup() {
     const { result, onResult } = useSubscription(
       VACATION_REQUESTED_SUBSCRIPTION,
-    );
+    )
     const { onResult: onInitialResult } = useQuery(VACATION_REQUESTED_COUNT, {
       fetchPolicy: 'cache-and-network',
-    });
-    const count = ref<number>(0);
+    })
+    const count = ref<number>(0)
 
-    onInitialResult((param) => {
-      if (result.value?.vacationRequested.count) return;
-      count.value = param.data?.pendingVacationRequestsCount.count ?? 0;
-    });
-    onResult((param) => {
-      console.log(param);
-      count.value = param.data?.vacationRequested.count ?? 0;
-    });
+    onInitialResult(param => {
+      if (result.value?.vacationRequested.count) return
+      count.value = param.data?.pendingVacationRequestsCount.count ?? 0
+    })
+    onResult(param => {
+      console.log(param)
+      count.value = param.data?.vacationRequested.count ?? 0
+    })
 
-    const isClosed = useLocalStorage('isClosed', false);
-    const { currentRoute } = useRouter();
-    const { customUser } = useUser();
-    const role = computed(() => customUser.value?.userByUid.role);
-    const { t } = useI18n();
-    const section = computed(() => currentRoute.value.path.split('/')[2]);
+    const isClosed = useLocalStorage('isClosed', false)
+    const { currentRoute } = useRouter()
+    const { customUser } = useUser()
+    const role = computed(() => customUser.value?.role)
+    const { t } = useI18n()
+    const section = computed(() => currentRoute.value.path.split('/')[2])
     const pages = computed(() => {
       const p: page[] = [
         {
@@ -149,15 +149,15 @@ export default defineComponent({
           route: '/admin/services',
           roles: ['ADMIN', 'SUPER_ADMIN'],
         },
-      ];
-      return p.filter((page) => {
-        return page.roles.includes(role.value ?? '');
-      });
-    });
+      ]
+      return p.filter(page => {
+        return page.roles.includes(role.value ?? '')
+      })
+    })
 
-    return { isClosed, section, pages };
+    return { isClosed, section, pages }
   },
-});
+})
 </script>
 
 <template>
@@ -192,7 +192,8 @@ export default defineComponent({
         <div
           v-if="page.count"
           :class="{
-            'bg-danger c-white h4 absolute bottom-0 right-2 flex w-4 items-center justify-center rounded': isClosed,
+            'bg-danger c-white h4 absolute bottom-0 right-2 flex w-4 items-center justify-center rounded':
+              isClosed,
           }"
         >
           {{ page.count }}

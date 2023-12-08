@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { User } from '../interface/userInterface'
+// import { User } from '../interface/userInterface'
 import useGraphql from './useGraphql'
 import { provideApolloClient, useQuery } from '@vue/apollo-composable'
 import { USER_BY_UID } from '@/graphql/user.query.ts'
@@ -20,9 +20,10 @@ const restoreCustomUser = async () => {
       },
     )
     onResult(result => {
+      console.log('result', result)
       if (result.data) {
-        customUser.value = result.data
-        if (customUser.value?.userByUid.locale) resolve()
+        customUser.value = result.data.userByUid as User
+        resolve()
       }
     })
   })
@@ -30,6 +31,29 @@ const restoreCustomUser = async () => {
 const userLogout = () => {
   customUser.value = null
 }
+
+
+export interface User {
+  __typename: string
+  id: string
+  UID: string
+  locale: string
+  role: string
+  createdAt: string
+  updatedAt: string
+  name?: string
+  firstName?: string
+  lastName?: string
+  email?: string
+  phone?: string
+  holidaysLeft?: number
+  holidayDates?: string[]
+  btwNumber?: string
+  score?: number
+  profilePictureUrl: string
+}
+
+
 export default () => {
   return {
     customUser,
