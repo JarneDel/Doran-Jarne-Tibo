@@ -32,7 +32,7 @@ export default defineConfig({
         light: '#FAE7B2',
         lighter: '#FAE8B8',
         dark: '#F0B719',
-        surface: '#f7f7ed',
+        surface: '#fcfcf7',
       },
       primary: {
         DEFAULT: '#386FA4',

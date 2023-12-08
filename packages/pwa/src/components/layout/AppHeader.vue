@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { ChevronDown, ChevronUp } from 'lucide-vue-next'
+import { ChevronDown, ChevronUp, Menu, X } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import firebase from '@/composables/useFirebase'
 import logo from '@/components/generic/Logo.vue'
@@ -11,6 +11,9 @@ import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
 import { useI18n } from 'vue-i18n'
 import ProfilePicture from '@/components/staff/ProfilePicture.vue'
 import { useRouter } from 'vue-router'
+import { useWindowSize } from '@vueuse/core'
+import useA11y from '@/composables/useA11y.ts'
+import ProfileContextButton from '@/components/layout/ProfileContextButton.vue'
 
 export default defineComponent({
   computed: {
@@ -19,6 +22,8 @@ export default defineComponent({
     },
   },
   setup() {
+    const { width } = useWindowSize()
+    const { MOBILE_VIEWPORT_SIZE } = useA11y()
     const { firebaseUser } = firebase()
     const { setLocale, locale } = useLanguage()
     const options = ref<Boolean>(false)
@@ -54,35 +59,45 @@ export default defineComponent({
           url: '/staff',
           roles: ['STAFF'],
         },
-      ].filter(item =>
-        item.roles.includes(customUser.value?.userByUid.role ?? ''),
-      )
+      ].filter(item => item.roles.includes(customUser.value?.role ?? ''))
     })
 
+    const { sidebarIsOpen } = useA11y()
+    const toggleSideNav = () => {
+      sidebarIsOpen.value = !sidebarIsOpen.value
+    }
+
     return {
+      windowWidth: width,
+      MOBILE_VIEWPORT_SIZE,
       options,
       toggleOptions,
+      toggleSideNav,
       customUser,
       logoutButton,
       firebaseUser,
       setLocale,
+      sidebarIsOpen,
       locale,
       topNavItems,
       username: computed(() =>
-        customUser.value?.userByUid.__typename == 'Staff'
-          ? customUser.value?.userByUid.firstName
-          : customUser.value?.userByUid.name,
+        customUser.value?.__typename == 'Staff'
+          ? customUser.value?.firstName
+          : customUser.value?.name,
       ),
     }
   },
 
   components: {
+    ProfileContextButton,
     ProfilePicture,
     StyledButton,
     ChevronDown,
     logo,
     OnClickOutside,
     ChevronUp,
+    Menu,
+    X,
   },
 })
 </script>
@@ -91,15 +106,35 @@ export default defineComponent({
   <div
     class="relative flex h-20 min-h-min items-center justify-between bg-white fill-slate-700 p-2 shadow-md"
   >
-    <router-link class="flex items-center justify-center gap-2" to="/">
-      <logo class="h-10" />
+    <div class="flex flex-row items-center justify-center">
+      <button
+        v-if="windowWidth < MOBILE_VIEWPORT_SIZE"
+        class="menu-button"
+        @click="toggleSideNav"
+      >
+        <Menu
+          v-if="sidebarIsOpen"
+          :size="32"
+          class="ml-[0.375rem] mr-[0.875rem]"
+        ></Menu>
+        <X v-else :size="32" class="ml-[0.375rem] mr-[0.875rem]"></X>
+      </button>
+      <router-link class="flex items-center justify-center gap-2" to="/">
+        <logo class="h-10" />
 
-      <h1 class="text-primary-text sr-only text-xl font-bold sm:not-sr-only">
-        {{ $t('navigation.title') }}
-      </h1>
-    </router-link>
+        <h1
+          v-if="windowWidth > 350"
+          class="xs text-primary-text font-bold sm:text-xl"
+        >
+          {{ $t('navigation.title') }}
+        </h1>
+      </router-link>
+    </div>
     <div class="flex items-center justify-center md:gap-8">
-      <ul v-if="customUser" class="flex justify-center gap-4">
+      <ul
+        v-if="customUser && windowWidth > MOBILE_VIEWPORT_SIZE"
+        class="flex justify-center gap-4"
+      >
         <li v-for="item of topNavItems" :key="item.url">
           <router-link :to="item.url" class="styled-link"
             >{{ item.name }}
@@ -119,44 +154,7 @@ export default defineComponent({
           </select>
         </label>
       </div>
-      <div>
-        <OnClickOutside @trigger="options = false">
-          <button
-            v-if="customUser"
-            class="gap2 mx-2 flex flex-row items-center justify-center"
-            @click="toggleOptions()"
-          >
-            <span
-              :title="username"
-              class="hidden max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap sm:inline-block"
-            >
-              {{ username }}
-            </span>
-            <ChevronDown v-if="!options" />
-            <ChevronUp v-else />
-            <ProfilePicture v-if="firebaseUser?.photoURL" :size="48" />
-          </button>
-          <div v-if="options">
-            <div
-              class="top-19 z-100 absolute right-4 flex flex-col rounded-md bg-white p-4 shadow-md"
-            >
-              <router-link class="styled-link w-fit" to="/profile">{{
-                $t('nav.profile')
-              }}</router-link>
-              <StyledButton class="mt-2" @click="logoutButton()">
-                {{ $t('account.log.out') }}
-              </StyledButton>
-            </div>
-          </div>
-        </OnClickOutside>
-        <router-link
-          v-if="!customUser"
-          class="px4 bg-secondary hover:border-secondary-lighter active:border-secondary-lighter active:bg-secondary-400 focus-visible-outline-none transition-color rounded border-2 border-transparent py-2 focus:border-black focus:outline-none focus-visible:border-black"
-          to="/login"
-        >
-          {{ $t('auth.login') }}
-        </router-link>
-      </div>
+      <ProfileContextButton :links="topNavItems" :user="customUser" />
     </div>
   </div>
 </template>

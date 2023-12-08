@@ -1,9 +1,6 @@
 import { gql, TypedDocumentNode } from '@apollo/client/core'
-import {
-  Service,
-  StaffBasics,
-  StaffMember,
-} from '@/interface/staff.interface.ts'
+import { StaffBasics, StaffMember } from '@/interface/staff.interface.ts'
+import { Service } from '@/interface/service.interface.ts'
 
 export const ALL_STAFF: TypedDocumentNode<{ staff: StaffBasics[] }> = gql`
   query {

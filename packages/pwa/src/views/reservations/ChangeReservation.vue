@@ -5,13 +5,13 @@ import StyledButton from '@/components/generic/StyledButton.vue'
 import {
   AVAILABLEMATERAILS,
   GET_AVAILABLE_ROOMS,
-  UPDATE_RESEVATION,
   GET_ONE_RESERVATION,
+  UPDATE_RESEVATION,
 } from '@/graphql/reservations.query'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { Room } from '@/interface/roomInterface'
 import { material } from '@/interface/materialInterface'
-import { Plus, Minus, X } from 'lucide-vue-next'
+import { Minus, Plus, X } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import { useRouter } from 'vue-router'
 import { Reservation } from '@/interface/reservation'
@@ -27,7 +27,7 @@ export default defineComponent({
     const { customUser } = useUser()
     const checkboxStatus = ref<any>({})
     const checkboxStatusMaterials = ref<any>({})
-    const { mutate: updateReservation} = useMutation(UPDATE_RESEVATION)
+    const { mutate: updateReservation } = useMutation(UPDATE_RESEVATION)
     const availableRooms = ref<Room[]>([])
     const availableMaterials = ref<material[]>([])
     const wantedRoom = ref<Room[]>([])
@@ -37,12 +37,12 @@ export default defineComponent({
     const PriceWhitDiscount = ref(0)
     const discount = ref<number>(0)
     const errors = ref<string[]>([])
-    if (customUser.value?.userByUid.score) {
-      if (customUser.value?.userByUid.score > 50) {
-        discount.value = (customUser.value?.userByUid.score - 50) / 100
+    if (customUser.value?.score) {
+      if (customUser.value?.score > 50) {
+        discount.value = (customUser.value?.score - 50) / 100
       }
-      if (customUser.value?.userByUid.score < 50) {
-        discount.value = ((50 - customUser.value?.userByUid.score) / 100) * -1
+      if (customUser.value?.score < 50) {
+        discount.value = ((50 - customUser.value?.score) / 100) * -1
       }
     }
     const timeDivrent = () => {
@@ -163,17 +163,19 @@ export default defineComponent({
         date: reservation.value.date,
         startTime: reservation.value.beginTime,
         endTime: reservation.value.endTime,
-        groupId: customUser.value?.userByUid.id,
+        groupId: customUser.value?.id,
         price: PriceWhitDiscount.value,
         material: materials,
         rooms: roomlist,
         id: id.value,
         canceld: false,
-      }).then(() => {
-        push('/reservation')
-      }).catch((e) => {
-        errors.value.push(e.message)
       })
+        .then(() => {
+          push('/reservation')
+        })
+        .catch(e => {
+          errors.value.push(e.message)
+        })
     }
     const Material = (material: material, plus: boolean) => {
       if (plus) {
@@ -373,7 +375,15 @@ export default defineComponent({
       errorMessages: errors,
     }
   },
-  components: { StyledInputText, StyledButton, Plus, Minus, X, StyledLable, Error },
+  components: {
+    StyledInputText,
+    StyledButton,
+    Plus,
+    Minus,
+    X,
+    StyledLable,
+    Error,
+  },
 })
 </script>
 
