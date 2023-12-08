@@ -6,7 +6,7 @@ import AppHeader from '@/components/layout/AppHeader.vue'
 <template>
   <div class="">
     <div
-      class="bg-secondary-surface grid min-h-screen grid-rows-[min-content_1fr]"
+      class="bg-primary-surface grid min-h-screen grid-rows-[min-content_1fr]"
     >
       <AppHeader />
       <div class="relative h-full">

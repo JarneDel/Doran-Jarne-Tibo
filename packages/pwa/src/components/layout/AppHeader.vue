@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { ChevronDown, ChevronUp, Menu } from 'lucide-vue-next'
+import { ChevronDown, ChevronUp, Menu, X } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import firebase from '@/composables/useFirebase'
 import logo from '@/components/generic/Logo.vue'
@@ -77,6 +77,7 @@ export default defineComponent({
       logoutButton,
       firebaseUser,
       setLocale,
+      sidebarIsOpen,
       locale,
       topNavItems,
       username: computed(() =>
@@ -96,6 +97,7 @@ export default defineComponent({
     OnClickOutside,
     ChevronUp,
     Menu,
+    X,
   },
 })
 </script>
@@ -110,7 +112,12 @@ export default defineComponent({
         class="menu-button"
         @click="toggleSideNav"
       >
-        <Menu :size="32" class="ml-[0.375rem] mr-[0.875rem]"></Menu>
+        <Menu
+          v-if="sidebarIsOpen"
+          :size="32"
+          class="ml-[0.375rem] mr-[0.875rem]"
+        ></Menu>
+        <X v-else :size="32" class="ml-[0.375rem] mr-[0.875rem]"></X>
       </button>
       <router-link class="flex items-center justify-center gap-2" to="/">
         <logo class="h-10" />

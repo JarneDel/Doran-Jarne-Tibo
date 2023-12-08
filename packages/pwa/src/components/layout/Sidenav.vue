@@ -195,7 +195,7 @@ export default defineComponent({
       :class="{
         'min-w-54 w-1/6': !isClosed && !isMobile,
         'w-16': isClosed && !isMobile,
-        'z-100 absolute left-0 top-0 w-3/5': isMobile,
+        'z-100 absolute left-0 top-0 w-full': isMobile,
       }"
       class="min-h-full overflow-hidden bg-white"
     >
@@ -217,6 +217,7 @@ export default defineComponent({
             'rounded-r-md': section === page.name,
           }"
           :to="page.route"
+          @click="isClosed = true"
           class="px4 relative flex items-center gap-4 py-2"
         >
           <component :is="page.icon" />
