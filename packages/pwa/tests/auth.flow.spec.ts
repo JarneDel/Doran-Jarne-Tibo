@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { adminLogin, staffLogin } from './helpers/auth.test'
+import { adminLogin, staffLogin } from './helpers/auth.helper'
 
 test('Basic auth flow', async ({ page }) => {
   // get runner

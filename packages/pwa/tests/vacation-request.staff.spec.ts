@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { staffLogin } from './helpers/auth.test'
+import { staffLogin } from './helpers/auth.helper'
 
 test.beforeEach(async ({ page }) => {
   await staffLogin(page)
