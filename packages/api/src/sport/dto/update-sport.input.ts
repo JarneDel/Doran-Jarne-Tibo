@@ -12,7 +12,7 @@ export class UpdateSportInput extends PartialType(CreateSportInput) {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(3)
+  @MinLength(4)
   @Field() // Graphql
   name: string
 

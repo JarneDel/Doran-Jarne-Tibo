@@ -11,6 +11,7 @@ import { computed, defineComponent, ref } from 'vue';
 import StyledInputText from '@/components/generic/StyledInputText.vue';
 import UseFirebase from '../../../composables/useFirebase';
 import StyledButton from '@/components/generic/StyledButton.vue';
+import Error from '@/components/Error.vue';
 
 // Export default
 export default defineComponent({
@@ -18,6 +19,7 @@ export default defineComponent({
   components: {
     StyledInputText,
     StyledButton,
+    Error,
   },
 
   setup: function () {
@@ -35,6 +37,7 @@ export default defineComponent({
     // Variables
     const name = ref('');
     const description = ref('');
+    const errorMessages = ref<string[]>([]);
 
     const descriptionLength = computed(() => {
       return description.value.length + '/250';
@@ -50,13 +53,26 @@ export default defineComponent({
       };
 
       //Create a new room in the database
-      const res = await mutate({
+      mutate({
         createSportInput: params,
-      });
-      console.info(res);
+      })
+        .then((e) => {
+          //Redirect to the admin sports page
+          push('/admin/sports/');
+        })
+        .catch((e) => {
+          console.log('error');
+          console.log({ e });
+          const originalError = e.graphQLErrors[0].extensions
+            .originalError as any;
+          if (!originalError || !originalError.message)
+            return console.log('no message');
 
-      //Redirect to the admin sports page
-      push('/admin/sports/');
+          console.log({ originalError });
+          originalError.message.forEach((message: string) => {
+            errorMessages.value.push(message);
+          });
+        });
     };
 
     return {
@@ -65,12 +81,20 @@ export default defineComponent({
       description,
       handleSubmit,
       descriptionLength,
+      errorMessages,
     };
   },
 });
 </script>
 
 <template>
+  <Error
+    v-for="(error, index) of errorMessages"
+    :key="index"
+    :is-shown="errorMessages[index] !== ''"
+    :msg="error"
+    @update:is-shown="errorMessages[index] = ''"
+  />
   <div
     class="p-2 sm:p-4 md:p-8 flex min-h-full flex-col items-center justify-center"
   >

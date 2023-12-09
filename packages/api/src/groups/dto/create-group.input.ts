@@ -13,7 +13,7 @@ import { CreateUserInput } from 'src/users/dto/create-user.input'
 export class CreateGroupInput extends CreateUserInput {
   @IsString()
   @IsNotEmpty()
-  @MinLength(2)
+  @MinLength(4)
   @Field()
   name: string
 
