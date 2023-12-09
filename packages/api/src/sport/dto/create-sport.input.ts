@@ -7,6 +7,7 @@ import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator'
 export class CreateSportInput {
   @IsString()
   @MinLength(4)
+  @MaxLength(20)
   @Field() // Graphql
   name: string
 

@@ -1,5 +1,6 @@
 import { Room } from "./roomInterface"
 import { RequestUser } from "./requestUserInterface"
+import { Sport } from "./sportInterface"
 
 export interface material {
     id: string
@@ -7,7 +8,7 @@ export interface material {
     totalAmount: number
     wantedAmount: number
     price: number
-    sports: [{ id: string; name: string; createdAt: Date; updatedAt: Date }]
+    sports: Sport[]
     isComplete: boolean
     description: string
     amountReserved:number

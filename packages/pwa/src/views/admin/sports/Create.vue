@@ -1,17 +1,21 @@
 <script lang="ts">
-// Imports
-import { useMutation } from '@vue/apollo-composable';
+// Vue
+import { computed, defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
+// Components
+import StyledInputText from '@/components/generic/StyledInputText.vue';
+import StyledButton from '@/components/generic/StyledButton.vue';
+import Error from '@/components/Error.vue';
+// Composables
+import UseFirebase from '@/composables/useFirebase';
+// GraphQL
 import {
   CREATE_SPORT,
   createSportInput,
   ICreateSport,
 } from '@/graphql/sport.query';
-import { computed, defineComponent, ref } from 'vue';
-import StyledInputText from '@/components/generic/StyledInputText.vue';
-import UseFirebase from '../../../composables/useFirebase';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import Error from '@/components/Error.vue';
+// Apollo
+import { useMutation } from '@vue/apollo-composable';
 
 // Export default
 export default defineComponent({
@@ -23,13 +27,16 @@ export default defineComponent({
   },
 
   setup: function () {
+    // Router
+    const { push } = useRouter();
+
+    // Firebase
     const { firebaseUser } = UseFirebase();
     const idToken = ref();
     const getIdToken = async () => {
       idToken.value = await firebaseUser.value?.getIdToken();
     };
     getIdToken();
-    const { push } = useRouter();
 
     // CREATE ROOM
     const { mutate } = useMutation<ICreateSport>(CREATE_SPORT);
@@ -39,10 +46,12 @@ export default defineComponent({
     const description = ref('');
     const errorMessages = ref<string[]>([]);
 
+    // Computed
     const descriptionLength = computed(() => {
       return description.value.length + '/250';
     });
 
+    // Handle submit
     const handleSubmit = async (e: Event) => {
       //prevent default submit behaviour
       e.preventDefault();
@@ -61,8 +70,7 @@ export default defineComponent({
           push('/admin/sports/');
         })
         .catch((e) => {
-          console.log('error');
-          console.log({ e });
+          // GraphQL error messages
           const originalError = e.graphQLErrors[0].extensions
             .originalError as any;
           if (!originalError || !originalError.message)

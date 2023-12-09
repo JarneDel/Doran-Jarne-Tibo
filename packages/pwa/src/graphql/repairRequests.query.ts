@@ -41,6 +41,7 @@ query {
         sports{
           id
           name
+          description
         }
         pricePerHour
         type
@@ -54,6 +55,7 @@ query {
         sports{
           id
           name
+          description
         }
         isComplete
         description
@@ -105,6 +107,7 @@ query GetRepairRequestById($repairRequestId: String!) {
       sports{
         id
         name
+        description
       }
       pricePerHour
       type
@@ -118,6 +121,7 @@ query GetRepairRequestById($repairRequestId: String!) {
       sports{
         id
         name
+        description
       }
       isComplete
       description
@@ -172,6 +176,7 @@ export const CREATE_REPAIR_REQUEST = gql`
         sports {
           id
           name
+          description
         }
         pricePerHour
         type
@@ -184,6 +189,7 @@ export const CREATE_REPAIR_REQUEST = gql`
         sports {
           id
           name
+          description
         }
         price
         isComplete

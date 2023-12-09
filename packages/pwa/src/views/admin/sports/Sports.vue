@@ -1,27 +1,22 @@
 <script lang="ts">
-// Interfaces
-interface Sports {
-  GetAllSports: [
-    {
-      id: string;
-      name: string;
-      createdAt: string;
-      updatedAt: string;
-    },
-  ];
-}
-
-// Imports
-import { useQuery } from '@vue/apollo-composable';
-import { ALL_SPORTS } from '@/graphql/sport.query';
+// Vue
 import { defineComponent, ref, watch } from 'vue';
-import UseFirebase from '../../../composables/useFirebase';
-import { PlusCircle } from 'lucide-vue-next';
+import { useRouter } from 'vue-router';
+// Components
 import Modal from '@/components/Modal.vue';
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
-import useLastRoute from '@/composables/useLastRoute';
-import { useRouter } from 'vue-router';
 import StyledButton from '@/components/generic/StyledButton.vue';
+// Composables
+import useLastRoute from '@/composables/useLastRoute';
+import UseFirebase from '@/composables/useFirebase';
+// GraphQL
+import { ALL_SPORTS } from '@/graphql/sport.query';
+// Apollo
+import { useQuery } from '@vue/apollo-composable';
+// Lucide
+import { PlusCircle } from 'lucide-vue-next';
+// Interfaces
+import { ISports } from '@/interface/sportInterface';
 
 // Export default
 export default defineComponent({
@@ -34,6 +29,7 @@ export default defineComponent({
   setup() {
     // Router
     const { push } = useRouter();
+
     // Firebase
     const { firebaseUser } = UseFirebase();
     const idToken = ref();
@@ -41,16 +37,17 @@ export default defineComponent({
       idToken.value = await firebaseUser.value?.getIdToken();
     };
     getIdToken();
+
     // All sports
     const {
       loading: loadingSports,
       result: resultSports,
       error: errorSports,
       refetch: refetchSports,
-    } = useQuery<Sports>(ALL_SPORTS, {}, { fetchPolicy: 'cache-and-network' });
+    } = useQuery<ISports>(ALL_SPORTS, {}, { fetchPolicy: 'cache-and-network' });
 
+    // Watch last route
     const { lastRoute } = useLastRoute();
-
     watch(
       lastRoute,
       (value) => {
@@ -62,6 +59,7 @@ export default defineComponent({
       { immediate: true },
     );
 
+    // Fetch with filters
     const fetchWithFilters = () => {
       refetchSports();
     };
