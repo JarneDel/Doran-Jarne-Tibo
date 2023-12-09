@@ -1,18 +1,23 @@
 <script lang="ts">
-// Imports
-import { useMutation, useQuery } from '@vue/apollo-composable'
-import { useRouter } from 'vue-router'
+// Vue
+import { computed, defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
+// Components
+import StyledInputText from '@/components/generic/StyledInputText.vue';
+import StyledButton from '@/components/generic/StyledButton.vue';
+import Error from '@/components/Error.vue';
+// Composables
+import UseFirebase from '@/composables/useFirebase';
+// GraphQL
 import {
   CREATE_SERVICE,
   createServiceInput,
   ICreateService,
-} from '@/graphql/service.query'
-import { ALL_ROOMS, IRoom } from '@/graphql/room.query'
-import { ALL_STAFF } from '@/graphql/staff.query'
-import { computed, defineComponent, ref } from 'vue'
-import StyledInputText from '@/components/generic/StyledInputText.vue'
-import UseFirebase from '../../../composables/useFirebase'
-import StyledButton from '@/components/generic/StyledButton.vue'
+} from '@/graphql/service.query';
+import { ALL_ROOMS, IRoom } from '@/graphql/room.query';
+import { ALL_STAFF } from '@/graphql/staff.query';
+// Apollo
+import { useMutation, useQuery } from '@vue/apollo-composable';
 
 // Export default
 export default defineComponent({
@@ -20,16 +25,20 @@ export default defineComponent({
   components: {
     StyledInputText,
     StyledButton,
+    Error,
   },
 
   setup: function () {
-    const { firebaseUser } = UseFirebase()
-    const idToken = ref()
+    // Router
+    const { push } = useRouter();
+
+    // Firebase
+    const { firebaseUser } = UseFirebase();
+    const idToken = ref();
     const getIdToken = async () => {
-      idToken.value = await firebaseUser.value?.getIdToken()
-    }
-    getIdToken()
-    const { push } = useRouter()
+      idToken.value = await firebaseUser.value?.getIdToken();
+    };
+    getIdToken();
 
     // All ROOMS
     const {
@@ -37,7 +46,7 @@ export default defineComponent({
       result: resultRooms,
       error: errorRooms,
       onResult: onResultRooms,
-    } = useQuery<IRoom>(ALL_ROOMS)
+    } = useQuery<IRoom>(ALL_ROOMS);
 
     // All STAFF
     const {
@@ -45,79 +54,91 @@ export default defineComponent({
       result: resultStaff,
       error: errorStaff,
       onResult: onResultStaff,
-    } = useQuery(ALL_STAFF)
+    } = useQuery(ALL_STAFF);
 
     // CREATE ROOM
-    const { mutate } = useMutation<ICreateService>(CREATE_SERVICE)
+    const { mutate } = useMutation<ICreateService>(CREATE_SERVICE);
 
     // Variables
-    const name = ref('')
-    const description = ref('')
-    const roomList = ref()
-    const roomIds = ref<Array<string>>()
-    const staffList = ref()
-    const staffUIDs = ref<Array<string>>()
+    const name = ref('');
+    const description = ref('');
+    const roomList = ref();
+    const roomIds = ref<Array<string>>();
+    const staffList = ref();
+    const staffUIDs = ref<Array<string>>();
+    const errorMessages = ref<string[]>([]);
 
+    // Computed
     const descriptionLength = computed(() => {
-      return description.value.length + '/250'
-    })
+      return description.value.length + '/250';
+    });
+    const staffCount = computed(() => {
+      return staffList.value?.filter((s: any) => s.selected).length;
+    });
+    const roomCount = computed(() => {
+      return roomList.value?.filter((s: any) => s.selected).length;
+    });
 
-    onResultRooms(result => {
+    // ON RESULT
+    onResultRooms((result) => {
       roomList.value = result.data.GetAllRooms.map((room: any) => {
         return {
           ...room,
           selected: false,
-        }
-      })
-    })
-
-    onResultStaff(result => {
+        };
+      });
+    });
+    onResultStaff((result) => {
       staffList.value = result.data.staff.map((staff: any) => {
         return {
           ...staff,
           selected: false,
-        }
-      })
-    })
+        };
+      });
+    });
 
-    const staffCount = computed(() => {
-      return staffList.value?.filter((s: any) => s.selected).length
-    })
-
-    const roomCount = computed(() => {
-      return roomList.value?.filter((s: any) => s.selected).length
-    })
-
+    // Handle submit
     const handleSubmit = async (e: Event) => {
       //prevent default submit behaviour
-      e.preventDefault()
+      e.preventDefault();
 
       roomIds.value = roomList.value
         ?.filter((s: any) => s.selected)
-        .map((s: any) => s.id)
+        .map((s: any) => s.id);
 
       staffUIDs.value = staffList.value
         ?.filter((s: any) => s.selected)
-        .map((s: any) => s.UID)
+        .map((s: any) => s.UID);
 
       const params: createServiceInput = {
         name: name.value,
         description: description.value,
         roomId: roomIds.value || [],
         staffUID: staffUIDs.value || [],
-      }
+      };
 
-      console.log(params)
+      console.log(params);
 
       //Create a new room in the database
-      const res = await mutate({
+      mutate({
         createServiceInput: params,
       })
-      console.info(res)
+        .then((e) => {
+          //Redirect to the admin sports page
+          push('/admin/services/');
+        })
+        .catch((e) => {
+          // GraphQL error messages
+          const originalError = e.graphQLErrors[0].extensions
+            .originalError as any;
+          if (!originalError || !originalError.message)
+            return console.log('no message');
 
-      //Redirect to the admin sports page
-      push('/admin/services/')
-    }
+          originalError.message.forEach((message: string) => {
+            errorMessages.value.push(message);
+          });
+        });
+    };
 
     return {
       idToken,
@@ -139,12 +160,20 @@ export default defineComponent({
       roomList,
       staffCount,
       roomCount,
-    }
+      errorMessages,
+    };
   },
-})
+});
 </script>
 
 <template>
+  <Error
+    v-for="(error, index) of errorMessages"
+    :key="index"
+    :is-shown="errorMessages[index] !== ''"
+    :msg="error"
+    @update:is-shown="errorMessages[index] = ''"
+  />
   <div
     class="flex min-h-full flex-col items-center justify-center p-2 sm:p-4 md:p-8"
   >

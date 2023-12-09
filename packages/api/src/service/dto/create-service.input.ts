@@ -1,10 +1,10 @@
 import { Field, InputType } from '@nestjs/graphql'
-import { IsNotEmpty, IsString } from 'class-validator'
+import { IsString, MinLength } from 'class-validator'
 
 @InputType()
 export class CreateServiceInput {
   @IsString()
-  @IsNotEmpty()
+  @MinLength(4)
   @Field()
   name: string
 
