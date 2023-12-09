@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+import {Sport} from '@/interface/sportInterface'
 
 export const ALL_ROOMS = gql`
   query {
@@ -8,6 +9,7 @@ export const ALL_ROOMS = gql`
       sports {
         id
         name
+        description
       }
       pricePerHour
       type
@@ -23,6 +25,7 @@ export const ALL_GYMS = gql`
       sports {
         id
         name
+        description
       }
       pricePerHour
       type
@@ -40,6 +43,7 @@ export const ALL_CHANGING_ROOMS = gql`
       sports {
         id
         name
+        description
       }
       pricePerHour
       type
@@ -57,6 +61,7 @@ export const ALL_WORK_ROOMS = gql`
       sports {
         id
         name
+        description
       }
       pricePerHour
       type
@@ -74,6 +79,7 @@ export const ALL_SWIMMING_POOLS = gql`
       sports {
         id
         name
+        description
       }
       pricePerHour
       type
@@ -91,6 +97,7 @@ export const ALL_DIVE_POOLS = gql`
       sports {
         id
         name
+        description
       }
       pricePerHour
       type
@@ -108,6 +115,7 @@ export const GET_ONE_ROOM = gql`
       sports {
         id
         name
+        description
       }
       pricePerHour
       type
@@ -124,6 +132,7 @@ export const CREATE_ROOM = gql`
       sports {
         id
         name
+        description
         createdAt
         updatedAt
       }
@@ -150,12 +159,7 @@ export const DELETE_ROOM = gql`
 export interface Room {
   id: string
   name: string
-  sports: {
-    id: string
-    name: string
-    createdAt: string
-    updatedAt: string
-  }[]
+  sports: Sport[]
   pricePerHour: number
   type: string
 }
