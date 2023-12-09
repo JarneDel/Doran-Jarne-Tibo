@@ -1,9 +1,9 @@
-version: '3.1'
+version: '3.8'
 name: api-sports-complex
 services:
   mongodb:
     image: mongo
-    restart: on-failure:5 # On error, try to restart for a maximum of 5 times
+    restart: unless-stopped
     ports:
       - "27031:27017"
     environment:
