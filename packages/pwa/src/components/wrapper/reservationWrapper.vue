@@ -1,5 +1,5 @@
 <script lang="ts">
-import Sidenav from '@/components/wrapper/Sidenav.vue'
+import Sidenav from '@/components/layout/Sidenav.vue'
 
 export default {
   name: 'My Component',

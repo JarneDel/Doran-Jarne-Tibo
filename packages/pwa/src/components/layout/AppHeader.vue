@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { ChevronDown, ChevronUp, Menu, X } from 'lucide-vue-next'
+import { ChevronDown, ChevronUp, Globe, Menu, X } from 'lucide-vue-next'
 import useUser from '@/composables/useUser'
 import firebase from '@/composables/useFirebase'
 import logo from '@/components/generic/Logo.vue'
@@ -14,6 +14,7 @@ import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
 import useA11y from '@/composables/useA11y.ts'
 import ProfileContextButton from '@/components/layout/ProfileContextButton.vue'
+import LanguagePicker from '@/components/generic/LanguagePicker.vue'
 
 export default defineComponent({
   computed: {
@@ -67,12 +68,14 @@ export default defineComponent({
       sidebarIsOpen.value = !sidebarIsOpen.value
     }
 
+    const languagePickerIsOpen = ref<Boolean>(false)
     return {
       windowWidth: width,
       MOBILE_VIEWPORT_SIZE,
       options,
       toggleOptions,
       toggleSideNav,
+      languagePickerIsOpen,
       customUser,
       logoutButton,
       firebaseUser,
@@ -89,6 +92,7 @@ export default defineComponent({
   },
 
   components: {
+    LanguagePicker,
     ProfileContextButton,
     ProfilePicture,
     StyledButton,
@@ -98,6 +102,7 @@ export default defineComponent({
     ChevronUp,
     Menu,
     X,
+    Globe,
   },
 })
 </script>
@@ -141,18 +146,25 @@ export default defineComponent({
           </router-link>
         </li>
       </ul>
-      <div v-if="!customUser">
-        <label class="my-3 block">
-          <select
-            v-model="locale"
-            class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
-            @change="setLocale(locale)"
-          >
-            <option v-for="(locale, key) in SUPPORTED_LOCALES" :value="key">
-              {{ locale }}
-            </option>
-          </select>
-        </label>
+      <div v-if="!customUser" class="relative my-3">
+        <!--        <select-->
+        <!--          v-if="MOBILE_VIEWPORT_SIZE < windowWidth"-->
+        <!--          v-model="locale"-->
+        <!--          class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"-->
+        <!--          @change="setLocale(locale)"-->
+        <!--        >-->
+        <!--          <option v-for="(locale, key) in SUPPORTED_LOCALES" :value="key">-->
+        <!--            {{ locale }}-->
+        <!--          </option>-->
+        <!--        </select>-->
+        <button
+          aria-label="Language"
+          class="mx3 hover:text-primary focus-visible:ring-primary flex content-center items-center rounded-full outline-none transition-colors focus-visible:ring-2 focus-visible:ring-opacity-50"
+          @click="languagePickerIsOpen = !languagePickerIsOpen"
+        >
+          <Globe :size="32"></Globe>
+        </button>
+        <language-picker v-model:is-open="languagePickerIsOpen" />
       </div>
       <ProfileContextButton :links="topNavItems" :user="customUser" />
     </div>

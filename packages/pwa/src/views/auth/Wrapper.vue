@@ -1,14 +1,12 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 
-export default defineComponent({});
+export default defineComponent({})
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center">
-    <div
-      class="bg-white rounded-2  min-w-md shadow-md p-8"
-    >
+  <div class="flex min-h-screen justify-center sm:items-center">
+    <div class="rounded-2 sm:min-w-md mt3xl min-w-full bg-white p-8 shadow-md">
       <RouterView />
     </div>
   </div>
