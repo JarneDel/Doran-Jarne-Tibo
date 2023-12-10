@@ -28,7 +28,7 @@ test('Basic auth flow', async ({ page }) => {
 
 test('admin login', async ({ page }) => {
   await adminLogin(page)
-  await expect(page.getByRole('link', { name: 'Administratie' })).toBeVisible()
+  await expect(page.locator('a[href="/admin"]')).toBeVisible()
 })
 
 test('staff login', async ({ page }) => {

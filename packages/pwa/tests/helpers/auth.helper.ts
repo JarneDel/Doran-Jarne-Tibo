@@ -19,3 +19,7 @@ export async function staffLogin(page: Page) {
   await page.getByLabel('Password').press('Enter')
   await page.waitForResponse(response => response.url().includes('/graphql'))
 }
+
+export async function logOut(page: Page) {
+  await page.goto('http://localhost:5173/logout')
+}
