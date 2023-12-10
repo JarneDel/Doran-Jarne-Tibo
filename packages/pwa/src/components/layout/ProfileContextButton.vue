@@ -37,6 +37,7 @@ const { MOBILE_VIEWPORT_SIZE } = useA11y()
     <OnClickOutside @trigger="open = false">
       <button
         v-if="user"
+        id="profile"
         class="gap2 mx-2 flex flex-row items-center justify-center"
         @click="open = !open"
       >
@@ -77,6 +78,7 @@ const { MOBILE_VIEWPORT_SIZE } = useA11y()
             </li>
             <li>
               <StyledButton
+                id="account-log-out"
                 class="mt-2"
                 @click="
                   () => {

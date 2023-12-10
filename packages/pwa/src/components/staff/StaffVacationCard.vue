@@ -97,6 +97,7 @@ export default defineComponent({
     <div v-if="result?.vacationRequestLoggedIn" class="p2 mt-4 rounded">
       <FilterOptions
         v-model="filter"
+        :ids="['vr-open', 'vr-closed', 'vr-expired']"
         :item-count="[openCount, closedCount, expiredCount]"
         :options="['open', 'closed', 'expired']"
         class="mb-4"

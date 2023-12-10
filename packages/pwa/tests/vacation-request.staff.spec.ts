@@ -1,5 +1,5 @@
 import { expect, Page, test } from '@playwright/test'
-import { staffLogin, adminLogin } from './helpers/auth.helper'
+import { staffLogin, switchToAdmin, switchToStaff } from './helpers/auth.helper'
 
 const TWO_DAYS = 2 * 24 * 60 * 60 * 1000
 const FOUR_DAYS = 4 * 24 * 60 * 60 * 1000
@@ -43,6 +43,21 @@ async function cancelVacationRequest(page: Page, reload: boolean) {
   await page.getByRole('button', { name: 'Cancel request' }).click()
 }
 
+async function deleteApprovedVacationRequest(page: Page) {
+  await switchToStaff(page)
+  // delete the approved vacation request
+  await page.getByRole('link', { name: 'Staff' }).click()
+  await page.waitForResponse(response => response.url().includes('/graphql'))
+  await page.locator('#vr-closed').click()
+  await page.getByRole('button').nth(3).click()
+  await page.getByRole('button', { name: 'Cancel request' }).click()
+  await expect(
+    page
+      .locator('div:last-child > .min-w-xs')
+      .getByText('Cancelled by staff member'),
+  ).toBeVisible()
+}
+
 test('Create Vacation Request', async ({ page }) => {
   // login as staff
   await staffLogin(page)
@@ -58,17 +73,30 @@ test('Create Vacation Request', async ({ page }) => {
 
 test('view open vacation requests', async ({ page }): Promise<void> => {
   // create vacation request as staff
+  await createRequest(page)
+  expect(await page.isVisible('text=' + getDateFromNow(TWO_DAYS)))
+
+  await switchToStaff(page)
+  await cancelVacationRequest(page, true)
+})
+
+test('approve vacation request', async ({ page }): Promise<void> => {
+  // create vacation request as staff
+  await createRequest(page)
+  await page.getByRole('button', { name: /Goedkeuren|Approve/ }).click()
+  await page.getByRole('button', { name: 'Approve' }).click()
+  // check if the vacation request is in the approved vacation requests
+  await page.getByText(/Gesloten|Closed/).click()
+  expect(await page.isVisible('text=' + getDateFromNow(TWO_DAYS)))
+  await deleteApprovedVacationRequest(page)
+})
+
+async function createRequest(page: Page) {
   await staffLogin(page)
   await createVacationRequest(page)
   expect(await page.isVisible('text=' + getDateFromNow(TWO_DAYS)))
-  // log in as admin
-  await page.getByRole('button', { name: 'staff' }).click()
-  await page.getByRole('button', { name: 'Log out' }).click()
-  await page.waitForURL('http://localhost:5173/login')
-  console.log('logging in')
-  await adminLogin(page)
-  // check if the vacation request is in the open vacation requests
+  await switchToAdmin(page)
+  // approve vacation request
   await page.locator('a[href="/admin"]').click()
   await page.locator('a[href="/admin/vacation"]').click()
-  expect(await page.isVisible('text=' + getDateFromNow(TWO_DAYS)))
-})
+}
