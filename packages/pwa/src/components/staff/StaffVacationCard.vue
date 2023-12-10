@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { defineComponent, PropType, ref, watch } from 'vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GET_VACATION_REQUESTS } from '@/graphql/vacation.request.query.ts'
@@ -7,6 +7,7 @@ import VacationRow from '@/components/staff/VacationRow.vue'
 import { Badge, BadgeCheck } from 'lucide-vue-next'
 import FilterOptions from '@/components/generic/FilterOptions.vue'
 import { StaffMember } from '@/interface/staff.interface.ts'
+import useLastRoute from '@/composables/useLastRoute.ts'
 
 export default defineComponent({
   name: 'StaffVacationCard',
@@ -18,8 +19,16 @@ export default defineComponent({
     },
   },
   setup() {
-    const { result } = useQuery(GET_VACATION_REQUESTS)
+    const { result, refetch } = useQuery(GET_VACATION_REQUESTS)
     const filter = ref<string>('open')
+
+    const { lastRoute } = useLastRoute()
+    watch(lastRoute, () => {
+      if (lastRoute.value == '/staff/request-vacation') {
+        refetch()
+      }
+    })
+
     return { result, filter }
   },
   computed: {
@@ -88,6 +97,7 @@ export default defineComponent({
     <div v-if="result?.vacationRequestLoggedIn" class="p2 mt-4 rounded">
       <FilterOptions
         v-model="filter"
+        :ids="['vr-open', 'vr-closed', 'vr-expired']"
         :item-count="[openCount, closedCount, expiredCount]"
         :options="['open', 'closed', 'expired']"
         class="mb-4"

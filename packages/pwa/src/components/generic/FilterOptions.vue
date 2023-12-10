@@ -27,6 +27,10 @@ export default defineComponent({
       type: Array as PropType<number[]>,
       required: false,
     },
+    ids: {
+      type: Array as PropType<string[]>,
+      required: false,
+    },
   },
   emits: ['update:modelValue'],
 })
@@ -36,6 +40,7 @@ export default defineComponent({
   <div class="flex flex-row items-center">
     <label
       v-for="(option, index) in options"
+      :id="ids ? ids[index] : ''"
       :key="option"
       :class="{
         active: modelValue === option,
