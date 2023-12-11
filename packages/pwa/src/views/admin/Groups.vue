@@ -58,19 +58,19 @@ export default defineComponent({
           <div class="flex flex-col">
           <label class="xl:text-lg text-base " :for="group.id">Score:</label>
           <input
-            @change="(e:Event) =>updateScore(group.id,parseInt(e.target.value))"
+            @change="(e:Event) =>updateScore(group.id,100-parseInt(e.target.value))"
             class=" my-2 slider h-4 rounded-md outline-none duration-200 opacity-70 hover:opacity-100 appearance-none bg-gradient-to-r from-red-600 via-yellow-400 to-green-600"
             :id="group.id"
             type="range"
-            :value="group.score"
+            :value="100-group.score"
           />
           </div>
           <div class="flex items-center justify-between">
-            <StyledButton class="my-2" @click="updateScore(group.id,group.score-1)">
+            <StyledButton class="my-2" @click="updateScore(group.id,group.score+1)">
               <Minus class="xl:h-4 h-3"/>
             </StyledButton>
             <p class="xl:text-lg lg:text-base">{{ group.score}}</p>
-            <StyledButton class="my-2" @click="updateScore(group.id,group.score+1)">
+            <StyledButton class="my-2" @click="updateScore(group.id,group.score-1)">
               <Plus class="xl:h-4 h-3"/>
             </StyledButton>
           </div>
