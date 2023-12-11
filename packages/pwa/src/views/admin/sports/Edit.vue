@@ -151,11 +151,12 @@ export default defineComponent({
           class="mt-2 block"
           for="description"
         >
-          <span class="text-primary-text font-medium">{{
+          <label class="text-primary-text font-medium" for="description">{{
             $t('inventory.description')
-          }}</span>
+          }}</label>
           <div class="flex items-end">
             <textarea
+              id="description"
               v-model="currentItem.description"
               maxlength="250"
               class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark h-34 w-full resize-none rounded bg-white px-4 py-1.5 outline-none transition-colors"

@@ -108,35 +108,27 @@ export default defineComponent({
       class="my-1"
       name="description"
     />
+    <styled-input-text
+      v-model="idealAmountInStock"
+      :label="$t('item.new.ideal')"
+      class="my-1"
+      :max="250"
+      :min="0"
+      name="idealAmountInStock"
+      step="1"
+      type="number"
+    />
 
-    <label class="my-1" for="idealAmountInStock">
-      <span>
-        {{ $t('item.new.ideal') }}
-      </span>
-      <input
-        id="idealAmountInStock"
-        v-model="idealAmountInStock"
-        class="block w-16"
-        max="250"
-        min="0"
-        name="idealAmountInStock"
-        step="1"
-        type="number"
-      />
-    </label>
-
-    <label for="inStock">
-      <span>{{ $t('item.new.inStock') }}</span>
-      <input
-        id="inStock"
-        v-model="inStock"
-        class="block w-16"
-        max="250"
-        min="0"
-        name="inStock"
-        step="1"
-        type="number"
-    /></label>
+    <styled-input-text
+      v-model="inStock"
+      :label="$t('item.new.inStock')"
+      class="my-1"
+      :max="250"
+      :min="0"
+      name="inStock"
+      step="1"
+      type="number"
+    />
 
     <label for="service">{{ $t('item.new.services') }}</label>
 
@@ -144,7 +136,7 @@ export default defineComponent({
       <select
         id="service"
         v-model="service"
-        class="bg-primary-surface b-2 border-neutral-200 px-4"
+        class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
         name="service"
       >
         <option value="">empty</option>
