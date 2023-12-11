@@ -48,7 +48,7 @@ export class SeedModule {
   }
 
   private async seedE2ETestDB() {
-    await this.seedService.deleteAllFirebaseUsers()
+    // await this.seedService.deleteAllFirebaseUsers()
     await this.seedService.addStaffFromJson()
     await this.seedService.addGroupsFromJson()
     await this.seedService.addFirebaseUsers()
