@@ -76,7 +76,7 @@ export default defineComponent({
     <img
       v-else
       :src="pfpUrl"
-      alt="your profile"
+      alt="your profile picture"
       class="size col-start-1 row-start-1 rounded-full object-cover"
     />
     <span
