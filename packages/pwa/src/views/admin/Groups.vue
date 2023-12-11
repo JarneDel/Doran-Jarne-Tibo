@@ -92,6 +92,11 @@ export default defineComponent({
   cursor: pointer;
 }
 
+.slider:focus
+{
+  outline: #f5cb5c auto 8px;
+}
+
 .slider::-moz-range-thumb {
   width: 5px;
   height: 25px;

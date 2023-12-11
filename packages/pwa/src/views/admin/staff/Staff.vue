@@ -193,7 +193,7 @@ export default defineComponent({
       v-else-if="filter == 'staff'"
       class="mt4 relative h-min w-full overflow-hidden rounded-xl bg-white p-4 shadow-md dark:bg-gray-800"
     >
-      <div class="gap4 flex flex-row flex-row flex-wrap">
+      <div class="gap4 flex flex-row flex-wrap">
         <AdminStaffCard
           v-for="staffMember in staff"
           :key="staffMember.id"
