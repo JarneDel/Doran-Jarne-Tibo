@@ -1,0 +1,3 @@
+steps:
+  - name: 'docker/compose:2.7'
+    args: ['-f', 'infra/docker-compose-production.yaml', 'up', '-d']

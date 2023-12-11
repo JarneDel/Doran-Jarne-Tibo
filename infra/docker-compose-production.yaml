@@ -35,6 +35,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    image: gcr.io/sportcomplex-81562/api:latest
 
     depends_on:
       - db
@@ -45,6 +46,8 @@ services:
       dockerfile: packages/pwa/Dockerfile
     ports:
       - 8081:80
+    image: gcr.io/sportcomplex-81562/pwa:latest
+
 
 volumes:
   dbvolume:
