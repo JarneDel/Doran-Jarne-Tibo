@@ -12,7 +12,7 @@ async function bootstrap() {
     'GOOGLE_APPLICATION_CREDENTIALS',
     'URL_FRONTEND',
   ])
-  optionalEnv(['MAIL_USER', 'MAIL_PASSWORD'])
+  optionalEnv(['MAIL_USER', 'MAIL_PASSWORD', 'MAIL_PROVIDER'])
   testEnv()
   const app = await NestFactory.create(AppModule, {
     logger: new CustomLogger(),

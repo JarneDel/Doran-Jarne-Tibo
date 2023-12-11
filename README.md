@@ -1,28 +1,32 @@
 # Doran-Jarne-Tibo
 
-## rekening houden met:
+## Requirements
 
-- Zwembad en onderhoud ervan
-- Administratie
-- Sportzalen - verhuur
-- Kleedkamers / lokalen
-- Catering / automaten
-- Onderhoud gebouw
-- poetsdienst
+- Firebase
+- Docker
+- Node.js
 
+## [API - Readme](packages/api/README.md)
 
-## env files
+## [PWA - Readme](packages/pwa/README.md)
 
-### API
+## Setup project locally
 
+### env files
+
+#### API
+
+Firebase Admin Token
 [Generate Private Key](https://console.firebase.google.com/project/_/settings/serviceaccounts/adminsdk)  
 In docker-compose-production.yml, add the path to the private key in the secrets section.
 
-[//]: # (```dotenv)
-
-[//]: # (    GOOGLE_APPLICATION_CREDENTIALS=path-to-firebase-adminsdk.json)
-
-[//]: # (```)
+```dotenv
+GOOGLE_APPLICATION_CREDENTIALS=path-to-firebase-adminsdk.json
+# Mail is required for signing up staff members, not needed to start the app,
+MAIL_USER=email@hotmail.com
+MAIL_PASSWORD=password
+MAIL_PROVIDER="email provider (outlook, ...)"
+```
 
 ```dotenv
 DB_HOST=localhost
@@ -32,7 +36,7 @@ URL_FRONTEND=http://localhost:5173
 NODE_ENV=development
 ```
 
-### PWA 
+#### PWA
 
 [Get Firebase Config](https://console.firebase.google.com/project/_/settings/general/web)
 
@@ -50,7 +54,9 @@ VUE_APP_FIREBASE_MEASUREMENT_ID=<measurementId>
 VITE_API_URL=http://localhost:3000
 ```
 
-## prod env files
+### prod env files
+
+#### api
 
 ```dotenv
 # /packages/api/.env.production
@@ -62,7 +68,7 @@ NODE_ENV=procuction
 CLI_PATH=./packages/api/dist/cli.js
 ```
 
-### PWA
+#### PWA
 
 [Get Firebase Config](https://console.firebase.google.com/project/_/settings/general/web)
 
@@ -82,9 +88,11 @@ VUE_APP_FIREBASE_MEASUREMENT_ID=<measurementId>
 VITE_API_URL=http://localhost:3000
 ```
 
-## language utils
+### language utils
 
-### secret
+[Spreadsheet](https://docs.google.com/spreadsheets/d/16GYXaVcVnrA_K-XOY9DYLto1OKcnRWxJVT9WsYIdWz8/edit#gid=0)
+
+#### secret
 
 [Google](https://console.cloud.google.com/apis/credentials/)
 
@@ -96,58 +104,55 @@ Save it as `oauthsecret.json` in `packages/pwa/src/utils/`
 Add yourself as test user in 
 [OAuth consent screen](https://console.cloud.google.com/apis/credentials/consent)
 
-### run script
+### run language script
 
 ```shell
 npm run language
 ```
 
-## [seeding and clearing database](packages/api/seeding.md)
+### [seeding and clearing database](packages/api/seeding.md)
 
 Seed database with all data
-```shell
- cd ./packages/api
- npx nestjs-command seed:database:all   
+```bash
+npm run seed -w packages/api
 ```
 
-Seed database with stock data
-```shell
- cd ./packages/api
- npx nestjs-command seed:database:stock    
+Reset database 
+```bash
+npm run reset -w packages/pwa
+``` 
+
+### Start project in dev mode
+
+```bash
+cd infra
+docker compose -f ./docker-compose-dev.yaml up -d
+npm run dev
 ```
 
-Seed database with groups data
+### Start project in production mode
+
 ```shell
- cd ./packages/api
- npx nestjs-command seed:database:groups    
+cd infra
+docker compose -f ./docker-compose-production.yaml up 
 ```
 
-Seed database with loanableMaterials data
-```shell
- cd ./packages/api
- npx nestjs-command seed:database:loanableMaterials   
+## E2E Testing
+
+setup emulators
+
+```bash
+npm run dev:emulate
 ```
 
-clear All containers
+Run tests
+
 ```shell
- cd ./packages/api
- npx nestjs-command seed:reset:all
+npm run test -w pwa
 ```
 
-clear stock container
-```shell
- cd ./packages/api
- npx nestjs-command seed:reset:stock    
-```
+## Unit Testing
 
-clear groups container
 ```shell
- cd ./packages/api
- npx nestjs-command seed:reset:groups    
-```
-
-clear loanableMaterials container
-```shell
- cd ./packages/api
- npx nestjs-command seed:reset:loanableMaterials    
+npm run test -w api
 ```

@@ -30,8 +30,8 @@ export class StockService {
     // check if service exists
     const service = await this.serviceService.findOne(serviceId)
     if (!service) throw new GraphQLError(`Service ${serviceId} not found}`)
-    if (!(await this.isNameUnique(name))) return new GraphQLError(`item exists`)
-    console.log('creating new item')
+    if (!(await this.isStockItemNameUnique(name)))
+      throw new GraphQLError(`item exists`)
     s.name = name
     s.description = description
     s.idealStock = idealStock
@@ -47,7 +47,6 @@ export class StockService {
   }
 
   findOne(id: string) {
-    console.log('id', id)
     const objectId = new ObjectId(id)
     return this.stockRepository.findOneByOrFail({
       //@ts-ignore
@@ -56,11 +55,14 @@ export class StockService {
   }
 
   async update(id: string, updateStockInput: UpdateStockInput) {
-    console.log('updateStockInput', updateStockInput)
-    const s = await this.stockRepository.findOneByOrFail({
-      //@ts-ignore
-      _id: new ObjectId(id),
-    })
+    const s = await this.stockRepository
+      .findOneByOrFail({
+        //@ts-ignoregl sta
+        _id: new ObjectId(id),
+      })
+      .catch(e => {
+        throw new GraphQLError('Stock item not found')
+      })
     s.name = updateStockInput.name
     s.description = updateStockInput.description
     s.idealStock = updateStockInput.idealStock
@@ -71,10 +73,8 @@ export class StockService {
   }
 
   async remove(id: string): Promise<string> {
-    console.log('deleting')
     const result = await this.stockRepository.delete(id)
     if (result.affected === 1) {
-      console.log('deleted item with id', id)
       return id
     }
   }
@@ -110,7 +110,6 @@ export class StockService {
       }
     }
 
-
     options.where = {
       ...options.where,
     }
@@ -128,7 +127,6 @@ export class StockService {
       return
     }
 
-
     const validateOrderDirections = ['ASC', 'DESC', 'asc', 'desc']
     if (!validateOrderDirections.includes(orderDirection)) {
       throw new GraphQLError(
@@ -144,7 +142,7 @@ export class StockService {
       'service',
     ]
     if (!validateOrderFields.includes(orderByField)) {
-      throw new GraphQLError(`Invalid orderByField ${orderByField} for Stock`)
+      throw new GraphQLError(`Invalid orderByField for Stock`)
     }
 
     if (orderByField === 'service') {
@@ -159,7 +157,12 @@ export class StockService {
     }
   }
 
-  private async isNameUnique(name: string): Promise<boolean> {
+  /*
+   * Checks if a stock item with the given name already exists
+   * @param name The name to check
+   * @returns true if the name is unique, false otherwise
+   */
+  private async isStockItemNameUnique(name: string): Promise<boolean> {
     try {
       const stockItemWithName = await this.stockRepository.find({
         where: {

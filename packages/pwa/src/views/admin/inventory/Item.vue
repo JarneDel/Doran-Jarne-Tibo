@@ -24,7 +24,7 @@ export default defineComponent({
     const id = computed(() => currentRoute.value.params.id)
     // region graphql
     const { error, loading, result, onResult } = useQuery(ONE_STOCK, {
-      id: id.value,
+      id: id.value as string,
     })
     const { mutate: deleteItem } = useMutation(DELETE_STOCK)
 
@@ -55,6 +55,7 @@ export default defineComponent({
       if (!confirm('Are you sure you want to delete this item?')) return
       deleteItem({ id }).then(e => {
         if (e?.data && e.data.removeStock) {
+          // @ts-ignore
           if (e.data.removeStock === id) {
             replace('/admin/inventory')
           }

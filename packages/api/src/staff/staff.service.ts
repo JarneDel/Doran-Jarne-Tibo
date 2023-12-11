@@ -147,7 +147,11 @@ export class StaffService {
     return this.staffRepository.save(staff)
   }
 
-  async removeVacation(uid: string, startDate: Date, endDate: Date) {
+  async removeVacation(
+    uid: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<Staff> {
     const staff = await this.findOneByUid(uid)
     const days = Math.ceil(
       (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24),
@@ -165,5 +169,35 @@ export class StaffService {
     }
 
     return this.staffRepository.save(staff)
+  }
+
+  async updateRole(id: string, newRole: Role, adminUid: string) {
+    const admin = await this.findOneByUid(adminUid)
+    const staffMember = await this.findOne(id)
+    if (!staffMember) {
+      throw new GraphQLError('Staff member not found')
+    }
+    if (!admin) {
+      throw new GraphQLError('Your account was not found')
+    }
+    if (
+      this.getRoleValue(admin.role) < this.getRoleValue(newRole) &&
+      admin.role !== Role.SUPER_ADMIN
+    ) {
+      throw new GraphQLError('You cannot assign this role')
+    }
+
+    staffMember.role = newRole
+    return this.staffRepository.save(staffMember)
+  }
+
+  private getRoleValue(role: Role) {
+    const roleValues = {
+      [Role.SUPER_ADMIN]: 3,
+      [Role.ADMIN]: 2,
+      [Role.STAFF]: 1,
+    }
+
+    return roleValues[role] || 0
   }
 }

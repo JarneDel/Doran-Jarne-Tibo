@@ -18,22 +18,6 @@ export interface StaffBasics {
   phone: string
 }
 
-
-export interface Service {
-  id: string
-  description: string
-  name: string
-  rooms: {
-    name: string
-    id: string
-  }[]
-  staff: {
-    firstName: string
-    lastName: string
-    id: string
-  }[]
-}
-
 export interface StaffMember {
   UID: string
   createdAt: Date
@@ -42,12 +26,32 @@ export interface StaffMember {
   holidayDates: Date[]
   holidaysLeft: number
   holidaysTotal: number
+  role: string
   id: string
   lastName: string
   phone: string
+  profilePictureUrl: string
   workingHours: {
     day: number
     endTime: string
     startTime: string
   }[]
+}
+
+export interface Staff {
+  __typename?: string
+  id: string
+  UID: string
+  locale: string
+  role: string
+  createdAt: string
+  updatedAt: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  holidaysLeft: number
+  holidaysTotal: number
+  holidayDates: string[]
+  profilePictureUrl: string
 }

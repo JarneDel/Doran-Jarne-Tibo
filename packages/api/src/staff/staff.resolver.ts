@@ -7,8 +7,11 @@ import { UseGuards } from '@nestjs/common'
 import { FirebaseGuard } from 'src/authentication/guards/firebase.guard'
 import { UserRecord } from 'firebase-admin/auth'
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator'
-import { User } from '../users/entities/user.entity'
+import { Role, User } from '../users/entities/user.entity'
+import { RolesGuard } from '../authentication/guards/roles.guard'
+import { AllowedRoles } from '../authentication/decorators/role.decorator'
 
+@UseGuards(FirebaseGuard)
 @Resolver('Staff')
 export class StaffResolver {
   constructor(private readonly staffService: StaffService) {}
@@ -59,5 +62,16 @@ export class StaffResolver {
       user.uid,
       profilePictureUrl,
     )
+  }
+
+  @Mutation(() => User)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @AllowedRoles(Role.SUPER_ADMIN, Role.ADMIN)
+  async updateRole(
+    @Args('id') id: string,
+    @Args('role') role: Role,
+    @FirebaseUser() user: UserRecord,
+  ) {
+    return this.staffService.updateRole(id, role, user.uid)
   }
 }

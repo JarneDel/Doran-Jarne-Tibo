@@ -10,7 +10,8 @@
     "language": "npx tsx ./src/utils/sheet.ts",
     "run:pwa": "npm run build && npx serve dist",
     "dev:emulate": "VITE_EMULATION=true npm run dev | npx firebase-tools emulators:start --only auth",
-    "dev:emulate:windows": "set VITE_EMULATION=true && npm run dev && npx firebase-tools emulators:start --only auth"
+    "dev:emulate:windows": "set VITE_EMULATION=true && npm run dev && npx firebase-tools emulators:start --only auth",
+    "test": "playwright test"
   },
   "dependencies": {
     "@google-cloud/local-auth": "2.1.0",

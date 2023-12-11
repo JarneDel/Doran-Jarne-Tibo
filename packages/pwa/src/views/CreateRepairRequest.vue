@@ -1,7 +1,6 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { ref } from 'vue'
-import { RepairRequest, material } from '@/interface/repairRequestInterface'
+import { defineComponent, ref } from 'vue'
+import { material, RepairRequest } from '@/interface/repairRequestInterface'
 import useUser from '@/composables/useUser'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
@@ -41,15 +40,15 @@ export default defineComponent({
     })
     if (customUser.value) {
       repair.value.requestUser = {
-        id: customUser.value.userByUid.id,
-        UID: customUser.value.userByUid.uid,
-        locale: customUser.value.userByUid.locale,
-        role: customUser.value.userByUid.role,
-        name: customUser.value.userByUid.name,
-        firstName: customUser.value.userByUid.firstName,
-        lastName: customUser.value.userByUid.lastName,
-        email: customUser.value.userByUid.email,
-        phone: customUser.value.userByUid.phone,
+        id: customUser.value.id,
+        UID: customUser.value.UID,
+        locale: customUser.value.locale,
+        role: customUser.value.role,
+        name: customUser.value.name,
+        firstName: customUser.value.firstName,
+        lastName: customUser.value.lastName,
+        email: customUser.value.email,
+        phone: customUser.value.phone,
       }
     }
     const rooms = ref<Room[]>([])
@@ -58,7 +57,7 @@ export default defineComponent({
     onResult(result => {
       if (result.data) {
         rooms.value = result.data.GetAllRooms
-        if (customUser.value?.userByUid.role === 'GROUP')
+        if (customUser.value?.role === 'GROUP')
           rooms.value = rooms.value.filter(room => room.type !== 'Werkruimte')
         console.log(rooms.value)
       }
@@ -70,41 +69,42 @@ export default defineComponent({
       }
     })
     const handleSubmit = () => {
-      let materials: material[]
-      if ((repair.value.loanableMaterial.length)>0){
-      materials=[]
-      repair.value.loanableMaterial.forEach(material => {
-        let sportsist: any = []
-        material.sports.forEach(sportt => {
-          let sport: any = {
-            id: '',
-            name: '',
-            createdAt: new Date(),
-            updatedAt: new Date(),
+      let materials: material[] = []
+
+      if (repair.value.loanableMaterial.length > 0) {
+        materials = []
+        repair.value.loanableMaterial.forEach(material => {
+          let sportsist: any = []
+          material.sports.forEach(sportt => {
+            let sport: any = {
+              id: '',
+              name: '',
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            }
+            sport.id = sportt.id
+            sport.name = sportt.name
+            sport.createdAt = sportt.createdAt
+            sport.updatedAt = sportt.updatedAt
+            sportsist.push(sport)
+          })
+          let listedmaterial: material = {
+            id: material.id,
+            name: material.name,
+            price: material.price,
+            sports: sportsist,
+            totalAmount: material.totalAmount,
+            wantedAmount: material.wantedAmount,
+            isComplete: material.isComplete,
+            description: material.description,
+            amountReserved: 0,
+            createdAt: material.createdAt,
+            updatedAt: material.updatedAt,
           }
-          sport.id = sportt.id
-          sport.name = sportt.name
-          sport.createdAt = sportt.createdAt
-          sport.updatedAt = sportt.updatedAt
-          sportsist.push(sport)
+          materials.push(listedmaterial)
         })
-        let listedmaterial: material = {
-          id: material.id,
-          name: material.name,
-          price: material.price,
-          sports: sportsist,
-          totalAmount: material.totalAmount,
-          wantedAmount: material.wantedAmount,
-          isComplete: material.isComplete,
-          description: material.description,
-          amountReserved: 0,
-          createdAt: material.createdAt,
-          updatedAt: material.updatedAt,
-        }
-        materials.push(listedmaterial)
-      })
       }
-      let roomlist: Room[]
+      let roomlist: Room[] = []
       if (repair.value.room.length > 0) {
         roomlist = []
         repair.value.room.forEach(room => {
@@ -139,19 +139,21 @@ export default defineComponent({
         loanableMaterial: materials,
         title: repair.value.title,
         description: repair.value.description,
-      }).then(() => {
-        location.reload()
-      }).catch((e) => {
-        const originalError = e.graphQLErrors[0].extensions.originalError as any
-      if (!originalError || !originalError.message)
-        return console.log('no message')
+      })
+        .then(() => {
+          location.reload()
+        })
+        .catch(e => {
+          const originalError = e.graphQLErrors[0].extensions
+            .originalError as any
+          if (!originalError || !originalError.message)
+            return console.log('no message')
 
-      console.log({ originalError })
-      originalError.message.forEach((message: string) => {
-        errorMessages.value.push(message)
-      })
-        
-      })
+          console.log({ originalError })
+          originalError.message.forEach((message: string) => {
+            errorMessages.value.push(message)
+          })
+        })
     }
     return {
       repair,
@@ -161,17 +163,17 @@ export default defineComponent({
       errorMessages,
     }
   },
-  components: { StyledInputText, StyledButton,Error },
+  components: { StyledInputText, StyledButton, Error },
 })
 </script>
 
 <template>
   <Error
-  :translate="true"
     v-for="(error, index) of errorMessages"
     :key="index"
     :is-shown="errorMessages[index] !== ''"
     :msg="error"
+    :translate="true"
     @update:is-shown="errorMessages[index] = ''"
   />
   <div class="flex h-full w-full items-center justify-center">
@@ -201,9 +203,9 @@ export default defineComponent({
           <h2 class="text-lg font-medium">{{ $t('nav.rooms') }}</h2>
           <div v-for="room in rooms" class="mb-1">
             <input
-              type="checkbox"
-              :value="room"
               :id="room.id"
+              :value="room"
+              type="checkbox"
               @change="
                 () => {
                   if (repair.room.includes(room)) {
@@ -224,9 +226,9 @@ export default defineComponent({
           </h2>
           <div v-for="material in loanableMaterials" class="mb-1">
             <input
-              type="checkbox"
-              :value="material"
               :id="material.id"
+              :value="material"
+              type="checkbox"
               @change="
                 () => {
                   if (repair.loanableMaterial.includes(material)) {

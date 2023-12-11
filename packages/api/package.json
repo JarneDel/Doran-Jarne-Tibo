@@ -86,6 +86,7 @@
       "json",
       "ts"
     ],
+    "preset": "ts-jest",
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {

@@ -31,9 +31,7 @@ export default defineComponent({
       login(credentials.value.email, credentials.value.password)
         .then(() => {
           restoreCustomUser().then(() => {
-            setLocale(customUser.value?.userByUid.locale ?? 'en')
-            console.log(firebaseUser.value?.email)
-            console.log(customUser.value?.userByUid)
+            setLocale(customUser.value?.locale ?? 'en')
             console.log('restored user')
             replace('/')
           })

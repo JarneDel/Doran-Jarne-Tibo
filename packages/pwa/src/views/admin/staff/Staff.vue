@@ -22,11 +22,13 @@ import FilterOptions from '@/components/generic/FilterOptions.vue'
 import useTime from '@/composables/useTime'
 import { ALL_STAFF } from '@/graphql/staff.query.ts'
 import AdminStaffCard from '@/components/staff/AdminStaffCard.vue'
+import StaffDetail from '@/components/admin/StaffDetail.vue'
 
 export default defineComponent({
   name: 'Staff',
   methods: { UserPlus2, Contact },
   components: {
+    StaffDetail,
     AdminStaffCard,
     CircleDashed,
     Trash2,
@@ -96,6 +98,7 @@ export default defineComponent({
 </script>
 
 <template>
+  <StaffDetail v-if="$route.params.id" :id="$route.params.id as string" />
   <Modal v-if="adding" @close="adding = false">
     <template v-slot:title> Add staff member</template>
     <template v-slot:default>
@@ -113,7 +116,12 @@ export default defineComponent({
           type="email"
         />
         <label for="role">Role</label>
-        <select id="role" v-model="form.role" class="block" name="">
+        <select
+          id="role"
+          v-model="form.role"
+          class="b-2 b-secondary-400 hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark mb-2 block w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
+          name=""
+        >
           <option value="STAFF">Staff</option>
           <option value="ADMIN">Admin</option>
         </select>
@@ -123,18 +131,18 @@ export default defineComponent({
   </Modal>
   <!--  Filters -->
   <div class="mxa mt8 max-w-7xl">
-    <FilterOptions
-      v-model="filter"
-      :icons="[Contact, UserPlus2]"
-      :options="['staff', 'staffRegister']"
-      name="staff-page-select"
-      @update:model-value="loadData"
-    />
+    <div class="flex flex-row justify-between">
+      <FilterOptions
+        v-model="filter"
+        :icons="[Contact, UserPlus2]"
+        :options="['staff', 'staffRegister']"
+        name="staff-page-select"
+        @update:model-value="loadData"
+      />
+      <styled-button @click="adding = true"> Add staff member</styled-button>
+    </div>
 
     <div v-if="filter == 'staffRegister'" class="mt4">
-      <div class="flex w-full justify-end">
-        <styled-button @click="adding = true"> Add staff member</styled-button>
-      </div>
       <table
         v-if="registrations && registrations.length > 0"
         class="w-full text-sm"

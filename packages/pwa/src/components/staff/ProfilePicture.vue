@@ -44,7 +44,7 @@ export default defineComponent({
 
         if (!customUser.value) return
 
-        const { role } = customUser.value.userByUid
+        const { role } = customUser.value
 
         if (role === 'GROUP') {
           mutateGroup({

@@ -18,7 +18,7 @@ export default defineComponent({
     const { setLocale } = useLanguage()
     const { customUser } = useCustomUser()
     if (customUser.value) {
-      if (customUser.value) setLocale(customUser.value?.userByUid.locale)
+      if (customUser.value) setLocale(customUser.value?.locale)
     } else setLocale(locale.value)
     return {}
   },
