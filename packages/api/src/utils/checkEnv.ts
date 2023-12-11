@@ -30,6 +30,8 @@ export const optionalEnv = (optional: string[]) => {
 
 export const testEnv = () => {
   if (process.env.FIREBASE_AUTH_EMULATOR_HOST) {
-    Logger.warn('Running in test environment.')
+    Logger.warn(
+      'Running in test environment.' + process.env.FIREBASE_AUTH_EMULATOR_HOST,
+    )
   }
 }
