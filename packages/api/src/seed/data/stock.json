@@ -1,0 +1,39 @@
+[
+  {
+    "name": "zwembadkuiser",
+    "description": "kuist de vloer van het zwembad",
+    "needToOrderMore": 0,
+    "amountInStock": 1,
+    "idealStock": 2
+  },
+  {
+    "name": "zwembadchloor",
+    "description": "houdt het zwembadwater proper",
+    "needToOrderMore": 1,
+    "amountInStock": 0,
+    "idealStock": 10
+  },
+  {
+    "name": "sporthalverlichting",
+    "description": "verlicht de sporthal",
+    "needToOrderMore": 0,
+    "amountInStock": 10,
+    "idealStock": 15
+  },
+  {
+    "name": "filters",
+    "description": "filtert het water",
+    "needToOrderMore": 1,
+    "amountInStock": 12,
+    "idealStock": 5
+  },
+  {
+    "name": "zwabber",
+    "description": "kuist de vloer van de sporthal",
+    "needToOrderMore": 0,
+    "amountInStock": 2,
+    "idealStock": 3
+  }
+
+
+]

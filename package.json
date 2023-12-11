@@ -1,0 +1,48 @@
+{
+  "name": "doran-jarne-tibo",
+  "version": "0.0.0",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "npx lerna run --scope={pwa,api} dev",
+    "dev:api": "npx lerna run --scope=api dev",
+    "dev:pwa": "npx lerna run --scope=pwa dev",
+    "pwa": "npm run dev --workspace=pwa",
+    "api": "npm run dev --workspace=api",
+    "build:pwa": "npm run build --workspace=pwa",
+    "language": "npm run language --workspace=pwa -y",
+    "dev:emulate": "npx lerna run --scope={pwa,api} dev:emulate --stream",
+    "dev:emulate:windows": "npx lerna run --scope={pwa,api} dev:emulate:windows --stream"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JarneDel/Doran-Jarne-Tibo.git"
+  },
+  "author": "MCT",
+  "bugs": {
+    "url": "https://github.com/JarneDel/Doran-Jarne-Tibo/issues"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "prettier": {
+    "arrowParens": "avoid",
+    "endOfLine": "lf",
+    "bracketSpacing": true,
+    "printWidth": 80,
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "useTabs": false,
+    "htmlWhitespaceSensitivity": "css",
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ]
+  },
+  "devDependencies": {
+    "lerna": "^8.0.0",
+    "prettier": "^3.0.3"
+  },
+  "dependencies": {}
+}

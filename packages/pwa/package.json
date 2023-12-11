@@ -1,0 +1,44 @@
+{
+  "name": "pwa",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "language": "npx tsx ./src/utils/sheet.ts",
+    "run:pwa": "npm run build && npx serve dist",
+    "dev:emulate": "VITE_EMULATION=true npm run dev | npx firebase-tools emulators:start --only auth",
+    "dev:emulate:windows": "set VITE_EMULATION=true && npm run dev && npx firebase-tools emulators:start --only auth",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "@google-cloud/local-auth": "2.1.0",
+    "@vue/apollo-composable": "^4.0.0-beta.11",
+    "@vue/apollo-util": "^4.0.0-beta.6",
+    "@vueuse/components": "^10.5.0",
+    "@vueuse/core": "^10.5.0",
+    "firebase": "^10.4.0",
+    "focus-trap-vue": "^4.0.3",
+    "googleapis": "105",
+    "graphql-ws": "^5.14.2",
+    "lucide-vue-next": "^0.279.0",
+    "maplibre-gl": "^3.6.1",
+    "vue": "^3.3.4",
+    "vue-i18n": "^9.5.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.1",
+    "@types/node": "^20.10.2",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "prettier": "^3.0.3",
+    "prettier-plugin-tailwindcss": "^0.5.4",
+    "typescript": "^5.0.2",
+    "unocss": "^0.55.7",
+    "vite": "^4.4.5",
+    "vite-plugin-pwa": "^0.16.7",
+    "vue-router": "4",
+    "vue-tsc": "^1.8.5"
+  }
+}

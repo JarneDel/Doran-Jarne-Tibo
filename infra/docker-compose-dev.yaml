@@ -1,0 +1,15 @@
+version: '3.8'
+name: api-sports-complex
+services:
+  mongodb:
+    image: mongo
+    restart: unless-stopped
+    ports:
+      - "27031:27017"
+    environment:
+      MONGO_INITDB_DATABASE: api
+    volumes:
+      - dbvolumesports:/data/db
+
+volumes:
+  dbvolumesports:
