@@ -1,7 +1,0 @@
-Dockerfile
-.env
-.gitignore
-src/utils/
-playwright-report
-.vite
-.vscode

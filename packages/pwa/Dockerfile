@@ -2,7 +2,7 @@
 # BUILD STAGE
 ###################
 
-FROM node:18 as build-stage
+FROM node:21 as build-stage
 WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 COPY --chown=node:node packages/pwa/package*.json ./packages/pwa/

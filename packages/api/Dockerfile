@@ -3,7 +3,7 @@
 ###################
 
 # FROM node:18-alpine as development ### werkt niet voor python, dus hier de full version
-FROM node:18 as development
+FROM node:21 as development
 
 WORKDIR /usr/src/app
 
@@ -11,7 +11,7 @@ WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 COPY --chown=node:node packages/api/package*.json ./packages/api/
 
-RUN npm ci
+RUN npm  ci
 
 COPY --chown=node:node packages/api ./packages/api
 
@@ -21,7 +21,7 @@ USER node
 ###################
 # BUILD FOR PRODUCTION
 ###################
-FROM node:18-alpine as build
+FROM node:21 as build
 
 WORKDIR /usr/src/app
 
@@ -46,10 +46,10 @@ USER node
 # PRODUCTION
 ###################
 
-FROM node:18-alpine As production
+FROM node:21-alpine As production
 WORKDIR /usr/src/app
 # install curl for health check
-RUN apk add --no-cache curl
+RUN apk add curl
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
