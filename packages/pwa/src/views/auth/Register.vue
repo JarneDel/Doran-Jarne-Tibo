@@ -17,10 +17,10 @@ export default defineComponent({
   setup() {
     // data
     const form = reactive({
-      btwNummer: 'BE 0000.000.000',
-      email: 'test@test.test',
-      password: 'Test1234',
-      displayName: 'test',
+      btwNummer: '',
+      email: '',
+      password: '',
+      displayName: '',
       error: [] as string[],
     })
 

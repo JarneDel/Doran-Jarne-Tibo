@@ -4,7 +4,6 @@ import StyledInputText from '@/components/generic/StyledInputText.vue';
 import StyledButton from '@/components/generic/StyledButton.vue';
 import {
   AVAILABLEMATERAILS,
-  CREATERESEVATION,
   GET_AVAILABLE_ROOMS,
   CREATERESEVATION,
 } from '@/graphql/reservations.query';
@@ -39,12 +38,12 @@ export default defineComponent({
     const price = ref(0);
     const PriceWhitDiscount = ref(0);
     const discount = ref<number>(0);
-    if (customUser.value?.userByUid.score) {
-      if (customUser.value?.userByUid.score > 50) {
-        discount.value = (customUser.value?.userByUid.score - 50) / 100;
+    if (customUser.value?.score) {
+      if (customUser.value?.score > 50) {
+        discount.value = (customUser.value?.score - 50) / 100;
       }
-      if (customUser.value?.userByUid.score < 50) {
-        discount.value = ((50 - customUser.value?.userByUid.score) / 100) * -1;
+      if (customUser.value?.score < 50) {
+        discount.value = ((50 - customUser.value?.score) / 100) * -1;
       }
     }
     const calculatePrice = () => {
@@ -75,8 +74,8 @@ export default defineComponent({
           sport.id = sportt.id;
           sport.name = sportt.name;
           sport.description = sportt.description;
-          sport.createdAt = sportt.createdAt;
-          sport.updatedAt = sportt.updatedAt;
+          sport.createdAt = sportt.CreatedAt;
+          sport.updatedAt = sportt.UpdatedAt;
           sportsist.push(sport);
         });
         let listedmaterial: material = {

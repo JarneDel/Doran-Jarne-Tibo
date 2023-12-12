@@ -99,7 +99,6 @@ export class SeedService {
       const g = new Group()
       g.name = group.name
       g.email = group.email
-      g.btwNumber = group.btw_number
       g.score = Math.floor(Math.random() * 100)
       g.locale = group.locale
       g.UID = group.uid
@@ -521,6 +520,15 @@ export class SeedService {
       user.email = staffMember.email
       user.password = 'Test1234'
       user.uid = staffMember.UID
+
+      users.push(user)
+    }
+
+    for (let group of groups) {
+      const user = new FirebaseUser()
+      user.email = group.email
+      user.password = 'Test1234'
+      user.uid = group.uid
 
       users.push(user)
     }

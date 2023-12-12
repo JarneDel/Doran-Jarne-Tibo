@@ -5,7 +5,6 @@ import StyledButton from '@/components/generic/StyledButton.vue';
 import {
   AVAILABLEMATERAILS,
   GET_AVAILABLE_ROOMS,
-  GET_ONE_RESERVATION,
   UPDATE_RESEVATION,
   GET_ONE_RESERVATION,
 } from '@/graphql/reservations.query';
@@ -38,12 +37,12 @@ export default defineComponent({
     const PriceWhitDiscount = ref(0);
     const discount = ref<number>(0);
     const errors = ref<string[]>([]);
-    if (customUser.value?.userByUid.score) {
-      if (customUser.value?.userByUid.score > 50) {
-        discount.value = (customUser.value?.userByUid.score - 50) / 100;
+    if (customUser.value?.score) {
+      if (customUser.value?.score > 50) {
+        discount.value = (customUser.value?.score - 50) / 100;
       }
-      if (customUser.value?.userByUid.score < 50) {
-        discount.value = ((50 - customUser.value?.userByUid.score) / 100) * -1;
+      if (customUser.value?.score < 50) {
+        discount.value = ((50 - customUser.value?.score) / 100) * -1;
       }
     }
     const timeDivrent = () => {
@@ -118,8 +117,8 @@ export default defineComponent({
           sport.id = sportt.id;
           sport.name = sportt.name;
           sport.description = sportt.description;
-          sport.createdAt = sportt.createdAt;
-          sport.updatedAt = sportt.updatedAt;
+          sport.createdAt = sportt.CreatedAt;
+          sport.updatedAt = sportt.UpdatedAt;
           sportsist.push(sport);
         });
         let listedmaterial: material = {

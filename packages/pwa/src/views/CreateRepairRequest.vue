@@ -41,15 +41,15 @@ export default defineComponent({
     });
     if (customUser.value) {
       repair.value.requestUser = {
-        id: customUser.value.userByUid.id,
-        UID: customUser.value.userByUid.uid,
-        locale: customUser.value.userByUid.locale,
-        role: customUser.value.userByUid.role,
-        name: customUser.value.userByUid.name,
-        firstName: customUser.value.userByUid.firstName,
-        lastName: customUser.value.userByUid.lastName,
-        email: customUser.value.userByUid.email,
-        phone: customUser.value.userByUid.phone,
+        id: customUser.value.id,
+        UID: customUser.value.UID,
+        locale: customUser.value.locale,
+        role: customUser.value.role,
+        name: customUser.value.name,
+        firstName: customUser.value.firstName,
+        lastName: customUser.value.lastName,
+        email: customUser.value.email,
+        phone: customUser.value.phone,
       };
     }
     const rooms = ref<Room[]>([]);
@@ -58,7 +58,7 @@ export default defineComponent({
     onResult((result) => {
       if (result.data) {
         rooms.value = result.data.GetAllRooms;
-        if (customUser.value?.userByUid.role === 'GROUP')
+        if (customUser.value?.role === 'GROUP')
           rooms.value = rooms.value.filter(
             (room) => room.type !== 'Werkruimte',
           );
@@ -87,8 +87,8 @@ export default defineComponent({
             sport.id = sportt.id;
             sport.name = sportt.name;
             sport.description = sportt.description;
-            sport.createdAt = sportt.createdAt;
-            sport.updatedAt = sportt.updatedAt;
+            sport.createdAt = sportt.CreatedAt;
+            sport.updatedAt = sportt.UpdatedAt;
             sportsist.push(sport);
           });
           let listedmaterial: material = {
@@ -179,7 +179,6 @@ export default defineComponent({
     :key="index"
     :is-shown="errorMessages[index] !== ''"
     :msg="error"
-    :translate="true"
     @update:is-shown="errorMessages[index] = ''"
   />
   <div class="flex h-full w-full items-center justify-center">
