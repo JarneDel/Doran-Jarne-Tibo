@@ -52,5 +52,8 @@ export class SeedModule {
     await this.seedService.addStaffFromJson()
     await this.seedService.addGroupsFromJson()
     await this.seedService.addFirebaseUsers()
+    await this.seedService.addSportsFromJson()
+    await this.seedService.addLoanableMaterialsFromJson()
+    await this.seedService.addRoomsFromJson()
   }
 }
