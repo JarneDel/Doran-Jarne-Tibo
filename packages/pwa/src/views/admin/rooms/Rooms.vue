@@ -52,6 +52,7 @@ import { useRouter } from 'vue-router'
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
 import useLastRoute from '@/composables/useLastRoute'
 import StyledLable from '@/components/generic/StyledLable.vue'
+import Error from '@/components/Error.vue'
 
 // Export default
 export default defineComponent({
@@ -59,8 +60,9 @@ export default defineComponent({
     PlusCircle,
     Modal,
     DoubleClickEdit,
-    StyledLable
-},
+    StyledLable,
+    Error,
+  },
   setup() {
     // Router
     const { push, replace, currentRoute } = useRouter()
@@ -138,6 +140,8 @@ export default defineComponent({
       },
     )
 
+    const errorMessages = ref<string[]>([])
+
     // Mutation
     const { mutate } = useMutation(UPDATE_ROOM)
 
@@ -211,6 +215,20 @@ export default defineComponent({
           type: currentRoom.value.type,
         },
       })
+        .then(() => {
+          fetchWithFilters()
+        })
+        .catch(e => {
+          const originalError = e.graphQLErrors[0].extensions
+            .originalError as any
+          if (!originalError || !originalError.message)
+            return console.log('no message')
+
+          console.log({ originalError })
+          originalError.message.forEach((message: string) => {
+            errorMessages.value.push(message)
+          })
+        })
     }
 
     const handleRoomDetail = (room: Room) => {
@@ -408,7 +426,7 @@ export default defineComponent({
         >
           {{ $t('rooms.dressingRooms') }}
         </h3>
-        <ul class="grid auto-rows-fr w-fit gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <ul class="grid w-fit auto-rows-fr gap-6 md:grid-cols-2 lg:grid-cols-3">
           <li
             class="md:w-55 xl:w-70 2xl:w-90 w-fit break-words"
             v-for="changingRoom in resultChangingRooms?.GetAllChangingRooms"
@@ -418,7 +436,9 @@ export default defineComponent({
               class="h-full w-full text-left"
               @click="handleRoomDetail(changingRoom)"
             >
-              <div class="h-full rounded-lg bg-white p-4 shadow-md flex flex-col justify-between">
+              <div
+                class="flex h-full flex-col justify-between rounded-lg bg-white p-4 shadow-md"
+              >
                 <h3 class="mb-2 text-xl font-bold lg:text-2xl">
                   {{ changingRoom.name }}
                 </h3>
@@ -524,7 +544,7 @@ export default defineComponent({
                       resultDivePools?.GetAllDivePools.indexOf(divePool)
                     ].sports.sort((a, b) => a.name.localeCompare(b.name))"
                     :key="sport.name"
-                  >{{ sport.name }}
+                    >{{ sport.name }}
                   </StyledLable>
                 </ul>
                 <div class="flex items-center gap-1">

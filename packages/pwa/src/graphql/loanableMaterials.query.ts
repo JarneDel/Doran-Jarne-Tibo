@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+import { Sport } from '@/interface/sportInterface'
 
 export const ALL_LOANABLE_MATERIALS = gql`
   query {
@@ -11,6 +12,7 @@ export const ALL_LOANABLE_MATERIALS = gql`
       sports {
         id
         name
+        description
       }
       isComplete
       description
@@ -27,6 +29,7 @@ query ($id: String!) {
     sports {
       id
       name
+      description
     }
     totalAmount
     wantedAmount
@@ -49,6 +52,7 @@ mutation ($createLoanableMaterialInput: CreateLoanableMaterialInput!) {
     sports{
       id
       name
+      description
     }
     isComplete
     description
@@ -77,10 +81,7 @@ export interface ICreateLoanableMaterial{
     totalAmount: number
     wantedAmount: number
     price: number
-    sports: {
-      id: string
-      name: string
-    }[]
+    sports: Sport[]
     isComplete: boolean
     description: string
   }

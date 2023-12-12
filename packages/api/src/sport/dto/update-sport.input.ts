@@ -1,7 +1,7 @@
 // Create input
 import { CreateSportInput } from './create-sport.input'
 // GraphQL
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql'
+import { InputType, Field, PartialType } from '@nestjs/graphql'
 // Class validator
 import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator'
 
@@ -12,7 +12,8 @@ export class UpdateSportInput extends PartialType(CreateSportInput) {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(3)
+  @MinLength(4)
+  @MaxLength(20)
   @Field() // Graphql
   name: string
 

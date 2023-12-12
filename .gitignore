@@ -229,3 +229,7 @@ schema.graphql
 /graphql/
 .vscode/settings.json
 start-toggl.sh
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

@@ -25,7 +25,6 @@ const checkIfRoomIsAvailable = async (available, reserved) => {
         roomisAvailable = true
       }
     })
-
     if (roomisAvailable == false) {
       isRoomAvailable = false
     }
@@ -344,6 +343,7 @@ export class ReservationService {
         room.type === 'Zwembad' ||
         room.type === 'Duikput',
     )
+
     const availableRooms: Room[] = []
     const resurveDate = new Date(date)
     const reservations = await this.findByDate(resurveDate)

@@ -1,7 +1,15 @@
 export interface Room {
   id: string
   name: string
-  sports: [{ id: string; name: string; createdAt: Date; updatedAt: Date }]
+  sports: [
+    {
+      id: string
+      name: string
+      description: string
+      createdAt: Date
+      updatedAt: Date
+    },
+  ]
   pricePerHour: number
   type: string
   canBeUsed: boolean

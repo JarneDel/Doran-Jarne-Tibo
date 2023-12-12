@@ -38,16 +38,13 @@ export default defineComponent({
     const wantedAmount = ref<number>(0)
     const price = ref<number>(0)
     const sportIds = ref<string[]>([])
-    const errors = ref<string[]>([])
+    const errorMessages = ref<string[]>([])
 
     const { push } = useRouter()
 
-    const { mutate, onError } = useMutation<ICreateLoanableMaterial>(
+    const { mutate } = useMutation<ICreateLoanableMaterial>(
       CREATE_LOANABLE_MATERIAL,
     )
-    onError(e => {
-      errors.value.push(e.message)
-    })
 
     // ALL_SPORTS
     const {
@@ -58,23 +55,23 @@ export default defineComponent({
 
     const createNewItem = async () => {
       if (name.value == '') {
-        errors.value.push('Please give a name')
+        errorMessages.value.push('Please give a name')
         return
       }
       if (totalAmount.value == 0) {
-        errors.value.push('Please give a total amount')
+        errorMessages.value.push('Please give a total amount')
         return
       }
       if (wantedAmount.value == 0) {
-        errors.value.push('Please give a wanted amount')
+        errorMessages.value.push('Please give a wanted amount')
         return
       }
       if (price.value == 0) {
-        errors.value.push('Please give a price')
+        errorMessages.value.push('Please give a price')
         return
       }
       if (sportIds.value.length == 0) {
-        errors.value.push('Please select at least one sport')
+        errorMessages.value.push('Please select at least one sport')
         return
       }
 
@@ -87,16 +84,30 @@ export default defineComponent({
         SportId: sportIds.value,
         isComplete: true,
       }
-      const res = await mutate({
+
+      mutate({
         createLoanableMaterialInput: params,
       })
+        .then(e => {
+          console.log('success')
+          console.log({ e })
+          if (!e) return
+          push('/admin/sport-equipment/id/' + e.data?.createLoanableMaterial.id)
+          return e
+        })
+        .catch(e => {
+          console.log('error')
+          console.log({ e })
+          const originalError = e.graphQLErrors[0].extensions
+            .originalError as any
+          if (!originalError || !originalError.message)
+            return console.log('no message')
 
-      // todo: error handling, possible redirect to edit if name already exists
-      if (res?.data?.createLoanableMaterial.id) {
-        await push(
-          '/admin/sport-equipment/id/' + res.data.createLoanableMaterial.id,
-        )
-      }
+          console.log({ originalError })
+          originalError.message.forEach((message: string) => {
+            errorMessages.value.push(message)
+          })
+        })
     }
     return {
       push,
@@ -107,7 +118,7 @@ export default defineComponent({
       wantedAmount,
       price,
       sportIds,
-      errorMessages: errors,
+      errorMessages,
       resultSports,
       loadingSports,
       errorSports,
@@ -136,6 +147,7 @@ export default defineComponent({
         <styled-input-text
           v-model="name"
           :label="$t('inventory.name')"
+          :maxlength="40"
           class="my-1"
           name="name"
           required

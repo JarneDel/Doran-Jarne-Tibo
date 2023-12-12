@@ -28,6 +28,7 @@ export const GET_RESERVATIONS = gql`
         sports {
           id
           name
+          description
           createdAt
           updatedAt
         }
@@ -41,6 +42,7 @@ export const GET_RESERVATIONS = gql`
         sports {
           id
           name
+          description
           createdAt
           updatedAt
         }
@@ -84,6 +86,7 @@ export const GET_RESERVATIONS_BY_DATE_AND_USER = gql`
         sports {
           id
           name
+          description
           createdAt
           updatedAt
         }
@@ -97,6 +100,7 @@ export const GET_RESERVATIONS_BY_DATE_AND_USER = gql`
         sports {
           id
           name
+          description
           createdAt
           updatedAt
         }
@@ -135,6 +139,7 @@ export const AVAILABLEMATERAILS = gql`
       sports {
         id
         name
+        description
         createdAt
         updatedAt
       }
@@ -157,6 +162,7 @@ export const GET_AVAILABLE_ROOMS = gql`
       sports {
         id
         name
+        description
         createdAt
         updatedAt
       }
@@ -214,6 +220,7 @@ export const UPDATE_RESEVATION = gql`
         sports {
           id
           name
+          description
           createdAt
           updatedAt
         }
@@ -225,6 +232,7 @@ export const UPDATE_RESEVATION = gql`
         sports {
           id
           name
+          description
           createdAt
           updatedAt
         }
@@ -281,6 +289,7 @@ export const CREATERESEVATION = gql`
         sports {
           id
           name
+          description
           createdAt
           updatedAt
         }
@@ -292,6 +301,7 @@ export const CREATERESEVATION = gql`
         sports {
           id
           name
+          description
           createdAt
           updatedAt
         }
@@ -330,6 +340,7 @@ query
       sports{
         id
         name
+        description
       }
       isComplete
       description
@@ -341,6 +352,7 @@ query
       sports{
         id
         name
+        description
       }
       pricePerHour
       type
@@ -379,6 +391,7 @@ query GetReservatiounById($id: String!) {
       sports{
         id
         name
+        description
       }
       isComplete
       description
@@ -390,6 +403,7 @@ query GetReservatiounById($id: String!) {
       sports{
         id
         name
+        description
       }
       pricePerHour
     }

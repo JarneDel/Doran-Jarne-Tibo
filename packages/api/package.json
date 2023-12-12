@@ -21,7 +21,7 @@
     "seed": "npx nestjs-command seed:database:all",
     "drop": "npx nestjs-command seed:reset:all",
     "dev:emulate": "FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 npm run dev",
-    "dev:emulate:windows": "set FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 && npm run dev"
+    "dev:emulate:windows": "set FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099&& npm run dev"
   },
   "dependencies": {
     "@apollo/server": "^4.9.3",
