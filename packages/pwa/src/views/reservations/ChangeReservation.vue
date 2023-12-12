@@ -536,8 +536,9 @@ export default defineComponent({
       </div>
       <div v-else class="w-85 mx-auto rounded-md bg-white p-8 shadow-md">
         <div class="flex justify-between">
-          <h1 class="mb-2 text-lg font-medium">Samenvating:</h1>
-          <x class="hover:text-red-500" @click="detail = !detail" />
+          <h2 class="mb-2 text-lg font-medium">Samenvating:</h2>
+          <button @click="detail = !detail" >
+          <x class="hover:text-red-500" /></button>
         </div>
         <div class="mb-2">
           <div class="flex justify-between">

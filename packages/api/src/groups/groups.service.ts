@@ -52,10 +52,10 @@ export class GroupsService {
 
   async updateScore(id: string, amount: number) {
     const exGroup = await this.findOne(id)
-    if (exGroup.score + amount < 0) throw new Error('score can not be negative')
-    if (exGroup.score + amount > 100)
+    if (amount < 0) throw new Error('score can not be negative')
+    if (amount > 100)
       throw new Error('score can not be higher than 100')
-    exGroup.score = exGroup.score + amount
+    exGroup.score = amount
     this.groupRepository.update(id, exGroup)
     return exGroup
   }

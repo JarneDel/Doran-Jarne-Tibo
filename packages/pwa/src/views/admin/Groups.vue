@@ -29,20 +29,17 @@ export default defineComponent({
       }
       return s
     }
-    const addScore = (id: string) => {
-      mutate({ id: id, amount: 1 })
+    const updateScore = (id: string, amount: number) => {
+      mutate({ id: id, amount: amount })
     }
-    const removeScore = (id: string) => {
-      mutate({ id: id, amount: -1 })
-    }
+
     return {
       idToken,
       result,
       loading,
       error,
       getScore,
-      addScore,
-      removeScore,
+      updateScore,
       mutate,
     }
   },
@@ -58,23 +55,22 @@ export default defineComponent({
           <p class=" xl:h-20 h-16 xl:text-2xl text-xl">{{ group.name }}</p>
           <p class="xl:text-lg text-base h-5">{{ group.email }}</p>
           <p class="xl:text-lg text-base h-5 my-2">{{ group.btwNumber }}</p>
-          <p class="xl:text-lg text-base ">Score:</p>
-          <div class="relative h-4 w-full rounded-md overflow-hidden">
-            <div
-            class="absolute h-4 w-full bg-gradient-to-r from-green-600 via-yellow-400 to-red-600"
-            ></div>
-            
-            <div
-              :class="`absolute h-4 w-px bg-black left-[${
-                group.score}%]`"
-            ></div>
+          <div class="flex flex-col">
+          <label class="xl:text-lg text-base " :for="group.id">Score:</label>
+          <input
+            @change="(e:Event) =>updateScore(group.id,100-parseInt(e.target.value))"
+            class=" my-2 slider h-4 rounded-md outline-none duration-200 opacity-70 hover:opacity-100 appearance-none bg-gradient-to-r from-red-600 via-yellow-400 to-green-600"
+            :id="group.id"
+            type="range"
+            :value="100-group.score"
+          />
           </div>
           <div class="flex items-center justify-between">
-            <StyledButton class="my-2" @click="removeScore(group.id)">
+            <StyledButton class="my-2" @click="updateScore(group.id,group.score+1)">
               <Minus class="xl:h-4 h-3"/>
             </StyledButton>
             <p class="xl:text-lg lg:text-base">{{ group.score}}</p>
-            <StyledButton class="my-2" @click="addScore(group.id)">
+            <StyledButton class="my-2" @click="updateScore(group.id,group.score-1)">
               <Plus class="xl:h-4 h-3"/>
             </StyledButton>
           </div>
@@ -83,3 +79,29 @@ export default defineComponent({
       </div>
   </div>
 </template>
+
+<style scoped>
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 5px;
+  height: 25px;
+  border-radius: 8px;
+  background: black;
+  cursor: pointer;
+}
+
+.slider:focus
+{
+  outline: #f5cb5c auto 8px;
+}
+
+.slider::-moz-range-thumb {
+  width: 5px;
+  height: 25px;
+  border-radius: 8px;
+  background: black;
+  cursor: pointer;
+}
+</style>

@@ -192,11 +192,12 @@ export default defineComponent({
             type="text"
           />
           <div>
-            <span class="text-primary-text font-medium">{{
+            <label class="text-primary-text font-medium" for="description">{{
               $t('inventory.description')
-            }}</span>
+            }}</label>
             <div class="flex items-end">
               <textarea
+              id="description"
                 v-model="description"
                 maxlength="250"
                 class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full resize-none rounded bg-white px-4 py-1.5 outline-none transition-colors"
