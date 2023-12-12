@@ -145,19 +145,24 @@ export default defineComponent({
       staffUId.value = target.value
     }
 
+    const isExpired = (vacationRequest: VacationRequestWithStaff) => {
+      return vacationRequest.endDate.getTime() < new Date().getTime()
+    }
+
     return {
       approve,
       approveVacation,
       errors,
       filter,
+      filterStaff,
       filterVacationRequests,
+      isExpired,
       loading,
       reject,
       rejectMessage,
       rejectVacation,
       result,
       staffUId,
-      filterStaff,
     }
   },
 })
@@ -301,7 +306,9 @@ export default defineComponent({
               <td class="p-4 align-middle">
                 <div
                   v-if="
-                    !vacationRequest.isRejected && !vacationRequest.isApproved
+                    !vacationRequest.isRejected &&
+                    !vacationRequest.isApproved &&
+                    !isExpired(vacationRequest)
                   "
                   class="flex space-x-2"
                 >

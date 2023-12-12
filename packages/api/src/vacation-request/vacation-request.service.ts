@@ -83,6 +83,11 @@ export class VacationRequestService {
       throw new GraphQLError('Vacation request has already been processed')
     }
 
+    // dont approve expired requests
+    if (vacationRequest.startDate < new Date()) {
+      throw new GraphQLError('Cannot approve expired vacation requests')
+    }
+
     if (approveVacationRequestInput.isApproved) {
       try {
         await this.staffService.saveVacation(
