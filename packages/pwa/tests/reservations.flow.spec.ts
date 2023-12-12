@@ -1,20 +1,17 @@
 import { test, expect } from '@playwright/test'
 
 test('create reservation', async ({ page }) => {
-  await page.goto('http://localhost:5173/login')
+  await page.goto('http://localhost:5173/')
+  await page.getByRole('link', { name: 'Login' }).click()
   await page.getByLabel('Email').click()
   await page.getByLabel('Email').fill('doran.delfosse@gmail.com')
   await page.getByLabel('Password').click()
   await page.getByLabel('Password').fill('Test1234')
   await page.getByLabel('Password').press('Enter')
-  await page.locator('li').filter({ hasText: 'Reserveren' }).click()
+  await page.getByRole('link', { name: 'Reserveren' }).click()
   await page.getByRole('button', { name: 'Reserveren' }).click()
-  await page.getByLabel('Datum').press('ArrowUp')
-  await page.getByLabel('Datum').press('ArrowRight')
-  await page.getByLabel('Datum').press('ArrowRight')
-  await page.getByLabel('Datum').press('ArrowUp')
-  await page.getByLabel('Datum').press('ArrowLeft')
-  await page.getByLabel('Datum').press('ArrowUp')
+  await page.waitForResponse(response => response.url().includes('/graphql'))
+  await page.getByLabel('Datum').fill('2024-01-13')
   await page.getByText('Sportzaal 1').click()
   await page
     .locator('div')
@@ -39,7 +36,9 @@ test('create reservation', async ({ page }) => {
     .filter({ hasText: /^2\/3$/ })
     .getByRole('button')
     .nth(1)
-    .click()
+    .click({
+      clickCount: 3,
+    })
   await page.getByRole('button', { name: 'Detail' }).click()
   await page.getByRole('button', { name: 'Reserveren' }).click()
   await page.waitForResponse(response => response.url().includes('/graphql'))
