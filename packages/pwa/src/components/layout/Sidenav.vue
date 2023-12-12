@@ -186,14 +186,16 @@ export default defineComponent({
 </script>
 
 <template>
+  <nav class="bg-white">
   <OnClickOutside
     :options="{ ignore: ['.menu-button'] }"
     @trigger="clickOutside"
+    class="h-full"
   >
     <div
       v-if="!isMobile || !isClosed"
       :class="{
-        'min-w-54 w-1/6': !isClosed && !isMobile,
+        'min-w-54 w-full': !isClosed && !isMobile,
         'w-16': isClosed && !isMobile,
         'z-100 absolute left-0 top-0 w-full': isMobile,
       }"
@@ -235,6 +237,7 @@ export default defineComponent({
       </div>
     </div>
   </OnClickOutside>
+  </nav>
 </template>
 
 <style scoped></style>
