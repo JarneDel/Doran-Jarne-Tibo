@@ -55,6 +55,7 @@ import { useRouter } from 'vue-router'
 import useLastRoute from '@/composables/useLastRoute.ts'
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
 import DoubleClickSelect from '@/components/generic/DoubleClickSelect.vue'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
   name: 'Overview',
@@ -69,6 +70,7 @@ export default defineComponent({
     ArrowUpNarrowWide,
     ArrowUpDown,
     ChevronRight,
+    Error,
   },
 
   setup: function () {
@@ -78,6 +80,7 @@ export default defineComponent({
     const sortFieldName = ref<string>('name')
     const sportFilter = ref<string>('all')
     const isModalShown = ref<boolean>(true)
+    const errorMessages = ref<string[]>([])
 
     const { push } = useRouter()
 
@@ -151,9 +154,21 @@ export default defineComponent({
           isComplete: currentItem.value.isComplete,
           description: currentItem.value.description,
         },
-      }).then(e => {
-        fetchWithFilters()
       })
+        .then(e => {
+          fetchWithFilters()
+        })
+        .catch(e => {
+          const originalError = e.graphQLErrors[0].extensions
+            .originalError as any
+          if (!originalError || !originalError.message)
+            return console.log('no message')
+
+          console.log({ originalError })
+          originalError.message.forEach((message: string) => {
+            errorMessages.value.push(message)
+          })
+        })
     }
 
     const sortSportEquipment = () => {
@@ -271,6 +286,7 @@ export default defineComponent({
       sortedSportEquipment,
       ChangeSearchFilter,
       handleRowClick,
+      errorMessages,
     }
   },
 })
@@ -278,6 +294,13 @@ export default defineComponent({
 
 <template>
   <RouterView />
+  <Error
+    v-for="(error, index) of errorMessages"
+    :key="index"
+    :is-shown="errorMessages[index] !== ''"
+    :msg="error"
+    @update:is-shown="errorMessages[index] = ''"
+  />
   <div class="mx-a max-w-7xl">
     <div class="flex items-center justify-between">
       <div class="py4 flex flex-row gap-4">

@@ -35,6 +35,7 @@ import StyledButton from '@/components/generic/StyledButton.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import { ALL_SPORTS } from '@/graphql/sport.query'
 import { onBeforeMount } from 'vue'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
   name: 'Edit',
@@ -42,10 +43,12 @@ export default defineComponent({
     StyledButton,
     Modal,
     StyledInputText,
+    Error,
   },
   setup: () => {
     const { push, currentRoute } = useRouter()
     const id = computed(() => currentRoute.value.params.id)
+    const errorMessages = ref<string[]>([])
 
     const { mutate: mutateUpdateItem } = useMutation(UPDATE_ROOM)
 
@@ -101,9 +104,21 @@ export default defineComponent({
           pricePerHour: Number(currentRoom.value.pricePerHour),
           type: currentRoom.value.type,
         },
-      }).then(() => {
-        push('/admin/rooms')
       })
+        .then(() => {
+          push('/admin/rooms')
+        })
+        .catch(e => {
+          const originalError = e.graphQLErrors[0].extensions
+            .originalError as any
+          if (!originalError || !originalError.message)
+            return console.log('no message')
+
+          console.log({ originalError })
+          originalError.message.forEach((message: string) => {
+            errorMessages.value.push(message)
+          })
+        })
     }
 
     return {
@@ -117,12 +132,20 @@ export default defineComponent({
       loadingSports,
       currentRoom,
       sortedSports,
+      errorMessages,
     }
   },
 })
 </script>
 
 <template>
+  <Error
+    v-for="(error, index) of errorMessages"
+    :key="index"
+    :is-shown="errorMessages[index] !== ''"
+    :msg="error"
+    @update:is-shown="errorMessages[index] = ''"
+  />
   <Modal max-width="max-w-xl" @close="push('/admin/rooms')">
     <template v-slot:title>
       <div class="flex w-full flex-row items-center justify-between">

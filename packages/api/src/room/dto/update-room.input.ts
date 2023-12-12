@@ -31,13 +31,12 @@ export class UpdateRoomInput extends PartialType(CreateRoomInput) {
   _id: string
 
   @IsString()
-  @IsNotEmpty()
   @MinLength(4)
   @Field() // Graphql
   name: string
 
   @Field(() => [String], { nullable: true })
-  SportId: string[];
+  SportId: string[]
 
   @Max(1000)
   @Min(0)

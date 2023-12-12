@@ -11,7 +11,7 @@ export class UpdateGroupInput extends PartialType(CreateGroupInput) {
   _id: string
   @IsString()
   @IsNotEmpty()
-  @MinLength(5)
+  @MinLength(4)
   @Field()
   name: string
   @IsString()

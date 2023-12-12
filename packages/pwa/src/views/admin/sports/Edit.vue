@@ -1,64 +1,50 @@
 <script lang="ts">
 //Interfaces
-interface ILoanableMaterial {
-  GetSportById: Sport;
-}
-
-interface Sport {
-  id: string;
-  name: string;
-  description: string;
-}
-
-interface ISport {
-  GetSportById: [
-    {
-      id: string;
-      name: string;
-      createdAt: Date;
-      updatedAt: Date;
-    },
-  ];
-}
-
 export interface IUpdateItem {
   id?: string;
   name?: string;
   description?: string;
 }
 
+// Vue
 import { computed, defineComponent, ref, watch } from 'vue';
-import Modal from '@/components/Modal.vue';
 import { useRouter } from 'vue-router';
-import { useMutation, useQuery } from '@vue/apollo-composable';
-import { UPDATE_SPORT, GET_SPORT } from '@/graphql/sport.query.ts';
-import { ALL_SPORTS } from '@/graphql/sport.query.ts';
+// Components
+import Modal from '@/components/Modal.vue';
 import StyledInputText from '@/components/generic/StyledInputText.vue';
 import StyledButton from '@/components/generic/StyledButton.vue';
+import Error from '@/components/Error.vue';
+// Composables
 import useA11y from '@/composables/useA11y.ts';
+// GraphQL
+import { UPDATE_SPORT, GET_SPORT } from '@/graphql/sport.query.ts';
+// Apollo
+import { useMutation, useQuery } from '@vue/apollo-composable';
+// Interfaces
+import { ISport } from '@/interface/sportInterface';
 
+// Export default
 export default defineComponent({
   name: 'Edit',
-  components: { StyledButton, StyledInputText, Modal },
+  components: { StyledButton, StyledInputText, Modal, Error },
   setup() {
+    // Router
     const { push, currentRoute } = useRouter();
     const id = currentRoute.value.params.id as string;
     const { setPageTitle } = useA11y();
-    const { result, onResult } = useQuery<ILoanableMaterial>(GET_SPORT, { id });
 
-    // ALL_SPORTS
-    const {
-      error: errorSports,
-      loading: loadingSports,
-      result: resultSports,
-      refetch: refetchSports,
-    } = useQuery<ISport>(ALL_SPORTS, {}, { fetchPolicy: 'cache-and-network' });
-
+    // Variables
     const currentItem = ref<IUpdateItem>({});
     const oldResult = ref<IUpdateItem>();
+    const errorMessages = ref<string[]>([]);
 
+    // GET_SPORT
+    const { result, onResult } = useQuery<ISport>(GET_SPORT, { id });
+
+    // UPDATE_SPORT
     const { mutate: mutateUpdateItem } = useMutation(UPDATE_SPORT);
 
+    // Compare function
     const compare = (val?: IUpdateItem, oldValue?: IUpdateItem): boolean => {
       if (!val || !oldValue) return false;
 
@@ -89,10 +75,12 @@ export default defineComponent({
       oldResult.value = JSON.parse(JSON.stringify(param.data.GetSportById));
     });
 
+    // Submit
     const submit = () => {
       updateItem(id);
     };
 
+    // Update item
     const updateItem = (id: string) => {
       // Update the item in the database
       mutateUpdateItem({
@@ -101,11 +89,25 @@ export default defineComponent({
           name: currentItem.value.name,
           description: currentItem.value.description,
         },
-      }).then((e) => {
-        push(`/admin/sports`);
-      });
+      })
+        .then((e) => {
+          push(`/admin/sports`);
+        })
+        .catch((e) => {
+          // GraphQL error messages
+          const originalError = e.graphQLErrors[0].extensions
+            .originalError as any;
+          if (!originalError || !originalError.message)
+            return console.log('no message');
+
+          console.log({ originalError });
+          originalError.message.forEach((message: string) => {
+            errorMessages.value.push(message);
+          });
+        });
     };
 
+    // Description length
     const descriptionLength = computed(() => {
       if (!currentItem.value.description) return '0/250';
       return currentItem.value.description.length + '/250';
@@ -115,21 +117,24 @@ export default defineComponent({
       push,
       submit,
       result,
-      errorSports,
-      loadingSports,
-      resultSports,
-      refetchSports,
       currentItem,
       hasChanged,
       descriptionLength,
       id,
+      errorMessages,
     };
   },
 });
 </script>
 
 <template>
-  <!--  Todo: popup to discard changes-->
+  <Error
+    v-for="(error, index) of errorMessages"
+    :key="index"
+    :is-shown="errorMessages[index] !== ''"
+    :msg="error"
+    @update:is-shown="errorMessages[index] = ''"
+  />
   <Modal min-width="min-w-md" @close="push(`/admin/sports`)">
     <template v-slot:title>
       <h2

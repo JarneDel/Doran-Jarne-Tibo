@@ -18,12 +18,12 @@ export class Stock {
   @Field(() => ID) // Graphql
   id: string
 
-  @MinLength(3)
+  @MinLength(4)
   @Column()
   @Field() // Graphql
   name: string
 
-  @MinLength(3)
+  @MinLength(4)
   @Column()
   @Field({ nullable: true }) // Graphql
   description: string

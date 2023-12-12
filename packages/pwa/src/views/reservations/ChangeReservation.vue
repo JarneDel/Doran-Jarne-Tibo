@@ -1,53 +1,54 @@
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
-import StyledInputText from '@/components/generic/StyledInputText.vue'
-import StyledButton from '@/components/generic/StyledButton.vue'
+import { computed, defineComponent, ref } from 'vue';
+import StyledInputText from '@/components/generic/StyledInputText.vue';
+import StyledButton from '@/components/generic/StyledButton.vue';
 import {
   AVAILABLEMATERAILS,
   GET_AVAILABLE_ROOMS,
   GET_ONE_RESERVATION,
   UPDATE_RESEVATION,
-} from '@/graphql/reservations.query'
-import { useMutation, useQuery } from '@vue/apollo-composable'
-import { Room } from '@/interface/roomInterface'
-import { material } from '@/interface/materialInterface'
-import { Minus, Plus, X } from 'lucide-vue-next'
-import useUser from '@/composables/useUser'
-import { useRouter } from 'vue-router'
-import { Reservation } from '@/interface/reservation'
-import StyledLable from '@/components/generic/StyledLable.vue'
-import Error from '@/components/Error.vue'
+  GET_ONE_RESERVATION,
+} from '@/graphql/reservations.query';
+import { useMutation, useQuery } from '@vue/apollo-composable';
+import { Room } from '@/interface/roomInterface';
+import { material } from '@/interface/materialInterface';
+import { Plus, Minus, X } from 'lucide-vue-next';
+import useUser from '@/composables/useUser';
+import { useRouter } from 'vue-router';
+import { Reservation } from '@/interface/reservation';
+import StyledLable from '@/components/generic/StyledLable.vue';
+import Error from '@/components/Error.vue';
 
 export default defineComponent({
   setup() {
-    const reservations = ref<Reservation>()
-    const detail = ref<boolean>(false)
-    const { push, currentRoute } = useRouter()
-    const id = computed(() => currentRoute.value.params.id)
-    const { customUser } = useUser()
-    const checkboxStatus = ref<any>({})
-    const checkboxStatusMaterials = ref<any>({})
-    const { mutate: updateReservation } = useMutation(UPDATE_RESEVATION)
-    const availableRooms = ref<Room[]>([])
-    const availableMaterials = ref<material[]>([])
-    const wantedRoom = ref<Room[]>([])
-    const wantedMaterials = ref<material[]>([])
-    const reservedMaterials = ref<material[]>([])
-    const price = ref(0)
-    const PriceWhitDiscount = ref(0)
-    const discount = ref<number>(0)
-    const errors = ref<string[]>([])
-    if (customUser.value?.score) {
-      if (customUser.value?.score > 50) {
-        discount.value = (customUser.value?.score - 50) / 100
+    const reservations = ref<Reservation>();
+    const detail = ref<boolean>(false);
+    const { push, currentRoute } = useRouter();
+    const id = computed(() => currentRoute.value.params.id);
+    const { customUser } = useUser();
+    const checkboxStatus = ref<any>({});
+    const checkboxStatusMaterials = ref<any>({});
+    const { mutate: updateReservation } = useMutation(UPDATE_RESEVATION);
+    const availableRooms = ref<Room[]>([]);
+    const availableMaterials = ref<material[]>([]);
+    const wantedRoom = ref<Room[]>([]);
+    const wantedMaterials = ref<material[]>([]);
+    const reservedMaterials = ref<material[]>([]);
+    const price = ref(0);
+    const PriceWhitDiscount = ref(0);
+    const discount = ref<number>(0);
+    const errors = ref<string[]>([]);
+    if (customUser.value?.userByUid.score) {
+      if (customUser.value?.userByUid.score > 50) {
+        discount.value = (customUser.value?.userByUid.score - 50) / 100;
       }
-      if (customUser.value?.score < 50) {
-        discount.value = ((50 - customUser.value?.score) / 100) * -1
+      if (customUser.value?.userByUid.score < 50) {
+        discount.value = ((50 - customUser.value?.userByUid.score) / 100) * -1;
       }
     }
     const timeDivrent = () => {
-      let begin = reservation.value.beginTime.split(':')
-      let end = reservation.value.endTime.split(':')
+      let begin = reservation.value.beginTime.split(':');
+      let end = reservation.value.endTime.split(':');
       let beginTime = new Date(
         0,
         0,
@@ -55,71 +56,72 @@ export default defineComponent({
         parseInt(begin[0]),
         parseInt(begin[1]),
         0,
-      )
-      let endTime = new Date(0, 0, 0, parseInt(end[0]), parseInt(end[1]), 0)
-      let diff = endTime.getTime() - beginTime.getTime()
-      let hours = Math.floor(diff / 1000 / 60 / 60)
-      diff -= hours * 1000 * 60 * 60
-      let minutes = Math.floor(diff / 1000 / 60)
-      reservation.value.timeDivrent = (hours * 60 + minutes) / 60
-    }
+      );
+      let endTime = new Date(0, 0, 0, parseInt(end[0]), parseInt(end[1]), 0);
+      let diff = endTime.getTime() - beginTime.getTime();
+      let hours = Math.floor(diff / 1000 / 60 / 60);
+      diff -= hours * 1000 * 60 * 60;
+      let minutes = Math.floor(diff / 1000 / 60);
+      reservation.value.timeDivrent = (hours * 60 + minutes) / 60;
+    };
     const calculatePrice = () => {
-      price.value = 0
-      PriceWhitDiscount.value = 0
-      wantedRoom.value.forEach(room => {
-        price.value += room.pricePerHour * reservation.value.timeDivrent
-      })
-      wantedMaterials.value.forEach(material => {
-        console.log(material)
+      price.value = 0;
+      PriceWhitDiscount.value = 0;
+      wantedRoom.value.forEach((room) => {
+        price.value += room.pricePerHour * reservation.value.timeDivrent;
+      });
+      wantedMaterials.value.forEach((material) => {
+        console.log(material);
         price.value +=
           material.price *
           checkboxStatusMaterials.value[material.name].amount *
-          reservation.value.timeDivrent
-      })
-      PriceWhitDiscount.value = price.value * discount.value + price.value
-    }
-    const date = new Date()
+          reservation.value.timeDivrent;
+      });
+      PriceWhitDiscount.value = price.value * discount.value + price.value;
+    };
+    const date = new Date();
     const reservation = ref({
       date: date.toISOString().substr(0, 10),
       beginTime: '08:00',
       endTime: '18:00',
       timeDivrent: 10,
-    })
-    new Promise<void>(resolve => {
-      const { onResult } = useQuery<any>(GET_ONE_RESERVATION, { id: id.value })
-      onResult(result => {
-        if (result.loading) return
-        reservations.value = result.data.GetReservatiounById
+    });
+    new Promise<void>((resolve) => {
+      const { onResult } = useQuery<any>(GET_ONE_RESERVATION, { id: id.value });
+      onResult((result) => {
+        if (result.loading) return;
+        reservations.value = result.data.GetReservatiounById;
         if (reservations.value) {
-          price.value = reservations.value.price
-          const date = new Date(reservations.value?.date)
-          reservation.value.date = date.toISOString().substr(0, 10)
-          reservation.value.beginTime = reservations.value?.startTime
-          reservation.value.endTime = reservations.value?.endTime
-          reservedMaterials.value = reservations.value?.reservedMaterials
+          price.value = reservations.value.price;
+          const date = new Date(reservations.value?.date);
+          reservation.value.date = date.toISOString().substr(0, 10);
+          reservation.value.beginTime = reservations.value?.startTime;
+          reservation.value.endTime = reservations.value?.endTime;
+          reservedMaterials.value = reservations.value?.reservedMaterials;
         }
-        timeDivrent()
-        check()
-        resolve()
-      })
-    })
+        timeDivrent();
+        check();
+        resolve();
+      });
+    });
     const changeReservation = () => {
-      let materials: material[] = []
-      wantedMaterials.value.forEach(material => {
-        let sportsist: any = []
-        material.sports.forEach(sportt => {
+      let materials: material[] = [];
+      wantedMaterials.value.forEach((material) => {
+        let sportsist: any = [];
+        material.sports.forEach((sportt) => {
           let sport: any = {
             id: '',
             name: '',
             createdAt: new Date(),
             updatedAt: new Date(),
-          }
-          sport.id = sportt.id
-          sport.name = sportt.name
-          sport.createdAt = sportt.createdAt
-          sport.updatedAt = sportt.updatedAt
-          sportsist.push(sport)
-        })
+          };
+          sport.id = sportt.id;
+          sport.name = sportt.name;
+          sport.description = sportt.description;
+          sport.createdAt = sportt.createdAt;
+          sport.updatedAt = sportt.updatedAt;
+          sportsist.push(sport);
+        });
         let listedmaterial: material = {
           id: material.id,
           name: material.name,
@@ -130,25 +132,26 @@ export default defineComponent({
           wantedAmount: material.wantedAmount,
           isComplete: material.isComplete,
           description: material.description,
-        }
-        materials.push(listedmaterial)
-      })
-      let roomlist: Room[] = []
-      wantedRoom.value.forEach(room => {
-        let sportsist: any = []
-        room.sports.forEach(sportt => {
+        };
+        materials.push(listedmaterial);
+      });
+      let roomlist: Room[] = [];
+      wantedRoom.value.forEach((room) => {
+        let sportsist: any = [];
+        room.sports.forEach((sportt) => {
           let sport: any = {
             id: '',
             name: '',
             createdAt: new Date(),
             updatedAt: new Date(),
-          }
-          sport.id = sportt.id
-          sport.name = sportt.name
-          sport.createdAt = sportt.createdAt
-          sport.updatedAt = sportt.updatedAt
-          sportsist.push(sport)
-        })
+          };
+          sport.id = sportt.id;
+          sport.name = sportt.name;
+          sport.description = sportt.description;
+          sport.createdAt = sportt.createdAt;
+          sport.updatedAt = sportt.updatedAt;
+          sportsist.push(sport);
+        });
         // @ts-ignore
         let listedroom: Room = {
           id: room.id,
@@ -156,9 +159,9 @@ export default defineComponent({
           pricePerHour: room.pricePerHour,
           sports: sportsist,
           type: room.type,
-        }
-        roomlist.push(listedroom)
-      })
+        };
+        roomlist.push(listedroom);
+      });
       updateReservation({
         date: reservation.value.date,
         startTime: reservation.value.beginTime,
@@ -171,47 +174,51 @@ export default defineComponent({
         canceld: false,
       })
         .then(() => {
-          push('/reservation')
+          push('/reservation');
         })
-        .catch(e => {
-          errors.value.push(e.message)
-        })
-    }
+        .catch((e) => {
+          errors.value.push(e.message);
+        });
+    };
     const Material = (material: material, plus: boolean) => {
       if (plus) {
         if (
           checkboxStatusMaterials.value[material.name].amount ==
           material.totalAmount
         )
-          return
-        checkboxStatusMaterials.value[material.name].amount++
+          return;
+        checkboxStatusMaterials.value[material.name].amount++;
       } else {
-        if (checkboxStatusMaterials.value[material.name].amount == 0) return
+        if (checkboxStatusMaterials.value[material.name].amount == 0) return;
         //remove material
-        checkboxStatusMaterials.value[material.name].amount--
+        checkboxStatusMaterials.value[material.name].amount--;
       }
-      const listIds: string[] = []
-      wantedMaterials.value.forEach(material => {
-        listIds.push(material.id)
-      })
+      const listIds: string[] = [];
+      wantedMaterials.value.forEach((material) => {
+        listIds.push(material.id);
+      });
       if (checkboxStatusMaterials.value[material.name].amount == 0)
-        wantedMaterials.value.splice(wantedMaterials.value.indexOf(material), 1)
+        wantedMaterials.value.splice(
+          wantedMaterials.value.indexOf(material),
+          1,
+        );
       else {
-        if (!listIds.includes(material.id)) wantedMaterials.value.push(material)
+        if (!listIds.includes(material.id))
+          wantedMaterials.value.push(material);
       }
-      calculatePrice()
-    }
+      calculatePrice();
+    };
     const checkMaterials = () => {
-      let sportId: string[] = []
+      let sportId: string[] = [];
       wantedRoom.value.forEach((room: Room) => {
         room.sports.forEach((sport: any) => {
-          if (!sportId.includes(sport.id)) sportId.push(sport.id)
-        })
-      })
-      availableMaterials.value = []
-      wantedMaterials.value = []
-      checkboxStatusMaterials.value = {}
-      return new Promise<void>(resolve => {
+          if (!sportId.includes(sport.id)) sportId.push(sport.id);
+        });
+      });
+      availableMaterials.value = [];
+      wantedMaterials.value = [];
+      checkboxStatusMaterials.value = {};
+      return new Promise<void>((resolve) => {
         const { onResult } = useQuery<any>(
           AVAILABLEMATERAILS,
           {
@@ -224,63 +231,63 @@ export default defineComponent({
           {
             fetchPolicy: 'no-cache',
           },
-        )
-        onResult(result => {
-          if (result.loading) return
-          availableMaterials.value = result.data.GetAvailableloanableMaterials
-          const availableMaterialsIds: string[] = []
-          availableMaterials.value.forEach(material => {
-            availableMaterialsIds.push(material.id)
-          })
+        );
+        onResult((result) => {
+          if (result.loading) return;
+          availableMaterials.value = result.data.GetAvailableloanableMaterials;
+          const availableMaterialsIds: string[] = [];
+          availableMaterials.value.forEach((material) => {
+            availableMaterialsIds.push(material.id);
+          });
           if (reservations.value?.date.substr(0, 10) == reservation.value.date)
-            reservations.value?.reservedMaterials.forEach(material => {
-              console.log(material)
-              console.log(availableMaterials.value)
+            reservations.value?.reservedMaterials.forEach((material) => {
+              console.log(material);
+              console.log(availableMaterials.value);
               if (availableMaterialsIds.includes(material.id))
-                wantedMaterials.value.push(material)
-            })
-          const listIds: string[] = []
-          wantedMaterials.value.forEach(material => {
-            listIds.push(material.id)
-          })
-          availableMaterials.value.forEach(material => {
+                wantedMaterials.value.push(material);
+            });
+          const listIds: string[] = [];
+          wantedMaterials.value.forEach((material) => {
+            listIds.push(material.id);
+          });
+          availableMaterials.value.forEach((material) => {
             if (!listIds.includes(material.id))
               checkboxStatusMaterials.value[material.name] = {
                 amount: 0,
-              }
+              };
             else
               checkboxStatusMaterials.value[material.name] = {
                 amount: reservations.value?.reservedMaterials.find(
-                  wanted => wanted.id == material.id,
+                  (wanted) => wanted.id == material.id,
                 )?.amountReserved,
-              }
-          })
-          calculatePrice()
-          resolve()
-        })
-      })
-    }
+              };
+          });
+          calculatePrice();
+          resolve();
+        });
+      });
+    };
     const addRoom = (room: Room) => {
       if (checkboxStatus.value[room.name]) {
-        wantedRoom.value.splice(wantedRoom.value.indexOf(room), 1)
-        checkboxStatus.value[room.name] = false
+        wantedRoom.value.splice(wantedRoom.value.indexOf(room), 1);
+        checkboxStatus.value[room.name] = false;
         if (wantedRoom.value.length == 0) {
-          wantedMaterials.value = []
-          availableMaterials.value = []
+          wantedMaterials.value = [];
+          availableMaterials.value = [];
         }
       } else {
-        wantedRoom.value.push(room)
+        wantedRoom.value.push(room);
       }
-      calculatePrice()
-      checkMaterials()
-    }
+      calculatePrice();
+      checkMaterials();
+    };
     const check = async () => {
       if (availableRooms.value.length > 0) {
-        availableRooms.value = []
-        checkboxStatus.value = {}
-        wantedRoom.value = []
+        availableRooms.value = [];
+        checkboxStatus.value = {};
+        wantedRoom.value = [];
       }
-      return new Promise<void>(resolve => {
+      return new Promise<void>((resolve) => {
         const { onResult } = useQuery<any>(
           GET_AVAILABLE_ROOMS,
           {
@@ -292,67 +299,67 @@ export default defineComponent({
           {
             fetchPolicy: 'no-cache',
           },
-        )
-        onResult(result => {
-          wantedRoom.value = []
+        );
+        onResult((result) => {
+          wantedRoom.value = [];
           if (
             reservations.value?.date.substr(0, 10) == reservation.value?.date
           ) {
-            if (result.loading) return
-            reservations.value?.rooms.forEach(room => {
-              wantedRoom.value.push(room)
-            })
+            if (result.loading) return;
+            reservations.value?.rooms.forEach((room) => {
+              wantedRoom.value.push(room);
+            });
           }
-          if (result.loading) return
-          availableRooms.value = result.data.getAvailableRooms
-          const listwantedRooms: string[] = []
-          wantedRoom.value.forEach(room => {
-            listwantedRooms.push(room.id)
-          })
-          price.value = 0
-          availableRooms.value.forEach(room => {
+          if (result.loading) return;
+          availableRooms.value = result.data.getAvailableRooms;
+          const listwantedRooms: string[] = [];
+          wantedRoom.value.forEach((room) => {
+            listwantedRooms.push(room.id);
+          });
+          price.value = 0;
+          availableRooms.value.forEach((room) => {
             if (listwantedRooms.includes(room.id))
-              checkboxStatus.value[room.name] = true
-            else checkboxStatus.value[room.name] = false
-          })
-          checkMaterials()
+              checkboxStatus.value[room.name] = true;
+            else checkboxStatus.value[room.name] = false;
+          });
+          checkMaterials();
           // }
-          resolve()
-        })
-      })
-    }
+          resolve();
+        });
+      });
+    };
     const checkEndTime = () => {
       if (
         parseInt(reservation.value.endTime.substring(0, 2)) < 8 ||
         parseInt(reservation.value.endTime.substring(0, 2)) > 18
       ) {
-        reservation.value.endTime = '18:00'
+        reservation.value.endTime = '18:00';
       } else if (reservation.value.beginTime > reservation.value.endTime) {
-        reservation.value.endTime = reservation.value.beginTime
+        reservation.value.endTime = reservation.value.beginTime;
       }
       //time difrentce
-      timeDivrent()
-      check()
-    }
+      timeDivrent();
+      check();
+    };
     const checkStartTime = () => {
       if (
         parseInt(reservation.value.beginTime.substring(0, 2)) < 8 ||
         parseInt(reservation.value.beginTime.substring(0, 2)) > 18
       ) {
-        reservation.value.beginTime = '08:00'
+        reservation.value.beginTime = '08:00';
       } else if (reservation.value.endTime < reservation.value.beginTime) {
-        reservation.value.beginTime = reservation.value.endTime
+        reservation.value.beginTime = reservation.value.endTime;
       }
       //time difrentce
-      timeDivrent()
-      check()
-    }
+      timeDivrent();
+      check();
+    };
     const checkDate = () => {
       if (reservation.value.date < new Date().toISOString().substr(0, 10)) {
-        reservation.value.date = new Date().toISOString().substr(0, 10)
+        reservation.value.date = new Date().toISOString().substr(0, 10);
       }
-      check()
-    }
+      check();
+    };
     return {
       reservation,
       check,
@@ -373,7 +380,7 @@ export default defineComponent({
       discount,
       detail,
       errorMessages: errors,
-    }
+    };
   },
   components: {
     StyledInputText,
@@ -384,7 +391,7 @@ export default defineComponent({
     StyledLable,
     Error,
   },
-})
+});
 </script>
 
 <template>
