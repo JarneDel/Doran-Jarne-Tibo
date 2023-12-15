@@ -28,10 +28,12 @@ import { useWindowSize } from '@vueuse/core'
 import MobileAdd from '@/components/mobile/MobileAdd.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import Search from '@/components/input/search.vue'
+import ServicesSelect from '@/components/input/ServicesSelect.vue'
 
 export default defineComponent({
   name: 'Overview',
   components: {
+    ServicesSelect,
     StyledInputText,
     MobileAdd,
     Error,
@@ -89,14 +91,13 @@ export default defineComponent({
       fetchWithFilters()
     }
 
-    const whereName = (e: Event) => {
-      const target = e.target as HTMLInputElement
-      search.value = target.value
+    const whereName = (value: string) => {
+      search.value = value
       fetchWithFilters()
     }
-    const whereService = (e: Event) => {
-      const target = e.target as HTMLSelectElement
-      searchServiceId.value = target.value
+    const whereService = (value: string) => {
+      console.log(value)
+      searchServiceId.value = value
       fetchWithFilters()
     }
 
@@ -179,24 +180,15 @@ export default defineComponent({
     <div class="flex items-center justify-between">
       <div class="py4 flex w-full flex-col gap-4 sm:flex-row">
         <Search :placeholder="$t('search')" @input="whereName" />
-
-
-        <select
-          id="service"
-          class="bg-primary-surface b-2 border-neutral-200 px-4"
-          name="service"
+        <ServicesSelect
+          v-if="result"
+          :content="result.services"
+          :empty-option="{
+            value: '',
+            text: $t('inventory.sort.service.all'),
+          }"
           @change="whereService"
-        >
-          <option value="">{{ $t('inventory.sort.service.all') }}</option>
-          <option
-            v-for="service of result.services"
-            v-if="result"
-            :key="service.id"
-            :value="service.id"
-          >
-            {{ service.name }}
-          </option>
-        </select>
+        />
       </div>
       <div>
         <StyledButton
