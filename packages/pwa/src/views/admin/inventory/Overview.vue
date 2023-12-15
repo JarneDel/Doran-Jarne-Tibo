@@ -14,7 +14,6 @@ import {
   ArrowUpNarrowWide,
   ChevronRight,
   Edit2,
-  Search,
 } from 'lucide-vue-next'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import Modal from '@/components/Modal.vue'
@@ -24,10 +23,17 @@ import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
 import DoubleClickSelect from '@/components/generic/DoubleClickSelect.vue'
 import Error from '@/components/Error.vue'
 import { IUpdateItemOptional } from '@/interface/stock.interface.ts'
+import useA11y from '@/composables/useA11y.ts'
+import { useWindowSize } from '@vueuse/core'
+import MobileAdd from '@/components/mobile/MobileAdd.vue'
+import StyledInputText from '@/components/generic/StyledInputText.vue'
+import Search from '@/components/input/search.vue'
 
 export default defineComponent({
   name: 'Overview',
   components: {
+    StyledInputText,
+    MobileAdd,
     Error,
     DoubleClickSelect,
     DoubleClickEdit,
@@ -154,6 +160,8 @@ export default defineComponent({
       whereService,
       push,
       updateItem,
+      MOBILE_VIEWPORT_SIZE: useA11y().MOBILE_VIEWPORT_SIZE,
+      windowWidth: useWindowSize().width,
     }
   },
 })
@@ -169,16 +177,10 @@ export default defineComponent({
   />
   <div class="mx-a max-w-7xl">
     <div class="flex items-center justify-between">
-      <div class="py4 flex flex-row gap-4">
-        <label class="grid grid-cols-1 grid-rows-1">
-          <input
-            :placeholder="$t('search')"
-            class="p1 bg-primary-surface b-2 col-start-1 row-start-1 border-neutral-200 px-4"
-            type="text"
-            @input.capture="whereName"
-          />
-          <Search class="m2 col-start-1 row-start-1 mx-3 justify-self-end" />
-        </label>
+      <div class="py4 flex w-full flex-col gap-4 sm:flex-row">
+        <Search :placeholder="$t('search')" @input="whereName" />
+
+
         <select
           id="service"
           class="bg-primary-surface b-2 border-neutral-200 px-4"
@@ -197,9 +199,14 @@ export default defineComponent({
         </select>
       </div>
       <div>
-        <StyledButton type="button" @click="push('/admin/inventory/new')">
+        <StyledButton
+          v-if="windowWidth > MOBILE_VIEWPORT_SIZE"
+          type="button"
+          @click="push('/admin/inventory/new')"
+        >
           {{ $t('inventory.new') }}
         </StyledButton>
+        <MobileAdd v-else @click="$router.push('/admin/inventory/new')" />
       </div>
     </div>
 
@@ -214,14 +221,19 @@ export default defineComponent({
               <arrow-down-az v-else :size="16" />
             </button>
           </th>
-          <th>{{ $t('inventory.description') }}</th>
+          <th v-if="MOBILE_VIEWPORT_SIZE < windowWidth">
+            {{ $t('inventory.description') }}
+          </th>
           <th
             :title="$t('inventory.title.amount.tooltip')"
             class="cursor-pointer"
             @click="sortField('amountInStock')"
           >
             <button class="flex flex-row items-center gap-2">
-              <span>{{ $t('inventory.amount') }} &nbsp;</span>
+              <span v-if="MOBILE_VIEWPORT_SIZE < windowWidth"
+                >{{ $t('inventory.amount') }} &nbsp;</span
+              >
+              <span v-else> # &nbsp; </span>
               <arrow-up-down
                 v-if="sortFieldName !== 'amountInStock'"
                 :size="16"
@@ -259,7 +271,11 @@ export default defineComponent({
               @submit="newValue => updateItem(stock.id, { name: newValue })"
             />
           </td>
-          <td :title="stock.description" class="truncate">
+          <td
+            v-if="MOBILE_VIEWPORT_SIZE < windowWidth"
+            :title="stock.description"
+            class="truncate"
+          >
             <DoubleClickEdit
               :value="stock.description"
               @submit="
