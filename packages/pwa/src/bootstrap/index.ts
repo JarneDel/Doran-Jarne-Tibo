@@ -50,6 +50,10 @@ export const router = createRouter({
       },
       children: [
         {
+          path: '',
+          component: () => import('@/views/admin/AdminOverview.vue'),
+        },
+        {
           path: 'groups',
           component: () => import('@/views/admin/Groups.vue'),
           meta: {
@@ -478,7 +482,10 @@ router.beforeEach((to, from, next) => {
     redirectToHome(next)
   } else if (to.path === '/logout') {
     logoutUser(from, to, next)
-  } else if (customUser.value && !isRoleAllowed(customUser.value.role, allowedRoles)) {
+  } else if (
+    customUser.value &&
+    !isRoleAllowed(customUser.value.role, allowedRoles)
+  ) {
     unauthorized(to, next)
   } else {
     next()
