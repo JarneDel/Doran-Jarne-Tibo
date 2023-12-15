@@ -96,7 +96,6 @@ export default defineComponent({
       fetchWithFilters()
     }
     const whereService = (value: string) => {
-      console.log(value)
       searchServiceId.value = value
       fetchWithFilters()
     }
@@ -150,6 +149,7 @@ export default defineComponent({
     return {
       error,
       loading,
+      searchServiceId,
       result,
       search,
       sortDirection,
@@ -190,7 +190,7 @@ export default defineComponent({
           @change="whereService"
         />
       </div>
-      <div>
+      <div class="flex w-full justify-end">
         <StyledButton
           v-if="windowWidth > MOBILE_VIEWPORT_SIZE"
           type="button"
@@ -251,7 +251,10 @@ export default defineComponent({
           <th></th>
         </tr>
       </thead>
-      <tbody v-if="result" :class="{ loader: loading }">
+      <tbody
+        v-if="result && result.stock.length > 0"
+        :class="{ loader: loading }"
+      >
         <tr
           v-for="stock of result.stock"
           :key="stock.id"
@@ -316,6 +319,24 @@ export default defineComponent({
             <router-link :to="`/admin/inventory/${stock.id}`">
               <ChevronRight />
             </router-link>
+          </td>
+        </tr>
+      </tbody>
+      <tbody
+        v-else-if="
+          result && result.stock.length === 0 && (search || searchServiceId)
+        "
+      >
+        <tr>
+          <td class="text-center" colspan="5">
+            {{ $t('inventory.noItemsQuery') }}
+          </td>
+        </tr>
+      </tbody>
+      <tbody v-else-if="result && result.stock.length === 0">
+        <tr>
+          <td class="text-center" colspan="5">
+            {{ $t('inventory.noItems') }}
           </td>
         </tr>
       </tbody>
