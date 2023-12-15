@@ -63,11 +63,11 @@ export default defineComponent({
       return allPages.value
         .map(page => {
           if (page.name === 'vacation') {
-            page.count = pendingVacationRequestsCount.value
+            return { ...page, count: pendingVacationRequestsCount.value }
           }
-          return page.roles.includes(role.value ?? '') ? page : null
+          return page
         })
-        .filter(Boolean)
+        .filter(page => page.roles.includes(role.value ?? ''))
     })
     // handle subscription and query
     const { result, onResult } = useSubscription(
