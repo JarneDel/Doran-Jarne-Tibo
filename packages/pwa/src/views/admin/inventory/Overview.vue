@@ -177,8 +177,8 @@ export default defineComponent({
     @update:is-shown="errorMessages[index] = ''"
   />
   <div class="mx-a max-w-7xl">
-    <div class="flex items-center justify-between">
-      <div class="py4 flex w-full flex-col gap-4 sm:flex-row">
+    <div class="flex flex-row items-center justify-between gap-4">
+      <div class="sm:w-unset flex w-full flex-col gap-4 sm:flex-row">
         <Search :placeholder="$t('search')" @input="whereName" />
         <ServicesSelect
           v-if="result"
@@ -190,16 +190,22 @@ export default defineComponent({
           @change="whereService"
         />
       </div>
-      <div class="flex w-full justify-end">
-        <StyledButton
-          v-if="windowWidth > MOBILE_VIEWPORT_SIZE"
-          type="button"
-          @click="push('/admin/inventory/new')"
-        >
-          {{ $t('inventory.new') }}
-        </StyledButton>
-        <MobileAdd v-else @click="$router.push('/admin/inventory/new')" />
-      </div>
+      <StyledButton
+        v-if="windowWidth > MOBILE_VIEWPORT_SIZE"
+        type="button"
+        @click="push('/admin/inventory/new')"
+      >
+        {{ $t('inventory.new') }}
+      </StyledButton>
+    </div>
+    <MobileAdd
+      v-if="windowWidth < MOBILE_VIEWPORT_SIZE"
+      @click="$router.push('/admin/inventory/new')"
+    />
+
+    <div class="flex w-full items-center justify-between">
+      <div class="py4 flex w-full flex-col gap-4 sm:flex-row"></div>
+      <div class="flex w-full justify-end"></div>
     </div>
 
     <table class="w-full border-collapse text-sm">
