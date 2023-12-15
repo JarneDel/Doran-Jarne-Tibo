@@ -1,22 +1,21 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { ref } from 'vue';
-import { RepairRequest, material } from '@/interface/repairRequestInterface';
-import useUser from '@/composables/useUser';
-import StyledInputText from '@/components/generic/StyledInputText.vue';
-import { useMutation, useQuery } from '@vue/apollo-composable';
-import { ALL_ROOMS } from '@/graphql/room.query';
-import { Room } from '@/interface/roomInterface';
-import { ALL_LOANABLE_MATERIALS } from '@/graphql/loanableMaterials.query';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import { CREATE_REPAIR_REQUEST } from '@/graphql/repairRequests.query';
-import Error from '@/components/Error.vue';
+import { defineComponent, ref } from 'vue'
+import { material, RepairRequest } from '@/interface/repairRequestInterface'
+import useUser from '@/composables/useUser'
+import StyledInputText from '@/components/generic/StyledInputText.vue'
+import { useMutation, useQuery } from '@vue/apollo-composable'
+import { ALL_ROOMS } from '@/graphql/room.query'
+import { Room } from '@/interface/roomInterface'
+import { ALL_LOANABLE_MATERIALS } from '@/graphql/loanableMaterials.query'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import { CREATE_REPAIR_REQUEST } from '@/graphql/repairRequests.query'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
   setup() {
-    const errorMessages = ref<string[]>([]);
-    const { mutate: createRepairRequest } = useMutation(CREATE_REPAIR_REQUEST);
-    const { customUser } = useUser();
+    const errorMessages = ref<string[]>([])
+    const { mutate: createRepairRequest } = useMutation(CREATE_REPAIR_REQUEST)
+    const { customUser } = useUser()
     const repair = ref<RepairRequest>({
       id: '',
       title: '',
@@ -38,7 +37,7 @@ export default defineComponent({
       isRepaired: false,
       createdAt: new Date(),
       updatedAt: new Date(),
-    });
+    })
     if (customUser.value) {
       repair.value.requestUser = {
         id: customUser.value.id,
@@ -50,47 +49,45 @@ export default defineComponent({
         lastName: customUser.value.lastName,
         email: customUser.value.email,
         phone: customUser.value.phone,
-      };
+      }
     }
-    const rooms = ref<Room[]>([]);
-    const loanableMaterials = ref<material[]>([]);
-    const { onResult } = useQuery(ALL_ROOMS);
-    onResult((result) => {
+    const rooms = ref<Room[]>([])
+    const loanableMaterials = ref<material[]>([])
+    const { onResult } = useQuery(ALL_ROOMS)
+    onResult(result => {
       if (result.data) {
-        rooms.value = result.data.GetAllRooms;
+        rooms.value = result.data.GetAllRooms
         if (customUser.value?.role === 'GROUP')
-          rooms.value = rooms.value.filter(
-            (room) => room.type !== 'Werkruimte',
-          );
-        console.log(rooms.value);
+          rooms.value = rooms.value.filter(room => room.type !== 'Werkruimte')
+        console.log(rooms.value)
       }
-    });
-    const { onResult: resultMMaterials } = useQuery(ALL_LOANABLE_MATERIALS);
-    resultMMaterials((result) => {
+    })
+    const { onResult: resultMMaterials } = useQuery(ALL_LOANABLE_MATERIALS)
+    resultMMaterials(result => {
       if (result.data) {
-        loanableMaterials.value = result.data.GetAllLoanableMaterials;
+        loanableMaterials.value = result.data.GetAllLoanableMaterials
       }
-    });
+    })
     const handleSubmit = () => {
-      let materials: material[];
+      let materials: material[] = []
       if (repair.value.loanableMaterial.length > 0) {
-        materials = [];
-        repair.value.loanableMaterial.forEach((material) => {
-          let sportsist: any = [];
-          material.sports.forEach((sportt) => {
+        materials = []
+        repair.value.loanableMaterial.forEach(material => {
+          let sportsist: any = []
+          material.sports.forEach(sportt => {
             let sport: any = {
               id: '',
               name: '',
               createdAt: new Date(),
               updatedAt: new Date(),
-            };
-            sport.id = sportt.id;
-            sport.name = sportt.name;
-            sport.description = sportt.description;
-            sport.createdAt = sportt.CreatedAt;
-            sport.updatedAt = sportt.UpdatedAt;
-            sportsist.push(sport);
-          });
+            }
+            sport.id = sportt.id
+            sport.name = sportt.name
+            sport.description = sportt.description
+            sport.createdAt = sportt.CreatedAt
+            sport.updatedAt = sportt.UpdatedAt
+            sportsist.push(sport)
+          })
           let listedmaterial: material = {
             id: material.id,
             name: material.name,
@@ -103,30 +100,30 @@ export default defineComponent({
             amountReserved: 0,
             createdAt: material.createdAt,
             updatedAt: material.updatedAt,
-          };
-          materials.push(listedmaterial);
-        });
+          }
+          materials.push(listedmaterial)
+        })
       }
-      let roomlist: Room[];
+      let roomlist: Room[] = []
       if (repair.value.room.length > 0) {
-        roomlist = [];
-        repair.value.room.forEach((room) => {
-          let sportsist: any = [];
-          room.sports.forEach((sportt) => {
+        roomlist = []
+        repair.value.room.forEach(room => {
+          let sportsist: any = []
+          room.sports.forEach(sportt => {
             let sport: any = {
               id: '',
               name: '',
               description: '',
               createdAt: new Date(),
               updatedAt: new Date(),
-            };
-            sport.id = sportt.id;
-            sport.name = sportt.name;
-            sport.description = sportt.description;
-            sport.createdAt = sportt.createdAt;
-            sport.updatedAt = sportt.updatedAt;
-            sportsist.push(sport);
-          });
+            }
+            sport.id = sportt.id
+            sport.name = sportt.name
+            sport.description = sportt.description
+            sport.createdAt = sportt.createdAt
+            sport.updatedAt = sportt.updatedAt
+            sportsist.push(sport)
+          })
           // @ts-ignore
           let listedroom: Room = {
             id: room.id,
@@ -134,9 +131,9 @@ export default defineComponent({
             pricePerHour: room.pricePerHour,
             sports: sportsist,
             type: room.type,
-          };
-          roomlist.push(listedroom);
-        });
+          }
+          roomlist.push(listedroom)
+        })
       }
       createRepairRequest({
         requestUserId: repair.value.requestUser.id,
@@ -146,39 +143,39 @@ export default defineComponent({
         description: repair.value.description,
       })
         .then(() => {
-          location.reload();
+          location.reload()
         })
-        .catch((e) => {
+        .catch(e => {
           const originalError = e.graphQLErrors[0].extensions
-            .originalError as any;
+            .originalError as any
           if (!originalError || !originalError.message)
-            return console.log('no message');
+            return console.log('no message')
 
-          console.log({ originalError });
+          console.log({ originalError })
           originalError.message.forEach((message: string) => {
-            errorMessages.value.push(message);
-          });
-        });
-    };
+            errorMessages.value.push(message)
+          })
+        })
+    }
     return {
       repair,
       rooms,
       loanableMaterials,
       handleSubmit,
       errorMessages,
-    };
+    }
   },
   components: { StyledInputText, StyledButton, Error },
-});
+})
 </script>
 
 <template>
   <Error
-    :translate="true"
     v-for="(error, index) of errorMessages"
     :key="index"
     :is-shown="errorMessages[index] !== ''"
     :msg="error"
+    :translate="true"
     @update:is-shown="errorMessages[index] = ''"
   />
   <div class="flex h-full w-full items-center justify-center">
@@ -214,11 +211,11 @@ export default defineComponent({
               @change="
                 () => {
                   if (repair.room.includes(room)) {
-                    repair.room.splice(repair.room.indexOf(room), 1);
+                    repair.room.splice(repair.room.indexOf(room), 1)
                   } else {
-                    repair.room.push(room);
+                    repair.room.push(room)
                   }
-                  console.log(repair.room);
+                  console.log(repair.room)
                 }
               "
             />
@@ -240,11 +237,11 @@ export default defineComponent({
                     repair.loanableMaterial.splice(
                       repair.loanableMaterial.indexOf(material),
                       1,
-                    );
+                    )
                   } else {
-                    repair.loanableMaterial.push(material);
+                    repair.loanableMaterial.push(material)
                   }
-                  console.log(repair.loanableMaterial);
+                  console.log(repair.loanableMaterial)
                 }
               "
             />
