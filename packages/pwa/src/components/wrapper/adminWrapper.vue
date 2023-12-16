@@ -11,7 +11,7 @@ export default {
 <template>
   <div class="flex h-full w-full">
     <Sidenav />
-    <div class="relative w-full">
+    <div class="relative mx-2 w-full sm:mx-8">
       <RouterView />
       <Notifications />
     </div>
