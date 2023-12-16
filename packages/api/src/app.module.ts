@@ -79,7 +79,7 @@ import { FirebaseUserModule } from './firebase-user/firebase-user.module'
 
     MailerModule.forRoot({
       transport: {
-        service: process.env['MAIL_SERVICE'],
+        service: 'outlook',
         auth: {
           user: process.env['MAIL_USER'],
           pass: process.env['MAIL_PASSWORD'],

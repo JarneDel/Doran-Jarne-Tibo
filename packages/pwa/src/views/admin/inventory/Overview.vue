@@ -29,10 +29,12 @@ import MobileAdd from '@/components/mobile/MobileAdd.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import Search from '@/components/input/search.vue'
 import ServicesSelect from '@/components/input/ServicesSelect.vue'
+import ErrorList from '@/components/ErrorList.vue'
 
 export default defineComponent({
   name: 'Overview',
   components: {
+    ErrorList,
     ServicesSelect,
     StyledInputText,
     MobileAdd,
@@ -170,12 +172,7 @@ export default defineComponent({
 
 <template>
   <RouterView />
-  <Error
-    v-for="(err, index) of errorMessages"
-    :is-shown="!!err"
-    :msg="err"
-    @update:is-shown="errorMessages[index] = ''"
-  />
+  <ErrorList :error-messages="errorMessages"></ErrorList>
   <div class="mx-a max-w-7xl">
     <div class="flex flex-row items-center justify-between gap-4">
       <div class="sm:w-unset flex w-full flex-col gap-4 sm:flex-row">

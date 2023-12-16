@@ -103,4 +103,12 @@ export class StaffRegisterResolver {
     await this.staffRegisterService.update(staffRegister)
     return registeredStaff
   }
+
+  @UseGuards()
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Mutation(() => Boolean, { name: 'staffRegisterDelete' })
+  async remove(@Args('id', { type: () => String }) id: string) {
+    const result = await this.staffRegisterService.remove(id)
+    return result.affected > 0 && result.raw.acknowledged
+  }
 }
