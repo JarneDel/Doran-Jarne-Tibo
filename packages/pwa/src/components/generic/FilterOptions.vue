@@ -54,7 +54,7 @@ export default defineComponent({
         active: modelValue === option,
         inactive: modelValue !== option,
       }"
-      class="btn p2 focus-visible-outline-none transition-color flex w-min items-center border-2 border-transparent hover:border-black focus:outline-none focus-visible:border-black focus-visible:border-black"
+      class="btn p2 focus-visible-outline-none transition-color flex w-max items-center border-2 border-transparent hover:border-black focus:outline-none focus-visible:border-black focus-visible:border-black"
     >
       <component
         :is="icons[index]"
