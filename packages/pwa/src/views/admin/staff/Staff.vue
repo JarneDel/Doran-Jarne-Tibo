@@ -4,7 +4,6 @@ import { useLazyQuery, useMutation, useQuery } from '@vue/apollo-composable'
 import {
   ALL_REGISTRATIONS,
   CREATE_REGISTRATION,
-  DELETE_REGISTRATION,
 } from '@/graphql/staff-register.query.ts'
 import Modal from '@/components/Modal.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
@@ -74,12 +73,7 @@ export default defineComponent({
     } = useLazyQuery(ALL_REGISTRATIONS)
     const { result: staffResult } = useQuery(ALL_STAFF)
     const { mutate, loading, onError } = useMutation(CREATE_REGISTRATION)
-    const { mutate: deleteRegistration, onError: deleteError } =
-      useMutation(DELETE_REGISTRATION)
     onError(err => {
-      errors.value.push(err.message)
-    })
-    deleteError(err => {
       errors.value.push(err.message)
     })
 
@@ -104,11 +98,6 @@ export default defineComponent({
       }
     }
 
-    const removeRegistration = async (id: string) => {
-      const res = await deleteRegistration({ id })
-      if (res?.data) await refetch()
-      else errors.value.push('Could not delete registration')
-    }
     const { width } = useWindowSize()
     const { MOBILE_VIEWPORT_SIZE } = useA11y()
 
@@ -120,7 +109,6 @@ export default defineComponent({
       errors,
       form,
       getIsExpired,
-      removeRegistration,
       refetch,
       registrations: computed(
         () => registrationsResult.value?.staffRegisterAll,
