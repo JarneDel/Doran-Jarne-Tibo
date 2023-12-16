@@ -173,7 +173,7 @@ export default defineComponent({
 <template>
   <RouterView />
   <ErrorList :error-messages="errorMessages"></ErrorList>
-  <div class="mx-a max-w-7xl">
+  <div class="mx-a mt-8 max-w-7xl">
     <div class="flex flex-row items-center justify-between gap-4">
       <div class="sm:w-unset flex w-full flex-col gap-4 sm:flex-row">
         <Search :placeholder="$t('search')" @input="whereName" />
