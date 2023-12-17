@@ -14,6 +14,7 @@ import {
   CircleDashed,
   CircleDot,
   Contact,
+  Loader2,
   Trash,
   Trash2,
   UserPlus2,
@@ -23,26 +24,40 @@ import useTime from '@/composables/useTime'
 import { ALL_STAFF } from '@/graphql/staff.query.ts'
 import AdminStaffCard from '@/components/staff/AdminStaffCard.vue'
 import StaffDetail from '@/components/admin/StaffDetail.vue'
+import CardContainer from '@/components/layout/CardContainer.vue'
+import Error from '@/components/Error.vue'
+import ErrorList from '@/components/ErrorList.vue'
+import DesktopRegistrationList from '@/components/admin/StaffRegistration/DesktopRegistrationList.vue'
+import MobileRegistrationsList from '@/components/admin/StaffRegistration/MobileRegistrationsList.vue'
+import { useWindowSize } from '@vueuse/core'
+import useA11y from '@/composables/useA11y.ts'
 
 export default defineComponent({
   name: 'Staff',
   methods: { UserPlus2, Contact },
   components: {
-    StaffDetail,
+    MobileRegistrationsList,
+    DesktopRegistrationList,
+    ErrorList,
+    Error,
     AdminStaffCard,
-    CircleDashed,
-    Trash2,
-    FilterOptions,
-    BadgeCheck,
-    CircleDot,
     BadgeAlert,
-    Trash,
-    StyledInputText,
-    StyledButton,
+    BadgeCheck,
+    CardContainer,
+    CircleDashed,
+    CircleDot,
+    FilterOptions,
+    Loader2,
     Modal,
+    StaffDetail,
+    StyledButton,
+    StyledInputText,
+    Trash,
+    Trash2,
   },
   setup: () => {
     const adding = ref(false)
+    const errors = ref<string[]>([])
     const form = ref({
       email: '',
       firstName: '',
@@ -57,7 +72,10 @@ export default defineComponent({
       load,
     } = useLazyQuery(ALL_REGISTRATIONS)
     const { result: staffResult } = useQuery(ALL_STAFF)
-    const { mutate } = useMutation(CREATE_REGISTRATION)
+    const { mutate, loading, onError } = useMutation(CREATE_REGISTRATION)
+    onError(err => {
+      errors.value.push(err.message)
+    })
 
     const { getIsExpired, timeToExpiry } = useTime()
 
@@ -80,24 +98,33 @@ export default defineComponent({
       }
     }
 
+    const { width } = useWindowSize()
+    const { MOBILE_VIEWPORT_SIZE } = useA11y()
+
     return {
       addStaff,
       filter,
       loadData,
       adding,
+      errors,
       form,
       getIsExpired,
+      refetch,
       registrations: computed(
         () => registrationsResult.value?.staffRegisterAll,
       ),
       staff: computed(() => staffResult.value?.staff),
       timeToExpiry,
+      loadingAddingStaff: loading,
+      isMobile: computed(() => width.value < MOBILE_VIEWPORT_SIZE.value),
     }
   },
 })
 </script>
 
 <template>
+  <ErrorList :error-messages="errors"></ErrorList>
+
   <StaffDetail v-if="$route.params.id" :id="$route.params.id as string" />
   <Modal v-if="adding" @close="adding = false">
     <template v-slot:title> Add staff member</template>
@@ -125,7 +152,10 @@ export default defineComponent({
           <option value="STAFF">Staff</option>
           <option value="ADMIN">Admin</option>
         </select>
-        <styled-button type="submit">Send</styled-button>
+        <styled-button :disabled="loadingAddingStaff" type="submit">
+          <span v-if="!loadingAddingStaff">Send</span>
+          <Loader2 v-else class="animate-spin" />
+        </styled-button>
       </form>
     </template>
   </Modal>
@@ -143,74 +173,28 @@ export default defineComponent({
     </div>
 
     <div v-if="filter == 'staffRegister'" class="mt4">
-      <table
-        v-if="registrations && registrations.length > 0"
-        class="w-full text-sm"
-      >
-        <thead>
-          <tr class="border-b transition-colors">
-            <th>status</th>
-            <th>Email</th>
-            <th>Full name</th>
-            <th>Role</th>
-            <th>Expires in</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="registration in registrations"
-            class="border-b transition-colors"
-          >
-            <td>
-              <BadgeCheck v-if="registration.isRegistered" />
-              <BadgeAlert v-else-if="getIsExpired(registration.expiresAt)" />
-              <CircleDot v-else></CircleDot>
-            </td>
-            <td>
-              {{ registration.email }}
-            </td>
-            <td class="case-capital">
-              {{ registration.firstName }}
-              {{ registration.lastName }}
-            </td>
-            <td class="case-capital">
-              {{ registration.role.toLocaleLowerCase() }}
-            </td>
-            <td>
-              {{ timeToExpiry(new Date(registration.expiresAt)) }}
-            </td>
-            <td>
-              <button class="text-danger" @click="console.log(registration)">
-                <Trash :size="20" />
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <DesktopRegistrationList
+        v-if="!isMobile"
+        :registrations="registrations"
+        @error="errors.push($event)"
+        @refresh="refetch"
+      />
+      <MobileRegistrationsList
+        v-else
+        :registrations="registrations"
+        @error="errors.push($event)"
+        @refresh="refetch"
+      />
     </div>
-    <div
-      v-else-if="filter == 'staff'"
-      class="mt4 relative h-min w-full overflow-hidden rounded-xl bg-white p-4 shadow-md dark:bg-gray-800"
-    >
-      <div class="gap4 flex flex-row flex-row flex-wrap">
+    <div v-else-if="filter == 'staff'" class="mt-8">
+      <CardContainer>
         <AdminStaffCard
           v-for="staffMember in staff"
           :key="staffMember.id"
           :data="staffMember"
           @click="$router.push('/admin/staff/' + staffMember.id)"
         />
-      </div>
+      </CardContainer>
     </div>
   </div>
 </template>
-
-<style scoped>
-th {
-  @apply h-12 px-4 text-left align-middle font-medium;
-}
-
-td {
-  @apply align-mid p-4;
-}
-</style>

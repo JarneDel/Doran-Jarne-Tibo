@@ -10,15 +10,15 @@ const timeToExpiry = (date: Date): string => {
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
   const seconds = Math.floor((diff % (1000 * 60)) / 1000)
   if (days) {
-    return `${days} d ${hours} h`
+    return `${days}d ${hours}h`
   }
   if (hours) {
-    return `${hours} h ${minutes} m`
+    return `${hours}h ${minutes}m`
   }
   if (minutes) {
-    return `${minutes} m ${seconds} s`
+    return `${minutes}m ${seconds}s`
   }
-  return `${seconds} s`
+  return `${seconds}s`
 }
 
 export default function () {
