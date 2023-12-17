@@ -346,7 +346,9 @@ export default defineComponent({
       </div>
     </div>
 
-    <table class="w-full border-collapse text-sm table-fixed">
+    <table
+      class="w-full border-collapse text-sm md:text-base lg:text-lg 2xl:text-xl table-fixed"
+    >
       <thead>
         <tr class="border-b text-left transition-colors">
           <th class="w-[20%] cursor-pointer" @click="sortField('name')">
