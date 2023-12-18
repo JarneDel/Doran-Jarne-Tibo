@@ -98,5 +98,5 @@ async function createRequest(page: Page) {
   await switchToAdmin(page)
   // approve vacation request
   await page.locator('a[href="/admin"]').click()
-  await page.locator('a[href="/admin/vacation"]').click()
+  await page.locator('a[href="/admin/vacation"]:first-child').click()
 }
