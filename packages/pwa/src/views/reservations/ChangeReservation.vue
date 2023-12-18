@@ -80,7 +80,7 @@ export default defineComponent({
     };
     const date = new Date();
     const reservation = ref({
-      date: date.toISOString().substr(0, 10),
+      date: date.toISOString().substring(0, 10),
       beginTime: '08:00',
       endTime: '18:00',
       timeDivrent: 10,
@@ -93,7 +93,7 @@ export default defineComponent({
         if (reservations.value) {
           price.value = reservations.value.price;
           const date = new Date(reservations.value?.date);
-          reservation.value.date = date.toISOString().substr(0, 10);
+          reservation.value.date = date.toISOString().substring(0, 10);
           reservation.value.beginTime = reservations.value?.startTime;
           reservation.value.endTime = reservations.value?.endTime;
           reservedMaterials.value = reservations.value?.reservedMaterials;
@@ -238,7 +238,7 @@ export default defineComponent({
           availableMaterials.value.forEach((material) => {
             availableMaterialsIds.push(material.id);
           });
-          if (reservations.value?.date.substr(0, 10) == reservation.value.date)
+          if (reservations.value?.date.substring(0, 10) == reservation.value.date)
             reservations.value?.reservedMaterials.forEach((material) => {
               console.log(material);
               console.log(availableMaterials.value);
@@ -302,7 +302,7 @@ export default defineComponent({
         onResult((result) => {
           wantedRoom.value = [];
           if (
-            reservations.value?.date.substr(0, 10) == reservation.value?.date
+            reservations.value?.date.substring(0, 10) == reservation.value?.date
           ) {
             if (result.loading) return;
             reservations.value?.rooms.forEach((room) => {
@@ -354,8 +354,8 @@ export default defineComponent({
       check();
     };
     const checkDate = () => {
-      if (reservation.value.date < new Date().toISOString().substr(0, 10)) {
-        reservation.value.date = new Date().toISOString().substr(0, 10);
+      if (reservation.value.date < new Date().toISOString().substring(0, 10)) {
+        reservation.value.date = new Date().toISOString().substring(0, 10);
       }
       check();
     };
