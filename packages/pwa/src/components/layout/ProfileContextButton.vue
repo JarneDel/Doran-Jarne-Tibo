@@ -33,75 +33,73 @@ const { MOBILE_VIEWPORT_SIZE } = useA11y()
 </script>
 
 <template>
-  <div>
-    <OnClickOutside @trigger="open = false">
-      <button
-        v-if="user"
-        id="profile"
-        class="gap2 mx-2 flex flex-row items-center justify-center"
-        @click="open = !open"
-      >
-        <span
-          :title="username"
-          class="hidden max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap sm:inline-block"
-        >
-          {{ username }}
-        </span>
-        <ChevronDown v-if="!open" />
-        <ChevronUp v-else />
-        <ProfilePicture v-if="firebaseUser?.photoURL" :size="48" />
-      </button>
-      <div v-if="open">
-        <div
-          class="top-19 z-100 absolute right-4 flex flex-col rounded-md bg-white p-4 shadow-md"
-        >
-          <ul>
-            <li>
-              <router-link
-                class="styled-link w-fit"
-                to="/profile"
-                @click="open = false"
-                >{{ $t('nav.profile') }}
-              </router-link>
-            </li>
-            <li
-              v-for="item of links"
-              v-if="width < MOBILE_VIEWPORT_SIZE"
-              :key="item.url"
-            >
-              <router-link
-                :to="item.url"
-                class="styled-link"
-                @click="open = false"
-                >{{ item.name }}
-              </router-link>
-            </li>
-            <li>
-              <StyledButton
-                id="account-log-out"
-                class="mt-2"
-                @click="
-                  () => {
-                    $router.push('/logout')
-                    open = false
-                  }
-                "
-              >
-                {{ $t('account.log.out') }}
-              </StyledButton>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </OnClickOutside>
-    <router-link
-      v-if="!user"
-      class="px4 bg-secondary hover:border-secondary-lighter active:border-secondary-lighter active:bg-secondary-400 focus-visible-outline-none transition-color rounded border-2 border-transparent py-2 focus:border-black focus:outline-none focus-visible:border-black"
-      to="/login"
+  <OnClickOutside @trigger="open = false">
+    <button
+      v-if="user"
+      id="profile"
+      class="gap2 mx-2 flex flex-row items-center justify-center"
+      @click="open = !open"
     >
-      {{ $t('auth.login') }}
-    </router-link>
-  </div>
+      <span
+        :title="username"
+        class="hidden max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap sm:inline-block"
+      >
+        {{ username }}
+      </span>
+      <ChevronDown v-if="!open" />
+      <ChevronUp v-else />
+      <ProfilePicture v-if="firebaseUser?.photoURL" :size="48" />
+    </button>
+    <div v-if="open">
+      <div
+        class="top-19 z-100 absolute right-4 flex flex-col rounded-md bg-white p-4 shadow-md"
+      >
+        <ul>
+          <li>
+            <router-link
+              class="styled-link w-fit"
+              to="/profile"
+              @click="open = false"
+              >{{ $t('nav.profile') }}
+            </router-link>
+          </li>
+          <li
+            v-for="item of links"
+            v-if="width < MOBILE_VIEWPORT_SIZE"
+            :key="item.url"
+          >
+            <router-link
+              :to="item.url"
+              class="styled-link"
+              @click="open = false"
+              >{{ item.name }}
+            </router-link>
+          </li>
+          <li>
+            <StyledButton
+              id="account-log-out"
+              class="mt-2"
+              @click="
+                () => {
+                  $router.push('/logout')
+                  open = false
+                }
+              "
+            >
+              {{ $t('account.log.out') }}
+            </StyledButton>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </OnClickOutside>
+  <router-link
+    v-if="!user"
+    class="px4 bg-secondary hover:border-secondary-lighter active:border-secondary-lighter active:bg-secondary-400 focus-visible-outline-none transition-color rounded border-2 border-transparent py-2 focus:border-black focus:outline-none focus-visible:border-black"
+    to="/login"
+  >
+    {{ $t('auth.login') }}
+  </router-link>
 </template>
 
 <style scoped>

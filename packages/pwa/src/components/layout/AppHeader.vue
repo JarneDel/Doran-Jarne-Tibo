@@ -108,7 +108,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
+  <header
     class="relative flex h-20 min-h-min items-center justify-between bg-white fill-slate-700 p-2 shadow-md"
   >
     <div class="flex flex-row items-center justify-center">
@@ -168,7 +168,7 @@ export default defineComponent({
       </div>
       <ProfileContextButton :links="topNavItems" :user="customUser" />
     </div>
-  </div>
+  </header>
 </template>
 
 <style scoped>

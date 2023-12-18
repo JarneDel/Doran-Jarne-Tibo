@@ -102,12 +102,13 @@ export default defineComponent({
           class="mt-2 block"
           for="description"
         >
-          <span>{{ $t('inventory.description') }}</span>
+          <span>{{ $t('inventory.description') }}</span></label>
           <textarea
+            id="description"
             v-model="result.stockItem.description"
             class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
-          />
-        </label>
+          ></textarea>
+        
         <StyledInputText
           v-model="result.stockItem.amountInStock"
           :label="$t('inventory.amount')"
