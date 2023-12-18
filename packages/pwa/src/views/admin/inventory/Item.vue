@@ -56,7 +56,7 @@ export default defineComponent({
       deleteItem({ id }).then(e => {
         if (e?.data && e.data.removeStock) {
           // @ts-ignore
-          if (e.data.removeStock === id) {
+          if (e.data.removeStock) {
             replace('/admin/inventory')
           }
         }

@@ -20,7 +20,7 @@ export default defineComponent({
     const { mutate: cancelReservation } = useMutation(CANCEL_RESERVATION)
     const reservations = ref<Reservation[]>([])
     const reservationSeach = ref<Boolean>(false)
-    const reservationDate = ref<string>(new Date().toISOString().substr(0, 10))
+    const reservationDate = ref<string>(new Date().toISOString().substring(0, 10))
     new Promise<void>(resolve => {
       reservationSeach.value = false
       const { onResult } = useQuery<any>(
@@ -133,7 +133,7 @@ export default defineComponent({
                   class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-300"
                   :to="'reservation/edit/' + reservation.id"
                   v-if="
-                    reservation.date > new Date().toISOString().substr(0, 10)
+                    reservation.date > new Date().toISOString().substring(0, 10)
                   "
                 >
                   <Pencil />
@@ -160,7 +160,7 @@ export default defineComponent({
               </p>
               <StyledButton
                 @click="cancelReservationById(reservation.id)"
-                v-if="reservation.date > new Date().toISOString().substr(0, 10)"
+                v-if="reservation.date > new Date().toISOString().substring(0, 10)"
                 >{{ $t('reservation.cansle') }}</StyledButton
               >
             </div>

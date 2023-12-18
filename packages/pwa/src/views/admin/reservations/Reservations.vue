@@ -311,7 +311,7 @@ export default defineComponent({
       fetchReservations()
     }
 
-    const date = ref(today.toISOString().substr(0, 10))
+    const date = ref(today.toISOString().substring(0, 10))
     const redLinePosition = ref(0)
 
     const calculateRedLinePosition = () => {

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { defineProps } from 'vue'
 import { SUPPORTED_LOCALES } from '@/bootstrap/i18n.ts'
 import useLanguage from '@/composables/useLanguage.ts'
 import { OnClickOutside } from '@vueuse/components'

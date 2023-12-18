@@ -1,6 +1,14 @@
 <script lang="ts">
 interface Group {
-  groups: [{ id: string;email:string; name: string; btwNumber: string; score: number }]
+  groups: [
+    {
+      id: string
+      email: string
+      name: string
+      btwNumber: string
+      score: number
+    },
+  ]
 }
 
 import { useMutation, useQuery } from '@vue/apollo-composable'
@@ -49,39 +57,54 @@ export default defineComponent({
 
 <template>
   <div class="m-8">
-    <div class="mx-auto w-fit grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-6">
-      <div v-for="group in result?.groups" :key="group.id" class="2xl:w-75 xl:w-70 md:w-55 h-full rounded-lg bg-white p-4 shadow-md">
-
-          <p class=" xl:h-20 h-16 xl:text-2xl text-xl">{{ group.name }}</p>
-          <p class="xl:text-lg text-base h-5">{{ group.email }}</p>
-          <p class="xl:text-lg text-base h-5 my-2">{{ group.btwNumber }}</p>
-          <div class="flex flex-col">
-          <label class="xl:text-lg text-base " :for="group.id">Score:</label>
+    <div
+      class="mx-auto grid w-fit gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+    >
+      <div
+        v-for="group in result?.groups"
+        :key="group.id"
+        class="2xl:w-75 xl:w-70 md:w-55 h-full rounded-lg bg-white p-4 shadow-md"
+      >
+        <p class="h-16 text-xl xl:h-20 xl:text-2xl">{{ group.name }}</p>
+        <p class="h-5 text-base xl:text-lg">{{ group.email }}</p>
+        <p class="my-2 h-5 text-base xl:text-lg">{{ group.btwNumber }}</p>
+        <div class="flex flex-col">
+          <label :for="group.id" class="text-base xl:text-lg">Score:</label>
           <input
-            @change="(e:Event) =>updateScore(group.id,100-parseInt(e.target.value))"
-            class=" my-2 slider h-4 rounded-md outline-none duration-200 opacity-70 hover:opacity-100 appearance-none bg-gradient-to-r from-red-600 via-yellow-400 to-green-600"
             :id="group.id"
+            :value="100 - group.score"
+            class="slider my-2 h-4 appearance-none rounded-md bg-gradient-to-r from-red-600 via-yellow-400 to-green-600 opacity-70 outline-none duration-200 hover:opacity-100"
             type="range"
-            :value="100-group.score"
+            @change="
+              (e: Event) =>
+                updateScore(
+                  group.id,
+                  100 - parseInt((e.target as HTMLInputElement).value),
+                )
+            "
           />
-          </div>
-          <div class="flex items-center justify-between">
-            <StyledButton class="my-2" @click="updateScore(group.id,group.score+1)">
-              <Minus class="xl:h-4 h-3"/>
-            </StyledButton>
-            <p class="xl:text-lg lg:text-base">{{ group.score}}</p>
-            <StyledButton class="my-2" @click="updateScore(group.id,group.score-1)">
-              <Plus class="xl:h-4 h-3"/>
-            </StyledButton>
-          </div>
         </div>
-
+        <div class="flex items-center justify-between">
+          <StyledButton
+            class="my-2"
+            @click="updateScore(group.id, group.score + 1)"
+          >
+            <Minus class="h-3 xl:h-4" />
+          </StyledButton>
+          <p class="lg:text-base xl:text-lg">{{ group.score }}</p>
+          <StyledButton
+            class="my-2"
+            @click="updateScore(group.id, group.score - 1)"
+          >
+            <Plus class="h-3 xl:h-4" />
+          </StyledButton>
+        </div>
       </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -92,8 +115,7 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.slider:focus
-{
+.slider:focus {
   outline: #f5cb5c auto 8px;
 }
 

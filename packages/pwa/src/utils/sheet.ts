@@ -16,9 +16,10 @@ const TOKEN_PATH = path.join(process.cwd(), 'src/utils/token.json')
 const CREDENTIALS_PATH = path.join(process.cwd(), 'src/utils/oauthsecret.json')
 
 /**
- * Reads previously authorized credentials from the save file.
+ * Loads saved credentials if they exist.
  *
- * @return {Promise<OAuth2Client|null>}
+ * @return {Promise<google.auth.GoogleAuth|null>} A promise that resolves to a GoogleAuth object if
+ *     saved credentials exist, or null if no saved credentials are found.
  */
 async function loadSavedCredentialsIfExist() {
   try {
@@ -31,10 +32,11 @@ async function loadSavedCredentialsIfExist() {
 }
 
 /**
- * Serializes credentials to a file comptible with GoogleAUth.fromJSON.
+ * Saves the client credentials to a file.
  *
- * @param {OAuth2Client} client
- * @return {Promise<void>}
+ * @param {object} client - The client object from google-auth-library.
+ *
+ * @return {Promise<void>} - A promise that resolves when the credentials are saved successfully.
  */
 async function saveCredentials(client) {
   const content = await fs.readFile(CREDENTIALS_PATH)
