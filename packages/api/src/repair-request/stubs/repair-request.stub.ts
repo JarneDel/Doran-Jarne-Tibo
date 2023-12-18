@@ -2,6 +2,7 @@ import { Rooms } from 'src/reservation/entities/room.entity'
 import { Materials } from 'src/reservation/entities/material.entity'
 import { CreateRepairRequestInput } from '../dto/create-repair-request.input'
 import { RepairRequest } from '../entities/repair-request.entity'
+import { ObjectId } from 'typeorm'
 
 export const createRepairRequestInputStub = (): CreateRepairRequestInput => {
   //Room
@@ -34,6 +35,7 @@ export const createRepairRequestInputStub = (): CreateRepairRequestInput => {
 
   //RepairRequest
   const rr = new CreateRepairRequestInput()
+  rr.title = 'Test'
   rr.description = 'Test'
   rr.requestUserId = '1'
   rr.room = rooms

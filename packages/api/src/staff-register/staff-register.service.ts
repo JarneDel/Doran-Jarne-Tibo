@@ -42,6 +42,11 @@ export class StaffRegisterService {
     return this.staffRegisterRepository.save(staffRegister)
   }
 
+  async remove(id: string) {
+    const mongoId = new ObjectId(id)
+    return this.staffRegisterRepository.delete(mongoId)
+  }
+
   async truncate() {
     return this.staffRegisterRepository.clear()
   }

@@ -1,6 +1,8 @@
 <script lang="ts">
 import { Component, defineComponent, PropType } from 'vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
+import useA11y from '@/composables/useA11y.ts'
+import { useWindowSize } from '@vueuse/core'
 
 export default defineComponent({
   name: 'FilterOptions',
@@ -33,6 +35,12 @@ export default defineComponent({
     },
   },
   emits: ['update:modelValue'],
+  setup: () => {
+    return {
+      MOBILE_VIEWPORT_WIDTH: useA11y().MOBILE_VIEWPORT_SIZE,
+      windowWidth: useWindowSize().width,
+    }
+  },
 })
 </script>
 
@@ -46,11 +54,20 @@ export default defineComponent({
         active: modelValue === option,
         inactive: modelValue !== option,
       }"
-      class="btn p2 focus-visible-outline-none transition-color flex w-min items-center border-2 border-transparent hover:border-black focus:outline-none focus-visible:border-black focus-visible:border-black"
+      class="btn p2 focus-visible-outline-none transition-color flex w-max items-center border-2 border-transparent hover:border-black focus:outline-none focus-visible:border-black focus-visible:border-black"
     >
-      <component :is="icons[index]" v-if="icons" :size="20" class="mr-2" />
+      <component
+        :is="icons[index]"
+        v-if="icons"
+        :class="{
+          'mr-2': MOBILE_VIEWPORT_WIDTH < windowWidth,
+        }"
+        :size="20"
+      />
       <span v-if="itemCount">{{ itemCount[index] }}&nbsp; </span>
-      {{ $t('filter.' + option + '.label') }}
+      <span v-if="MOBILE_VIEWPORT_WIDTH < windowWidth">
+        {{ $t('filter.' + option + '.label') }}
+      </span>
 
       <input
         :checked="modelValue === option"

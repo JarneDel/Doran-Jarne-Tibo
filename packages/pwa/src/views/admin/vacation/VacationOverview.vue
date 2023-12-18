@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { useMutation, useQuery, useSubscription } from '@vue/apollo-composable'
 import {
   APPROVE_VACATION_REQUEST,
@@ -26,11 +26,19 @@ import FilterOptions from '@/components/generic/FilterOptions.vue'
 import { useRouter } from 'vue-router'
 import Error from '@/components/Error.vue'
 import { VacationRequestWithStaff } from '@/interface/vacation-request.interface.ts'
+import ServicesSelect from '@/components/input/ServicesSelect.vue'
+import useA11y from '@/composables/useA11y.ts'
+import { useWindowSize } from '@vueuse/core'
+import CardContainer from '@/components/layout/CardContainer.vue'
+import Card from '@/components/layout/Card.vue'
 
 export default defineComponent({
   name: 'VacationOverview',
   methods: { Grid2x2Icon, CheckIcon, AlarmCheckIcon, CircleDot },
   components: {
+    Card,
+    CardContainer,
+    ServicesSelect,
     Error,
     OptionsModal,
     FilterOptions,
@@ -138,11 +146,10 @@ export default defineComponent({
     const approve = ref<VacationRequestWithStaff>()
     const rejectMessage = ref<string>('')
 
-    const filterStaff = (event: Event) => {
-      const target = event.target as HTMLSelectElement
-      if (target.value === staffUId.value) return
-      push(`/admin/vacation/${target.value}`)
-      staffUId.value = target.value
+    const filterStaff = (selectedStaffId: string) => {
+      if (selectedStaffId === staffUId.value) return
+      push(`/admin/vacation/${selectedStaffId}`)
+      staffUId.value = selectedStaffId
     }
 
     const isExpired = (vacationRequest: VacationRequestWithStaff) => {
@@ -163,6 +170,10 @@ export default defineComponent({
       rejectVacation,
       result,
       staffUId,
+      MOBILE_VIEWPORT_WIDTH: useA11y().MOBILE_VIEWPORT_SIZE,
+      windowWidth: useWindowSize().width,
+      vacationRequests: computed(() => result.value?.vacationRequestsBy ?? []),
+      staff: computed(() => result.value?.staff ?? []),
     }
   },
 })
@@ -221,7 +232,7 @@ export default defineComponent({
     <div class="overflow-x-auto">
       <div class="w-full overflow-auto">
         <!-- Filters-->
-        <div class="my-4 flex flex-row gap-4">
+        <div class="my-4 flex flex-col gap-4 sm:flex-row">
           <FilterOptions
             v-model="filter"
             :icons="[CircleDot, CheckIcon, AlarmCheckIcon, Grid2x2Icon]"
@@ -229,30 +240,29 @@ export default defineComponent({
             name="vacation-request-filter"
             @update:model-value="filterVacationRequests"
           />
-          <select
+          <services-select
             v-if="result"
-            id=""
-            :value="staffUId"
-            class="bg-primary-surface b-2 rounded border-neutral-200 px-4"
-            name=""
+            :content="
+              result.staff.map(staff => ({
+                id: staff.UID,
+                name: staff.firstName + ' ' + staff.lastName,
+              }))
+            "
+            :empty-option="{
+              value: '',
+              text: 'All',
+            }"
             @change="filterStaff"
-          >
-            <option selected value="">All</option>
-            <option
-              v-for="staff in result.staff"
-              :key="staff.UID"
-              :value="staff.UID"
-            >
-              {{ staff.firstName }} {{ staff.lastName }}
-            </option>
-          </select>
+          />
         </div>
 
         <!--         select staff member-->
 
         <table
           v-if="
-            result?.vacationRequestsBy && result.vacationRequestsBy.length > 0
+            result?.vacationRequestsBy &&
+            result.vacationRequestsBy.length > 0 &&
+            MOBILE_VIEWPORT_WIDTH < windowWidth
           "
           class="w-full text-sm"
         >
@@ -330,7 +340,57 @@ export default defineComponent({
           </tbody>
         </table>
         <div v-else-if="loading">{{ $t('common.loading') }}</div>
-        <div v-else>{{ $t('request.vacation.none') }}</div>
+        <!-- Mobile view-->
+        <CardContainer
+          v-else-if="
+            MOBILE_VIEWPORT_WIDTH > windowWidth && vacationRequests.length > 0
+          "
+        >
+          <Card
+            v-for="vacationRequest of vacationRequests"
+            :key="vacationRequest.id"
+            class="relative"
+          >
+            <div class="absolute right-4">
+              <BadgeCheck v-if="vacationRequest.isApproved" />
+              <BadgeAlert v-else-if="vacationRequest.isRejected" />
+              <CircleDot v-else></CircleDot>
+            </div>
+            <h2 class="text-lg font-medium">
+              {{ vacationRequest.staff.firstName }}
+              {{ vacationRequest.staff.lastName }}
+            </h2>
+            <p class="text-sm text-gray-600">
+              {{ vacationRequest.startDate.toLocaleDateString() }} -
+              {{ vacationRequest.endDate.toLocaleDateString() }}
+            </p>
+            <p class="mt-2">{{ vacationRequest.rejectReason }}</p>
+            <div class="mt-4 flex items-center justify-between">
+              <div
+                v-if="
+                  !vacationRequest.isRejected &&
+                  !vacationRequest.isApproved &&
+                  !isExpired(vacationRequest)
+                "
+                class="flex space-x-2"
+              >
+                <StyledButton
+                  button-type="secondary"
+                  @click="approve = vacationRequest"
+                  >{{ $t('common.approve') }}
+                </StyledButton>
+                <StyledButton
+                  button-type="danger"
+                  @click="reject = vacationRequest"
+                  >{{ $t('common.reject') }}
+                </StyledButton>
+              </div>
+            </div>
+          </Card>
+        </CardContainer>
+        <div v-else>
+          {{ $t('request.vacation.none') }}
+        </div>
       </div>
     </div>
   </div>

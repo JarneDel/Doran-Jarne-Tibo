@@ -1,4 +1,10 @@
 import { gql, type TypedDocumentNode } from '@apollo/client/core'
+import {
+  CreateStaffRegister,
+  signUpStaffArgs,
+  Staff,
+  StaffRegister,
+} from '@/interface/staff.register.interface.ts'
 
 export const STAFF_REGISTER_BY_ID: TypedDocumentNode<
   { staffRegisterById: StaffRegister },
@@ -74,44 +80,9 @@ export const CREATE_REGISTRATION: TypedDocumentNode<
   }
 `
 
-export interface CreateStaffRegister {
-  email: string
-  firstName: string
-  holidayCount?: number
-  lastName: string
-  role: string
-}
-
-export interface StaffRegister {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-  isRegistered: boolean
-  role: string
-  expiresAt: Date
-}
-
-export interface signUpStaffArgs {
-  locale: string
-  id: string
-  uid: string
-  phone: string
-}
-
-export interface Staff {
-  id: string
-  UID: string
-  locale: string
-  role: string
-  createdAt: Date
-  updatedAt: Date
-  profilePictureUrl: string
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  holidaysLeft: number
-  holidaysTotal: number
-  holidayDates: Date[]
-}
+export const DELETE_REGISTRATION: TypedDocumentNode<boolean, { id: string }> =
+  gql`
+    mutation deleteStaffRegister($id: String!) {
+      staffRegisterDelete(id: $id)
+    }
+  `

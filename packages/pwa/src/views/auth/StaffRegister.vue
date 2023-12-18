@@ -12,6 +12,7 @@ import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import StyledLink from '@/components/generic/StyledLink.vue'
 import useLanguage from '@/composables/useLanguage.ts'
+import { i18n } from '@/bootstrap/i18n.ts'
 
 export default defineComponent({
   name: 'StaffRegister',
@@ -21,6 +22,8 @@ export default defineComponent({
     const id = currentRoute.value.params.id
     const { firebaseUser, register: firebaseRegister } = useFirebase()
     const { locale } = useLanguage()
+
+    const t = i18n.global.t
 
     const form = reactive({
       password: '',
@@ -72,7 +75,7 @@ export default defineComponent({
         })
         .catch(error => {
           console.info({ error })
-          form.error.push(error)
+          form.error.push(t(error))
         })
     }
 
@@ -88,7 +91,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="staffRegister">
+  <div
+    v-if="staffRegister"
+    class="mx-auto mt-12 flex h-min w-full max-w-lg flex-col gap-4 overflow-hidden rounded-xl border bg-white p-4 shadow-md dark:bg-gray-800"
+  >
     <div v-if="isExpired">
       <h1>Expired</h1>
       <p>This link has expired.</p>
@@ -121,7 +127,7 @@ export default defineComponent({
           type="tel"
         />
 
-        <StyledButton class="w-full" type="submit">
+        <StyledButton class="mt2 w-full" type="submit">
           {{ $t('auth.staffRegister.button') }}
         </StyledButton>
       </form>
