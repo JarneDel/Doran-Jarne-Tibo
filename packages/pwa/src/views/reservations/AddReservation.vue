@@ -26,7 +26,7 @@ export default defineComponent({
     const errorMessages = ref<string[]>([]);
     const { mutate: addReservarion } = useMutation(CREATERESEVATION);
     const reservation = ref({
-      date: new Date().toISOString().substr(0, 10),
+      date: new Date().toISOString().substring(0, 10),
       beginTime: '08:00',
       endTime: '18:00',
       timeDivrent: 10,
@@ -315,8 +315,8 @@ export default defineComponent({
       check();
     };
     const checkDate = () => {
-      if (reservation.value.date < new Date().toISOString().substr(0, 10)) {
-        reservation.value.date = new Date().toISOString().substr(0, 10);
+      if (reservation.value.date < new Date().toISOString().substring(0, 10)) {
+        reservation.value.date = new Date().toISOString().substring(0, 10);
       }
       check();
     };

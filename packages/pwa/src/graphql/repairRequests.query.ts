@@ -143,7 +143,7 @@ mutation($updateRepairRequestInput: UpdateRepairRequestInput!) {
 
 export const DELETE_REPAIR_REQUEST = gql`
 mutation RemoveRepairRequestById($repairRequestId: String!) {
-  removeRepairRequest(id: $repairRequestId)
+  RemoveRepairRequestById(id: $repairRequestId)
 }
 `
 

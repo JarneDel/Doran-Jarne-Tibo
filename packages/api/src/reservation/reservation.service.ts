@@ -56,7 +56,7 @@ const checkIfMaterialIsAvailable = async (
 }
 
 const getToday = () => {
-  let date = new Date().toISOString().substr(0, 10)
+  let date = new Date().toISOString().substring(0, 10)
   const today = new Date(date)
   return today
 }
@@ -110,7 +110,7 @@ export class ReservationService {
     }
 
     const availableRooms = await this.getAvailableRooms(
-      createReservationInput.date.toISOString().substr(0, 10),
+      createReservationInput.date.toISOString().substring(0, 10),
       createReservationInput.startTime,
       createReservationInput.endTime,
     )
@@ -197,7 +197,7 @@ export class ReservationService {
     }
     r.id = id
     const availableRooms = await this.getAvailableRooms(
-      updateReservationInput.date.toISOString().substr(0, 10),
+      updateReservationInput.date.toISOString().substring(0, 10),
       updateReservationInput.startTime,
       updateReservationInput.endTime,
       id,
@@ -430,7 +430,7 @@ export class ReservationService {
   }
 
   async getReservationsByUser(userId: string) {
-    let timedate = new Date().toISOString().substr(0, 10)
+    let timedate = new Date().toISOString().substring(0, 10)
     const date = new Date(timedate + 'T00:00:00.000Z')
     const id = userId.toString()
     return (
