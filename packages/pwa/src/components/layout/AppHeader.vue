@@ -135,7 +135,7 @@ export default defineComponent({
         </h1>
       </router-link>
     </div>
-    <div class="flex items-center justify-center md:gap-8">
+    <div class="flex items-center justify-center md:gap-3">
       <ul
         v-if="customUser && windowWidth > MOBILE_VIEWPORT_SIZE"
         class="flex justify-center gap-4"
@@ -147,16 +147,6 @@ export default defineComponent({
         </li>
       </ul>
       <div v-if="!customUser" class="relative my-3">
-        <!--        <select-->
-        <!--          v-if="MOBILE_VIEWPORT_SIZE < windowWidth"-->
-        <!--          v-model="locale"-->
-        <!--          class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"-->
-        <!--          @change="setLocale(locale)"-->
-        <!--        >-->
-        <!--          <option v-for="(locale, key) in SUPPORTED_LOCALES" :value="key">-->
-        <!--            {{ locale }}-->
-        <!--          </option>-->
-        <!--        </select>-->
         <button
           aria-label="Language"
           class="mx3 hover:text-primary focus-visible:ring-primary flex content-center items-center rounded-full outline-none transition-colors focus-visible:ring-2 focus-visible:ring-opacity-50"
