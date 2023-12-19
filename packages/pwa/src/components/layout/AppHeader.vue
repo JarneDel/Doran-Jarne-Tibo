@@ -150,6 +150,7 @@ export default defineComponent({
         <button
           aria-label="Language"
           class="mx3 hover:text-primary focus-visible:ring-primary flex content-center items-center rounded-full outline-none transition-colors focus-visible:ring-2 focus-visible:ring-opacity-50"
+          @blur="languagePickerIsOpen = false"
           @click="languagePickerIsOpen = !languagePickerIsOpen"
         >
           <Globe :size="32"></Globe>

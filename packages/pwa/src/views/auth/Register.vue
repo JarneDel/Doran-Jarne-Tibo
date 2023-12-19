@@ -82,21 +82,21 @@ export default defineComponent({
         v-model="form.displayName"
         :label="$t('auth.displayName')"
         autocomplete="username"
-        class="w-full"
+        class="my-3 w-full"
         required
         type="text"
       />
       <StyledInputText
         v-model="form.btwNummer"
         :label="$t('profile.btw')"
-        class="w-full"
+        class="my-3 w-full"
         type="text"
       />
       <StyledInputText
         v-model="form.email"
         :label="$t('auth.email')"
         autocomplete="email"
-        class="w-full"
+        class="my-3 w-full"
         required
         type="email"
       />
@@ -105,7 +105,7 @@ export default defineComponent({
         v-model="form.password"
         :label="$t('auth.password')"
         autocomplete="current-password"
-        class="w-full"
+        class="my-3 w-full"
         required
         type="password"
       />

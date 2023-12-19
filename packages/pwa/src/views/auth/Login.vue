@@ -86,7 +86,9 @@ export default defineComponent({
         >{{ $t('auth.forgotPassword') }}
       </styled-link>
     </div>
-    <StyledButton class="my-2 w-full" type="submit"> Login</StyledButton>
+    <StyledButton class="my-2 w-full" type="submit">
+      {{ $t('auth.login') }}
+    </StyledButton>
     <div class="text-center">
       {{ $t('auth.noAccount') }}
       <StyledLink :to="'/register' + redirectToQueryParams"
