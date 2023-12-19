@@ -28,7 +28,7 @@ const { setLocale, locale: currentLocale } = useLanguage()
                   'c-primary': key === currentLocale,
                   'hover:c-black c-neutral-5 ': key !== currentLocale,
                 }"
-                class="flex w-full items-center justify-between gap-2 transition-colors"
+                class="flex w-full items-center justify-between gap-2 motion-safe:transition-colors"
                 @click="
                   () => {
                     setLocale(key)
@@ -69,5 +69,12 @@ const { setLocale, locale: currentLocale } = useLanguage()
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: none;
+  }
 }
 </style>

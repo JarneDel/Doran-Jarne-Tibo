@@ -165,7 +165,7 @@ export default defineComponent({
           <div class="flex flex-row items-center justify-center gap-2">
             <select
               :value="newRole ?? staff.role"
-              class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark rounded bg-white px-4 py-1.5 outline-none transition-colors"
+              class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark rounded bg-white px-4 py-1.5 outline-none motion-safe:transition-colors"
               @change="setRoleChanged"
             >
               <option

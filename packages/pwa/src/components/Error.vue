@@ -1,6 +1,7 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent, watch } from 'vue'
 import { Bell } from 'lucide-vue-next'
+import { usePreferredReducedMotion } from '@vueuse/core'
 
 export default defineComponent({
   name: 'Error',
@@ -31,22 +32,25 @@ export default defineComponent({
     },
   },
   emits: ['update:isShown'],
-  computed: {
-    durationms() {
-      return this.duration + 'ms'
-    },
-  },
-  watch: {
-    isShown: {
-      immediate: true,
-      handler(val) {
-        if (val) {
+  setup(props, ctx) {
+    const prefersReducedMotion = usePreferredReducedMotion()
+    const durationms = computed(() => {
+      return props.duration + 'ms'
+    })
+    watch(
+      () => props.isShown,
+      val => {
+        console.log(prefersReducedMotion)
+        if (val && prefersReducedMotion.value == 'no-preference') {
           setTimeout(() => {
-            this.$emit('update:isShown', false)
-          }, this.duration)
+            ctx.emit('update:isShown', false)
+          }, props.duration)
         }
       },
-    },
+      { immediate: true },
+    )
+
+    return { durationms }
   },
 })
 </script>
@@ -59,10 +63,12 @@ export default defineComponent({
           class="moving-line relative mb-4 flex flex-row gap-2 rounded border-0 bg-red-500 px-6 py-4 text-white"
         >
           <Bell class="animate-bell"></Bell>
-          <span v-if="translate" class="mr-8 inline-block align-middle">{{ $t(msg) }}</span>
+          <span v-if="translate" class="mr-8 inline-block align-middle">{{
+            $t(msg)
+          }}</span>
           <span v-else class="mr-8 inline-block align-middle">{{ msg }}</span>
           <button
-            class="absolute right-0 top-0 mr-6 mt-4 bg-transparent text-2xl font-semibold leading-none outline-none focus:outline-none"
+            class="absolute right-0 top-0 mr-6 mt-4 bg-transparent text-2xl font-semibold leading-none"
             @click="$emit('update:isShown', false)"
           >
             <span>×</span>
@@ -141,6 +147,22 @@ export default defineComponent({
 
   100% {
     transform: rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-enter-active,
+  .fade-leave-active,
+  .slide-enter-active,
+  .slide-leave-active {
+    transition: none;
+  }
+
+  .moving-line::after {
+    animation: none;
+  }
+  .animate-bell {
+    animation: none;
   }
 }
 </style>

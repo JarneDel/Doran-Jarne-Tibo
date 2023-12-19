@@ -20,14 +20,14 @@ export default defineComponent({
   <RouterLink
     v-if="type === 'internal'"
     :to="to"
-    class="c-primary hover:c-primary-text focus:ring-primary-light focus:c-primary-dark active:c-primary-light rounded-sm underline transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+    class="c-primary hover:c-primary-text focus:ring-primary-light focus:c-primary-dark active:c-primary-light rounded-sm underline focus:outline-none focus:ring-2 focus:ring-offset-2 motion-safe:transition-colors"
   >
     <slot></slot>
   </RouterLink>
   <a
     v-if="type === 'external'"
     :href="to"
-    class="c-primary hover:c-primary-text focus:ring-primary-light focus:c-primary-dark active:c-primary-light rounded-sm underline transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+    class="c-primary hover:c-primary-text focus:ring-primary-light focus:c-primary-dark active:c-primary-light rounded-sm underline focus:outline-none focus:ring-2 focus:ring-offset-2 motion-safe:transition-colors"
   >
     <slot></slot>
   </a>

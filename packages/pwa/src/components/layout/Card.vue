@@ -17,7 +17,7 @@ export default defineComponent({
     :class="{
       'hover:shadow-xl': hoverable,
     }"
-    class="rounded-lg bg-white p-6 shadow-lg transition-shadow"
+    class="rounded-lg bg-white p-6 shadow-lg motion-safe:transition-shadow"
   >
     <slot></slot>
   </div>

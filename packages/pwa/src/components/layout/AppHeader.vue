@@ -184,4 +184,10 @@ export default defineComponent({
 .styled-link:hover::after {
   width: 100%;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .styled-link::after {
+    transition: none;
+  }
+}
 </style>

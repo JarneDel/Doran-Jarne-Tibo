@@ -3,6 +3,7 @@ import { defineComponent, ref } from 'vue'
 import { Bell } from 'lucide-vue-next'
 import { useSubscription } from '@vue/apollo-composable'
 import { VACATION_REQUESTED_SUBSCRIPTION } from '@/graphql/vacation.request.query.ts'
+import { usePreferredReducedMotion } from '@vueuse/core'
 
 interface notification {
   msg: string
@@ -15,12 +16,15 @@ export default defineComponent({
   name: 'Notifications.vue',
   components: { Bell },
   setup() {
+    const motionPreference = usePreferredReducedMotion()
+
     let currentId = 0
     const notifications = ref<notification[]>([])
 
     const addNotification = (msg: string, cta: string) => {
       const id = currentId++
       notifications.value.push({ msg, shown: true, id: currentId, cta: cta })
+      if (motionPreference.value == 'reduce') return
       setTimeout(() => {
         notifications.value[id].shown = false
       }, 10000)
@@ -51,8 +55,8 @@ export default defineComponent({
       <transition appear name="slide">
         <div v-show="notification.shown">
           <RouterLink
-            class="moving-line bg-primary relative mb-4 flex flex-row gap-2 rounded border-0 px-6 py-4 text-white"
             :to="notification.cta"
+            class="moving-line bg-primary relative mb-4 flex flex-row gap-2 rounded border-0 px-6 py-4 text-white"
           >
             <Bell class="animate-bell"></Bell>
             <span class="mr-8 inline-block align-middle">{{
@@ -139,6 +143,21 @@ export default defineComponent({
 
   100% {
     transform: rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-enter-active,
+  .fade-leave-active,
+  .slide-enter-active,
+  .slide-leave-active {
+    transition: none;
+  }
+  .moving-line::after {
+    animation: none;
+  }
+  .animate-bell {
+    animation: none;
   }
 }
 </style>

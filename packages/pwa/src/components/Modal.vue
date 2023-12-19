@@ -93,4 +93,12 @@ export default defineComponent({
   opacity: 0;
   transform: scale(0.3);
 }
+@media (prefers-reduced-motion: reduce) {
+  .fade-enter-active,
+  .fade-leave-active,
+  .pop-enter-active,
+  .pop-leave-active {
+    transition: none;
+  }
+}
 </style>
