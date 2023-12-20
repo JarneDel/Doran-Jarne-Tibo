@@ -37,10 +37,6 @@ interface IUpdateItem {
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 // Components
-import StyledInputText from '@/components/generic/StyledInputText.vue';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import Modal from '@/components/Modal.vue';
-import Error from '@/components/Error.vue';
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import Modal from '@/components/modal/Modal.vue'
