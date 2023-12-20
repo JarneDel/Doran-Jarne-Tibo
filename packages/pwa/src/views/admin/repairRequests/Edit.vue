@@ -1,44 +1,44 @@
 <script lang="ts">
 // Interfaces
 interface IRepairRequest {
-  GetRepairRequestById: RepairRequest;
+  GetRepairRequestById: RepairRequest
 }
 
 interface ICurrentRepairRequestCanBeEmpty {
-  id?: string;
-  title?: string;
-  description?: string;
-  isRepaired?: boolean;
-  requestUser?: RequestUser;
-  room?: Room[];
-  loanableMaterial?: material[];
-  urgency?: number;
+  id?: string
+  title?: string
+  description?: string
+  isRepaired?: boolean
+  requestUser?: RequestUser
+  room?: Room[]
+  loanableMaterial?: material[]
+  urgency?: number
 }
 
 interface IconvertedRooms {
-  id?: string;
-  name?: string;
-  pricePerHour?: number;
-  type?: string;
+  id?: string
+  name?: string
+  pricePerHour?: number
+  type?: string
 }
 
 interface IRooms {
-  GetAllRooms: [Room];
+  GetAllRooms: [Room]
 }
 
 interface IconvertedLoanableMaterials {
-  id?: string;
-  name?: string;
-  totalAmount?: number;
-  wantedAmount?: number;
-  price?: number;
-  sports?: Sport[];
-  isComplete?: boolean;
-  description?: string;
+  id?: string
+  name?: string
+  totalAmount?: number
+  wantedAmount?: number
+  price?: number
+  sports?: Sport[]
+  isComplete?: boolean
+  description?: string
 }
 
 interface ILoanableMaterials {
-  GetAllLoanableMaterials: material[];
+  GetAllLoanableMaterials: material[]
 }
 
 import { Sport } from '@/interface/sportInterface'
@@ -50,16 +50,15 @@ import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   GET_ONE_REPAIR_REQUEST,
   UPDATE_REPAIR_REQUEST,
-} from '@/graphql/repairRequests.query.ts';
-import { ALL_LOANABLE_MATERIALS } from '@/graphql/loanableMaterials.query.ts';
-import { ALL_ROOMS } from '@/graphql/room.query.ts';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import StyledInputText from '@/components/generic/StyledInputText.vue';
-import { onBeforeMount } from 'vue';
-import { RepairRequest } from '@/interface/repairRequestInterface';
-import { RequestUser } from '@/interface/requestUserInterface';
-import { Room } from '@/interface/roomInterface';
-import { material } from '@/interface/materialInterface';
+} from '@/graphql/repairRequests.query.ts'
+import { ALL_LOANABLE_MATERIALS } from '@/graphql/loanableMaterials.query.ts'
+import { ALL_ROOMS } from '@/graphql/room.query.ts'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import StyledInputText from '@/components/generic/StyledInputText.vue'
+import { RepairRequest } from '@/interface/repairRequestInterface'
+import { RequestUser } from '@/interface/requestUserInterface'
+import { Room } from '@/interface/roomInterface'
+import { material } from '@/interface/materialInterface'
 
 export default defineComponent({
   name: 'Edit',
@@ -71,10 +70,10 @@ export default defineComponent({
     BadgeCheck,
   },
   setup: () => {
-    const { push, currentRoute } = useRouter();
-    const id = computed(() => currentRoute.value.params.id);
+    const { push, currentRoute } = useRouter()
+    const id = computed(() => currentRoute.value.params.id)
 
-    const { mutate: mutateUpdateItem } = useMutation(UPDATE_REPAIR_REQUEST);
+    const { mutate: mutateUpdateItem } = useMutation(UPDATE_REPAIR_REQUEST)
 
     // GET_ONE_REPAIR_REQUEST
     const { error, loading, result } = useQuery<IRepairRequest>(
@@ -82,70 +81,70 @@ export default defineComponent({
       {
         repairRequestId: id.value,
       },
-    );
+    )
 
     // ALL_ROOMS
     const {
       error: errorRooms,
       loading: loadingRooms,
       result: resultRooms,
-    } = useQuery<IRooms>(ALL_ROOMS, {});
+    } = useQuery<IRooms>(ALL_ROOMS, {})
 
     // ALL_LOANABLE_MATERIALS
     const {
       error: errorMaterials,
       loading: loadingMaterials,
       result: resultMaterials,
-    } = useQuery<ILoanableMaterials>(ALL_LOANABLE_MATERIALS, {});
+    } = useQuery<ILoanableMaterials>(ALL_LOANABLE_MATERIALS, {})
 
-    const currentRepairRequest = ref<ICurrentRepairRequestCanBeEmpty>({});
+    const currentRepairRequest = ref<ICurrentRepairRequestCanBeEmpty>({})
 
     // Set currentRepairRequest based on result
     onBeforeMount(() => {
       if (result.value?.GetRepairRequestById) {
-        currentRepairRequest.value = { ...result.value?.GetRepairRequestById };
+        currentRepairRequest.value = { ...result.value?.GetRepairRequestById }
       }
-    });
+    })
 
     const handleSubmit = () => {
-      const convertedRooms: IconvertedRooms[] = [];
+      const convertedRooms: IconvertedRooms[] = []
       if (currentRepairRequest.value.room) {
-        currentRepairRequest.value.room.forEach((room) => {
-          const tempRoom: IconvertedRooms = {};
-          tempRoom.id = room.id;
-          tempRoom.name = room.name;
-          tempRoom.pricePerHour = room.pricePerHour;
-          tempRoom.type = room.type;
-          convertedRooms.push(tempRoom);
-        });
+        currentRepairRequest.value.room.forEach(room => {
+          const tempRoom: IconvertedRooms = {}
+          tempRoom.id = room.id
+          tempRoom.name = room.name
+          tempRoom.pricePerHour = room.pricePerHour
+          tempRoom.type = room.type
+          convertedRooms.push(tempRoom)
+        })
       }
 
-      const convertedLoanableMaterials: IconvertedLoanableMaterials[] = [];
+      const convertedLoanableMaterials: IconvertedLoanableMaterials[] = []
       if (currentRepairRequest.value.loanableMaterial) {
-        currentRepairRequest.value.loanableMaterial.forEach((material) => {
-          console.log('material', material);
-          const Sports = material.sports?.map((sport) => {
-            console.log('sport', sport);
+        currentRepairRequest.value.loanableMaterial.forEach(material => {
+          console.log('material', material)
+          const Sports = material.sports?.map(sport => {
+            console.log('sport', sport)
             return {
               id: sport.id,
               name: sport.name,
               description: sport.description,
-            };
-          });
+            }
+          })
 
-          const tempMaterial: IconvertedLoanableMaterials = {};
-          tempMaterial.id = material.id;
-          tempMaterial.name = material.name;
-          tempMaterial.totalAmount = material.totalAmount;
-          tempMaterial.wantedAmount = material.wantedAmount;
-          tempMaterial.price = material.price;
-          tempMaterial.sports = Sports;
-          tempMaterial.isComplete = material.isComplete;
-          tempMaterial.description = material.description;
-          convertedLoanableMaterials.push(tempMaterial);
-        });
+          const tempMaterial: IconvertedLoanableMaterials = {}
+          tempMaterial.id = material.id
+          tempMaterial.name = material.name
+          tempMaterial.totalAmount = material.totalAmount
+          tempMaterial.wantedAmount = material.wantedAmount
+          tempMaterial.price = material.price
+          tempMaterial.sports = Sports
+          tempMaterial.isComplete = material.isComplete
+          tempMaterial.description = material.description
+          convertedLoanableMaterials.push(tempMaterial)
+        })
       }
-      console.log('convertedLoanableMaterials', convertedLoanableMaterials);
+      console.log('convertedLoanableMaterials', convertedLoanableMaterials)
 
       // Save changes
       mutateUpdateItem({
@@ -158,10 +157,10 @@ export default defineComponent({
           loanableMaterial: convertedLoanableMaterials,
           urgency: Number(currentRepairRequest.value.urgency),
         },
-      }).then((e) => {
-        push('/admin/repair-requests');
-      });
-    };
+      }).then(e => {
+        push('/admin/repair-requests')
+      })
+    }
 
     return {
       push,
@@ -176,9 +175,9 @@ export default defineComponent({
       errorMaterials,
       loadingMaterials,
       currentRepairRequest,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>
@@ -203,25 +202,25 @@ export default defineComponent({
         <div class="flex gap-8">
           <div class="flex flex-col gap-2">
             <StyledInputText
-              v-model="currentRepairRequest.title"
               id="name"
+              v-model="currentRepairRequest.title"
               :label="$t('repairRequest.title')"
             />
-            <div class="mt-4 flex justify-between items-center">
+            <div class="mt-4 flex items-center justify-between">
               <ShieldAlert
-                class="mr-2 min-h-[2rem] min-w-[2rem]"
                 :class="{
                   'text-yellow-300': currentRepairRequest.urgency == 1,
                   'text-orange-500': currentRepairRequest.urgency == 2,
                   'text-red-600': currentRepairRequest.urgency == 3,
                   'opacity-40': currentRepairRequest.isRepaired,
                 }"
+                class="mr-2 min-h-[2rem] min-w-[2rem]"
               />
               <select
                 id="urgency"
+                v-model="currentRepairRequest.urgency"
                 class="b-2 b-primary-light hover:border-primary focus:border-primary-dark focus-visible:border-primary-dark w-full rounded bg-white px-4 py-1.5 outline-none transition-colors"
                 name="urgency"
-                v-model="currentRepairRequest.urgency"
               >
                 <option value="1">{{ $t('repairRequest.notUrgent') }}</option>
                 <option value="2">
@@ -232,20 +231,20 @@ export default defineComponent({
             </div>
             <div class="flex items-center justify-between">
               <BadgeCheck
-                class="mr-2 min-h-[2rem] min-w-[2rem] text-green-600"
                 :class="{
                   'opacity-40': !currentRepairRequest.isRepaired,
                 }"
+                class="mr-2 min-h-[2rem] min-w-[2rem] text-green-600"
               />
               <div class="flex items-center gap-2">
                 <label class="text-primary-text font-medium" for="repaired">{{
                   $t('repairRequest.repaired')
                 }}</label>
                 <input
-                  type="checkbox"
-                  name="repaired"
                   id="repaired"
                   v-model="currentRepairRequest.isRepaired"
+                  name="repaired"
+                  type="checkbox"
                 />
               </div>
             </div>
@@ -284,8 +283,8 @@ export default defineComponent({
               </div>
             </div>
             <StyledInputText
-              v-model="currentRepairRequest.description"
               id="description"
+              v-model="currentRepairRequest.description"
               :label="$t('repairRequest.description')"
             />
           </div>
@@ -301,17 +300,17 @@ export default defineComponent({
                   class="flex items-center gap-2"
                 >
                   <input
-                    type="checkbox"
-                    :name="material.id"
                     :id="material.id"
                     :checked="
                       currentRepairRequest.loanableMaterial &&
                       currentRepairRequest.loanableMaterial.some(
-                        (s) => s.id === material.id,
+                        s => s.id === material.id,
                       )
                         ? true
                         : false
                     "
+                    :name="material.id"
+                    type="checkbox"
                     @change="
                       (e: any) => {
                         if (e.target?.checked) {
@@ -360,15 +359,15 @@ export default defineComponent({
                   class="flex items-center gap-2"
                 >
                   <input
-                    type="checkbox"
-                    :name="room.id"
                     :id="room.id"
                     :checked="
                       currentRepairRequest.room &&
-                      currentRepairRequest.room.some((s) => s.id === room.id)
+                      currentRepairRequest.room.some(s => s.id === room.id)
                         ? true
                         : false
                     "
+                    :name="room.id"
+                    type="checkbox"
                     @change="
                       (e: any) => {
                         if (e.target?.checked) {

@@ -29,12 +29,11 @@ interface Sports {
 import { computed, defineComponent, onBeforeMount, ref } from 'vue'
 import Modal from '@/components/modal/Modal.vue'
 import { useRouter } from 'vue-router'
-import { useQuery, useMutation } from '@vue/apollo-composable'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import { GET_ONE_ROOM, UPDATE_ROOM } from '@/graphql/room.query.ts'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import { ALL_SPORTS } from '@/graphql/sport.query'
-import { onBeforeMount } from 'vue'
 import Error from '@/components/Error.vue'
 
 export default defineComponent({
@@ -165,8 +164,8 @@ export default defineComponent({
     <template v-slot:default>
       <form v-if="result?.GetRoomById" @submit.prevent="handleSubmit">
         <StyledInputText
-          v-model="currentRoom.name"
           id="name"
+          v-model="currentRoom.name"
           :label="$t('inventory.name')"
         />
         <div
@@ -185,10 +184,10 @@ export default defineComponent({
                 class="flex items-center gap-2"
               >
                 <input
-                  type="checkbox"
-                  :name="sport.id"
                   :id="sport.id"
                   :checked="currentRoom.sports.some(s => s.id === sport.id)"
+                  :name="sport.id"
+                  type="checkbox"
                   @change="
                     (e: any) => {
                       if (e.target?.checked) {
@@ -216,11 +215,11 @@ export default defineComponent({
         </div>
         <div v-if="currentRoom.type !== 'Werkruimte'">
           <StyledInputText
-            type="number"
-            v-model="currentRoom.pricePerHour"
             id="pricePerHour"
+            v-model="currentRoom.pricePerHour"
             :label="$t('inventory.pricePerHour')"
             :min="0"
+            type="number"
           >
           </StyledInputText>
         </div>
