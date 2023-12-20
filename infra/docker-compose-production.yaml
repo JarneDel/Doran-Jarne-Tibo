@@ -5,10 +5,8 @@ services:
   db:
     image: mongo
     restart: unless-stopped
-    ports:
-      - "27017:27017" # Internal
-    #    expose:
-    #      - "27017" # Internal
+    expose:
+      - "27017"
     environment:
       MONGO_INITDB_DATABASE: api
     volumes:
@@ -35,6 +33,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    image: jarnedel/sport-complex-api
 
     depends_on:
       - db
@@ -45,6 +44,7 @@ services:
       dockerfile: packages/pwa/Dockerfile
     ports:
       - 8081:80
+    image: jarnedel/sport-complex-pwa
 
 volumes:
   dbvolume:

@@ -1,0 +1,212 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sport-complex-api
+  namespace: sport-complex
+  labels:
+    app: sport-complex-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sport-complex-api
+  template:
+    metadata:
+      name: sport-complex-api
+      labels:
+        app: sport-complex-api
+    spec:
+      containers:
+        - name: sport-complex-api
+          image: jarnedel/sport-complex-api
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: sport-complex-api-config
+          volumeMounts:
+            - name: google-credentials
+              mountPath: '/app/google-credentials'
+      volumes:
+        - name: google-credentials
+          secret:
+            secretName: my-google-secret
+      restartPolicy: Always
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sport-complex
+  name: sport-complex-api
+spec:
+  selector:
+    app: sport-complex-api
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: LoadBalancer
+
+
+---
+
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: sport-complex
+  name: sport-complex-api-config
+data:
+  DB_HOST: "db.sport-complex.svc.cluster.local"
+  DB_PORT: "27017"
+  DB_NAME: "api"
+  URL_FRONTEND: "http://localhost:8081"
+  NODE_ENV: "production"
+  CLI_PATH: "./packages/api/dist/cli.js"
+#  .env.production.local: |
+#    DB_HOST=db.sport-complex.svc.cluster.local
+#    DB_PORT=27017
+#    DB_NAME=api
+#    URL_FRONTEND=http://localhost:8081
+#    NODE_ENV=production
+#    CLI_PATH=./packages/api/dist/cli.js
+
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: sport-complex-pwa
+  namespace: sport-complex
+  labels:
+    app: sport-complex-pwa
+spec:
+  selector:
+    matchLabels:
+      app: sport-complex-pwa
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sport-complex-pwa
+    spec:
+      containers:
+        - name: sport-complex-pwa
+          image: jarnedel/sport-complex-pwa
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+
+
+---
+
+# database deployment
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: db
+  namespace: sport-complex
+  labels:
+    app: db
+spec:
+    selector:
+      matchLabels:
+        app: db
+    replicas: 1
+    template:
+        metadata:
+          labels:
+              app: db
+        spec:
+          containers:
+              - name: dbLoadBalancer
+                image: mongo
+                imagePullPolicy: IfNotPresent
+                ports:
+                    - containerPort: 27017
+                volumeMounts:
+                  - name: sport-complex-db
+                    mountPath: /data/db
+          restartPolicy: Always
+          volumes:
+            - name: sport-complex-db
+              persistentVolumeClaim:
+                claimName: mongodb-pvc
+
+---
+
+# pv-mongo.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongodb-pv
+  namespace: sport-complex
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  azureFile:
+    secretName: azure-secret
+    shareName: your-azure-file-share
+    readOnly: false
+
+
+---
+
+# pvc-mongo.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pvc
+  namespace: sport-complex
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: db
+  namespace: sport-complex
+  labels:
+    app: db
+spec:
+    selector:
+        app: db
+    ports:
+        - protocol: TCP
+          port: 27017
+          targetPort: 27017
+    type: ClusterIP
+
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: sport-complex-pwa
+  namespace: sport-complex
+  labels:
+    app: sport-complex-pwa
+spec:
+    selector:
+        app: sport-complex-pwa
+    ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 80
+    type: LoadBalancer

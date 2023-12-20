@@ -5,13 +5,7 @@ import { checkEnv, optionalEnv, testEnv } from './utils/checkEnv'
 import { CustomLogger } from './logger/customLogger'
 
 async function bootstrap() {
-  checkEnv([
-    'DB_NAME',
-    'DB_HOST',
-    'DB_PORT',
-    'GOOGLE_APPLICATION_CREDENTIALS',
-    'URL_FRONTEND',
-  ])
+  checkEnv(['DB_NAME', 'DB_HOST', 'DB_PORT', 'URL_FRONTEND'])
   optionalEnv(['MAIL_USER', 'MAIL_PASSWORD', 'MAIL_PROVIDER'])
   testEnv()
   const app = await NestFactory.create(AppModule, {
