@@ -4,10 +4,10 @@ import StyledButton from '@/components/generic/StyledButton.vue'
 import ProfilePicture from '@/components/staff/ProfilePicture.vue'
 import { OnClickOutside } from '@vueuse/components'
 import { computed, PropType, ref } from 'vue'
-import { User } from '@/composables/useUser.ts'
 import useFirebase from '@/composables/useFirebase.ts'
 import { useWindowSize } from '@vueuse/core'
 import useA11y from '@/composables/useA11y.ts'
+import { User } from '@/interface/user.interface.ts'
 
 const { firebaseUser } = useFirebase()
 
