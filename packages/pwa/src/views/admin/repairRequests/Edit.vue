@@ -41,12 +41,12 @@ interface ILoanableMaterials {
   GetAllLoanableMaterials: material[];
 }
 
-import { Sport } from '@/interface/sportInterface';
-import { computed, defineComponent, ref } from 'vue';
-import { ShieldAlert, BadgeCheck } from 'lucide-vue-next';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import { useQuery, useMutation } from '@vue/apollo-composable';
+import { Sport } from '@/interface/sportInterface'
+import { computed, defineComponent, onBeforeMount, ref } from 'vue'
+import { BadgeCheck, ShieldAlert } from 'lucide-vue-next'
+import Modal from '@/components/modal/Modal.vue'
+import { useRouter } from 'vue-router'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import {
   GET_ONE_REPAIR_REQUEST,
   UPDATE_REPAIR_REQUEST,

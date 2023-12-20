@@ -45,7 +45,7 @@ export interface IUpdateItem {
 }
 
 import { computed, defineComponent, ref, watch } from 'vue'
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/modal/Modal.vue'
 import { useRouter } from 'vue-router'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import {

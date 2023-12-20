@@ -14,6 +14,7 @@ import Modal from '@/components/Modal.vue';
 import StyledInputText from '@/components/generic/StyledInputText.vue';
 import StyledButton from '@/components/generic/StyledButton.vue';
 import Error from '@/components/Error.vue';
+import Modal from '@/components/modal/Modal.vue'
 // Composables
 import useA11y from '@/composables/useA11y.ts';
 // GraphQL

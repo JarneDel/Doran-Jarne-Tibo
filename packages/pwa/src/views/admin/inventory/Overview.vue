@@ -16,7 +16,7 @@ import {
   Edit2,
 } from 'lucide-vue-next'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/modal/Modal.vue'
 import { useRouter } from 'vue-router'
 import useLastRoute from '@/composables/useLastRoute.ts'
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'

@@ -26,8 +26,8 @@ interface Sports {
   ]
 }
 
-import { computed, defineComponent, ref } from 'vue'
-import Modal from '@/components/Modal.vue'
+import { computed, defineComponent, onBeforeMount, ref } from 'vue'
+import Modal from '@/components/modal/Modal.vue'
 import { useRouter } from 'vue-router'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import { GET_ONE_ROOM, UPDATE_ROOM } from '@/graphql/room.query.ts'

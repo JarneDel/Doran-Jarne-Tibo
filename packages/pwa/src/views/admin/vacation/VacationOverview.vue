@@ -19,7 +19,7 @@ import {
   Grid2x2,
   Grid2x2Icon,
 } from 'lucide-vue-next'
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/modal/Modal.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import OptionsModal from '@/components/modal/OptionsModal.vue'
 import FilterOptions from '@/components/generic/FilterOptions.vue'

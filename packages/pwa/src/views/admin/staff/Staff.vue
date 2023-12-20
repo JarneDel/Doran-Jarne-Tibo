@@ -5,7 +5,7 @@ import {
   ALL_REGISTRATIONS,
   CREATE_REGISTRATION,
 } from '@/graphql/staff-register.query.ts'
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/modal/Modal.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import {

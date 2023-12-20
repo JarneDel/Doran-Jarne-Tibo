@@ -1,16 +1,16 @@
 <script lang="ts">
 // Imports
-import { useQuery } from '@vue/apollo-composable';
-import { ALL_SERVICES, IServices } from '@/graphql/service.query';
-import { defineComponent, ref, watch } from 'vue';
-import UseFirebase from '../../../composables/useFirebase';
-import { PlusCircle } from 'lucide-vue-next';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
-import useLastRoute from '@/composables/useLastRoute';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import StyledLable from '@/components/generic/StyledLable.vue';
+import { useQuery } from '@vue/apollo-composable'
+import { ALL_SERVICES, IServices } from '@/graphql/service.query'
+import { defineComponent, ref, watch } from 'vue'
+import UseFirebase from '../../../composables/useFirebase'
+import { PlusCircle } from 'lucide-vue-next'
+import Modal from '@/components/modal/Modal.vue'
+import { useRouter } from 'vue-router'
+import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
+import useLastRoute from '@/composables/useLastRoute'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import StyledLable from '@/components/generic/StyledLable.vue'
 
 // Export default
 export default defineComponent({

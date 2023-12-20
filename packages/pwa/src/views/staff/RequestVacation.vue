@@ -8,7 +8,7 @@ import {
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { STAFF } from '@/graphql/staff.query.ts'
 import useVacation from '@/composables/useVacation.ts'
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/modal/Modal.vue'
 import StyledInputText from '@/components/generic/StyledInputText.vue'
 import OptionsModal from '@/components/modal/OptionsModal.vue'
 import { useDates } from '@/composables/useDates.ts'

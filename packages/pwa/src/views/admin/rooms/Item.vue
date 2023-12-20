@@ -18,7 +18,7 @@ interface Sport {
 }
 
 import { computed, defineComponent } from 'vue'
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/modal/Modal.vue'
 import { useRouter } from 'vue-router'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { DELETE_ROOM, GET_ONE_ROOM } from '@/graphql/room.query.ts'

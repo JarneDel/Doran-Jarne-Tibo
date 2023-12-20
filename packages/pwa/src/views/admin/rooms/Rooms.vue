@@ -47,7 +47,7 @@ import {
 import { computed, defineComponent, ref, watch } from 'vue'
 import UseFirebase from '../../../composables/useFirebase'
 import { PlusCircle } from 'lucide-vue-next'
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/modal/Modal.vue'
 import { useRouter } from 'vue-router'
 import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
 import useLastRoute from '@/composables/useLastRoute'

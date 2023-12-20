@@ -42,14 +42,14 @@ import {
   ChevronRight,
   Edit2,
   Search,
-} from 'lucide-vue-next';
-import StyledButton from '@/components/generic/StyledButton.vue';
-import Modal from '@/components/Modal.vue';
-import { useRouter } from 'vue-router';
-import useLastRoute from '@/composables/useLastRoute.ts';
-import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue';
-import DoubleClickSelect from '@/components/generic/DoubleClickSelect.vue';
-import Error from '@/components/Error.vue';
+} from 'lucide-vue-next'
+import StyledButton from '@/components/generic/StyledButton.vue'
+import Modal from '@/components/modal/Modal.vue'
+import { useRouter } from 'vue-router'
+import useLastRoute from '@/composables/useLastRoute.ts'
+import DoubleClickEdit from '@/components/generic/DoubleClickEdit.vue'
+import DoubleClickSelect from '@/components/generic/DoubleClickSelect.vue'
+import Error from '@/components/Error.vue'
 
 export default defineComponent({
   name: 'Overview',

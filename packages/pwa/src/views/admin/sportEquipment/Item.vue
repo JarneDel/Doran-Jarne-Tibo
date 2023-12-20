@@ -19,6 +19,7 @@ import { computed, defineComponent, ref, watch } from 'vue';
 import Modal from '@/components/Modal.vue';
 import { useRouter } from 'vue-router';
 import { useMutation, useQuery } from '@vue/apollo-composable';
+import Modal from '@/components/modal/Modal.vue'
 import {
   GET_LOANABLE_MATERIAL,
   REMOVE_LOANABLE_MATERIAL,

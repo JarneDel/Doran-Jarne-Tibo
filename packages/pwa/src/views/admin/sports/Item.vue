@@ -16,6 +16,7 @@ import { useMutation, useQuery } from '@vue/apollo-composable';
 import { DELETE_SPORT, GET_SPORT } from '@/graphql/sport.query.ts';
 import { Edit2, Trash2 } from 'lucide-vue-next';
 import StyledButton from '@/components/generic/StyledButton.vue';
+import Modal from '@/components/modal/Modal.vue'
 
 export default defineComponent({
   components: {

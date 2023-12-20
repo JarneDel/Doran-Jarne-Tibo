@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/modal/Modal.vue'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import OptionsModal from '@/components/modal/OptionsModal.vue'
 
