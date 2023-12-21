@@ -8,7 +8,7 @@ export const SUPPORTED_LOCALES: Record<string, string> = {
   zh: '中文',
   es: 'Español',
   fr: 'Francais',
-  de: 'Doitsch',
+  de: 'Duitsch',
 }
 
 export const i18nOptions: I18nOptions = {
