@@ -1,4 +1,5 @@
 import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
+import { ServeStaticModule } from '@nestjs/serve-static'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { StockModule } from './stock/stock.module'
@@ -26,6 +27,7 @@ import * as process from 'process'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { FirebaseUserService } from './firebase-user/firebase-user.service'
 import { FirebaseUserModule } from './firebase-user/firebase-user.module'
+import * as path from 'path'
 
 @Module({
   imports: [
@@ -91,13 +93,16 @@ import { FirebaseUserModule } from './firebase-user/firebase-user.module'
       template: {
         dir:
           process.env.NODE_ENV == 'production'
-            ? __dirname + '/templates'
+            ? __dirname + '/client/templates'
             : 'templates',
         adapter: new PugAdapter(),
         options: {
           strict: true,
         },
       },
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.join(__dirname, '..', 'client'),
     }),
     StockModule,
     GroupsModule,

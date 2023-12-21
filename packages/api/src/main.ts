@@ -8,16 +8,19 @@ async function bootstrap() {
   checkEnv(['DB_NAME', 'DB_HOST', 'DB_PORT', 'URL_FRONTEND'])
   optionalEnv(['MAIL_USER', 'MAIL_PASSWORD', 'MAIL_PROVIDER'])
   testEnv()
+  const port = process.env.PORT || 3000
   const app = await NestFactory.create(AppModule, {
     logger: new CustomLogger(),
   })
+  // allow all cors
   app.enableCors({
-    origin: ['http://localhost:5173', process.env.URL_FRONTEND],
+    origin: true,
     credentials: true,
   })
   app.useGlobalPipes(new ValidationPipe())
-  await app.listen(3000)
+  await app.listen(port)
   Logger.log(`Listening on ${await app.getUrl()}`)
   Logger.log(`Listening on ${await app.getUrl()}/graphql`)
 }
+
 bootstrap()

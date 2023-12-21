@@ -18,10 +18,10 @@ spec:
     spec:
       containers:
         - name: sport-complex-api
-          image: jarnedel/sport-complex-api
+          image: jarnedel/sport-complex-api:1.0.1
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 3000
+            - containerPort: 80
           envFrom:
             - configMapRef:
                 name: sport-complex-api-config
@@ -49,7 +49,7 @@ spec:
     - protocol: TCP
       port: 3000
       targetPort: 3000
-  type: LoadBalancer
+  type: NodePort
 
 
 ---
@@ -124,7 +124,7 @@ spec:
               app: db
         spec:
           containers:
-              - name: dbLoadBalancer
+              - name: db
                 image: mongo
                 imagePullPolicy: IfNotPresent
                 ports:
