@@ -14,7 +14,7 @@ defineProps({
 <template>
   <Card hoverable>
     <router-link :to="'/admin/staff/' + data.id">
-      <div class="min-w-xs p1 gap4 flex flex-col justify-between">
+      <div class="p1 gap4 flex flex-col justify-between">
         <div class="flex flex-row justify-between">
           <div>
             <div>{{ data.firstName }} {{ data.lastName }}</div>

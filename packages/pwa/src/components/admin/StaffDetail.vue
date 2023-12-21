@@ -18,7 +18,7 @@ export default defineComponent({
       required: false,
     },
   },
-
+  emits: ['refetch'],
   setup(props, ctx) {
     const { currentRoute } = useRouter()
     const errorMessages = ref<string[]>([])
@@ -30,7 +30,7 @@ export default defineComponent({
       id = currentRoute.value.params.id as string
     }
 
-    const { result } = useQuery(STAFF_BY_ID, { id: id })
+    const { result, refetch } = useQuery(STAFF_BY_ID, { id: id })
     const staff = computed(() => {
       return result.value?.staffItem
     })
@@ -110,6 +110,11 @@ export default defineComponent({
       mutate({
         id: id,
         role: newRole.value,
+      }).then(() => {
+        errorMessages.value = []
+        canSaveRole.value = false
+        refetch()
+        ctx.emit('refetch')
       })
     }
 
@@ -143,12 +148,22 @@ export default defineComponent({
     </template>
 
     <template v-slot:default>
-      <div class="flex flex-row items-center justify-center gap-4">
+      <div class="flex flex-row items-start justify-center gap-4">
         <img
+          v-if="staff.profilePictureUrl"
           :alt="staff.firstName + ' ' + staff.lastName"
           :src="staff.profilePictureUrl"
           class="max-w-24 max-h-24 rounded-full"
         />
+        <div
+          v-else
+          class="bg-primary grid h-16 w-16 place-items-center rounded-full"
+        >
+          <span class="text-2xl text-white">
+            {{ staff.firstName[0] }}{{ staff.lastName[0] }}
+          </span>
+        </div>
+
         <div>
           <div class="flex flex-row items-center gap-2">
             <Mail></Mail>

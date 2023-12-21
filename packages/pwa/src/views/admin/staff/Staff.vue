@@ -125,7 +125,11 @@ export default defineComponent({
 <template>
   <ErrorList :error-messages="errors"></ErrorList>
 
-  <StaffDetail v-if="$route.params.id" :id="$route.params.id as string" />
+  <StaffDetail
+    v-if="$route.params.id"
+    :id="$route.params.id as string"
+    @refetch="refetch"
+  />
   <Modal v-if="adding" @close="adding = false">
     <template v-slot:title> Add staff member</template>
     <template v-slot:default>
