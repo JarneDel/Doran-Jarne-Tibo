@@ -143,7 +143,7 @@ export default defineComponent({
         description: repair.value.description,
       })
         .then(() => {
-          location.reload()
+          location.href = '/'
         })
         .catch(e => {
           const originalError = e.graphQLErrors[0].extensions
