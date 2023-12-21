@@ -16,7 +16,7 @@ import { ALL_GROUPS, UPDATE_SCORE } from '@/graphql/group.query'
 import { defineComponent, ref } from 'vue'
 import UseFirebase from '@/composables/useFirebase'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { Minus, Plus } from 'lucide-vue-next'
+import { Minus, Plus, ChevronRight, ChevronLeft } from 'lucide-vue-next'
 
 export default defineComponent({
   setup() {
@@ -51,7 +51,7 @@ export default defineComponent({
       mutate,
     }
   },
-  components: { StyledButton, Plus, Minus },
+  components: { StyledButton, Plus, Minus,ChevronRight,ChevronLeft},
 })
 </script>
 
@@ -69,7 +69,7 @@ export default defineComponent({
         <p class="h-5 text-base xl:text-lg">{{ group.email }}</p>
         <p class="my-2 h-5 text-base xl:text-lg">{{ group.btwNumber }}</p>
         <div class="flex flex-col">
-          <label :for="group.id" class="text-base xl:text-lg">Score:</label>
+          <label :for="group.id" class="text-base xl:text-lg">strafpunten:</label>
           <input
             :id="group.id"
             :value="100 - group.score"
@@ -89,14 +89,14 @@ export default defineComponent({
             class="my-2"
             @click="updateScore(group.id, group.score + 1)"
           >
-            <Minus class="h-3 xl:h-4" />
+            <ChevronLeft class="h-3 xl:h-5" />
           </StyledButton>
           <p class="lg:text-base xl:text-lg">{{ group.score }}</p>
           <StyledButton
             class="my-2"
             @click="updateScore(group.id, group.score - 1)"
           >
-            <Plus class="h-3 xl:h-4" />
+            <ChevronRight class="h-3 xl:h-5" />
           </StyledButton>
         </div>
       </div>
