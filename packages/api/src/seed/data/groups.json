@@ -7,12 +7,6 @@
     "locale":"nl"
   },
   {
-    "name":"Doran Delfosse",
-    "email":"doran.delfosse@gmail.com",
-    "uid":"sz63Dcf2biXLvw3N2Stg0MCvQdj2",
-    "locale":"nl"
-  },
-  {
     "name": "Sportclub De Actieve Lopers",
     "email": "deactivelopers@test.test",
     "btw_number": "BE0123456789",
@@ -24,18 +18,6 @@
     "email": "desprinters@test.test",
     "btw_number": "BE0987654321",
     "uid":"BqotFU2VmOOz5igIM83iYxgaPXl1",
-    "locale":"nl"
-  },
-  {
-    "name": "Jarne Delarue",
-    "email": "jarne.delarue@hotmail.com",
-    "uid":"XV1UaPHAePYKUjGVZS1eIrUtiO12",
-    "locale":"nl"
-  },
-  {
-    "name": "Jarne Delarue",
-    "email": "delarue.jarne@gmail.com",
-    "uid":"oDsUn2brdieDNfawt8WPDMQe00X2",
     "locale":"nl"
   }
 ]
