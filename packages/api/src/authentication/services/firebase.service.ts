@@ -10,8 +10,6 @@ export class FirebaseService {
     this.firebaseApp = initializeApp({
       credential: applicationDefault(), // looks at env GOOGLE_APPLICATION_CREDENTIALS
     })
-    console.log('Firebase app initialized')
-    console.log(this.firebaseApp)
   }
 
   getAuth = (): Auth => getAuth()

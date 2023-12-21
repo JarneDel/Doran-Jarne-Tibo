@@ -33,7 +33,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    image: jarnedel/sport-complex-api:1.1.1
+    image: jarnedel/sport-complex-api:1.1.2
 
     depends_on:
       - db
