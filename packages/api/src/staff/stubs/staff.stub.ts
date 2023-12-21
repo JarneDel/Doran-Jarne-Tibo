@@ -9,7 +9,7 @@ export const createStaffInputStub = (): CreateStaffInput => {
   staff.email = 'Test.test@test.test'
   staff.phone = '123456789'
   staff.holidaysLeft = 20
-  staff.holidayDates = [new Date()]
+  staff.holidayDates = [new Date('2021-01-01')]
   return staff
 }
 
@@ -21,7 +21,7 @@ export const staffStub = (): Staff => {
   staff.email = 'Test.test@test.test'
   staff.phone = '123456789'
   staff.holidaysLeft = 20
-  staff.holidayDates = [new Date()]
+  staff.holidayDates = [new Date('2021-01-01')]
   staff.UID = 'abc123'
   staff.role = Role.SUPER_ADMIN
   return staff
