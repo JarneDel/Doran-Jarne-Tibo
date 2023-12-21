@@ -111,56 +111,60 @@ export default defineComponent({
 
 <template>
   <nav class="bg-white">
-  <OnClickOutside
-    :options="{ ignore: ['.menu-button'] }"
-    @trigger="clickOutside"
-    class="h-full"
-  >
-    <div
-      v-if="!isMobile || !isClosed"
-      :class="{
-        'min-w-54 w-full': !isClosed && !isMobile,
-        'w-16': isClosed && !isMobile,
-        'z-100 absolute left-0 top-0 w-full': isMobile,
-      }"
-      class="min-h-full overflow-hidden bg-white"
+    <OnClickOutside
+      :options="{ ignore: ['.menu-button'] }"
+      class="h-full"
+      @trigger="clickOutside"
     >
-      <div class="mt-4 grid">
-        <button
-          v-if="!isMobile"
-          class="flex items-center gap-4 px-4 py-2"
-          @click="isClosed = !isClosed"
-        >
-          <panel-left-close v-if="!isClosed" />
-          <panel-right-close v-else />
-        </button>
-
-        <RouterLink
-          v-for="page of pages"
-          :key="page.name"
-          :class="{
-            'bg-primary-light/40': section === page.name,
-            'rounded-r-md': section === page.name,
-          }"
-          :to="page.route"
-          class="px4 relative flex items-center gap-4 py-2"
-          @click="isClosed = true"
-        >
-          <component :is="page.icon" />
-          <h2 v-if="!isClosed" class="font-500">{{ page.content }}</h2>
-          <div
-            v-if="page.count"
-            :class="{
-              'bg-danger c-white h4 absolute bottom-0 right-2 flex w-4 items-center justify-center rounded':
-                isClosed,
-            }"
+      <div
+        v-if="!isMobile || !isClosed"
+        :class="{
+          'min-w-54 w-full': !isClosed && !isMobile,
+          'w-16': isClosed && !isMobile,
+          'z-100 absolute left-0 top-0 w-full': isMobile,
+        }"
+        class="min-h-full overflow-hidden bg-white"
+      >
+        <div class="mt-4 grid">
+          <button
+            v-if="!isMobile"
+            class="flex items-center gap-4 px-4 py-2"
+            @click="isClosed = !isClosed"
           >
-            {{ page.count }}
-          </div>
-        </RouterLink>
+            <panel-left-close v-if="!isClosed" />
+            <panel-right-close v-else />
+          </button>
+
+          <RouterLink
+            v-for="page of pages"
+            :key="page.name"
+            :class="{
+              'bg-primary-light/40': section === page.name,
+              'rounded-r-md': section === page.name,
+            }"
+            :to="page.route"
+            class="px4 relative flex items-center gap-4 py-2"
+            @click="
+              () => {
+                if (isMobile) isClosed = true
+              }
+            "
+          >
+            <component :is="page.icon" />
+            <h2 v-if="!isClosed" class="font-500">{{ page.content }}</h2>
+            <div
+              v-if="page.count"
+              :class="{
+                'bg-danger c-white h4 absolute bottom-0 right-2 flex w-4 items-center justify-center rounded':
+                  isClosed,
+              }"
+            >
+              {{ page.count }}
+            </div>
+          </RouterLink>
+        </div>
       </div>
-    </div>
-  </OnClickOutside>
+    </OnClickOutside>
   </nav>
 </template>
 
