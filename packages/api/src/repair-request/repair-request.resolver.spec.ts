@@ -101,23 +101,25 @@ describe('RepairRequestResolver', () => {
   })
 
   // Test findOne
-  // describe('findOne RepairRequest', () => {
-  //   let resultRepairRequest
+  describe('findOne RepairRequest', () => {
+    let resultRepairRequest
 
-  //   beforeEach(async () => {
-  //     resultRepairRequest = await resolver.findOne('abc123')
-  //   })
+    beforeEach(async () => {
+      resultRepairRequest = await resolver.findOne('abc123')
+    })
 
-  //   it('should call repairRequestService.findOne exactly once', () => {
-  //     expect(mockRepairRequestService.findOneById).toHaveBeenCalledTimes(1)
-  //   })
-  //   it('should return a repairRequest', () => {
-  //     expect(resultRepairRequest).toEqual(repairRequestStub())
-  //   })
-  //   it('should call repairRequestService.findOne with the correct arguments', () => {
-  //     expect(mockRepairRequestService.findOneById).toHaveBeenCalledWith(1)
-  //   })
-  // })
+    it('should call repairRequestService.findOne exactly once', () => {
+      expect(mockRepairRequestService.findOneById).toHaveBeenCalledTimes(1)
+    })
+    it('should return a repairRequest', () => {
+      expect(resultRepairRequest).toEqual(repairRequestStub())
+    })
+    it('should call repairRequestService.findOne with the correct arguments', () => {
+      expect(mockRepairRequestService.findOneById).toHaveBeenCalledWith(
+        'abc123',
+      )
+    })
+  })
 
   
   // Test update
@@ -161,11 +163,11 @@ describe('RepairRequestResolver', () => {
     it('should call repairRequestService.remove exactly once', () => {
       expect(mockRepairRequestService.remove).toHaveBeenCalledTimes(1)
     })
-    // it('should return a string', () => {
-    //   expect(resultRepairRequests).toEqual(
-    //     'Deleted repair-request with id: abc123successfully',
-    //   )
-    // })
+    it('should return a string', () => {
+      expect(resultRepairRequests).toEqual(
+        'Deleted repair-request with id: abc123successfully',
+      )
+    })
     it('should call repairRequestService.remove with the correct arguments', () => {
       expect(mockRepairRequestService.remove).toHaveBeenCalledWith('abc123')
     })

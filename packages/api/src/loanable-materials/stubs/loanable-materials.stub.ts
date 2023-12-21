@@ -1,9 +1,22 @@
 import { CreateLoanableMaterialInput } from "../dto/create-loanable-material.input"
+import { UpdateLoanableMaterialInput } from "../dto/update-loanable-material.input"
 import { LoanableMaterial } from "../entities/loanable-material.entity"
 
 
 export const createLoanableMaterialInputStub = (): CreateLoanableMaterialInput => {
   const LoanableMaterial = new CreateLoanableMaterialInput()
+  LoanableMaterial.name = 'Test'
+  LoanableMaterial.description = 'Test'
+  LoanableMaterial.price = 100
+  LoanableMaterial.wantedAmount = 5
+  LoanableMaterial.totalAmount = 3
+  LoanableMaterial.isComplete = true
+  LoanableMaterial.SportId = ['656a1085a90f2e4962ae915a']
+  return LoanableMaterial
+}
+
+export const updateLoanableMaterialInputStub = (): UpdateLoanableMaterialInput => {
+  const LoanableMaterial = new UpdateLoanableMaterialInput()
   LoanableMaterial.name = 'Test'
   LoanableMaterial.description = 'Test'
   LoanableMaterial.price = 100
