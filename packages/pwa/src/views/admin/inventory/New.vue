@@ -46,8 +46,8 @@ export default defineComponent({
       const params: CreateStockInput = {
         name: name.value,
         description: description.value ?? '',
-        idealStock: idealAmountInStock.value,
-        amountInStock: inStock.value,
+        idealStock: Number(idealAmountInStock.value),
+        amountInStock: Number(inStock.value),
         needToOrderMore: false,
         serviceId: service.value,
       }
@@ -111,9 +111,9 @@ export default defineComponent({
     <styled-input-text
       v-model="idealAmountInStock"
       :label="$t('item.new.ideal')"
-      class="my-1"
       :max="250"
       :min="0"
+      class="my-1"
       name="idealAmountInStock"
       step="1"
       type="number"
@@ -122,9 +122,9 @@ export default defineComponent({
     <styled-input-text
       v-model="inStock"
       :label="$t('item.new.inStock')"
-      class="my-1"
       :max="250"
       :min="0"
+      class="my-1"
       name="inStock"
       step="1"
       type="number"
