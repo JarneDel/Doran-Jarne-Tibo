@@ -205,7 +205,7 @@ export default defineComponent({
       <div class="flex w-full justify-end"></div>
     </div>
 
-    <table class="w-full border-collapse text-sm">
+    <table class="w-full table-fixed border-collapse text-sm">
       <thead>
         <tr class="border-b text-left transition-colors">
           <th class="cursor-pointer" @click="sortField('name')">
