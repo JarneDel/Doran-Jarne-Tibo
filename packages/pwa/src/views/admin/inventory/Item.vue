@@ -137,12 +137,6 @@ export default defineComponent({
         <!--        <div v-if='success' ></div>-->
       </div>
     </template>
-    <template v-slot:actions>
-      <!--      todo: link to broken-->
-      <StyledButton :px="2" :py="1" button-type="danger"
-        >Report broken / missing item</StyledButton
-      >
-    </template>
   </Modal>
 </template>
 
