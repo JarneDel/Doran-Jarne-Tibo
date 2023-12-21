@@ -16,7 +16,7 @@ import { ALL_GROUPS, UPDATE_SCORE } from '@/graphql/group.query'
 import { defineComponent, ref } from 'vue'
 import UseFirebase from '@/composables/useFirebase'
 import StyledButton from '@/components/generic/StyledButton.vue'
-import { Minus, Plus } from 'lucide-vue-next'
+import { Minus, Plus, ChevronRight, ChevronLeft } from 'lucide-vue-next'
 
 export default defineComponent({
   setup() {
@@ -51,7 +51,7 @@ export default defineComponent({
       mutate,
     }
   },
-  components: { StyledButton, Plus, Minus },
+  components: { StyledButton, Plus, Minus,ChevronRight,ChevronLeft},
 })
 </script>
 
@@ -89,14 +89,14 @@ export default defineComponent({
             class="my-2"
             @click="updateScore(group.id, group.score + 1)"
           >
-            <Minus class="h-3 xl:h-4" />
+            <ChevronLeft class="h-3 xl:h-4" />
           </StyledButton>
           <p class="lg:text-base xl:text-lg">{{ group.score }}</p>
           <StyledButton
             class="my-2"
             @click="updateScore(group.id, group.score - 1)"
           >
-            <Plus class="h-3 xl:h-4" />
+            <ChevronRight class="h-3 xl:h-4" />
           </StyledButton>
         </div>
       </div>
