@@ -63,8 +63,7 @@ export class LoanableMaterialsResolver {
     return this.loanableMaterialsService.findOneById(id)
   }
 
-
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => LoanableMaterial)
   updateLoanableMaterial(
@@ -77,24 +76,25 @@ export class LoanableMaterialsResolver {
     )
   }
 
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => String)
-  removeLoanableMaterialById(@Args('id', { type: () => String }) id: string) {
-    return this.loanableMaterialsService
-      .remove(id)
-      .then(res => {
-        const obj = JSON.parse(JSON.stringify(res))
-        if (obj.raw.deletedCount > 0) {
-          return 'Deleted room with id: ' + id + ' succesfully'
-        } else {
-          return 'No room with id: ' + id + ' found'
-        }
-      })
-      .catch(err => {
-        console.log(err)
-        return 'Error'
-      })
+  async removeLoanableMaterialById(
+    @Args('id', { type: () => String }) id: string,
+  ) {
+    try {
+      let res = await this.loanableMaterialsService.remove(id)
+
+      const obj = JSON.parse(JSON.stringify(res))
+      if (obj.raw.deletedCount > 0) {
+        return 'Deleted room with id: ' + id + ' succesfully'
+      } else {
+        return 'No room with id: ' + id + ' found'
+      }
+    } catch (err) {
+      console.log(err)
+      return 'Error'
+    }
   }
 
   @ResolveField() // "sports" must be the same as the field in the LoanableMaterial entity

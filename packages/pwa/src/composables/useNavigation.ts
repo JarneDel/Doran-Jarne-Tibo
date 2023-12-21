@@ -37,7 +37,7 @@ const pages = ref<AdminNavigationItem[]>([
     icon: Dumbbell,
     content: t('nav.sportEquipment'),
     route: '/admin/sport-equipment',
-    roles: ['ADMIN', 'SUPER_ADMIN'],
+    roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
   },
   {
     name: 'rooms',
