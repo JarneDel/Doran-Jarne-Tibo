@@ -117,7 +117,7 @@ export const CREATE_GROUP = gql`
 
 export interface CreateGroupInput {
   createGroupInput: {
-    btwNumber: string
+    btwNumber?: string
     locale: string
     name: string
     profilePictureUrl?: string

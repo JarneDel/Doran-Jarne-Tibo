@@ -17,7 +17,7 @@ export default defineComponent({
   setup() {
     // data
     const form = reactive({
-      btwNummer: '',
+      btwNummer:null,
       email: '',
       password: '',
       displayName: '',
@@ -37,14 +37,19 @@ export default defineComponent({
     const submitForm = () => {
       register(form.email, form.password)
         .then(async () => {
-          await mutate({
+          const groupInput: CreateGroupInput = {
             createGroupInput: {
               name: form.displayName,
               locale: locale.value,
-              btwNumber: form.btwNummer,
               email: form.email,
             },
-          })
+          }
+
+          if (form.btwNummer) {
+            groupInput.createGroupInput.btwNumber = form.btwNummer
+          }
+
+          await mutate(groupInput)
 
           await restoreCustomUser()
           replace('/')
