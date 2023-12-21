@@ -104,7 +104,7 @@ export default defineComponent({
           class="my-1"
         />
         <styled-input-text
-          v-model="customUser.lastName"
+          v-model="customUser.phone"
           :label="$t('staff.phone')"
           class="my-1"
         />
