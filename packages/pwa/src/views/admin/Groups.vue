@@ -69,7 +69,7 @@ export default defineComponent({
         <p class="h-5 text-base xl:text-lg">{{ group.email }}</p>
         <p class="my-2 h-5 text-base xl:text-lg">{{ group.btwNumber }}</p>
         <div class="flex flex-col">
-          <label :for="group.id" class="text-base xl:text-lg">Score:</label>
+          <label :for="group.id" class="text-base xl:text-lg">strafpunten:</label>
           <input
             :id="group.id"
             :value="100 - group.score"
