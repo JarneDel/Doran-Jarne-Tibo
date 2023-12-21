@@ -6,4 +6,7 @@ export const StaffService = jest.fn().mockReturnValue({
   findOne: jest.fn().mockResolvedValue(staffStub()),
   update: jest.fn().mockResolvedValue(staffStub()),
   remove: jest.fn().mockResolvedValue(staffStub()),
+  findOneByUid: jest.fn().mockResolvedValue(staffStub()),
+  updateProfilePictureUrl: jest.fn().mockResolvedValue(staffStub()),
+  updateRole: jest.fn().mockResolvedValue(staffStub()),
 })

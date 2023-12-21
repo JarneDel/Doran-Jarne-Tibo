@@ -35,12 +35,12 @@ export const roomStub=():Room=>{
       id: '656a1085a90f2e4962ae915a',
       name: 'test',
       description: 'test',
-      createdAt: new Date('2023-12-07T15:04:51.996Z'),
-      updatedAt: new Date('2023-12-07T15:04:51.996Z'),
+      createdAt: new Date('2024-12-07T15:04:51.996Z'),
+      updatedAt: new Date('2024-12-07T15:04:51.996Z'),
     },
   ]
   room.canBeUsed=true
-  room.createdAt = new Date('2023-12-07T15:04:51.996Z')
-  room.updatedAt = new Date('2023-12-07T15:04:51.996Z')
+  room.createdAt = new Date('2024-12-07T15:04:51.996Z')
+  room.updatedAt = new Date('2024-12-07T15:04:51.996Z')
   return room
 }

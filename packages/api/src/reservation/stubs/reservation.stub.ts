@@ -16,8 +16,8 @@ export const createReservationsInputStub = (): CreateReservationInput => {
           id: '656a1085a90f2e4962ae915a',
           name: 'Voetbal',
           description: 'Test',
-          createdAt: new Date('2023-12-07T15:04:51.996Z'),
-          updatedAt: new Date('2023-12-07T15:04:51.996Z'),
+          createdAt: new Date('2024-12-07T15:04:51.996Z'),
+          updatedAt: new Date('2024-12-07T15:04:51.996Z'),
         },
       ],
     },
@@ -41,15 +41,15 @@ export const createReservationsInputStub = (): CreateReservationInput => {
           id: '656a1085a90f2e4962ae915a',
           name: 'Voetbal',
           description: 'Test',
-          createdAt: new Date('2023-12-07T15:04:51.996Z'),
-          updatedAt: new Date('2023-12-07T15:04:51.996Z'),
+          createdAt: new Date('2024-12-07T15:04:51.996Z'),
+          updatedAt: new Date('2024-12-07T15:04:51.996Z'),
         },
       ],
     },
   ]
   //reservation
   const reservation = new CreateReservationInput()
-  reservation.date = new Date('2023-12-09T15:04:51.996Z')
+  reservation.date = new Date('2024-12-09T15:04:51.996Z')
   reservation.endTime = '18:00'
   reservation.startTime = '08:00'
   reservation.groupId = '656a1085a90f2e4962ae915a'
@@ -102,8 +102,8 @@ export const reservationStub = (): Reservation => {
           id: '656a1085a90f2e4962ae915a',
           name: 'Voetbal',
           description: 'Test',
-          createdAt: new Date('2023-12-07T15:04:51.996Z'),
-          updatedAt: new Date('2023-12-07T15:04:51.996Z'),
+          createdAt: new Date('2024-12-07T15:04:51.996Z'),
+          updatedAt: new Date('2024-12-07T15:04:51.996Z'),
         },
       ],
     },
