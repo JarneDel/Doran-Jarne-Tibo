@@ -35,8 +35,6 @@ export const USER_BY_UID: TypedDocumentNode<{ userByUid: Group | Staff }> = gql`
     }
   }
 `
-
-
 export const UPDATE_GROUP = gql`
   mutation updateGroup(
     $_id: String!
