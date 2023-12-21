@@ -10,10 +10,12 @@ import { ALL_LOANABLE_MATERIALS } from '@/graphql/loanableMaterials.query'
 import StyledButton from '@/components/generic/StyledButton.vue'
 import { CREATE_REPAIR_REQUEST } from '@/graphql/repairRequests.query'
 import Error from '@/components/Error.vue'
+import Notifications from '@/components/Notifications.vue'
 
 export default defineComponent({
   setup() {
     const errorMessages = ref<string[]>([])
+    const messeges = ref<string[]>([])
     const { mutate: createRepairRequest } = useMutation(CREATE_REPAIR_REQUEST)
     const { customUser } = useUser()
     const repair = ref<RepairRequest>({
@@ -143,7 +145,7 @@ export default defineComponent({
         description: repair.value.description,
       })
         .then(() => {
-          location.href = '/'
+          messeges.value.push('success')
         })
         .catch(e => {
           const originalError = e.graphQLErrors[0].extensions
@@ -163,13 +165,19 @@ export default defineComponent({
       loanableMaterials,
       handleSubmit,
       errorMessages,
+      messeges
     }
   },
-  components: { StyledInputText, StyledButton, Error },
+  components: { StyledInputText, StyledButton, Error, Notifications },
 })
 </script>
 
 <template>
+  <Notifications 
+    v-if="messeges.length > 0"
+    :messages="messeges"
+    @update:messages="messeges = []"
+  />
   <Error
     v-for="(error, index) of errorMessages"
     :key="index"
