@@ -58,7 +58,7 @@ const pages = ref<AdminNavigationItem[]>([
     icon: Wrench,
     content: t('nav.repairRequests'),
     route: '/admin/repair-requests',
-    roles: ['ADMIN', 'SUPER_ADMIN'],
+    roles: ['ADMIN', 'SUPER_ADMIN', 'STAFF'],
   },
   {
     name: 'staff',

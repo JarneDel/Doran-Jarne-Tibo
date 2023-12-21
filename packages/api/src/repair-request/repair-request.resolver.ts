@@ -45,21 +45,21 @@ export class RepairRequestResolver {
     return this.repairRequestService.create(createRepairRequestInput)
   }
 
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [RepairRequest], { name: 'GetAllRepairRequests' })
   findAll() {
     return this.repairRequestService.findAll()
   }
 
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => RepairRequest, { name: 'GetRepairRequestById' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.repairRequestService.findOneById(id)
   }
 
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => RepairRequest)
   updateRepairRequest(
@@ -72,7 +72,7 @@ export class RepairRequestResolver {
     )
   }
 
-  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN)
+  @AllowedRoles(Role.ADMIN, Role.SUPER_ADMIN, Role.STAFF)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => String)
   RemoveRepairRequestById(@Args('id', { type: () => String }) id: string) {
