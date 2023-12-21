@@ -89,14 +89,14 @@ export default defineComponent({
             class="my-2"
             @click="updateScore(group.id, group.score + 1)"
           >
-            <ChevronLeft class="h-3 xl:h-4" />
+            <ChevronLeft class="h-3 xl:h-5" />
           </StyledButton>
           <p class="lg:text-base xl:text-lg">{{ group.score }}</p>
           <StyledButton
             class="my-2"
             @click="updateScore(group.id, group.score - 1)"
           >
-            <ChevronRight class="h-3 xl:h-4" />
+            <ChevronRight class="h-3 xl:h-5" />
           </StyledButton>
         </div>
       </div>
