@@ -57,7 +57,7 @@ export class SeedModule {
     await this.seedService.addRoomsFromJson()
     await this.seedService.addServicesFromJson()
     await this.seedService.addStockFromJson()
-    await this.seedService.addReservationsFromJson()
+    // await this.seedService.addReservationsFromJson()
     await this.seedService.addRepairRequestsFromJson()
   }
 }
