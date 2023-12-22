@@ -1,10 +1,10 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 test('create reservation', async ({ page }) => {
   await page.goto('http://localhost:5173/')
   await page.getByRole('link', { name: 'Login' }).click()
   await page.getByLabel('Email').click()
-  await page.getByLabel('Email').fill('doran.delfosse@gmail.com')
+  await page.getByLabel('Email').fill('desprinters@test.test')
   await page.getByLabel('Password').click()
   await page.getByLabel('Password').fill('Test1234')
   await page.getByLabel('Password').press('Enter')
@@ -49,7 +49,7 @@ test('Change Reservation', async ({ page }) => {
   await page.goto('http://localhost:5173/')
   await page.getByRole('link', { name: 'Login' }).click()
   await page.getByLabel('Email').click()
-  await page.getByLabel('Email').fill('doran.delfosse@gmail.com')
+  await page.getByLabel('Email').fill('desprinters@test.test')
   await page.getByLabel('Password').click()
   await page.getByLabel('Password').fill('Test1234')
   await page.getByLabel('Password').press('Enter')
@@ -85,7 +85,7 @@ test('Cancel reservation', async ({ page }) => {
   await page.goto('http://localhost:5173/')
   await page.getByRole('link', { name: 'Login' }).click()
   await page.getByLabel('Email').click()
-  await page.getByLabel('Email').fill('doran.delfosse@gmail.com')
+  await page.getByLabel('Email').fill('desprinters@test.test')
   await page.getByLabel('Password').click()
   await page.getByLabel('Password').fill('Test1234')
   await page.getByLabel('Password').press('Enter')
